@@ -16,7 +16,7 @@ export const FooterParent = () => (
       <h3 style={{ color: "black" }}>Interface Design</h3>
       <img
         alt="Interface Design Powered by reddit."
-        src="https://s3.amazonaws.com/sp.reddit.com/powered_by_reddit.png"
+        src="/media/img/powered_by_reddit.png"
         style={{
           width: 140,
           height: 47
