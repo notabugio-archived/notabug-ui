@@ -14,4 +14,4 @@ app.get("/*", function (req, res) {
 
 const server = app.listen(process.env.PORT || 3000);
 
-Gun({ file: false, web: server });
+Gun({ localStorage: false, web: server });
