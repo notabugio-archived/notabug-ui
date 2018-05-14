@@ -17,7 +17,7 @@ const getSubmissionFormState = always(identity);
 const onChangeSubmissionTitle = update((state, submissionTitle) => ({ submissionTitle }));
 const onChangeSubmissionBody = update((state, submissionBody) => ({ submissionBody }));
 const onChangeSubmissionIsSelf = update((state, submissionIsSelf) => ({ submissionIsSelf }));
-const onChangeSubmissionTopic = update((state, submissionTopic) => ({ submissionTopic }));
+const onChangeSubmissionTopic = update((state, submissionTopic) => ({ submissionTopic: submissionTopic.toLowerCase() }));
 const onChangeSubmissionUrl = update((state, submissionUrl) => ({ submissionUrl }));
 const onSubmitSubmission = (effects) => effects.getSubmissionFormState()
   .then(state => effects.getState().then(baseState => ({ ...baseState,  ...state })))
