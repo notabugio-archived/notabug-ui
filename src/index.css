@@ -1,0 +1,4 @@
+#header { /*background-color: #BCF1AA;*/ }
+#header-img.default-header, .thumbnail.nsfw, .thumbnail.self { background-image: url(/media/img/notabug-logo.png); }
+body > .content .link .rank, .rank-spacer { width: 3.3ex; }
+body > .content .link .midcol, .midcol-spacer { width: 6ex; }

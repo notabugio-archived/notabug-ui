@@ -1,0 +1,51 @@
+{
+  "name": "notabug",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "babel-cli": "^6.26.0",
+    "body-parser": "^1.18.2",
+    "create-react-server": "^0.3.2",
+    "express": "^4.16.3",
+    "formidable": "^1.2.1",
+    "freactal": "^2.0.3",
+    "gun": "^0.9.994",
+    "lodash": "^4.17.10",
+    "object-hash": "^1.3.0",
+    "proof-of-work": "https://github.com/notabugio/proof-of-work#build-compat",
+    "qs": "^6.5.2",
+    "ramda": "^0.25.0",
+    "raw-loader": "^0.5.1",
+    "react": "^16.3.2",
+    "react-body": "^0.2.0",
+    "react-dom": "^16.3.2",
+    "react-router-dom": "^4.2.2",
+    "react-scripts": "^1.1.4",
+    "react-timeago": "^4.1.9",
+    "reselect": "^3.0.1",
+    "route-parser": "^0.0.5",
+    "slugify": "^1.2.9",
+    "snew-classic-ui": "https://github.com/notabugio/snew-classic-ui.git#0.2.0",
+    "snuownd": "https://github.com/JordanMilne/snuownd.git",
+    "urllite": "^0.5.0",
+    "worker-loader": "^1.1.1"
+  },
+  "scripts": {
+    "start": "NODE_PATH=src/ react-app-rewired start",
+    "build": "NODE_PATH=src/ react-app-rewired build",
+    "build-server": "NODE_PATH=src/:node_modules/ NODE_ENV=production babel --source-maps --out-dir build-lib src",
+    "oldserver": "NODE_PATH=src/:node_modules/ create-react-server --app=src/app.js",
+    "server": "NODE_PATH=build-lib/:node-modules/ node ./build-lib/server.js",
+    "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom",
+    "eject": "NODE_PATH=src/ react-app-rewired eject"
+  },
+  "devDependencies": {
+    "react-app-rewired": "^1.5.2"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react-app"
+    ]
+  }
+}
