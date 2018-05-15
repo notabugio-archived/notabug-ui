@@ -12,6 +12,7 @@ export const CommentForm = notabugCommentForm(injectState(({
   <SnewCommentForm
     {...props}
     body={commentBody}
+    key={commentBody ? "notblank" : "blank"} // hack to allow defaultValue to workaround controlled input bug
     onChangeBody={e => onChangeCommentBody(e.target.value)}
     commentError={isCommentTooLong ? `this is too long (max: ${COMMENT_BODY_MAX})` : null}
     onSubmit={e => {

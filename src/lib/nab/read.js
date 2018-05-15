@@ -10,7 +10,7 @@ export const listing = (gunChain, scoreThreshold=-Infinity, myContent={}) => {
   let subscribers = {};
 
   const isMine = id => !!myContent[id];
-  const on = (cb, id=null, db=40) => subscribers[id] = debounce(cb, db, { leading: true });
+  const on = (cb, id=null, db=100) => subscribers[id] = debounce(cb, db, { leading: true, trailing: true });
   const off = (id=null) => delete subscribers[id];
   const close = () => gunChain.off(); // TODO: not sure this is enough?
   const getThing = (id) => gunChain.back(-1).get(`${PREFIX}/things/${id}/data`);

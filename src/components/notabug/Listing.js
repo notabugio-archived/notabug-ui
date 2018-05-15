@@ -39,15 +39,28 @@ export class Listing extends PureComponent {
 
   render() {
     const { listing } = this.state;
-    const { myContent = {} } = this.props;
+    const { myContent = {}, Empty } = this.props;
+    const count = parseInt(this.props.count, 10) || 0;
+    let ids;
+
+    if (!this.state.ids.length && Empty) return <Empty />;
+
+    if (this.props.limit) {
+      const start = this.props.count || 0;
+      ids = this.state.ids.slice(start, start+this.props.limit);
+    } else {
+      ids = this.state.ids;
+    }
+
     return (
       <Fragment>
-        {this.state.ids.map(id =>(
+        {ids.map((id, idx) =>(
           <Thing
             id={id}
             key={id}
             listing={listing}
             isMine={!!myContent[id]}
+            rank={count + idx + 1}
             collapseThreshold={this.props.collapseThreshold}
           />
         ))}

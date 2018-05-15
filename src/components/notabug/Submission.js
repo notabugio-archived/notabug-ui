@@ -19,6 +19,7 @@ const SubmissionBase = ({
   comments,
   effects,
   expanded,
+  rank,
   state: { isVotingUp, isVotingDown },
 }) => {
   const urlInfo = item.url ? urllite(item.url) : {};
@@ -43,6 +44,7 @@ const SubmissionBase = ({
       siteprefix={"t"}
       permalink={permalink}
       expanded={expanded}
+      rank={rank}
       is_self={!item.url}
       ups={ups}
       downs={downs}
