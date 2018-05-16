@@ -8,6 +8,7 @@ import urllite from "urllite";
 export const COMMENT_BODY_MAX = 10000;
 export const SUBMISSION_TITLE_MAX = 300;
 export const SUBMISSION_BODY_MAX = 40000;
+export const TOPIC_NAME_MAX = 42;
 
 const COMMENT_FIELDS = ["body", "timestamp", "kind", "replyToId", "opId"];
 const SUBMISSION_FIELDS = ["body", "timestamp", "kind", "title", "topic", "url"];

@@ -3,13 +3,13 @@ import { always, identity } from "ramda";
 import { update, provideState } from "freactal";
 import slugify from "slugify";
 import urllite from "urllite";
-import { SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "lib/nab/validate";
+import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "lib/nab/validate";
 
-const initialState = ({ location: { search } }) => ({
+const initialState = ({ location: { search }, match: { params: { topic } } }) => ({
   submissionTitle: "",
   submissionBody: "",
   submissionUrl: "",
-  submissionTopic: "whatever",
+  submissionTopic: topic || "whatever",
   submissionIsSelf: !!(/selftext=true/).test((search))
 });
 
@@ -25,7 +25,12 @@ const onSubmitSubmission = (effects) => effects.getSubmissionFormState()
     const {
       notabugApi, submissionTitle, submissionBody, submissionUrl, submissionTopic, submissionIsSelf
     } = state;
-    if (isUrlInvalid(state) || isTitleInvalid(state) || isBodyInvalid(state)) return;
+    if (
+      isUrlInvalid(state) ||
+      isTitleInvalid(state) ||
+      isBodyInvalid(state) ||
+      isTopicInvalid(state)
+    ) return;
     return Promise.resolve(notabugApi
       .submit({
         title: submissionTitle,
@@ -51,6 +56,7 @@ const isUrlInvalid = ({ submissionIsSelf, submissionUrl }) => {
 
 const isBodyInvalid = ({ submissionBody }) => submissionBody.length > SUBMISSION_BODY_MAX;
 const isTitleInvalid = ({ submissionTitle }) => !submissionTitle || (submissionTitle.length > SUBMISSION_TITLE_MAX);
+const isTopicInvalid = ({ submissionTopic }) => !submissionTopic || (submissionTopic.length > TOPIC_NAME_MAX);
 
 export const notabugSubmissionForm = provideState({
   initialState,
@@ -63,5 +69,5 @@ export const notabugSubmissionForm = provideState({
     onChangeSubmissionIsSelf,
     onSubmitSubmission
   },
-  computed: { isUrlInvalid, isBodyInvalid, isTitleInvalid }
+  computed: { isUrlInvalid, isBodyInvalid, isTitleInvalid, isTopicInvalid }
 });

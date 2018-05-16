@@ -2,7 +2,7 @@ import React from "react";
 import { injectState } from "freactal";
 import { notabugSubmissionForm } from "state";
 import { SubmitPage } from "snew-classic-ui";
-import { SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "lib/nab/validate";
+import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "lib/nab/validate";
 
 const SubmissionFormBase = notabugSubmissionForm(injectState(({
   state: {
@@ -13,6 +13,7 @@ const SubmissionFormBase = notabugSubmissionForm(injectState(({
     submissionIsSelf,
     isTitleInvalid,
     isUrlInvalid,
+    isTopicInvalid,
     isBodyInvalid
   },
   effects: {
@@ -23,9 +24,12 @@ const SubmissionFormBase = notabugSubmissionForm(injectState(({
     onChangeSubmissionIsSelf,
     onSubmitSubmission
   },
+  match: { params: { topic } }
 }) => (
   <SubmitPage
+    key={topic}
     sitename="notabug"
+    siteprefix="t"
     subname="topic"
     url={submissionUrl}
     text={submissionBody}
@@ -36,6 +40,9 @@ const SubmissionFormBase = notabugSubmissionForm(injectState(({
     titleError={isTitleInvalid ? submissionTitle
       ? `this is too long (max: ${SUBMISSION_TITLE_MAX})`
       : "a title is required" : null}
+    subredditError={isTopicInvalid ? submissionTopic
+      ? `this is too long (max: ${TOPIC_NAME_MAX})`
+      : "a topic is required" : null}
     urlError={isUrlInvalid ? "this url is not valid" : null}
     onChangeUrl={e => onChangeSubmissionUrl(e.target.value)}
     onChangeTitle={e => onChangeSubmissionTitle(e.target.value)}

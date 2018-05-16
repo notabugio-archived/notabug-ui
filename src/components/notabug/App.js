@@ -60,6 +60,7 @@ const TopicRoute = (props) => (
 export const App = router(() => (
   <Provider>
     <Switch>
+      <Route path="/t/:topic/submit" component={TopicRoute} />
       <Route path="/t/:topic/:sort/" component={TopicRoute} />
       <Route path="/t/:topic" component={TopicRoute} />
       <Route path="/domain/:domain/:sort/" component={TopicRoute} />
