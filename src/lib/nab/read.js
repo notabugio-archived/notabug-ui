@@ -2,8 +2,6 @@ import { identity, assoc, assocPath, pathOr, sortBy, compose } from "ramda";
 import debounce from "lodash/debounce";
 import { PREFIX } from "./etc";
 
-const all = (...fns) => (...args) => fns.map(fn => fn(...args));
-
 export const listing = (gunChain, scoreThreshold=-Infinity, myContent={}) => {
   let timestamps = {};
   let votes = {};
@@ -87,16 +85,17 @@ export const listing = (gunChain, scoreThreshold=-Infinity, myContent={}) => {
     })
   };
 
-  gunChain.map().get("id").once(function (id) {
-    const thing = this.back();
+  gunChain.map().once(function ({ id, timestamp }) {
+    const thing = this;
     const notifyUpdate = () => {
       subscribers[id] && subscribers[id](id);
       subscribers[null] && subscribers[null](id);
     };
-    thing.get("timestamp").once(all(storeTimestamp(id), notifyUpdate));
+    storeTimestamp(id)(timestamp);
+    notifyUpdate(id);
     thing.get("votesup").map().once(countVote(id, "up", notifyUpdate));
     thing.get("votesdown").map().once(countVote(id, "down", notifyUpdate));
-    thing.get("allcomments").map().get("id").once(countVote(id, "comment"), notifyUpdate);
+    thing.get("allcomments").map().get("id").once(countVote(id, "comment", notifyUpdate));
   });
 
   return { ids, getVoteCount, getThing, close, on, off };
