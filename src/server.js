@@ -19,7 +19,7 @@ const peers = [
   // "https://notabug.io/gun"
 ];
 
-Gun({ peers, localStorage: false, web: server });
+const gun = Gun({ peers, localStorage: false, web: server });
 
 blockedSouls.forEach(soul => console.log({ soul }) || gun.get(soul).put({
   url: null,
