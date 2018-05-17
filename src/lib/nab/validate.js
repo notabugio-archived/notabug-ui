@@ -173,7 +173,7 @@ const soulRoutes = {
     (data, { thingid }) => {
       const { _, ...record } = data; // eslint-disable-line
       const id = objHash(record, { unorderedSets: true });
-      if (blockedMap[thingid]) {
+      if (blockedMap[`${PREFIX}/things/${thingid}/data`]) {
         data["url"] = null;
         data["body"] = "[removed]";
         return true;
