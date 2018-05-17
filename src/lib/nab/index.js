@@ -11,7 +11,7 @@ if (isNode) {
   Gun.on("opt", function(context) {
     context.on("in", function(msg) {
       const to = this.to;
-      if (checkMessage(msg)) {
+      if (checkMessage(msg) || !msg.mesh) {
         to.next(msg);
       } else {
         console.warn("rejected message", msg);
