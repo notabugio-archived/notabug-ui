@@ -10,6 +10,8 @@
 /build
 /build-lib
 /data.json
+/radata
+/radata*
 
 # misc
 .DS_Store

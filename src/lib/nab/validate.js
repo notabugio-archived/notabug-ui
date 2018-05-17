@@ -4,6 +4,7 @@ import Route from "route-parser";
 import { PREFIX } from "./etc";
 import { verifyWork } from "pow";
 import urllite from "urllite";
+import { blockedMap } from "./blocked";
 
 export const COMMENT_BODY_MAX = 10000;
 export const SUBMISSION_TITLE_MAX = 300;
@@ -172,6 +173,11 @@ const soulRoutes = {
     (data, { thingid }) => {
       const { _, ...record } = data; // eslint-disable-line
       const id = objHash(record, { unorderedSets: true });
+      if (blockedMap[thingid]) {
+        data["url"] = null;
+        data["body"] = "[removed]";
+        return true;
+      }
       if (thingid !== id) return false;
       // TODO: kind based validation
       return true;
