@@ -12,7 +12,7 @@ const onNotifyUser = update((state, notification) => {
 });
 
 const onCloseNotification = update((state, id) =>  {
-  const notificationMap = { ...state.notifications };
+  const notificationMap = { ...state.notificationMap };
   delete notificationMap[id];
   return { notificationMap };
 });
