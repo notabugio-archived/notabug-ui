@@ -1,6 +1,7 @@
 export * from "./commentForm";
 export * from "./listing";
 export * from "./main";
+export * from "./notifications";
 export * from "./submissionDetail";
 export * from "./submissionForm";
 export * from "./submissionSummary";

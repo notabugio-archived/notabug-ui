@@ -23,12 +23,14 @@
     "react-router-dom": "^4.2.2",
     "react-scripts": "^1.1.4",
     "react-timeago": "^4.1.9",
+    "react-web-notification": "^0.3.1",
     "reselect": "^3.0.1",
     "route-parser": "^0.0.5",
     "slugify": "^1.2.9",
     "snew-classic-ui": "https://github.com/notabugio/snew-classic-ui.git#0.2.0",
     "snuownd": "https://github.com/JordanMilne/snuownd.git",
     "urllite": "^0.5.0",
+    "uuid": "^3.2.1",
     "worker-loader": "^1.1.1"
   },
   "scripts": {

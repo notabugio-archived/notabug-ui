@@ -40,6 +40,7 @@ const onSubmitSubmission = (effects) => effects.getSubmissionFormState()
       }))
       .then(node => (new Promise((resolve) => node.once(resolve))))
       .then(({ id }) => {
+        effects.onNotabugMarkMine(id);
         effects.onNotabugQueueVote(id, "up");
         effects.pushRouterState(`/t/${submissionTopic}/comments/${id}/${slugify(submissionTitle).toLowerCase()}`);
       });

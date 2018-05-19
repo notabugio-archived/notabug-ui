@@ -5,14 +5,14 @@ import { injectState } from "freactal";
 import { COMMENT_BODY_MAX } from "lib/nab/validate";
 
 export const CommentForm = notabugCommentForm(injectState(({
-  state: { commentBody, isCommentTooLong },
+  state: { commentBody, isCommentTooLong, formId },
   effects: { onChangeCommentBody, onSaveComment, onNotabugSetReplyTo },
   ...props
 }) => (
   <SnewCommentForm
     {...props}
     body={commentBody}
-    key={commentBody ? "notblank" : "blank"} // hack to allow defaultValue to workaround controlled input bug
+    key={formId} // hack to allow defaultValue to workaround controlled input bug
     onChangeBody={e => onChangeCommentBody(e.target.value)}
     commentError={isCommentTooLong ? `this is too long (max: ${COMMENT_BODY_MAX})` : null}
     onSubmit={e => {

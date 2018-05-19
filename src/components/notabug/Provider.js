@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
-import { notabug, notabugVoteQueue } from "state/notabug";
+import { notifications, notabug, notabugVoteQueue } from "state/notabug";
 
-export const Provider = notabug(notabugVoteQueue(
+export const Provider = notifications(notabug(notabugVoteQueue(
   ({ children }) => <Fragment>{children}</Fragment>
-));
+)));

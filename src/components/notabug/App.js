@@ -8,6 +8,7 @@ import { SidebarTitlebox } from "./SidebarTitlebox";
 import { SubmissionForm } from "./SubmissionForm";
 import { SubmissionDetail } from "./SubmissionDetail";
 import { FooterParent } from "./FooterParent";
+import { Notifications } from "./Notifications";
 import { NavTab as SnewNavTab } from "snew-classic-ui";
 import { Link } from "./Link";
 import { router } from "state";
@@ -68,5 +69,6 @@ export const App = router(() => (
       <Route path="/:sort" component={TopicRoute} />
       <Route path="/*" component={TopicRoute} />
     </Switch>
+    <Notifications />
   </Provider>
 ));
