@@ -13,8 +13,8 @@ try {
 
 export const DEF_THRESHOLD = threshold;
 
-const initialState = ({ gunChain, threshold=DEF_THRESHOLD }) => ({
-  notabugListing: listing(gunChain, threshold)
+const initialState = ({ getChains, threshold=DEF_THRESHOLD }) => ({
+  notabugListing: listing(getChains, threshold)
 });
 
 const onNotabugListingCleanup = () => state => {

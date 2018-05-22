@@ -12,6 +12,7 @@
     "freactal": "^2.0.3",
     "gun": "^0.9.994",
     "lodash": "^4.17.10",
+    "moment": "^2.22.1",
     "object-hash": "^1.3.0",
     "proof-of-work": "https://github.com/notabugio/proof-of-work#build-compat",
     "qs": "^6.5.2",

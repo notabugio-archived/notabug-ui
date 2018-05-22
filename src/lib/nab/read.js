@@ -1,17 +1,39 @@
 import { identity, assoc, assocPath, pathOr, sortBy, compose } from "ramda";
 import debounce from "lodash/debounce";
 import { PREFIX } from "./etc";
+import moment from "moment";
+import isNode from "detect-node";
+import qs from "qs";
 
-export const listing = (gunChain, scoreThreshold=-Infinity, myContent={}) => {
+let DEF_DAYS;
+
+if (isNode) {
+  DEF_DAYS = 3;
+} else {
+  DEF_DAYS = parseInt(qs.parse(window.location.search.slice(1)).days, 10) || 3;
+}
+
+export const recentRange = () => {
+  const days = DEF_DAYS;
+  const start = moment().utc().subtract(days, "days");
+  const result = [];
+  for (var i = 0; i <= (days + 1); i++) {
+    result.push(moment(start).add(i, "days").utc().format("YYYY/M/D"));
+  }
+  return result;
+};
+
+export const listing = (getChains, { threshold=-Infinity }, myContent={}) => {
   let timestamps = {};
   let votes = {};
   let subscribers = {};
+  let scoreThreshold = threshold;
 
   const isMine = id => !!myContent[id];
   const on = (cb, id=null, db=100) => subscribers[id] = debounce(cb, db, { leading: true, trailing: true });
   const off = (id=null) => delete subscribers[id];
-  const close = () => gunChain.off(); // TODO: not sure this is enough?
-  const getThing = (id) => gunChain.back(-1).get(`${PREFIX}/things/${id}/data`);
+  const close = () => getChains().map(gunChain => gunChain.off()); // TODO: not sure this is enough?
+  const getThing = (id) => getChains()[0].back(-1).get(`${PREFIX}/things/${id}/data`);
   const getVoteCount = (id, type="up") => pathOr(0, [id, type], votes);
   const storeTimestamp = id => timestamp => timestamps = assoc(id, timestamp, timestamps);
 
@@ -20,7 +42,7 @@ export const listing = (gunChain, scoreThreshold=-Infinity, myContent={}) => {
     if (notify) notify();
   };
 
-  const ids = (sort="hot", threshold=scoreThreshold, mine=myContent) => {
+  const ids = (sort="hot", { threshold=threshold }, mine=myContent) => {
     myContent = mine;
     scoreThreshold = threshold;
     return compose(
@@ -85,7 +107,7 @@ export const listing = (gunChain, scoreThreshold=-Infinity, myContent={}) => {
     })
   };
 
-  gunChain.map().once(function ({ id, timestamp }) {
+  getChains().forEach(gunChain => gunChain.map().once(function ({ id, timestamp }) {
     const thing = this;
     const notifyUpdate = () => {
       subscribers[id] && subscribers[id](id);
@@ -96,7 +118,7 @@ export const listing = (gunChain, scoreThreshold=-Infinity, myContent={}) => {
     thing.get("votesup").map().once(countVote(id, "up", notifyUpdate));
     thing.get("votesdown").map().once(countVote(id, "down", notifyUpdate));
     thing.get("allcomments").map().get("id").once(countVote(id, "comment", notifyUpdate));
-  });
+  }));
 
   return { ids, getVoteCount, getThing, close, on, off };
 };

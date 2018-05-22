@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { always } from "ramda";
 import { injectState } from "freactal";
 import { CommentForm } from "./CommentForm";
 import { Listing } from "./Listing";
@@ -21,9 +22,11 @@ const NestedListingBase = pure(({
       <Listing
         sort={sort}
         myContent={myContent}
-        gunChain={name
-          ? notabugApi.getComments(name)
-          : thing.get("comments")}
+        getChains={always([
+          name
+            ? notabugApi.getComments(name)
+            : thing.get("comments")
+        ])}
         collapseThreshold={1}
       />
     </div>

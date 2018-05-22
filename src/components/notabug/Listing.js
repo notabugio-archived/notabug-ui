@@ -13,10 +13,10 @@ export class Listing extends PureComponent {
   componentDidMount() {
     const { threshold = -Infinity, myContent={} } = this.props;
     const listing = this.props.listing || getListing(
-      this.props.gunChain,
-      threshold
+      this.props.getChains,
+      { threshold }
     );
-    const ids = listing.ids(this.props.sort, threshold, myContent);
+    const ids = listing.ids(this.props.sort, { threshold }, myContent);
     listing.on(this.onRefresh);
     this.setState({ listing, ids }, this.onRefresh);
   }
@@ -77,7 +77,7 @@ export class Listing extends PureComponent {
     const { listing } = this.state;
     const { threshold = -Infinity, myContent = {} } = props;
     if (!listing) return;
-    const ids = listing.ids(props.sort, threshold, myContent);
+    const ids = listing.ids(props.sort, { threshold }, myContent);
     this.setState({ listing, ids });
   }
 

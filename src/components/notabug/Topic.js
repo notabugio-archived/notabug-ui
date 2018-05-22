@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { always } from "ramda";
 import { Listing } from "./Listing";
 import pure from "components/pure";
 import { notabugListing } from "state/notabug";
@@ -59,9 +60,10 @@ export const Topic = withRouter(injectState(pure(({
 }) => (
   <TopicBase
     key={topic + "/" + domain}
-    gunChain={domain
-      ? notabugApi.getSubmissionsByDomain(domain)
-      : notabugApi.getSubmissions(topic)}
+    getChains={domain
+      ? always([notabugApi.getSubmissionsByDomain(domain)])
+      : () => notabugApi.getRecentSubmissions(topic)
+    }
     children={children}
   />
 ))));
