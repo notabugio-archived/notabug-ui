@@ -3265,9 +3265,9 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
 
-gun@^0.9.994:
-  version "0.9.994"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.994.tgz#86dc43e760ac1b9ab156e25a034c3b0d3bc68fef"
+gun@^0.9.997:
+  version "0.9.997"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.997.tgz#0cac4887fe67eb487aa7f900314dfccc57d3f1c4"
   dependencies:
     ws "~>4.0.0"
 
