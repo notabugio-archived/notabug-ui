@@ -27,9 +27,11 @@ export const SubmissionBase = ({
   const permalink = `/t/${item.topic}/comments/${id}/` + slugify(item.title.toLowerCase());
   const domain = item.url ? (urlInfo.host || "").replace(/^www\./, "") : `self.${item.topic}`;
 
-  const image = (item.url && (item.url.indexOf(".jpg") !== -1 || item.url.indexOf(".png") !== -1 || item.url.indexOf(".gif") !== -1)) ? item.url : null;
+  const image = (item.url && (item.url.indexOf(".jpg") !== -1 || item.url.indexOf(".png") !== -1 || item.url.indexOf(".gif") !== -1) && item.url.indexOf(".gifv") === -1) ? item.url : null;
 
-  const video = (item.url && (item.url.indexOf(".mp4") !== -1 || item.url.indexOf(".mov") !== -1 || item.url.indexOf(".webm") !== -1 || item.url.indexOf(".ogv") !== -1)) ? item.url : null; 
+  const video = (item.url && (item.url.indexOf(".mp4") !== -1 || item.url.indexOf(".mov") !== -1 || item.url.indexOf(".webm") !== -1 || item.url.indexOf(".ogv") !== -1)) ? item.url :
+  (item.url && item.url.indexOf(".gifv") !== -1) ? item.url.replace(".gifv",".mp4") : 
+  null; 
 
   const iframe = (domain === "youtube.com" && item.url.indexOf("?v=") !== -1) ? "https://www.youtube.com/embed/" + item.url.substring(item.url.indexOf("?v=")+3, item.url.length) :
   (domain === "youtu.be" && item.url.indexOf(".be/") !== -1) ? "https://www.youtube.com/embed/" + item.url.substring(item.url.indexOf(".be/")+4, item.url.length) : 
