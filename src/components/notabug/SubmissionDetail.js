@@ -15,6 +15,7 @@ const SubmissionDetailBase = pure(({
         <Thing
           id={notabugSubmissionId}
           listing={notabugListing}
+          isViewing
           expanded
         />
       </div>

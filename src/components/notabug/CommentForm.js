@@ -5,8 +5,9 @@ import { injectState } from "freactal";
 import { COMMENT_BODY_MAX } from "lib/nab/validate";
 
 export const CommentForm = notabugCommentForm(injectState(({
-  state: { commentBody, isCommentTooLong, formId },
+  state: { commentBody, isCommentTooLong, formId, notabugSubmissionId },
   effects: { onChangeCommentBody, onSaveComment, onNotabugSetReplyTo },
+  thingId,
   ...props
 }) => (
   <SnewCommentForm
@@ -17,10 +18,9 @@ export const CommentForm = notabugCommentForm(injectState(({
     commentError={isCommentTooLong ? `this is too long (max: ${COMMENT_BODY_MAX})` : null}
     onSubmit={e => {
       e.preventDefault();
-      if (!props.thingId) onNotabugSetReplyTo(null);
       onSaveComment();
     }}
-    autoFocus={props.thingId ? true : false}
-    onCancel={props.thingId ? () => onNotabugSetReplyTo(null) : null}
+    autoFocus={thingId !== notabugSubmissionId}
+    onCancel={(thingId === notabugSubmissionId) ? null : () => onNotabugSetReplyTo(null)}
   />
 )));

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { Fragment } from "react";
+import { Helmet } from "react-helmet";
 import { compose } from "ramda";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
@@ -20,6 +21,7 @@ const SubmissionBase = ({
   effects,
   expanded,
   rank,
+  isViewing,
   state: { isVotingUp, isVotingDown },
 }) => {
   const urlInfo = item.url ? urllite(item.url) : {};
@@ -27,35 +29,42 @@ const SubmissionBase = ({
   const domain = item.url ? (urlInfo.host || "").replace(/^www\./, "") : `self.${item.topic}`;
 
   return (
-    <ThingLink
-      Markdown={Markdown}
-      Timestamp={Timestamp}
-      Link={Link}
-      id={id}
-      title={item.title}
-      subreddit={item.topic.toLowerCase()}
-      selftext={item.body}
-      name={id}
-      created={item.timestamp / 1000}
-      created_utc={item.timestamp / 1000}
-      url={item.url || permalink}
-      domain={domain}
-      brand_safe={true}
-      siteprefix={"t"}
-      permalink={permalink}
-      expanded={expanded}
-      rank={rank}
-      is_self={!item.url}
-      ups={ups}
-      downs={downs}
-      score={ups-downs}
-      num_comments={comments}
-      isVoting={isVotingUp || isVotingDown}
-      likes={isVotingUp ? true : isVotingDown ? false : undefined}
-      linkTarget="_new"
-      onVoteUp={effects.onVoteUp}
-      onVoteDown={effects.onVoteDown}
-    />
+    <Fragment>
+      {isViewing ? (
+        <Helmet>
+          <title>{item.title}</title>
+        </Helmet>
+      ) : null}
+      <ThingLink
+        Markdown={Markdown}
+        Timestamp={Timestamp}
+        Link={Link}
+        id={id}
+        title={item.title}
+        subreddit={item.topic.toLowerCase()}
+        selftext={item.body}
+        name={id}
+        created={item.timestamp / 1000}
+        created_utc={item.timestamp / 1000}
+        url={item.url || permalink}
+        domain={domain}
+        brand_safe={true}
+        siteprefix={"t"}
+        permalink={permalink}
+        expanded={expanded}
+        rank={rank}
+        is_self={!item.url}
+        ups={ups}
+        downs={downs}
+        score={ups-downs}
+        num_comments={comments}
+        isVoting={isVotingUp || isVotingDown}
+        likes={isVotingUp ? true : isVotingDown ? false : undefined}
+        linkTarget="_new"
+        onVoteUp={effects.onVoteUp}
+        onVoteDown={effects.onVoteDown}
+      />
+    </Fragment>
   );
 };
 

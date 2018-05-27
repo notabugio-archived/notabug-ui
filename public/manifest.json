@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "notabug",
+  "name": "notabug: the back page of the internet",
   "icons": [
     {
       "src": "favicon.ico",

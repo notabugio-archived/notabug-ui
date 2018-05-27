@@ -28,7 +28,7 @@ export class Thing extends PureComponent {
 
   render() {
     const { item, scores } = this.state;
-    const { id, expanded, isMine, rank, collapseThreshold=null } = this.props;
+    const { id, expanded, isMine, rank, collapseThreshold=null, ...props } = this.props;
     const score = scores.ups - scores.downs;
     const ThingComponent = (item ? components[item.kind] : null);
     if (item && !ThingComponent) return null;
@@ -38,6 +38,7 @@ export class Thing extends PureComponent {
       ? <div className="loading working"><div className="throbber" /></div>
       : (
         <ThingComponent
+          {...props}
           id={id}
           item={item}
           expanded={expanded}

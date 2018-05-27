@@ -47,7 +47,7 @@ export const listing = (getChains, { threshold=-Infinity }, myContent={}) => {
     scoreThreshold = threshold;
     return compose(
       sorts[sort] || sorts["hot"],
-      sort === "new"
+      (sort === "new" || sort === "controversial")
         ? identity
         : x => x.filter(id => (
           isMine(id) ||

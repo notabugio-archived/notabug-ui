@@ -34,7 +34,7 @@ const onNotabugSaveComment = (effects, body) => effects.getState()
   .then(({ id }) => {
     effects.onNotabugMarkMine(id);
     effects.onNotabugSetReplyTo(null);
-    effects.onNotabugQueueVote(id, "up");
+    //effects.onNotabugQueueVote(id, "up");
   })
   .then(always(identity));
 

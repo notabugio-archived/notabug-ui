@@ -23,11 +23,15 @@ if (isNode) {
 
 export const init = () => {
   const gun = Gun(window.location.origin + "/gun");
+  //const gun = Gun("https://notabug.io/gun");
   const bound = fn => (...args) => fn(gun, ...args);
 
   const getRecentSubmissions = (topic="all") => recentRange().map(
     day => gun.get(`${PREFIX}/topics/${topic}/days/${day}`)
   );
+
+  // Nuke gun's localstorage if it fills up, kinda lame but less lame than total failure
+  gun.on("localStorage:error", ack => ack.retry({}));
 
   return {
     gun,

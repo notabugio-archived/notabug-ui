@@ -40,8 +40,6 @@ module.exports = function override(config) {
   workerLoader.use = [
     "worker-loader",
     { // Old babel-loader configuration goes here.
-      //test: require.resolve("ccxt"),
-      //loader: require.resolve("babel-loader"),
       loader: workerLoader.loader,
       options: workerLoader.options
     },
