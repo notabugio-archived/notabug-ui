@@ -10,7 +10,9 @@ const components = {
 export class Thing extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { item: null, scores: {} };
+    const {expanded=false} = props;
+    this.state = { item: null, scores: {}, expanded };
+    this.onToggleExpando = this.onToggleExpando.bind(this);
     this.onRefresh = this.onRefresh.bind(this);
     this.onReceiveItem = this.onReceiveItem.bind(this);
   }
@@ -28,7 +30,7 @@ export class Thing extends PureComponent {
 
   render() {
     const { item, scores } = this.state;
-    const { id, expanded, isMine, rank, collapseThreshold=null } = this.props;
+    const { id, isMine, expanded, rank, collapseThreshold=null } = this.props;
     const score = scores.ups - scores.downs;
     const ThingComponent = (item ? components[item.kind] : null);
     if (item && !ThingComponent) return null;
@@ -40,11 +42,12 @@ export class Thing extends PureComponent {
         <ThingComponent
           id={id}
           item={item}
-          expanded={expanded}
+          expanded={this.state.expanded}
           collapsed={collapsed}
           collapseThreshold={collapseThreshold}
           isMine={isMine}
           rank={rank}
+	   onToggleExpando={this.onToggleExpando}
           {...scores}
         />
       );
@@ -62,5 +65,8 @@ export class Thing extends PureComponent {
 
   onRefresh() {
     this.setState({ scores: this.getScores() });
+  }
+  onToggleExpando() {
+    this.setState({ expanded: !this.state.expanded });
   }
 }
