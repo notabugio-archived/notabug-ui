@@ -1,23 +1,16 @@
-import React, { Fragment } from "react";
-import { always } from "ramda";
+import React from "react";
 import { Listing } from "./Listing";
-import pure from "components/pure";
-import { notabugListing } from "state/notabug";
-import { injectState } from "freactal";
 import { withRouter, Link } from "react-router-dom";
-import { DEF_THRESHOLD } from "state/notabug/listing";
 import qs from "qs";
-
-const TopicBase = notabugListing(({ children }) => (
-  <Fragment>{children}</Fragment>
-));
 
 const Empty = () => <h1>Loading Listing...</h1>;
 
-export const TopicIndex = injectState(({
-  match: { params: { sort } },
+const DEF_THRESHOLD = (window && window.location && window.location.search)
+  ? parseInt(qs.parse(window.location.search).threshold, 10) || 1 : 1;
+
+export const Topic = withRouter(({
+  match: { params: { sort, topic="all", domain } },
   location: { search, pathname },
-  state: { notabugListing }
 }) => {
   const query = qs.parse(search.slice(1));
   const limit = parseInt(query.limit, 10) || 25;
@@ -28,11 +21,14 @@ export const TopicIndex = injectState(({
       <div className="sitetable" id="siteTable">
         <Listing
           Empty={Empty}
-          listing={notabugListing}
+          key={`${topic}/${domain}/${sort}`}
           sort={sort || "hot"}
+          topics={[topic]}
+          days={topic === "all" ? 7 : 30}
+          threshold={(sort === "new" || sort === "controversial") ? null : DEF_THRESHOLD}
+          domain={domain}
           limit={limit}
           count={count}
-          threshold={DEF_THRESHOLD}
         />
         <div className="nav-buttons">
           <span className="nextprev">
@@ -51,19 +47,3 @@ export const TopicIndex = injectState(({
     </div>
   );
 });
-
-export const Topic = withRouter(injectState(pure(({
-  state: { notabugApi },
-  topic,
-  domain,
-  children
-}) => (
-  <TopicBase
-    key={topic + "/" + domain}
-    getChains={domain
-      ? always([notabugApi.getSubmissionsByDomain(domain)])
-      : () => notabugApi.getRecentSubmissions(topic)
-    }
-    children={children}
-  />
-))));

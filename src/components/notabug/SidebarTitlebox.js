@@ -4,7 +4,6 @@ import React, { Fragment } from "react";
 import { SidebarTitlebox as SnewSidebarTitlebox } from "snew-classic-ui";
 import { Markdown } from "./Markdown";
 import { Timestamp as TimestampBase } from "./Timestamp";
-import moment from "moment";
 
 const Timestamp = (props) => (
   <Fragment>
@@ -18,9 +17,9 @@ export const SidebarTitlebox = (props) => (
       {...props}
       Markdown={Markdown}
       Timestamp={Timestamp}
-      description={README + `\n\n---\nnotabug v${process.env.REACT_APP_VERSION}`}
-      created={moment("2018-05-14").utc().unix()}
-      created_utc={moment("2018-05-14").utc().unix()}
+      description={README}
+      created={1526256000}
+      created_utc={1526256000}
     />
   </div>
 );

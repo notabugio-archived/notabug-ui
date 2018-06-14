@@ -1,5 +1,5 @@
-import Promise from "promise";
-import { always, identity } from "ramda";
+import always from "ramda/es/always";
+import identity from "ramda/es/identity";
 import { provideState, update } from "freactal";
 import qs from "qs";
 
@@ -30,7 +30,7 @@ const onNotabugSaveComment = (effects, body) => effects.getState()
       replyToId: notabugReplyToCommentId || notabugSubmissionId
     });
   })
-  .then(node => (new Promise((resolve) => node.once(resolve))))
+  // .then(node => (new Promise((resolve) => node.once(resolve))))
   .then(({ id }) => {
     effects.onNotabugMarkMine(id);
     effects.onNotabugSetReplyTo(null);

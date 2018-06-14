@@ -1,0 +1,73 @@
+[
+  {
+    "uid": "radisk",
+    "script": "server.js",
+    "args": [
+      "--persist",
+      "--evict",
+      "--port", "3333",
+      "--host", "127.0.0.1",
+      "--peer", "https://notabug.io/gun",
+      "--peer", "https://blubit.space/gun",
+      "--peer", "https://communard.org/gun",
+      "--peer", "https://dontsuemebro.com/gun",
+      "--peer", "http://isafeature.com/gun",
+      "--peer", "http://liberated.site/gun",
+      "--peer", "https://redguardsaustin.com/gun"
+    ]
+  }, {
+    "uid": "ram1",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3001",
+      "--host", "127.0.0.1",
+      "--peer", "http://127.0.0.1:3333/gun"
+    ]
+  }, {
+    "uid": "ram2",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3002",
+      "--host", "127.0.0.1",
+      "--peer", "http://127.0.0.1:3333/gun"
+    ]
+  }, {
+    "uid": "ram3",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3003",
+      "--host", "127.0.0.1",
+      "--peer", "http://127.0.0.1:3333/gun"
+    ]
+  }, {
+    "uid": "ram4",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3004",
+      "--host", "127.0.0.1",
+      "--peer", "http://127.0.0.1:3333/gun"
+    ]
+  }, {
+    "uid": "ram5",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3005",
+      "--host", "127.0.0.1",
+      "--peer", "http://127.0.0.1:3333/gun"
+    ]
+  }, {
+    "uid": "ram6",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3006",
+      "--host", "127.0.0.1",
+      "--peer", "http://127.0.0.1:3333/gun"
+    ]
+  }
+]

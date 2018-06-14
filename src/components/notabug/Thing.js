@@ -1,29 +1,35 @@
 import React, { PureComponent } from "react";
+import debounce from "lodash/debounce";
 import { Submission } from "./Submission";
 import { Comment } from "./Comment";
+import { ChatMsg } from "./ChatMsg";
+import { injectState } from "freactal";
 
 const components = {
   submission: Submission,
-  comment: Comment
+  comment: Comment,
+  chatmsg: ChatMsg
 };
 
-export class Thing extends PureComponent {
+class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { item: null, scores: {} };
-    this.onRefresh = this.onRefresh.bind(this);
+    this.onRefresh = debounce(this.onRefresh.bind(this), 50, { trailing: true });
     this.onReceiveItem = this.onReceiveItem.bind(this);
+    this.onReceiveSignedItem = this.onReceiveSignedItem.bind(this);
   }
 
   componentDidMount() {
-    this.props.listing.getThing(this.props.id).once(this.onReceiveItem);
-    this.props.listing.on(this.onRefresh, this.props.id);
-    this.onRefresh();
-    setTimeout(() => this.onRefresh(), 500);
+    this.props.state.notabugApi.onChangeThing(this.props.id, this.onRefresh);
+    this.chain = this.props.state.notabugApi.souls.thingData.get({ thingid: this.props.id });
+    this.chain.on(this.onReceiveItem);
   }
 
   componentWillUnmount() {
-    this.props.listing.off(this.props.id);
+    this.props.state.notabugApi.onChangeThingOff(this.props.id, this.onRefresh);
+    this.chain && this.chain.off();
+    this.chain = null;
   }
 
   render() {
@@ -52,16 +58,39 @@ export class Thing extends PureComponent {
   }
 
   getScores() {
-    const { listing, id } = this.props;
+    const { state: { notabugApi }, id } = this.props;
     return ["up", "down", "comment"].reduce(
-      (scores, type) => ({ ...scores, [type+"s"]: listing.getVoteCount(id, type) }), {});
+      (scores, type) => ({ ...scores, [type+"s"]: notabugApi.getVoteCount(id, type) }), {});
   }
 
   onReceiveItem(item) {
-    this.setState({ item });
+    if (!item || this.state.item) return;
+    const { author, authorId, ...itemData } = item;
+    this.setState({
+      item: this.props.state.notabugApi.gun.user ? itemData : item,
+      scores: this.getScores()
+    });
+    this.chain && this.chain.off();
+    this.chain = null;
+
+    if (author && authorId && this.props.state.notabugApi.gun.user) {
+      this.props.state.notabugApi.gun
+        .get(`~${authorId}`)
+        .get("things")
+        .get(this.props.state.notabugApi.souls.thing.soul({ thingid: this.props.id }))
+        .get("data")
+        .once(this.onReceiveSignedItem);
+    }
+  }
+
+  onReceiveSignedItem(item) {
+    if (!item) return;
+    this.setState({ item, scores: this.getScores() });
   }
 
   onRefresh() {
     this.setState({ scores: this.getScores() });
   }
 }
+
+export const Thing = injectState(ThingBase);

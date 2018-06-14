@@ -1,5 +1,5 @@
 import React from "react";
-import { identity } from "ramda";
+import identity from "ramda/es/identity";
 import Snudown from "snuownd";
 import { AllHtmlEntities } from "html-entities";
 import { withRouter } from "react-router-dom";

@@ -1,9 +1,10 @@
 import Promise from "promise";
-import { always, identity } from "ramda";
+import always from "ramda/es/always";
+import identity from "ramda/es/identity";
 import { update, provideState } from "freactal";
 import slugify from "slugify";
 import urllite from "urllite";
-import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "lib/nab/validate";
+import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "notabug-peer";
 
 const initialState = ({ location: { search }, match: { params: { topic } } }) => ({
   submissionTitle: "",
@@ -38,7 +39,7 @@ const onSubmitSubmission = (effects) => effects.getSubmissionFormState()
         topic: submissionTopic,
         url: submissionIsSelf ? null : submissionUrl
       }))
-      .then(node => (new Promise((resolve) => node.once(resolve))))
+      // .then(node => (new Promise((resolve) => node.once(resolve))))
       .then(({ id }) => {
         effects.onNotabugMarkMine(id);
         //effects.onNotabugQueueVote(id, "up");

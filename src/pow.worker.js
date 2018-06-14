@@ -1,4 +1,4 @@
-import pow from "proof-of-work";
+import { pow } from "notabug-peer";
 
 const solver = new pow.Solver();
 

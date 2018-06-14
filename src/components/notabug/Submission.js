@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
-import { compose } from "ramda";
+import compose from "ramda/es/compose";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
 import { notabugSubmissionSummary } from "state/notabug";
@@ -9,8 +9,9 @@ import { Markdown } from "./Markdown";
 import { Timestamp } from "./Timestamp";
 import { Link } from "./Link";
 import { withRouter } from "react-router-dom";
-import pure from "components/pure";
 import slugify from "slugify";
+
+const nsfwRe = /(nsfw|porn|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
 
 const SubmissionBase = ({
   id,
@@ -41,6 +42,8 @@ const SubmissionBase = ({
         Link={Link}
         id={id}
         title={item.title}
+        author={item.author}
+        over_18={!!nsfwRe.test(item.title + item.body + item.topic)}
         subreddit={item.topic.toLowerCase()}
         selftext={item.body}
         name={id}
@@ -60,7 +63,7 @@ const SubmissionBase = ({
         num_comments={comments}
         isVoting={isVotingUp || isVotingDown}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
-        linkTarget="_new"
+        linkTarget="_blank"
         onVoteUp={effects.onVoteUp}
         onVoteDown={effects.onVoteDown}
       />
@@ -68,4 +71,4 @@ const SubmissionBase = ({
   );
 };
 
-export const Submission = compose(withRouter, notabugSubmissionSummary, injectState, pure)(SubmissionBase);
+export const Submission = compose(withRouter, notabugSubmissionSummary, injectState)(SubmissionBase);

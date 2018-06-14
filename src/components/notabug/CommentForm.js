@@ -2,7 +2,7 @@ import React from "react";
 import { CommentForm as SnewCommentForm } from "snew-classic-ui";
 import { notabugCommentForm } from "state/notabug";
 import { injectState } from "freactal";
-import { COMMENT_BODY_MAX } from "lib/nab/validate";
+import { COMMENT_BODY_MAX } from "notabug-peer";
 
 export const CommentForm = notabugCommentForm(injectState(({
   state: { commentBody, isCommentTooLong, formId, notabugSubmissionId },
@@ -18,7 +18,7 @@ export const CommentForm = notabugCommentForm(injectState(({
     commentError={isCommentTooLong ? `this is too long (max: ${COMMENT_BODY_MAX})` : null}
     onSubmit={e => {
       e.preventDefault();
-      onSaveComment();
+      commentBody && commentBody.trim && onSaveComment();
     }}
     autoFocus={thingId !== notabugSubmissionId}
     onCancel={(thingId === notabugSubmissionId) ? null : () => onNotabugSetReplyTo(null)}

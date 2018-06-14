@@ -1,56 +1,52 @@
 import React, { PureComponent, Fragment } from "react";
-import { listing as getListing } from "lib/nab/read";
+import debounce from "lodash/debounce";
+import { injectState } from "freactal";
+import pick from "ramda/es/pick";
 import { Thing } from "./Thing";
 
-export class Listing extends PureComponent {
+const LISTING_PROPS = [
+  "days",
+  "topics",
+  "replyToId",
+  "domain",
+  "url",
+  "sort",
+  "limit",
+  "count",
+  "threshold"
+];
+
+class ListingBase extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { listing: props.listing, ids: [] };
+    const ids = this.props.state.notabugApi.getListingIds(this.getListingParams());
+    this.state = { ids };
     this.onUpdate = this.onUpdate.bind(this);
-    this.onRefresh = this.onRefresh.bind(this);
+    this.onRefresh = debounce(() => this.onUpdate(), 100, { trailing: true });
+    props.state.notabugApi.onChange(null, this.onRefresh);
   }
 
   componentDidMount() {
-    const { threshold = -Infinity, myContent={} } = this.props;
-    const listing = this.props.listing || getListing(
-      this.props.getChains,
-      { threshold }
-    );
-    const ids = listing.ids(this.props.sort, { threshold }, myContent);
-    listing.on(this.onRefresh);
-    this.setState({ listing, ids }, this.onRefresh);
+    const ids = this.props.state.notabugApi.getListingIds(this.getListingParams());
+    this.onSubscribe();
+    this.setState({ ids }, this.onRefresh);
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.listing && nextProps.listing !== this.state.listing) {
-      this.state.listing && this.state.listing.off();
-      this.setState({ listing: nextProps.listing }, () => {
-        nextProps.listing.on(this.onRefresh);
-        this.onUpdate();
-      });
-    } else if (nextProps.sort !== this.props.sort) {
-      this.onUpdate(nextProps);
-    }
+    this.onUnsubscribe(this.props);
+    this.onSubscribe(nextProps);
+    this.onUpdate(nextProps);
   }
 
   componentWillUnmount() {
-    this.state.listing && this.state.listing.off();
+    this.props.state.notabugApi.onChangeOff(null, this.onRefresh);
   }
 
   render() {
-    const { listing } = this.state;
+    const { ids} = this.state;
     const { myContent = {}, Empty } = this.props;
     const count = parseInt(this.props.count, 10) || 0;
-    let ids;
-
     if (!this.state.ids.length && Empty) return <Empty />;
-
-    if (this.props.limit) {
-      const start = this.props.count || 0;
-      ids = this.state.ids.slice(start, start+this.props.limit);
-    } else {
-      ids = this.state.ids;
-    }
 
     return (
       <Fragment>
@@ -58,7 +54,6 @@ export class Listing extends PureComponent {
           <Thing
             id={id}
             key={id}
-            listing={listing}
             isMine={!!myContent[id]}
             rank={count + idx + 1}
             collapseThreshold={this.props.collapseThreshold}
@@ -68,20 +63,27 @@ export class Listing extends PureComponent {
     );
   }
 
-  onSubscribe() {
-    this.state.listing && this.state.listing.on(this.onRefresh);
+  getListingParams(props) {
+    return pick(
+      LISTING_PROPS,
+      props || this.props
+    );
+  }
+
+  onSubscribe(props) {
+    (props || this.props).state.notabugApi.watchListing(this.getListingParams());
+    //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
+  }
+
+  onUnsubscribe() {
+    //(props || this.props).state.notabugApi.onChangeListingOff(this.getListingParams(), this.onRefresh);
   }
 
   onUpdate(props) {
-    props = props || this.props;
-    const { listing } = this.state;
-    const { threshold = -Infinity, myContent = {} } = props;
-    if (!listing) return;
-    const ids = listing.ids(props.sort, { threshold }, myContent);
-    this.setState({ listing, ids });
-  }
-
-  onRefresh() {
-    this.onUpdate();
+    const ids = (props || this.props).state.notabugApi
+      .getListingIds(this.getListingParams(props));
+    this.setState({ ids });
   }
 }
+
+export const Listing = injectState(ListingBase);

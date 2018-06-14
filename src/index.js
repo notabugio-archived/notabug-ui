@@ -1,4 +1,5 @@
 /* eslint import/no-webpack-loader-syntax: off */
+import "babel-polyfill";
 import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
 import { Helmet } from "react-helmet";

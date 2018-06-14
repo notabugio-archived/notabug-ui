@@ -1,5 +1,5 @@
 import React from "react";
-import { compose } from "ramda";
+import compose from "ramda/es/compose";
 import { notabugVotable } from "./votable";
 
 export const notabugSubmissionSummary = compose(

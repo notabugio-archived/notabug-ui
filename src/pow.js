@@ -1,8 +1,6 @@
 import Promise from "promise";
 import WorkProofer from "./pow.worker.js";
-import pow from "proof-of-work";
-
-const DEFAULT_POW_COMPLEXITY=22;
+import { pow, DEFAULT_POW_COMPLEXITY } from "notabug-peer";
 
 export const doWork = (prefix, complexity=DEFAULT_POW_COMPLEXITY) => {
   let terminate;

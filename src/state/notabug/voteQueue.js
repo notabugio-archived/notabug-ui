@@ -1,7 +1,8 @@
-import { always, identity } from "ramda";
+import always from "ramda/es/always";
+import identity from "ramda/es/identity";
 import { provideState, update } from "freactal";
 import { doWork } from "pow";
-import { PREFIX } from "lib/nab";
+import { PREFIX } from "notabug-peer";
 
 const initialState = always({
   notabugVoteWorker: null,

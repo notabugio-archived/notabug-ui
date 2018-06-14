@@ -2,7 +2,8 @@ import React from "react";
 import { injectState } from "freactal";
 import { notabugSubmissionForm } from "state";
 import { SubmitPage } from "snew-classic-ui";
-import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "lib/nab/validate";
+import { Link } from "./Link";
+import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "notabug-peer";
 
 const SubmissionFormBase = notabugSubmissionForm(injectState(({
   state: {
@@ -27,6 +28,7 @@ const SubmissionFormBase = notabugSubmissionForm(injectState(({
   match: { params: { topic } }
 }) => (
   <SubmitPage
+    Link={Link}
     key={topic}
     sitename="notabug"
     siteprefix="t"
@@ -36,6 +38,7 @@ const SubmissionFormBase = notabugSubmissionForm(injectState(({
     title={submissionTitle}
     subreddit={submissionTopic}
     is_self={submissionIsSelf}
+    contentPolicyUrl="/rules"
     textError={isBodyInvalid ?`this is too long (max: ${SUBMISSION_BODY_MAX})` : null}
     titleError={isTitleInvalid ? submissionTitle
       ? `this is too long (max: ${SUBMISSION_TITLE_MAX})`
