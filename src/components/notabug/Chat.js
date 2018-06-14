@@ -31,7 +31,13 @@ class ChatInputBase extends PureComponent {
           key={this.state.key}
           placeholder={`speaking as ${user ? user : "anon"} in ${chatName}`}
           defaultValue={this.state.msg}
-          style={{ width: "100%", padding: "0.5em" }}
+          //style={{ width: "100%", padding: "0.5em", marginRight: "2px" }}
+          style={{
+            width: "545px",
+            padding: "6px",
+            display: "block",
+            clear: "both",
+          }}
           onChange={e => this.setState({ msg: e.target.value })}
         />
       </form>
@@ -67,9 +73,8 @@ export class Chat extends PureComponent {
         style={{
           position: "fixed",
           backgroundColor: "#EFF7FF",
-          borderLeft: "1px solid #5f99cf",
-          borderTop: "1px solid #5f99cf",
-          right: 0,
+          border: "1px solid #5f99cf",
+          right: "1em",
           bottom: 0,
           width: "560px",
           height: "380px"
@@ -112,7 +117,8 @@ export class Chat extends PureComponent {
       <button
         style={{
           position: "fixed",
-          right: 0,
+          fontSize: "200%",
+          right: "1em",
           bottom: 0,
           backgroundColor: "#cee3f8",
           borderColor: "#5f99cf"
