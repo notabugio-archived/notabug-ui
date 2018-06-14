@@ -74,17 +74,19 @@ class ThingBase extends PureComponent {
     this.chain = null;
 
     if (author && authorId && this.props.state.notabugApi.gun.user) {
-      this.props.state.notabugApi.gun
+      const chain = this.props.state.notabugApi.gun
         .get(`~${authorId}`)
         .get("things")
         .get(this.props.state.notabugApi.souls.thing.soul({ thingid: this.props.id }))
-        .get("data")
-        .once(this.onReceiveSignedItem);
+        .get("data");
+      chain.on(this.onReceiveSignedItem);
     }
   }
 
   onReceiveSignedItem(item) {
     if (!item) return;
+    this.chain && this.chain.off();
+    this.chain = null;
     this.setState({ item, scores: this.getScores() });
   }
 
