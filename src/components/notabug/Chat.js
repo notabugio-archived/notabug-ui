@@ -1,21 +1,67 @@
 import React, { PureComponent } from "react";
 import { Listing } from "./Listing";
 import { injectState } from "freactal";
+import uuid from "uuid";
 
-class ChatBase extends PureComponent {
+class ChatInputBase extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       msg: "",
-      topic: props.topic || "whatever",
       isOpen: false
     };
   }
 
   render() {
     const user = this.props.state.notabugUser;
-    const chatName = `t/${this.state.topic} public`;
+    const chatName = `t/${this.props.topic} public`;
 
+    return (
+      <form
+        style={{
+          position: "absolute",
+          left: 0,
+          right: 0,
+          top: 0
+        }}
+        onSubmit={this.onSend.bind(this)}
+      >
+        <input
+          type="text"
+          key={this.state.key}
+          placeholder={`speaking as ${user ? user : "anon"} in ${chatName}`}
+          defaultValue={this.state.msg}
+          style={{ width: "100%", padding: "0.5em" }}
+          onChange={e => this.setState({ msg: e.target.value })}
+        />
+      </form>
+    );
+  }
+
+  onSend(e) {
+    e.preventDefault();
+    if (!this.state.msg || !this.state.msg.trim()) return;
+    const body = this.state.msg;
+    this.setState({ msg: "", key: uuid.v4() });
+    this.props.state.notabugApi.chat({
+      topic: this.props.topic,
+      body
+    });
+  }
+}
+
+const ChatInput = injectState(ChatInputBase);
+
+export class Chat extends PureComponent {
+  constructor(props) {
+    super(props);
+    this.state = {
+      topic: props.topic || "whatever",
+      isOpen: false
+    };
+  }
+
+  render() {
     return this.state.isOpen ? (
       <div
         style={{
@@ -60,23 +106,7 @@ class ChatBase extends PureComponent {
           }}
           onClick={() => this.setState({ isOpen: false })}
         >close chat</button>
-        <form
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            top: 0
-          }}
-          onSubmit={this.onSend.bind(this)}
-        >
-          <input
-            type="text"
-            placeholder={`speaking as ${user ? user : "anon"} in ${chatName}`}
-            value={this.state.msg}
-            style={{ width: "100%", padding: "0.5em" }}
-            onChange={e => this.setState({ msg: e.target.value })}
-          />
-        </form>
+        <ChatInput topic={this.state.topic} />
       </div>
     ) : (
       <button
@@ -94,16 +124,4 @@ class ChatBase extends PureComponent {
     );
   }
 
-  onSend(e) {
-    e.preventDefault();
-    if (!this.state.msg || !this.state.msg.trim()) return;
-    const body = this.state.msg;
-    this.setState({ msg: "" });
-    this.props.state.notabugApi.chat({
-      topic: this.state.topic,
-      body
-    });
-  }
 }
-
-export const Chat = injectState(ChatBase);
