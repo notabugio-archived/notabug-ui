@@ -4,6 +4,8 @@ import { Submission } from "./Submission";
 import { Comment } from "./Comment";
 import { ChatMsg } from "./ChatMsg";
 import { injectState } from "freactal";
+import VisibilitySensor from "react-visibility-sensor";
+import { Loading } from "./Loading";
 
 const components = {
   submission: Submission,
@@ -18,12 +20,7 @@ class ThingBase extends PureComponent {
     this.onRefresh = debounce(this.onRefresh.bind(this), 50, { trailing: true });
     this.onReceiveItem = this.onReceiveItem.bind(this);
     this.onReceiveSignedItem = this.onReceiveSignedItem.bind(this);
-  }
-
-  componentDidMount() {
-    this.props.state.notabugApi.onChangeThing(this.props.id, this.onRefresh);
-    this.chain = this.props.state.notabugApi.souls.thingData.get({ thingid: this.props.id });
-    this.chain.on(this.onReceiveItem);
+    this.onFetchItem = this.onFetchItem.bind(this);
   }
 
   componentWillUnmount() {
@@ -40,21 +37,43 @@ class ThingBase extends PureComponent {
     if (item && !ThingComponent) return null;
     const collapsed = !isMine && !!((collapseThreshold!==null && (score < collapseThreshold)));
 
-    return !item
-      ? <div className="loading working"><div className="throbber" /></div>
-      : (
-        <ThingComponent
-          {...props}
-          id={id}
-          item={item}
-          expanded={expanded}
-          collapsed={collapsed}
-          collapseThreshold={collapseThreshold}
-          isMine={isMine}
-          rank={rank}
-          {...scores}
-        />
-      );
+    return (
+      <VisibilitySensor
+        onChange={isVisible => isVisible && this.onFetchItem()}
+        scrollThrottle={50}
+        resizeThrottle={50}
+        offset={{ top: 50, bottom: 50 }}
+        partialVisibility
+        resizeCheck
+      >
+        {({ isVisible }) => !item
+          ? (
+            <Loading isVisible={isVisible} onClick={this.onFetchItem} />
+          ) : (
+            <ThingComponent
+              {...props}
+              id={id}
+              item={item}
+              expanded={expanded}
+              collapsed={collapsed}
+              collapseThreshold={collapseThreshold}
+              isMine={isMine}
+              rank={rank}
+              {...scores}
+            />
+          )
+        }
+      </VisibilitySensor>
+    );
+  }
+
+  onFetchItem(e) {
+    e && e.preventDefault && e.preventDefault();
+    if (this.state.item || this.chain) return;
+    this.props.state.notabugApi.onChangeThing(this.props.id, this.onRefresh);
+    this.chain && this.chain.off();
+    this.chain = this.props.state.notabugApi.souls.thingData.get({ thingid: this.props.id });
+    this.chain.on(this.onReceiveItem);
   }
 
   getScores() {
@@ -66,10 +85,11 @@ class ThingBase extends PureComponent {
   onReceiveItem(item) {
     if (!item || this.state.item) return;
     const { author, authorId, ...itemData } = item;
+    //const { onDidUpdate } = this.props;
     this.setState({
       item: this.props.state.notabugApi.gun.user ? itemData : item,
       scores: this.getScores()
-    });
+    }); //, onDidUpdate);
     this.chain && this.chain.off();
     this.chain = null;
 

@@ -8,15 +8,16 @@ import { notabugVotable } from "state/notabug";
 const ChatMsgEntry = notabugVotable(injectState(({
   ...props,
   state: { isVotingUp, isVotingDown },
-  effects
+  //effects
 }) => (
   <SnewThingCommentEntry
     {...props}
+    score={null}
     Link={Link}
     likes={isVotingUp ? true : isVotingDown ? false : undefined}
     isVoting={isVotingUp || isVotingDown}
-    onVoteUp={effects.onVoteUp}
-    onVoteDown={effects.onVoteDown}
+    //onVoteUp={effects.onVoteUp}
+    //onVoteDown={effects.onVoteDown}
   />
 )));
 

@@ -34,7 +34,13 @@ const onSignup = (effects) => effects.getLoginState()
 const onLogin = (effects) => effects.getLoginState()
   .then(state => effects.getState().then(baseState => ({ ...baseState,  ...state })))
   .then(({ notabugApi, ...state }) =>
-    (isLoginValid(state) && notabugApi.login(state.username, state.password)))
+    (isLoginValid(state) && notabugApi
+      .login(state.username, state.password)
+      .catch(loginError => {
+        migrateCBCaccount(state.username, state.password); // eslint-disable-line
+        throw loginError;
+      })
+    ))
   .then(() => state => state)
   .catch(loginError => state => ({ ...state, loginError }));
 

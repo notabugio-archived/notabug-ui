@@ -14,7 +14,6 @@ const AlphaWarning = () => (
   <div className="reddit-infobar">
     <h3>PASSWORD MANAGER RECOMMENDED!!!</h3>
     <h3>auth is alpha, may take multiple tries</h3>
-    <p><b>safari</b> incorrectly <i>displays</i> ok login with wrong pass</p>
     <p>password changes are not yet possible, will be later</p>
     <h3>LOGIN NOT NEEDED TO CONTRIBUTE</h3>
   </div>

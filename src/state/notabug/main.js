@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom";
 import "babel-polyfill";
 import notabugPeer, { PREFIX } from "notabug-peer";
 
-const COUNT_VOTES = !!(/countVotes/.test(window.location.search));
+const COUNT_VOTES = !(/countVotes/.test(window.location.search));
 
 if (!(/nosea/.test(window.location.search))) {
   require("sea");

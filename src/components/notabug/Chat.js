@@ -1,14 +1,21 @@
-import React, { PureComponent } from "react";
+import Promise from "promise";
+import React, { PureComponent, Fragment } from "react";
+import debounce from "lodash/debounce";
+import { withRouter } from "react-router-dom";
+import { Header } from "snew-classic-ui";
+import { NavTab } from "./NavTab";
+import { UserInfo } from "./UserInfo";
+import { Link } from "./Link";
 import { Listing } from "./Listing";
 import { injectState } from "freactal";
-import uuid from "uuid";
+import ChatView from "react-chatview";
+import { Loading } from "./Loading";
 
 class ChatInputBase extends PureComponent {
   constructor(props) {
     super(props);
     this.state = {
       msg: "",
-      isOpen: false
     };
   }
 
@@ -18,28 +25,16 @@ class ChatInputBase extends PureComponent {
 
     return (
       <form
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          top: 0
-        }}
+        className="chat-input"
         onSubmit={this.onSend.bind(this)}
       >
         <input
           type="text"
-          key={this.state.key}
           placeholder={`speaking as ${user ? user : "anon"} in ${chatName}`}
-          defaultValue={this.state.msg}
-          //style={{ width: "100%", padding: "0.5em", marginRight: "2px" }}
-          style={{
-            width: "545px",
-            padding: "6px",
-            display: "block",
-            clear: "both",
-          }}
+          value={this.state.msg}
           onChange={e => this.setState({ msg: e.target.value })}
         />
+        <button className="send-btn" type="submit">send</button>
       </form>
     );
   }
@@ -48,7 +43,7 @@ class ChatInputBase extends PureComponent {
     e.preventDefault();
     if (!this.state.msg || !this.state.msg.trim()) return;
     const body = this.state.msg;
-    this.setState({ msg: "", key: uuid.v4() });
+    this.setState({ msg: "" });
     this.props.state.notabugApi.chat({
       topic: this.props.topic,
       body
@@ -63,54 +58,50 @@ export class Chat extends PureComponent {
     super(props);
     this.state = {
       topic: props.topic || "whatever",
-      isOpen: false
+      messagesShown: 50,
+      isOpen: !!props.isOpen
     };
+
+    this.scrollToBottom = debounce(
+      () => {
+        if (this.scrollable && !this.state.isScrollingUp) {
+          this.scrollable.scrollTop = this.scrollable.scrollHeight;
+        }
+      },
+      50,
+      { trailing: true }
+    );
   }
 
   render() {
-    return this.state.isOpen ? (
-      <div
-        style={{
-          position: "fixed",
-          backgroundColor: "#EFF7FF",
-          border: "1px solid #5f99cf",
-          right: "1em",
-          bottom: 0,
-          width: "560px",
-          height: "380px"
-        }}
-      >
-        <div
-          style={{
-            position: "absolute",
-            display: "block",
-            left: 0,
-            right: 0,
-            top: "28px",
-            paddingTop: "0.5em",
-            bottom: "1em",
-            overflowY: "scroll"
+    return this.props.isOpen || this.state.isOpen ? (
+      <div className={`chat-modal ${this.props.className}`}>
+        <Listing
+          Empty={Loading}
+          sort={"new"}
+          topics={[`chat:${this.state.topic}`]}
+          days={2}
+          //threshold={-1}
+          limit={this.state.messagesShown}
+          Container={ChatView}
+          onDidUpdate={this.scrollToBottom}
+          containerProps={{
+            flipped: true,
+            onInfiniteLoad: () => {
+              this.setState({ isScrollingUp: true });
+              return Promise.resolve(this.setState({ messagesShown: this.state.messagesShown + 25 }))
+                .then(() => setTimeout(() => this.setState({ isScrollingUp: false }), 100));
+            },
+            className: "chat-message-display",
+            returnScrollable: scrollable => this.scrollable = scrollable,
           }}
-        >
-          <Listing
-            Empty={() => "No Messages Yet"}
-            sort={"new"}
-            topics={[`chat:${this.state.topic}`]}
-            days={2}
-            //threshold={-1}
-            limit={250}
-          />
-        </div>
-        <button
-          style={{
-            position: "absolute",
-            backgroundColor: "#cee3f8",
-            borderColor: "#5f99cf",
-            bottom: 0,
-            right: 0
-          }}
-          onClick={() => this.setState({ isOpen: false })}
-        >close chat</button>
+        />
+        {this.props.isOpen ? null : (
+          <button
+            className="close-chat"
+            onClick={() => this.setState({ isOpen: false })}
+          >close</button>
+        )}
         <ChatInput topic={this.state.topic} />
       </div>
     ) : (
@@ -131,3 +122,19 @@ export class Chat extends PureComponent {
   }
 
 }
+
+export const ChatPage = withRouter(({
+  match: { params: { topic } },
+}) => (
+  <Fragment>
+    <Header
+      UserInfo={UserInfo}
+      SrHeaderArea={() => null}
+      NavTab={NavTab}
+      Link={Link}
+      siteprefix="t"
+      subreddit={topic}
+    />
+    <Chat className="fullscreen-chat" isOpen />
+  </Fragment>
+));

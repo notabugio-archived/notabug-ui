@@ -1,285 +1,219 @@
 /* eslint-disable */
-var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
-
-var _slicedToArray = function () { function sliceIterator(arr, i) { var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"]) _i["return"](); } finally { if (_d) throw _e; } } return _arr; } return function (arr, i) { if (Array.isArray(arr)) { return arr; } else if (Symbol.iterator in Object(arr)) { return sliceIterator(arr, i); } else { throw new TypeError("Invalid attempt to destructure non-iterable instance"); } }; }();
-
-function _asyncToGenerator(fn) { return function () { var gen = fn.apply(this, arguments); return new Promise(function (resolve, reject) { function step(key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { return Promise.resolve(value).then(function (value) { step("next", value); }, function (err) { step("throw", err); }); } } return step("next"); }); }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
-
-;(function () {
+;(function(){
 
   /* UNBUILD */
   var root;
-  if (typeof window !== "undefined") {
-    root = window;
-  }
-  if (typeof global !== "undefined") {
-    root = global;
-  }
+  if(typeof window !== "undefined"){ root = window }
+  if(typeof global !== "undefined"){ root = global }
   root = root || {};
-  var console = root.console || { log: function log() {} };
-  function USE(arg) {
-    return arg.slice ? USE[R(arg)] : function (mod, path) {
-      arg(mod = { exports: {} });
+  var console = root.console || {log: function(){}};
+  function USE(arg){
+    return arg.slice? USE[R(arg)] : function(mod, path){
+      arg(mod = {exports: {}});
       USE[R(path)] = mod.exports;
-    };
-    function R(p) {
-      return p.split('/').slice(-1).toString().replace('.js', '');
+    }
+    function R(p){
+      return p.split('/').slice(-1).toString().replace('.js','');
     }
   }
-  if (typeof module !== "undefined") {
-    var common = module;
-  }
+  if(typeof module !== "undefined"){ var common = module }
   /* UNBUILD */
 
-  ;USE(function (module) {
+  ;USE(function(module){
     // Security, Encryption, and Authorization: SEA.js
     // MANDATORY READING: http://gun.js.org/explainers/data/security.html
     // THIS IS AN EARLY ALPHA!
 
-    function SEA() {}
-    if (typeof window !== "undefined") {
-      SEA.window = window;
-    }
+    function SEA(){}
+    if(typeof window !== "undefined"){ SEA.window = window }
 
     module.exports = SEA;
   })(USE, './root');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     var SEA = USE('./root');
-    if (SEA.window) {
-      if (location.protocol.indexOf('s') < 0 && location.host.indexOf('localhost') < 0 && location.protocol.indexOf('file:') < 0) {
+    if(SEA.window){
+      if(location.protocol.indexOf('s') < 0
+      && location.host.indexOf('localhost') < 0
+      && location.protocol.indexOf('file:') < 0){
         //location.protocol = 'https:';
       }
     }
   })(USE, './https');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     // This is Array extended to have .toString(['utf8'|'hex'|'base64'])
     function SeaArray() {}
-    Object.assign(SeaArray, { from: Array.from });
-    SeaArray.prototype = Object.create(Array.prototype);
-    SeaArray.prototype.toString = function () {
-      var enc = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 'utf8';
-
-      var _this = this;
-
-      var start = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-      var end = arguments[2];
-      var length = this.length;
-
+    Object.assign(SeaArray, { from: Array.from })
+    SeaArray.prototype = Object.create(Array.prototype)
+    SeaArray.prototype.toString = function(enc, start, end) { enc = enc || 'utf8'; start = start || 0;
+      const length = this.length
       if (enc === 'hex') {
-        var buf = new Uint8Array(this);
-        return [].concat(_toConsumableArray(Array((end && end + 1 || length) - start).keys())).map(function (i) {
-          return buf[i + start].toString(16).padStart(2, '0');
-        }).join('');
+        const buf = new Uint8Array(this)
+        return [ ...Array(((end && (end + 1)) || length) - start).keys()]
+        .map((i) => buf[ i + start ].toString(16).padStart(2, '0')).join('')
       }
       if (enc === 'utf8') {
-        return Array.from({ length: (end || length) - start }, function (_, i) {
-          return String.fromCharCode(_this[i + start]);
-        }).join('');
+        return Array.from(
+          { length: (end || length) - start },
+          (_, i) => String.fromCharCode(this[ i + start])
+        ).join('')
       }
       if (enc === 'base64') {
-        return btoa(this);
+        return btoa(this)
       }
-    };
+    }
     module.exports = SeaArray;
   })(USE, './array');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     // This is Buffer implementation used in SEA. Functionality is mostly
     // compatible with NodeJS 'safe-buffer' and is used for encoding conversions
     // between binary and 'hex' | 'utf8' | 'base64'
     // See documentation and validation for safe implementation in:
     // https://github.com/feross/safe-buffer#update
     var SeaArray = USE('./array');
-    function SafeBuffer() {
-      console.warn('new SafeBuffer() is depreciated, please use SafeBuffer.from()');
-      return SafeBuffer.from.apply(SafeBuffer, arguments);
+    function SafeBuffer(...props) {
+      console.warn('new SafeBuffer() is depreciated, please use SafeBuffer.from()')
+      return SafeBuffer.from(...props)
     }
-    SafeBuffer.prototype = Object.create(Array.prototype);
+    SafeBuffer.prototype = Object.create(Array.prototype)
     Object.assign(SafeBuffer, {
       // (data, enc) where typeof data === 'string' then enc === 'utf8'|'hex'|'base64'
-      from: function from() {
+      from() {
         if (!Object.keys(arguments).length) {
-          throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.');
+          throw new TypeError('First argument must be a string, Buffer, ArrayBuffer, Array, or array-like object.')
         }
-        var input = arguments[0];
-        var buf = void 0;
+        const input = arguments[0]
+        let buf
         if (typeof input === 'string') {
-          var enc = arguments[1] || 'utf8';
+          const enc = arguments[1] || 'utf8'
           if (enc === 'hex') {
-            var bytes = input.match(/([\da-fA-F]{2})/g).map(function (byte) {
-              return parseInt(byte, 16);
-            });
+            const bytes = input.match(/([\da-fA-F]{2})/g)
+            .map((byte) => parseInt(byte, 16))
             if (!bytes || !bytes.length) {
-              throw new TypeError('Invalid first argument for type \'hex\'.');
+              throw new TypeError('Invalid first argument for type \'hex\'.')
             }
-            buf = SeaArray.from(bytes);
+            buf = SeaArray.from(bytes)
           } else if (enc === 'utf8') {
-            var _length = input.length;
-
-            var words = new Uint16Array(_length);
-            Array.from({ length: _length }, function (_, i) {
-              return words[i] = input.charCodeAt(i);
-            });
-            buf = SeaArray.from(words);
+            const length = input.length
+            const words = new Uint16Array(length)
+            Array.from({ length: length }, (_, i) => words[i] = input.charCodeAt(i))
+            buf = SeaArray.from(words)
           } else if (enc === 'base64') {
-            var dec = atob(input);
-            var _length2 = dec.length;
-
-            var _bytes = new Uint8Array(_length2);
-            Array.from({ length: _length2 }, function (_, i) {
-              return _bytes[i] = dec.charCodeAt(i);
-            });
-            buf = SeaArray.from(_bytes);
+            const dec = atob(input)
+            const length = dec.length
+            const bytes = new Uint8Array(length)
+            Array.from({ length: length }, (_, i) => bytes[i] = dec.charCodeAt(i))
+            buf = SeaArray.from(bytes)
           } else if (enc === 'binary') {
-            buf = SeaArray.from(input);
+            buf = SeaArray.from(input)
           } else {
-            console.info('SafeBuffer.from unknown encoding: ' + enc);
+            console.info('SafeBuffer.from unknown encoding: '+enc)
           }
-          return buf;
+          return buf
         }
-        var byteLength = input.byteLength,
-            _input$length = input.length,
-            length = _input$length === undefined ? byteLength : _input$length;
-
+        const byteLength = input.byteLength
+        const length = input.byteLength ? input.byteLength : input.length
         if (length) {
-          var _buf = void 0;
+          let buf
           if (input instanceof ArrayBuffer) {
-            _buf = new Uint8Array(input);
+            buf = new Uint8Array(input)
           }
-          return SeaArray.from(_buf || input);
+          return SeaArray.from(buf || input)
         }
       },
-
       // This is 'safe-buffer.alloc' sans encoding support
-      alloc: function alloc(length) /*, enc*/{
-        var fill = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
-
-        return SeaArray.from(new Uint8Array(Array.from({ length: length }, function () {
-          return fill;
-        })));
+      alloc(length, fill = 0 /*, enc*/ ) {
+        return SeaArray.from(new Uint8Array(Array.from({ length: length }, () => fill)))
       },
-
       // This is normal UNSAFE 'buffer.alloc' or 'new Buffer(length)' - don't use!
-      allocUnsafe: function allocUnsafe(length) {
-        return SeaArray.from(new Uint8Array(Array.from({ length: length })));
+      allocUnsafe(length) {
+        return SeaArray.from(new Uint8Array(Array.from({ length : length })))
       },
-
       // This puts together array of array like members
-      concat: function concat(arr) {
-        // octet array
+      concat(arr) { // octet array
         if (!Array.isArray(arr)) {
-          throw new TypeError('First argument must be Array containing ArrayBuffer or Uint8Array instances.');
+          throw new TypeError('First argument must be Array containing ArrayBuffer or Uint8Array instances.')
         }
-        return SeaArray.from(arr.reduce(function (ret, item) {
-          return ret.concat(Array.from(item));
-        }, []));
+        return SeaArray.from(arr.reduce((ret, item) => ret.concat(Array.from(item)), []))
       }
-    });
-    SafeBuffer.prototype.from = SafeBuffer.from;
-    SafeBuffer.prototype.toString = SeaArray.prototype.toString;
+    })
+    SafeBuffer.prototype.from = SafeBuffer.from
+    SafeBuffer.prototype.toString = SeaArray.prototype.toString
 
     module.exports = SafeBuffer;
   })(USE, './buffer');
 
-  ;USE(function (module) {
-    var Buffer = USE('./buffer');
-    var api = { Buffer: Buffer };
+  ;USE(function(module){
+    const Buffer = USE('./buffer')
+    const api = {Buffer: Buffer}
 
     if (typeof __webpack_require__ === 'function' || typeof window !== 'undefined') {
-      var _window = window,
-          msCrypto = _window.msCrypto,
-          _window$crypto = _window.crypto,
-          crypto = _window$crypto === undefined ? msCrypto : _window$crypto; // STD or M$
-
-      var webkitSubtle = crypto.webkitSubtle,
-          _crypto$subtle = crypto.subtle,
-          subtle = _crypto$subtle === undefined ? webkitSubtle : _crypto$subtle; // STD or iSafari
-
-      var _window2 = window,
-          TextEncoder = _window2.TextEncoder,
-          TextDecoder = _window2.TextDecoder;
-
+      var crypto = window.crypto || window.msCrypto;
+      var subtle = crypto.subtle || crypto.webkitSubtle;
+      const TextEncoder = window.TextEncoder
+      const TextDecoder = window.TextDecoder
       Object.assign(api, {
-        crypto: crypto,
-        subtle: subtle,
-        TextEncoder: TextEncoder,
-        TextDecoder: TextDecoder,
-        random: function random(len) {
-          return Buffer.from(crypto.getRandomValues(new Uint8Array(Buffer.alloc(len))));
-        }
-      });
+        crypto,
+        subtle,
+        TextEncoder,
+        TextDecoder,
+        random: (len) => Buffer.from(crypto.getRandomValues(new Uint8Array(Buffer.alloc(len))))
+      })
     } else {
-      try {
-        var _crypto = require('crypto');
-        //const WebCrypto = require('node-webcrypto-ossl')
-        //const { subtle: ossl } = new WebCrypto({directory: 'key_storage'}) // ECDH
-
-        var _require = require('@trust/webcrypto'),
-            _subtle = _require.subtle; // All but ECDH
-
-
-        var _require2 = require('text-encoding'),
-            _TextEncoder = _require2.TextEncoder,
-            _TextDecoder = _require2.TextDecoder;
-
+      try{
+        var crypto = require('crypto');
+        const { subtle } = require('@trust/webcrypto')             // All but ECDH
+        const { TextEncoder, TextDecoder } = require('text-encoding')
         Object.assign(api, {
-          crypto: _crypto,
-          subtle: _subtle,
-          //ossl,
-          TextEncoder: _TextEncoder,
-          TextDecoder: _TextDecoder,
-          random: function random(len) {
-            return Buffer.from(_crypto.randomBytes(len));
-          }
+          crypto,
+          subtle,
+          TextEncoder,
+          TextDecoder,
+          random: (len) => Buffer.from(crypto.randomBytes(len))
         });
-      } catch (e) {
+        try{
+          const WebCrypto = require('node-webcrypto-ossl')
+          api.ossl = new WebCrypto({directory: 'key_storage'}).subtle // ECDH
+        }catch(e){
+          console.log("node-webcrypto-ossl is optionally needed for ECDH, please install if needed.");
+        }
+      }catch(e){
         console.log("@trust/webcrypto and text-encoding are not included by default, you must add it to your package.json!");
         TRUST_WEBCRYPTO_OR_TEXT_ENCODING_NOT_INSTALLED;
       }
     }
 
-    module.exports = api;
+    module.exports = api
   })(USE, './shim');
 
-  ;USE(function (module) {
-    var Buffer = USE('./buffer');
-    var settings = {};
+  ;USE(function(module){
+    const Buffer = USE('./buffer')
+    const settings = {}
     // Encryption parameters
-    var pbkdf2 = { hash: 'SHA-256', iter: 100000, ks: 64 };
+    const pbkdf2 = { hash: 'SHA-256', iter: 100000, ks: 64 }
 
-    var ecdsaSignProps = { name: 'ECDSA', hash: { name: 'SHA-256' } };
-    var ecdsaKeyProps = { name: 'ECDSA', namedCurve: 'P-256' };
-    var ecdhKeyProps = { name: 'ECDH', namedCurve: 'P-256' };
+    const ecdsaSignProps = { name: 'ECDSA', hash: { name: 'SHA-256' } }
+    const ecdsaKeyProps = { name: 'ECDSA', namedCurve: 'P-256' }
+    const ecdhKeyProps = { name: 'ECDH', namedCurve: 'P-256' }
 
-    var _initial_authsettings = {
+    const _initial_authsettings = {
       validity: 12 * 60 * 60, // internally in seconds : 12 hours
-      hook: function hook(props) {
-        return props;
-      } // { iat, exp, alias, remember }
+      hook: (props) => props  // { iat, exp, alias, remember }
       // or return new Promise((resolve, reject) => resolve(props)
-
-      // These are used to persist user's authentication "session"
-    };var authsettings = Object.assign({}, _initial_authsettings);
+    }
+    // These are used to persist user's authentication "session"
+    const authsettings = Object.assign({}, _initial_authsettings)
     // This creates Web Cryptography API compliant JWK for sign/verify purposes
-    var keysToEcdsaJwk = function keysToEcdsaJwk(pub, d) {
-      // d === priv
-      var _pub$split = pub.split('.'),
-          _pub$split2 = _slicedToArray(_pub$split, 2),
-          x = _pub$split2[0],
-          y = _pub$split2[1]; // new
-
-
-      var jwk = { kty: "EC", crv: "P-256", x: x, y: y, ext: true };
+    const keysToEcdsaJwk = (pub, d) => {  // d === priv
+      //const [ x, y ] = Buffer.from(pub, 'base64').toString('utf8').split(':') // old
+      const [ x, y ] = pub.split('.') // new
+      var jwk = { kty: "EC", crv: "P-256", x: x, y: y, ext: true }
       jwk.key_ops = d ? ['sign'] : ['verify'];
-      if (d) {
-        jwk.d = d;
-      }
+      if(d){ jwk.d = d }
       return jwk;
-    };
+    }
 
     Object.assign(settings, {
       pbkdf2: pbkdf2,
@@ -290,413 +224,197 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       ecdh: ecdhKeyProps,
       jwk: keysToEcdsaJwk,
       recall: authsettings
-    });
-    module.exports = settings;
+    })
+    module.exports = settings
   })(USE, './settings');
 
-  ;USE(function (module) {
-    module.exports = function (props) {
+  ;USE(function(module){
+    module.exports = (props) => {
       try {
-        if (props.slice && 'SEA{' === props.slice(0, 4)) {
+        if(props.slice && 'SEA{' === props.slice(0,4)){
           props = props.slice(3);
         }
-        return props.slice ? JSON.parse(props) : props;
-      } catch (e) {} //eslint-disable-line no-empty
-      return props;
-    };
+        return props.slice ? JSON.parse(props) : props
+      } catch (e) {}  //eslint-disable-line no-empty
+      return props
+    }
   })(USE, './parse');
 
-  ;USE(function (module) {
-    var _this2 = this;
-
-    var _USE = USE('./shim'),
-        subtle = _USE.subtle,
-        _USE$ossl = _USE.ossl,
-        ossl = _USE$ossl === undefined ? subtle : _USE$ossl,
-        getRandomBytes = _USE.random,
-        TextEncoder = _USE.TextEncoder,
-        TextDecoder = _USE.TextDecoder;
-
-    var Buffer = USE('./buffer');
-    var parse = USE('./parse');
-
-    var _USE2 = USE('./settings'),
-        pbkdf2 = _USE2.pbkdf2;
+  ;USE(function(module){
+    const {
+      subtle, ossl = subtle, random: getRandomBytes, TextEncoder, TextDecoder
+    } = USE('./shim')
+    const Buffer = USE('./buffer')
+    const parse = USE('./parse')
+    const { pbkdf2 } = USE('./settings')
     // This internal func returns SHA-256 hashed data for signing
-
-
-    var sha256hash = function () {
-      var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(mm) {
-        var m, hash;
-        return regeneratorRuntime.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                m = parse(mm);
-                _context.next = 3;
-                return ossl.digest({ name: pbkdf2.hash }, new TextEncoder().encode(m));
-
-              case 3:
-                hash = _context.sent;
-                return _context.abrupt("return", Buffer.from(hash));
-
-              case 5:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee, _this2);
-      }));
-
-      return function sha256hash(_x4) {
-        return _ref.apply(this, arguments);
-      };
-    }();
-    module.exports = sha256hash;
+    const sha256hash = async (mm) => {
+      const m = parse(mm)
+      const hash = await ossl.digest({name: pbkdf2.hash}, new TextEncoder().encode(m))
+      return Buffer.from(hash)
+    }
+    module.exports = sha256hash
   })(USE, './sha256');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     // This internal func returns SHA-1 hashed data for KeyID generation
-    var _USE3 = USE('./shim'),
-        subtle = _USE3.subtle,
-        _USE3$ossl = _USE3.ossl,
-        ossl = _USE3$ossl === undefined ? subtle : _USE3$ossl;
-
-    var sha1hash = function sha1hash(b) {
-      return ossl.digest({ name: 'SHA-1' }, new ArrayBuffer(b));
-    };
-    module.exports = sha1hash;
+    const __shim = USE('./shim')
+    const subtle = __shim.subtle
+    const ossl = __shim.ossl ? __shim.__ossl : subtle
+    const sha1hash = (b) => ossl.digest({name: 'SHA-1'}, new ArrayBuffer(b))
+    module.exports = sha1hash
   })(USE, './sha1');
 
-  ;USE(function (module) {
-    var _this3 = this;
-
+  ;USE(function(module){
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
     var u;
 
-    SEA.work = function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(data, pair, cb) {
-        var salt, key, result, _r, crypto, hash, r;
-
-        return regeneratorRuntime.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.prev = 0;
-                // used to be named `proof`
-                salt = pair.epub || pair; // epub not recommended, salt should be random!
-
-                if (salt instanceof Function) {
-                  cb = salt;
-                  salt = u;
-                }
-                salt = salt || shim.random(9);
-
-                if (!SEA.window) {
-                  _context2.next = 15;
-                  break;
-                }
-
-                _context2.next = 7;
-                return shim.subtle.importKey('raw', new shim.TextEncoder().encode(data), { name: 'PBKDF2' }, false, ['deriveBits']);
-
-              case 7:
-                key = _context2.sent;
-                _context2.next = 10;
-                return shim.subtle.deriveBits({
-                  name: 'PBKDF2',
-                  iterations: S.pbkdf2.iter,
-                  salt: new shim.TextEncoder().encode(salt),
-                  hash: S.pbkdf2.hash
-                }, key, S.pbkdf2.ks * 8);
-
-              case 10:
-                result = _context2.sent;
-
-                data = shim.random(data.length); // Erase data in case of passphrase
-                _r = shim.Buffer.from(result, 'binary').toString('utf8');
-
-                if (cb) {
-                  cb(_r);
-                }
-                return _context2.abrupt("return", _r);
-
-              case 15:
-                // For NodeJS crypto.pkdf2 rocks
-                crypto = require('crypto');
-                hash = crypto.pbkdf2Sync(data, new shim.TextEncoder().encode(salt), S.pbkdf2.iter, S.pbkdf2.ks, S.pbkdf2.hash.replace('-', '').toLowerCase());
-
-                data = shim.random(data.length); // Erase passphrase for app
-                r = hash && hash.toString('utf8');
-
-                if (cb) {
-                  cb(r);
-                }
-                return _context2.abrupt("return", r);
-
-              case 23:
-                _context2.prev = 23;
-                _context2.t0 = _context2["catch"](0);
-
-                SEA.err = _context2.t0;
-                if (cb) {
-                  cb();
-                }
-                return _context2.abrupt("return");
-
-              case 28:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2, _this3, [[0, 23]]);
-      }));
-
-      return function (_x5, _x6, _x7) {
-        return _ref2.apply(this, arguments);
-      };
-    }();
+    SEA.work = async (data, pair, cb) => { try { // used to be named `proof`
+      var salt = pair.epub || pair; // epub not recommended, salt should be random!
+      if(salt instanceof Function){
+        cb = salt;
+        salt = u;
+      }
+      salt = salt || shim.random(9);
+      if (SEA.window) {
+        // For browser subtle works fine
+        const key = await shim.subtle.importKey(
+          'raw', new shim.TextEncoder().encode(data), { name: 'PBKDF2' }, false, ['deriveBits']
+        )
+        const result = await shim.subtle.deriveBits({
+          name: 'PBKDF2',
+          iterations: S.pbkdf2.iter,
+          salt: new shim.TextEncoder().encode(salt),
+          hash: S.pbkdf2.hash,
+        }, key, S.pbkdf2.ks * 8)
+        data = shim.random(data.length)  // Erase data in case of passphrase
+        const r = shim.Buffer.from(result, 'binary').toString('utf8')
+        if(cb){ cb(r) }
+        return r;
+      }
+      // For NodeJS crypto.pkdf2 rocks
+      const crypto = shim.crypto;
+      const hash = crypto.pbkdf2Sync(
+        data,
+        new shim.TextEncoder().encode(salt),
+        S.pbkdf2.iter,
+        S.pbkdf2.ks,
+        S.pbkdf2.hash.replace('-', '').toLowerCase()
+      )
+      data = shim.random(data.length)  // Erase passphrase for app
+      const r = hash && hash.toString('utf8')
+      if(cb){ cb(r) }
+      return r;
+    } catch(e) {
+      SEA.err = e;
+      if(cb){ cb() }
+      return;
+    }}
 
     module.exports = SEA.work;
   })(USE, './work');
 
-  ;USE(function (module) {
-    var _this4 = this;
-
+  ;USE(function(module){
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
-    var Buff = typeof Buffer !== 'undefined' ? Buffer : shim.Buffer;
+    var Buff = (typeof Buffer !== 'undefined')? Buffer : shim.Buffer;
 
     //SEA.pair = async (data, proof, cb) => { try {
-    SEA.pair = function () {
-      var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(cb) {
-        var ecdhSubtle, _ref4, pub, priv, _ref8, epub, epriv, r;
+    SEA.pair = async (cb) => { try {
 
-        return regeneratorRuntime.wrap(function _callee5$(_context5) {
-          while (1) {
-            switch (_context5.prev = _context5.next) {
-              case 0:
-                _context5.prev = 0;
-                ecdhSubtle = shim.ossl || shim.subtle;
-                // First: ECDSA keys for signing/verifying...
+      const ecdhSubtle = shim.ossl || shim.subtle
+      // First: ECDSA keys for signing/verifying...
+      var sa = await shim.subtle.generateKey(S.ecdsa.pair, true, [ 'sign', 'verify' ])
+      .then(async (keys) => {
+        // privateKey scope doesn't leak out from here!
+        //const { d: priv } = await shim.subtle.exportKey('jwk', keys.privateKey)
+        const key = {};
+        key.priv = (await shim.subtle.exportKey('jwk', keys.privateKey)).d;
+        const pub = await shim.subtle.exportKey('jwk', keys.publicKey)
+        //const pub = Buff.from([ x, y ].join(':')).toString('base64') // old
+        key.pub = pub.x+'.'+pub.y // new
+        // x and y are already base64
+        // pub is UTF8 but filename/URL safe (https://www.ietf.org/rfc/rfc3986.txt)
+        // but split on a non-base64 letter.
+        return key;
+      })
 
-                _context5.next = 4;
-                return shim.subtle.generateKey(S.ecdsa.pair, true, ['sign', 'verify']).then(function () {
-                  var _ref5 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(keys) {
-                    var _ref6, priv, _ref7, x, y, pub;
+      // To include PGPv4 kind of keyId:
+      // const pubId = await SEA.keyid(keys.pub)
+      // Next: ECDH keys for encryption/decryption...
 
-                    return regeneratorRuntime.wrap(function _callee3$(_context3) {
-                      while (1) {
-                        switch (_context3.prev = _context3.next) {
-                          case 0:
-                            _context3.next = 2;
-                            return shim.subtle.exportKey('jwk', keys.privateKey);
+      try{
+      var dh = await ecdhSubtle.generateKey(S.ecdh, true, ['deriveKey'])
+      .then(async (keys) => {
+        // privateKey scope doesn't leak out from here!
+        const key = {};
+        key.epriv = (await ecdhSubtle.exportKey('jwk', keys.privateKey)).d;
+        const pub = await ecdhSubtle.exportKey('jwk', keys.publicKey)
+        //const epub = Buff.from([ ex, ey ].join(':')).toString('base64') // old
+        key.epub = pub.x+'.'+pub.y // new
+        // ex and ey are already base64
+        // epub is UTF8 but filename/URL safe (https://www.ietf.org/rfc/rfc3986.txt)
+        // but split on a non-base64 letter.
+        return key;
+      })
+      }catch(e){
+        if(SEA.window){ throw e }
+        if(e == 'Error: ECDH is not a supported algorithm'){ console.log('Ignoring ECDH...') }
+        else { throw e }
+      } dh = dh || {};
 
-                          case 2:
-                            _ref6 = _context3.sent;
-                            priv = _ref6.d;
-                            _context3.next = 6;
-                            return shim.subtle.exportKey('jwk', keys.publicKey);
-
-                          case 6:
-                            _ref7 = _context3.sent;
-                            x = _ref7.x;
-                            y = _ref7.y;
-
-                            //const pub = Buff.from([ x, y ].join(':')).toString('base64') // old
-                            pub = x + '.' + y; // new
-                            // x and y are already base64
-                            // pub is UTF8 but filename/URL safe (https://www.ietf.org/rfc/rfc3986.txt)
-                            // but split on a non-base64 letter.
-
-                            return _context3.abrupt("return", { pub: pub, priv: priv });
-
-                          case 11:
-                          case "end":
-                            return _context3.stop();
-                        }
-                      }
-                    }, _callee3, _this4);
-                  }));
-
-                  return function (_x9) {
-                    return _ref5.apply(this, arguments);
-                  };
-                }());
-
-              case 4:
-                _ref4 = _context5.sent;
-                pub = _ref4.pub;
-                priv = _ref4.priv;
-                _context5.next = 9;
-                return ecdhSubtle.generateKey(S.ecdh, true, ['deriveKey']).then(function () {
-                  var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(keys) {
-                    var _ref10, epriv, _ref11, x, y, epub;
-
-                    return regeneratorRuntime.wrap(function _callee4$(_context4) {
-                      while (1) {
-                        switch (_context4.prev = _context4.next) {
-                          case 0:
-                            _context4.next = 2;
-                            return ecdhSubtle.exportKey('jwk', keys.privateKey);
-
-                          case 2:
-                            _ref10 = _context4.sent;
-                            epriv = _ref10.d;
-                            _context4.next = 6;
-                            return ecdhSubtle.exportKey('jwk', keys.publicKey);
-
-                          case 6:
-                            _ref11 = _context4.sent;
-                            x = _ref11.x;
-                            y = _ref11.y;
-
-                            //const epub = Buff.from([ ex, ey ].join(':')).toString('base64') // old
-                            epub = x + '.' + y; // new
-                            // ex and ey are already base64
-                            // epub is UTF8 but filename/URL safe (https://www.ietf.org/rfc/rfc3986.txt)
-                            // but split on a non-base64 letter.
-
-                            return _context4.abrupt("return", { epub: epub, epriv: epriv });
-
-                          case 11:
-                          case "end":
-                            return _context4.stop();
-                        }
-                      }
-                    }, _callee4, _this4);
-                  }));
-
-                  return function (_x10) {
-                    return _ref9.apply(this, arguments);
-                  };
-                }());
-
-              case 9:
-                _ref8 = _context5.sent;
-                epub = _ref8.epub;
-                epriv = _ref8.epriv;
-                r = { pub: pub, priv: priv, /* pubId, */epub: epub, epriv: epriv };
-
-                if (cb) {
-                  cb(r);
-                }
-                return _context5.abrupt("return", r);
-
-              case 17:
-                _context5.prev = 17;
-                _context5.t0 = _context5["catch"](0);
-
-                SEA.err = _context5.t0;
-                if (cb) {
-                  cb();
-                }
-                return _context5.abrupt("return");
-
-              case 22:
-              case "end":
-                return _context5.stop();
-            }
-          }
-        }, _callee5, _this4, [[0, 17]]);
-      }));
-
-      return function (_x8) {
-        return _ref3.apply(this, arguments);
-      };
-    }();
+      const r = { pub: sa.pub, priv: sa.priv, /* pubId, */ epub: dh.epub, epriv: dh.epriv }
+      if(cb){ cb(r) }
+      return r;
+    } catch(e) {
+      SEA.err = e;
+      if(cb){ cb() }
+      return;
+    }}
 
     module.exports = SEA.pair;
   })(USE, './pair');
 
-  ;USE(function (module) {
-    var _this5 = this;
-
+  ;USE(function(module){
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
     var sha256hash = USE('./sha256');
 
-    SEA.sign = function () {
-      var _ref12 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(data, pair, cb) {
-        var pub, priv, jwk, msg, hash, sig, r;
-        return regeneratorRuntime.wrap(function _callee6$(_context6) {
-          while (1) {
-            switch (_context6.prev = _context6.next) {
-              case 0:
-                _context6.prev = 0;
+    SEA.sign = async (data, pair, cb) => { try {
+      if(data.slice
+      && 'SEA{' === data.slice(0,4)
+      && '"m":' === data.slice(4,8)){
+        // TODO: This would prevent pair2 signing pair1's signature.
+        // So we may want to change this in the future.
+        // but for now, we want to prevent duplicate double signature.
+        if(cb){ cb(data) }
+        return data;
+      }
+      const pub = pair.pub
+      const priv = pair.priv
+      const jwk = S.jwk(pub, priv)
+      const msg = JSON.stringify(data)
+      const hash = await sha256hash(msg)
+      const sig = await shim.subtle.importKey('jwk', jwk, S.ecdsa.pair, false, ['sign'])
+      .then((key) => shim.subtle.sign(S.ecdsa.sign, key, new Uint8Array(hash))) // privateKey scope doesn't leak out from here!
+      const r = 'SEA'+JSON.stringify({m: msg, s: shim.Buffer.from(sig, 'binary').toString('utf8')});
 
-                if (!(data.slice && 'SEA{' === data.slice(0, 4) && '"m":' === data.slice(4, 8))) {
-                  _context6.next = 4;
-                  break;
-                }
-
-                // TODO: This would prevent pair2 signing pair1's signature.
-                // So we may want to change this in the future.
-                // but for now, we want to prevent duplicate double signature.
-                if (cb) {
-                  cb(data);
-                }
-                return _context6.abrupt("return", data);
-
-              case 4:
-                pub = pair.pub;
-                priv = pair.priv;
-                jwk = S.jwk(pub, priv);
-                msg = JSON.stringify(data);
-                _context6.next = 10;
-                return sha256hash(msg);
-
-              case 10:
-                hash = _context6.sent;
-                _context6.next = 13;
-                return shim.subtle.importKey('jwk', jwk, S.ecdsa.pair, false, ['sign']).then(function (key) {
-                  return shim.subtle.sign(S.ecdsa.sign, key, new Uint8Array(hash));
-                });
-
-              case 13:
-                sig = _context6.sent;
-                // privateKey scope doesn't leak out from here!
-                r = 'SEA' + JSON.stringify({ m: msg, s: shim.Buffer.from(sig, 'binary').toString('utf8') });
-
-
-                if (cb) {
-                  cb(r);
-                }
-                return _context6.abrupt("return", r);
-
-              case 19:
-                _context6.prev = 19;
-                _context6.t0 = _context6["catch"](0);
-
-                SEA.err = _context6.t0;
-                if (cb) {
-                  cb();
-                }
-                return _context6.abrupt("return");
-
-              case 24:
-              case "end":
-                return _context6.stop();
-            }
-          }
-        }, _callee6, _this5, [[0, 19]]);
-      }));
-
-      return function (_x11, _x12, _x13) {
-        return _ref12.apply(this, arguments);
-      };
-    }();
+      if(cb){ cb(r) }
+      return r;
+    } catch(e) {
+      SEA.err = e;
+      if(cb){ cb() }
+      return;
+    }}
 
     module.exports = SEA.sign;
   })(USE, './sign');
 
-  ;USE(function (module) {
-    var _this6 = this;
-
+  ;USE(function(module){
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
@@ -704,407 +422,182 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var parse = USE('./parse');
     var u;
 
-    SEA.verify = function () {
-      var _ref13 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(data, pair, cb) {
-        var json, raw, pub, jwk, key, hash, sig, check, r;
-        return regeneratorRuntime.wrap(function _callee7$(_context7) {
-          while (1) {
-            switch (_context7.prev = _context7.next) {
-              case 0:
-                _context7.prev = 0;
-                json = parse(data);
+    SEA.verify = async (data, pair, cb) => { try {
+      const json = parse(data)
+      if(false === pair){ // don't verify!
+        const raw = (json !== data)?
+          (json.s && json.m)? parse(json.m) : data
+        : json;
+        if(cb){ cb(raw) }
+        return raw;
+      }
+      const pub = pair.pub || pair
+      const jwk = S.jwk(pub)
+      const key = await shim.subtle.importKey('jwk', jwk, S.ecdsa.pair, false, ['verify'])
+      const hash = await sha256hash(json.m)
+      const sig = new Uint8Array(shim.Buffer.from(json.s, 'utf8'))
+      const check = await shim.subtle.verify(S.ecdsa.sign, key, sig, new Uint8Array(hash))
+      if(!check){ throw "Signature did not match." }
+      const r = check? parse(json.m) : u;
 
-                if (!(false === pair)) {
-                  _context7.next = 6;
-                  break;
-                }
-
-                // don't verify!
-                raw = json !== data ? json.s && json.m ? parse(json.m) : data : json;
-
-                if (cb) {
-                  cb(raw);
-                }
-                return _context7.abrupt("return", raw);
-
-              case 6:
-                pub = pair.pub || pair;
-                jwk = S.jwk(pub);
-                _context7.next = 10;
-                return shim.subtle.importKey('jwk', jwk, S.ecdsa.pair, false, ['verify']);
-
-              case 10:
-                key = _context7.sent;
-                _context7.next = 13;
-                return sha256hash(json.m);
-
-              case 13:
-                hash = _context7.sent;
-                sig = new Uint8Array(shim.Buffer.from(json.s, 'utf8'));
-                _context7.next = 17;
-                return shim.subtle.verify(S.ecdsa.sign, key, sig, new Uint8Array(hash));
-
-              case 17:
-                check = _context7.sent;
-
-                if (check) {
-                  _context7.next = 20;
-                  break;
-                }
-
-                throw "Signature did not match.";
-
-              case 20:
-                r = check ? parse(json.m) : u;
-
-
-                if (cb) {
-                  cb(r);
-                }
-                return _context7.abrupt("return", r);
-
-              case 25:
-                _context7.prev = 25;
-                _context7.t0 = _context7["catch"](0);
-
-                SEA.err = _context7.t0;
-                if (cb) {
-                  cb();
-                }
-                return _context7.abrupt("return");
-
-              case 30:
-              case "end":
-                return _context7.stop();
-            }
-          }
-        }, _callee7, _this6, [[0, 25]]);
-      }));
-
-      return function (_x14, _x15, _x16) {
-        return _ref13.apply(this, arguments);
-      };
-    }();
+      if(cb){ cb(r) }
+      return r;
+    } catch(e) {
+      SEA.err = e;
+      if(cb){ cb() }
+      return;
+    }}
 
     module.exports = SEA.verify;
   })(USE, './verify');
 
-  ;USE(function (module) {
-    var _this7 = this;
-
+  ;USE(function(module){
     var shim = USE('./shim');
     var sha256hash = USE('./sha256');
 
-    var importGen = function () {
-      var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee8(key, salt) {
-        var combo, hash;
-        return regeneratorRuntime.wrap(function _callee8$(_context8) {
-          while (1) {
-            switch (_context8.prev = _context8.next) {
-              case 0:
-                //const combo = shim.Buffer.concat([shim.Buffer.from(key, 'utf8'), salt || shim.random(8)]).toString('utf8') // old
-                combo = key + (salt || shim.random(8)).toString('utf8'); // new
-
-                _context8.t0 = shim.Buffer;
-                _context8.next = 4;
-                return sha256hash(combo);
-
-              case 4:
-                _context8.t1 = _context8.sent;
-                hash = _context8.t0.from.call(_context8.t0, _context8.t1, 'binary');
-                _context8.next = 8;
-                return shim.subtle.importKey('raw', new Uint8Array(hash), 'AES-CBC', false, ['encrypt', 'decrypt']);
-
-              case 8:
-                return _context8.abrupt("return", _context8.sent);
-
-              case 9:
-              case "end":
-                return _context8.stop();
-            }
-          }
-        }, _callee8, _this7);
-      }));
-
-      return function importGen(_x17, _x18) {
-        return _ref14.apply(this, arguments);
-      };
-    }();
+    const importGen = async (key, salt, opt) => {
+      //const combo = shim.Buffer.concat([shim.Buffer.from(key, 'utf8'), salt || shim.random(8)]).toString('utf8') // old
+      var opt = opt || {};
+      const combo = key + (salt || shim.random(8)).toString('utf8'); // new
+      const hash = shim.Buffer.from(await sha256hash(combo), 'binary')
+      return await shim.subtle.importKey('raw', new Uint8Array(hash), opt.name || 'AES-GCM', false, ['encrypt', 'decrypt'])
+    }
     module.exports = importGen;
-  })(USE, './aescbc');
+  })(USE, './aeskey');
 
-  ;USE(function (module) {
-    var _this8 = this;
-
+  ;USE(function(module){
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
-    var aescbckey = USE('./aescbc');
+    var aeskey = USE('./aeskey');
 
-    SEA.encrypt = function () {
-      var _ref15 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(data, pair, cb) {
-        var key, msg, rand, ct, r;
-        return regeneratorRuntime.wrap(function _callee9$(_context9) {
-          while (1) {
-            switch (_context9.prev = _context9.next) {
-              case 0:
-                _context9.prev = 0;
-                key = pair.epriv || pair;
-                msg = JSON.stringify(data);
-                rand = { s: shim.random(8), iv: shim.random(16) };
-                _context9.next = 6;
-                return aescbckey(key, rand.s).then(function (aes) {
-                  return shim.subtle.encrypt({ // Keeping the AES key scope as private as possible...
-                    name: 'AES-CBC', iv: new Uint8Array(rand.iv)
-                  }, aes, new shim.TextEncoder().encode(msg));
-                });
+    SEA.encrypt = async (data, pair, cb, opt) => { try {
+      var opt = opt || {};
+      const key = pair.epriv || pair;
+      const msg = JSON.stringify(data)
+      const rand = {s: shim.random(8), iv: shim.random(16)};
+      const ct = await aeskey(key, rand.s, opt)
+      .then((aes) => shim.subtle.encrypt({ // Keeping the AES key scope as private as possible...
+        name: opt.name || 'AES-GCM', iv: new Uint8Array(rand.iv)
+      }, aes, new shim.TextEncoder().encode(msg)))
+      const r = 'SEA'+JSON.stringify({
+        ct: shim.Buffer.from(ct, 'binary').toString('utf8'),
+        iv: rand.iv.toString('utf8'),
+        s: rand.s.toString('utf8')
+      });
 
-              case 6:
-                ct = _context9.sent;
-                r = 'SEA' + JSON.stringify({
-                  ct: shim.Buffer.from(ct, 'binary').toString('utf8'),
-                  iv: rand.iv.toString('utf8'),
-                  s: rand.s.toString('utf8')
-                });
-
-
-                if (cb) {
-                  cb(r);
-                }
-                return _context9.abrupt("return", r);
-
-              case 12:
-                _context9.prev = 12;
-                _context9.t0 = _context9["catch"](0);
-
-                SEA.err = _context9.t0;
-                if (cb) {
-                  cb();
-                }
-                return _context9.abrupt("return");
-
-              case 17:
-              case "end":
-                return _context9.stop();
-            }
-          }
-        }, _callee9, _this8, [[0, 12]]);
-      }));
-
-      return function (_x19, _x20, _x21) {
-        return _ref15.apply(this, arguments);
-      };
-    }();
+      if(cb){ cb(r) }
+      return r;
+    } catch(e) {
+      SEA.err = e;
+      if(cb){ cb() }
+      return;
+    }}
 
     module.exports = SEA.encrypt;
   })(USE, './encrypt');
 
-  ;USE(function (module) {
-    var _this9 = this;
-
+  ;USE(function(module){
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
-    var aescbckey = USE('./aescbc');
+    var aeskey = USE('./aeskey');
     var parse = USE('./parse');
 
-    SEA.decrypt = function () {
-      var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(data, pair, cb) {
-        var key, json, ct, r;
-        return regeneratorRuntime.wrap(function _callee10$(_context10) {
-          while (1) {
-            switch (_context10.prev = _context10.next) {
-              case 0:
-                _context10.prev = 0;
-                key = pair.epriv || pair;
-                json = parse(data);
-                _context10.next = 5;
-                return aescbckey(key, shim.Buffer.from(json.s, 'utf8')).then(function (aes) {
-                  return shim.subtle.decrypt({ // Keeping aesKey scope as private as possible...
-                    name: 'AES-CBC', iv: new Uint8Array(shim.Buffer.from(json.iv, 'utf8'))
-                  }, aes, new Uint8Array(shim.Buffer.from(json.ct, 'utf8')));
-                });
+    SEA.decrypt = async (data, pair, cb, opt) => { try {
+      var opt = opt || {};
+      const key = pair.epriv || pair;
+      const json = parse(data)
+      const ct = await aeskey(key, shim.Buffer.from(json.s, 'utf8'), opt)
+      .then((aes) => shim.subtle.decrypt({  // Keeping aesKey scope as private as possible...
+        name: opt.name || 'AES-GCM', iv: new Uint8Array(shim.Buffer.from(json.iv, 'utf8'))
+      }, aes, new Uint8Array(shim.Buffer.from(json.ct, 'utf8'))))
+      const r = parse(new shim.TextDecoder('utf8').decode(ct))
 
-              case 5:
-                ct = _context10.sent;
-                r = parse(new shim.TextDecoder('utf8').decode(ct));
-
-
-                if (cb) {
-                  cb(r);
-                }
-                return _context10.abrupt("return", r);
-
-              case 11:
-                _context10.prev = 11;
-                _context10.t0 = _context10["catch"](0);
-
-                SEA.err = _context10.t0;
-                if (cb) {
-                  cb();
-                }
-                return _context10.abrupt("return");
-
-              case 16:
-              case "end":
-                return _context10.stop();
-            }
-          }
-        }, _callee10, _this9, [[0, 11]]);
-      }));
-
-      return function (_x22, _x23, _x24) {
-        return _ref16.apply(this, arguments);
-      };
-    }();
+      if(cb){ cb(r) }
+      return r;
+    } catch(e) {
+      SEA.err = e;
+      if(cb){ cb() }
+      return;
+    }}
 
     module.exports = SEA.decrypt;
   })(USE, './decrypt');
 
-  ;USE(function (module) {
-    var _this10 = this;
-
+  ;USE(function(module){
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
     // Derive shared secret from other's pub and my epub/epriv
-    SEA.secret = function () {
-      var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(key, pair, cb) {
-        var pub, epub, epriv, ecdhSubtle, pubKeyData, props, privKeyData, derived, r;
-        return regeneratorRuntime.wrap(function _callee12$(_context12) {
-          while (1) {
-            switch (_context12.prev = _context12.next) {
-              case 0:
-                _context12.prev = 0;
-                pub = key.epub || key;
-                epub = pair.epub;
-                epriv = pair.epriv;
-                ecdhSubtle = shim.ossl || shim.subtle;
-                pubKeyData = keysToEcdhJwk(pub);
-                _context12.t0 = _extends;
-                _context12.t1 = {};
-                _context12.t2 = S.ecdh;
-                _context12.next = 11;
-                return ecdhSubtle.importKey.apply(ecdhSubtle, _toConsumableArray(pubKeyData).concat([true, []]));
+    SEA.secret = async (key, pair, cb) => { try {
+      const pub = key.epub || key
+      const epub = pair.epub
+      const epriv = pair.epriv
+      const ecdhSubtle = shim.ossl || shim.subtle
+      const pubKeyData = keysToEcdhJwk(pub)
+      const props = Object.assign(
+        S.ecdh,
+        { public: await ecdhSubtle.importKey(...pubKeyData, true, []) }
+      )
+      const privKeyData = keysToEcdhJwk(epub, epriv)
+      const derived = await ecdhSubtle.importKey(...privKeyData, false, ['deriveKey'])
+      .then(async (privKey) => {
+        // privateKey scope doesn't leak out from here!
+        const derivedKey = await ecdhSubtle.deriveKey(props, privKey, { name: 'AES-GCM', length: 256 }, true, [ 'encrypt', 'decrypt' ])
+        return ecdhSubtle.exportKey('jwk', derivedKey).then(({ k }) => k)
+      })
+      const r = derived;
+      if(cb){ cb(r) }
+      return r;
+    } catch(e) {
+      SEA.err = e;
+      if(cb){ cb() }
+      return;
+    }}
 
-              case 11:
-                _context12.t3 = _context12.sent;
-                _context12.t4 = {
-                  public: _context12.t3
-                };
-                props = (0, _context12.t0)(_context12.t1, _context12.t2, _context12.t4);
-                privKeyData = keysToEcdhJwk(epub, epriv);
-                _context12.next = 17;
-                return ecdhSubtle.importKey.apply(ecdhSubtle, _toConsumableArray(privKeyData).concat([false, ['deriveKey']])).then(function () {
-                  var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee11(privKey) {
-                    var derivedKey;
-                    return regeneratorRuntime.wrap(function _callee11$(_context11) {
-                      while (1) {
-                        switch (_context11.prev = _context11.next) {
-                          case 0:
-                            _context11.next = 2;
-                            return ecdhSubtle.deriveKey(props, privKey, { name: 'AES-CBC', length: 256 }, true, ['encrypt', 'decrypt']);
-
-                          case 2:
-                            derivedKey = _context11.sent;
-                            return _context11.abrupt("return", ecdhSubtle.exportKey('jwk', derivedKey).then(function (_ref19) {
-                              var k = _ref19.k;
-                              return k;
-                            }));
-
-                          case 4:
-                          case "end":
-                            return _context11.stop();
-                        }
-                      }
-                    }, _callee11, _this10);
-                  }));
-
-                  return function (_x28) {
-                    return _ref18.apply(this, arguments);
-                  };
-                }());
-
-              case 17:
-                derived = _context12.sent;
-                r = derived;
-
-                if (cb) {
-                  cb(r);
-                }
-                return _context12.abrupt("return", r);
-
-              case 23:
-                _context12.prev = 23;
-                _context12.t5 = _context12["catch"](0);
-
-                SEA.err = _context12.t5;
-                if (cb) {
-                  cb();
-                }
-                return _context12.abrupt("return");
-
-              case 28:
-              case "end":
-                return _context12.stop();
-            }
-          }
-        }, _callee12, _this10, [[0, 23]]);
-      }));
-
-      return function (_x25, _x26, _x27) {
-        return _ref17.apply(this, arguments);
-      };
-    }();
-
-    var keysToEcdhJwk = function keysToEcdhJwk(pub, d) {
-      // d === priv
-      var _pub$split3 = pub.split('.'),
-          _pub$split4 = _slicedToArray(_pub$split3, 2),
-          x = _pub$split4[0],
-          y = _pub$split4[1]; // new
-
-
-      var jwk = d ? { d: d } : {};
-      return [// Use with spread returned value...
-      'jwk', _extends({}, jwk, { x: x, y: y, kty: 'EC', crv: 'P-256', ext: true }), // ??? refactor
-      S.ecdh];
-    };
+    const keysToEcdhJwk = (pub, d) => { // d === priv
+      //const [ x, y ] = Buffer.from(pub, 'base64').toString('utf8').split(':') // old
+      const [ x, y ] = pub.split('.') // new
+      const jwk = d ? { d: d } : {}
+      return [  // Use with spread returned value...
+        'jwk',
+        Object.assign(
+          jwk,
+          { x: x, y: y, kty: 'EC', crv: 'P-256', ext: true }
+        ), // ??? refactor
+        S.ecdh
+      ]
+    }
 
     module.exports = SEA.secret;
   })(USE, './secret');
 
-  ;USE(function (module) {
-    var _this11 = this;
-
+  ;USE(function(module){
     // Old Code...
-    var _USE4 = USE('./shim'),
-        crypto = _USE4.crypto,
-        subtle = _USE4.subtle,
-        ossl = _USE4.ossl,
-        getRandomBytes = _USE4.random,
-        TextEncoder = _USE4.TextEncoder,
-        TextDecoder = _USE4.TextDecoder;
-
-    var EasyIndexedDB = USE('./indexed');
-    var Buffer = USE('./buffer');
+    const __gky10 = USE('./shim')
+    const crypto = __gky10.crypto
+    const subtle = __gky10.subtle
+    const ossl = __gky10.ossl
+    const TextEncoder = __gky10.TextEncoder
+    const TextDecoder = __gky10.TextDecoder
+    const getRandomBytes = __gky10.random
+    const EasyIndexedDB = USE('./indexed')
+    const Buffer = USE('./buffer')
     var settings = USE('./settings');
-
-    var _USE5 = USE('./settings'),
-        pbKdf2 = _USE5.pbkdf2,
-        _USE5$ecdsa = _USE5.ecdsa,
-        ecdsaKeyProps = _USE5$ecdsa.pair,
-        ecdsaSignProps = _USE5$ecdsa.sign,
-        ecdhKeyProps = _USE5.ecdh,
-        keysToEcdsaJwk = _USE5.jwk;
-
-    var sha1hash = USE('./sha1');
-    var sha256hash = USE('./sha256');
-    var recallCryptoKey = USE('./remember');
-    var parseProps = USE('./parse');
+    const __gky11 = USE('./settings')
+    const pbKdf2 = __gky11.pbkdf2
+    const ecdsaKeyProps = __gky11.ecdsa.pair
+    const ecdsaSignProps = __gky11.ecdsa.sign
+    const ecdhKeyProps = __gky11.ecdh
+    const keysToEcdsaJwk = __gky11.jwk
+    const sha1hash = USE('./sha1')
+    const sha256hash = USE('./sha256')
+    const recallCryptoKey = USE('./remember')
+    const parseProps = USE('./parse')
 
     // Practical examples about usage found from ./test/common.js
-    var SEA = USE('./root');
+    const SEA = USE('./root');
     SEA.work = USE('./work');
     SEA.sign = USE('./sign');
     SEA.verify = USE('./verify');
@@ -1127,49 +620,25 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // Creates a wrapper library around Web Crypto API
     // for various AES, ECDSA, PBKDF2 functions we called above.
     // Calculate public key KeyID aka PGPv4 (result: 8 bytes as hex string)
-    SEA.keyid = function () {
-      var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(pub) {
-        var pb, id, sha1, hash;
-        return regeneratorRuntime.wrap(function _callee13$(_context13) {
-          while (1) {
-            switch (_context13.prev = _context13.next) {
-              case 0:
-                _context13.prev = 0;
-
-                // base64('base64(x):base64(y)') => Buffer(xy)
-                pb = Buffer.concat(Buffer.from(pub, 'base64').toString('utf8').split(':').map(function (t) {
-                  return Buffer.from(t, 'base64');
-                }));
-                // id is PGPv4 compliant raw key
-
-                id = Buffer.concat([Buffer.from([0x99, pb.length / 0x100, pb.length % 0x100]), pb]);
-                _context13.next = 5;
-                return sha1hash(id);
-
-              case 5:
-                sha1 = _context13.sent;
-                hash = Buffer.from(sha1, 'binary');
-                return _context13.abrupt("return", hash.toString('hex', hash.length - 8));
-
-              case 10:
-                _context13.prev = 10;
-                _context13.t0 = _context13["catch"](0);
-
-                console.log(_context13.t0);
-                throw _context13.t0;
-
-              case 14:
-              case "end":
-                return _context13.stop();
-            }
-          }
-        }, _callee13, _this11, [[0, 10]]);
-      }));
-
-      return function (_x29) {
-        return _ref20.apply(this, arguments);
-      };
-    }();
+    SEA.keyid = async (pub) => {
+      try {
+        // base64('base64(x):base64(y)') => Buffer(xy)
+        const pb = Buffer.concat(
+          Buffer.from(pub, 'base64').toString('utf8').split(':')
+          .map((t) => Buffer.from(t, 'base64'))
+        )
+        // id is PGPv4 compliant raw key
+        const id = Buffer.concat([
+          Buffer.from([0x99, pb.length / 0x100, pb.length % 0x100]), pb
+        ])
+        const sha1 = await sha1hash(id)
+        const hash = Buffer.from(sha1, 'binary')
+        return hash.toString('hex', hash.length - 8)  // 16-bit ID as hex
+      } catch (e) {
+        console.log(e)
+        throw e
+      }
+    }
     // all done!
     // Obviously it is missing MANY necessary features. This is only an alpha release.
     // Please experiment with it, audit what I've done so far, and complain about what needs to be added.
@@ -1179,1735 +648,765 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // But all other behavior needs to be equally easy, like opinionated ways of
     // Adding friends (trusted public keys), sending private messages, etc.
     // Cheers! Tell me what you think.
-    var Gun = (SEA.window || {}).Gun;
+    var Gun = (SEA.window||{}).Gun || require('gun');
     Gun.SEA = SEA;
     SEA.Gun = Gun;
 
-    module.exports = SEA;
+    module.exports = SEA
   })(USE, './sea');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     var SEA = USE('./sea');
     var Gun = SEA.Gun;
     // This is internal func queries public key(s) for alias.
-    var queryGunAliases = function queryGunAliases(alias, gunRoot) {
-      return new Promise(function (resolve, reject) {
-        // load all public keys associated with the username alias we want to log in with.
-        gunRoot.get('~@' + alias).get(function (rat, rev) {
-          rev.off();
-          if (!rat.put) {
-            // if no user, don't do anything.
-            var err = 'No user!';
-            Gun.log(err);
-            return reject({ err: err });
+    const queryGunAliases = (alias, gunRoot) => new Promise((resolve, reject) => {
+      // load all public keys associated with the username alias we want to log in with.
+      gunRoot.get('~@'+alias).get((rat, rev) => {
+        rev.off();
+        if (!rat.put) {
+          // if no user, don't do anything.
+          const err = 'No user!'
+          Gun.log(err)
+          return reject({ err })
+        }
+        // then figuring out all possible candidates having matching username
+        const aliases = []
+        let c = 0
+        // TODO: how about having real chainable map without callback ?
+        Gun.obj.map(rat.put, (at, pub) => {
+          if (!pub.slice || '~' !== pub.slice(0, 1)) {
+            // TODO: ... this would then be .filter((at, pub))
+            return
           }
-          // then figuring out all possible candidates having matching username
-          var aliases = [];
-          var c = 0;
-          // TODO: how about having real chainable map without callback ?
-          Gun.obj.map(rat.put, function (at, pub) {
-            if (!pub.slice || '~' !== pub.slice(0, 1)) {
-              // TODO: ... this would then be .filter((at, pub))
-              return;
+          ++c
+          // grab the account associated with this public key.
+          gunRoot.get(pub).get((at, ev) => {
+            pub = pub.slice(1)
+            ev.off()
+            --c
+            if (at.put){
+              aliases.push({ pub, at })
             }
-            ++c;
-            // grab the account associated with this public key.
-            gunRoot.get(pub).get(function (at, ev) {
-              pub = pub.slice(1);
-              ev.off();
-              --c;
-              if (at.put) {
-                aliases.push({ pub: pub, at: at });
-              }
-              if (!c && (c = -1)) {
-                resolve(aliases);
-              }
-            });
-          });
-          if (!c) {
-            reject({ err: 'Public key does not exist!' });
-          }
-        });
-      });
-    };
-    module.exports = queryGunAliases;
+            if (!c && (c = -1)) {
+              resolve(aliases)
+            }
+          })
+        })
+        if (!c) {
+          reject({ err: 'Public key does not exist!' })
+        }
+      })
+    })
+    module.exports = queryGunAliases
   })(USE, './query');
 
-  ;USE(function (module) {
-    var _this12 = this;
-
+  ;USE(function(module){
     var SEA = USE('./sea');
     var Gun = SEA.Gun;
-    var queryGunAliases = USE('./query');
-    var parseProps = USE('./parse');
+    const queryGunAliases = USE('./query')
+    const parseProps = USE('./parse')
     // This is internal User authentication func.
-    var authenticate = function () {
-      var _ref21 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee15(alias, pass, gunRoot) {
-        var aliases, err, _ref23, _ref24, user;
-
-        return regeneratorRuntime.wrap(function _callee15$(_context15) {
-          while (1) {
-            switch (_context15.prev = _context15.next) {
-              case 0:
-                _context15.next = 2;
-                return queryGunAliases(alias, gunRoot);
-
-              case 2:
-                _context15.t0 = function () {
-                  var _ref22 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-                      pub = _ref22.pub,
-                      _ref22$at = _ref22.at;
-
-                  _ref22$at = _ref22$at === undefined ? {} : _ref22$at;
-                  var put = _ref22$at.put;
-                  return !!pub && !!put;
-                };
-
-                aliases = _context15.sent.filter(_context15.t0);
-
-                if (aliases.length) {
-                  _context15.next = 6;
-                  break;
-                }
-
-                throw { err: 'Public key does not exist!' };
-
-              case 6:
-                err = void 0;
-                // then attempt to log into each one until we find ours!
-                // (if two users have the same username AND the same password... that would be bad)
-
-                _context15.next = 9;
-                return Promise.all(aliases.map(function () {
-                  var _ref25 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(_ref26) {
-                    var at = _ref26.at,
-                        pub = _ref26.pub;
-                    var auth, proof, props, salt, sea, priv, epriv, epub, tmp;
-                    return regeneratorRuntime.wrap(function _callee14$(_context14) {
-                      while (1) {
-                        switch (_context14.prev = _context14.next) {
-                          case 0:
-                            // attempt to PBKDF2 extend the password with the salt. (Verifying the signature gives us the plain text salt.)
-                            auth = parseProps(at.put.auth);
-                            // NOTE: aliasquery uses `gun.get` which internally SEA.read verifies the data for us, so we do not need to re-verify it here.
-                            // SEA.verify(at.put.auth, pub).then(function(auth){
-
-                            _context14.prev = 1;
-                            _context14.next = 4;
-                            return SEA.work(pass, auth.s);
-
-                          case 4:
-                            proof = _context14.sent;
-                            props = { pub: pub, proof: proof, at: at
-                              // the proof of work is evidence that we've spent some time/effort trying to log in, this slows brute force.
-                              /*
-                              MARK TO @mhelander : pub vs epub!???
-                              */
-                            };
-                            salt = auth.salt;
-                            _context14.next = 9;
-                            return SEA.decrypt(auth.ek, proof);
-
-                          case 9:
-                            sea = _context14.sent;
-
-                            if (sea) {
-                              _context14.next = 13;
-                              break;
-                            }
-
-                            err = 'Failed to decrypt secret!';
-                            return _context14.abrupt("return");
-
-                          case 13:
-                            // now we have AES decrypted the private key, from when we encrypted it with the proof at registration.
-                            // if we were successful, then that meanswe're logged in!
-                            priv = sea.priv, epriv = sea.epriv;
-                            epub = at.put.epub;
-                            // TODO: 'salt' needed?
-
-                            err = null;
-                            if (typeof window !== 'undefined') {
-                              tmp = window.sessionStorage;
-
-                              if (tmp && gunRoot._.opt.remember) {
-                                window.sessionStorage.alias = alias;
-                                window.sessionStorage.tmp = pass;
-                              }
-                            }
-                            return _context14.abrupt("return", Object.assign(props, { priv: priv, salt: salt, epub: epub, epriv: epriv }));
-
-                          case 20:
-                            _context14.prev = 20;
-                            _context14.t0 = _context14["catch"](1);
-
-                            err = 'Failed to decrypt secret!';
-                            throw { err: err };
-
-                          case 24:
-                          case "end":
-                            return _context14.stop();
-                        }
-                      }
-                    }, _callee14, _this12, [[1, 20]]);
-                  }));
-
-                  return function (_x34) {
-                    return _ref25.apply(this, arguments);
-                  };
-                }()));
-
-              case 9:
-                _ref23 = _context15.sent;
-                _ref24 = _slicedToArray(_ref23, 1);
-                user = _ref24[0];
-
-                if (user) {
-                  _context15.next = 14;
-                  break;
-                }
-
-                throw { err: err || 'Public key does not exist!' };
-
-              case 14:
-                return _context15.abrupt("return", user);
-
-              case 15:
-              case "end":
-                return _context15.stop();
+    const authenticate = async (alias, pass, gunRoot) => {
+      // load all public keys associated with the username alias we want to log in with.
+      const aliases = (await queryGunAliases(alias, gunRoot))
+      .filter(({ pub, at: { put } = {} } = {}) => !!pub && !!put)
+      // Got any?
+      if (!aliases.length) {
+        throw { err: 'Public key does not exist!' }
+      }
+      let err
+      // then attempt to log into each one until we find ours!
+      // (if two users have the same username AND the same password... that would be bad)
+      const [ user ] = await Promise.all(aliases.map(async ({ at: at, pub: pub }) => {
+        // attempt to PBKDF2 extend the password with the salt. (Verifying the signature gives us the plain text salt.)
+        const auth = parseProps(at.put.auth)
+      // NOTE: aliasquery uses `gun.get` which internally SEA.read verifies the data for us, so we do not need to re-verify it here.
+      // SEA.verify(at.put.auth, pub).then(function(auth){
+        try {
+          const proof = await SEA.work(pass, auth.s)
+          const props = { pub: pub, proof: proof, at: at }
+          // the proof of work is evidence that we've spent some time/effort trying to log in, this slows brute force.
+          /*
+          MARK TO @mhelander : pub vs epub!???
+          */
+          const salt = auth.salt
+          const sea = await SEA.decrypt(auth.ek, proof)
+          if (!sea) {
+            err = 'Failed to decrypt secret!'
+            return
+          }
+          // now we have AES decrypted the private key, from when we encrypted it with the proof at registration.
+          // if we were successful, then that meanswe're logged in!
+          const priv = sea.priv
+          const epriv = sea.epriv
+          const epub = at.put.epub
+          // TODO: 'salt' needed?
+          err = null
+          if(typeof window !== 'undefined'){
+            var tmp = window.sessionStorage;
+            if(tmp && gunRoot._.opt.remember){
+              window.sessionStorage.alias = alias;
+              window.sessionStorage.tmp = pass;
             }
           }
-        }, _callee15, _this12);
-      }));
+          return Object.assign(props, { priv: priv, salt: salt, epub: epub, epriv: epriv })
+        } catch (e) {
+          err = 'Failed to decrypt secret!'
+          throw { err }
+        }
+      }))
 
-      return function authenticate(_x30, _x31, _x32) {
-        return _ref21.apply(this, arguments);
-      };
-    }();
+      if (!user) {
+        throw { err: err || 'Public key does not exist!' }
+      }
+      return user
+    }
     module.exports = authenticate;
   })(USE, './authenticate');
 
-  ;USE(function (module) {
-    var _this13 = this;
-
-    var authsettings = USE('./settings');
-    var SEA = USE('./sea');
-    var Gun = SEA.Gun;
+  ;USE(function(module){
+    const authsettings = USE('./settings')
+    const SEA = USE('./sea');
+    const Gun = SEA.Gun;
     //const { scope: seaIndexedDb } = USE('./indexed')
     // This updates sessionStorage & IndexedDB to persist authenticated "session"
-    var updateStorage = function updateStorage(proof, key, pin) {
-      return function () {
-        var _ref27 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(props) {
-          var alias, id, remember, signed, encrypted, auth;
-          return regeneratorRuntime.wrap(function _callee16$(_context16) {
-            while (1) {
-              switch (_context16.prev = _context16.next) {
-                case 0:
-                  if (Gun.obj.has(props, 'alias')) {
-                    _context16.next = 2;
-                    break;
-                  }
+    const updateStorage = (proof, key, pin) => async (props) => {
+      if (!Gun.obj.has(props, 'alias')) {
+        return  // No 'alias' - we're done.
+      }
+      if (authsettings.validity && proof && Gun.obj.has(props, 'iat')) {
+        props.proof = proof
+        delete props.remember   // Not stored if present
 
-                  return _context16.abrupt("return");
+        const alias = props.alias
+        const id = props.alias
+        const remember = { alias: alias, pin: pin }
 
-                case 2:
-                  if (!(authsettings.validity && proof && Gun.obj.has(props, 'iat'))) {
-                    _context16.next = 30;
-                    break;
-                  }
+        try {
+          const signed = await SEA.sign(JSON.stringify(remember), key)
 
-                  props.proof = proof;
-                  delete props.remember; // Not stored if present
+          sessionStorage.setItem('user', alias)
+          sessionStorage.setItem('remember', signed)
 
-                  alias = props.alias, id = props.alias;
-                  remember = { alias: alias, pin: pin };
-                  _context16.prev = 7;
-                  _context16.next = 10;
-                  return SEA.sign(JSON.stringify(remember), key);
+          const encrypted = await SEA.encrypt(props, pin)
 
-                case 10:
-                  signed = _context16.sent;
+          if (encrypted) {
+            const auth = await SEA.sign(encrypted, key)
+            await seaIndexedDb.wipe() // NO! Do not do this. It ruins other people's sessionStorage code. This is bad/wrong, commenting it out.
+            await seaIndexedDb.put(id, { auth: auth })
+          }
 
+          return props
+        } catch (err) {
+          throw { err: 'Session persisting failed!' }
+        }
+      }
 
-                  sessionStorage.setItem('user', alias);
-                  sessionStorage.setItem('remember', signed);
+      // Wiping IndexedDB completely when using random PIN
+      await seaIndexedDb.wipe() // NO! Do not do this. It ruins other people's sessionStorage code. This is bad/wrong, commenting it out.
+      // And remove sessionStorage data
+      sessionStorage.removeItem('user')
+      sessionStorage.removeItem('remember')
 
-                  _context16.next = 15;
-                  return SEA.encrypt(props, pin);
-
-                case 15:
-                  encrypted = _context16.sent;
-
-                  if (!encrypted) {
-                    _context16.next = 24;
-                    break;
-                  }
-
-                  _context16.next = 19;
-                  return SEA.sign(encrypted, key);
-
-                case 19:
-                  auth = _context16.sent;
-                  _context16.next = 22;
-                  return seaIndexedDb.wipe();
-
-                case 22:
-                  _context16.next = 24;
-                  return seaIndexedDb.put(id, { auth: auth });
-
-                case 24:
-                  return _context16.abrupt("return", props);
-
-                case 27:
-                  _context16.prev = 27;
-                  _context16.t0 = _context16["catch"](7);
-                  throw { err: 'Session persisting failed!' };
-
-                case 30:
-                  _context16.next = 32;
-                  return seaIndexedDb.wipe();
-
-                case 32:
-                  // NO! Do not do this. It ruins other people's sessionStorage code. This is bad/wrong, commenting it out.
-                  // And remove sessionStorage data
-                  sessionStorage.removeItem('user');
-                  sessionStorage.removeItem('remember');
-
-                  return _context16.abrupt("return", props);
-
-                case 35:
-                case "end":
-                  return _context16.stop();
-              }
-            }
-          }, _callee16, _this13, [[7, 27]]);
-        }));
-
-        return function (_x35) {
-          return _ref27.apply(this, arguments);
-        };
-      }();
-    };
-    module.exports = updateStorage;
+      return props
+    }
+    module.exports = updateStorage
   })(USE, './update');
 
-  ;USE(function (module) {
-    var _this14 = this;
-
-    var SEA = USE('./sea');
-    var Gun = SEA.Gun;
-    var Buffer = USE('./buffer');
-    var authsettings = USE('./settings');
-    var updateStorage = USE('./update');
+  ;USE(function(module){
+    const SEA = USE('./sea');
+    const Gun = SEA.Gun;
+    const Buffer = USE('./buffer')
+    const authsettings = USE('./settings')
+    const updateStorage = USE('./update')
     // This internal func persists User authentication if so configured
-    var authPersist = function () {
-      var _ref28 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(user, proof, opts) {
-        var pin, _ref29, alias, exp, iat, remember, props, pub, epub, _user$sea, priv, epriv, key, asyncProps;
+    const authPersist = async (user, proof, opts) => {
+      // opts = { pin: 'string' }
+      // no opts.pin then uses random PIN
+      // How this works:
+      // called when app bootstraps, with wanted options
+      // IF authsettings.validity === 0 THEN no remember-me, ever
+      // IF PIN then signed 'remember' to window.sessionStorage and 'auth' to IndexedDB
+      const pin = Buffer.from(
+        (Gun.obj.has(opts, 'pin') && opts.pin) || Gun.text.random(10),
+        'utf8'
+      ).toString('base64')
 
-        return regeneratorRuntime.wrap(function _callee17$(_context17) {
-          while (1) {
-            switch (_context17.prev = _context17.next) {
-              case 0:
-                // opts = { pin: 'string' }
-                // no opts.pin then uses random PIN
-                // How this works:
-                // called when app bootstraps, with wanted options
-                // IF authsettings.validity === 0 THEN no remember-me, ever
-                // IF PIN then signed 'remember' to window.sessionStorage and 'auth' to IndexedDB
-                pin = Buffer.from(Gun.obj.has(opts, 'pin') && opts.pin || Gun.text.random(10), 'utf8').toString('base64');
-                _ref29 = user || {}, alias = _ref29.alias;
-                exp = authsettings.validity; // seconds // @mhelander what is `exp`???
+      const alias = user.alias
+      const exp = authsettings.validity      // seconds // @mhelander what is `exp`???
 
-                if (!(proof && alias && exp)) {
-                  _context17.next = 19;
-                  break;
-                }
-
-                iat = Math.ceil(Date.now() / 1000); // seconds
-
-                remember = Gun.obj.has(opts, 'pin') || undefined; // for hook - not stored
-
-                props = authsettings.hook({ alias: alias, iat: iat, exp: exp, remember: remember });
-                pub = user.pub, epub = user.epub, _user$sea = user.sea, priv = _user$sea.priv, epriv = _user$sea.epriv;
-                key = { pub: pub, priv: priv, epub: epub, epriv: epriv };
-
-                if (!(props instanceof Promise)) {
-                  _context17.next = 16;
-                  break;
-                }
-
-                _context17.next = 12;
-                return props.then();
-
-              case 12:
-                asyncProps = _context17.sent;
-                _context17.next = 15;
-                return updateStorage(proof, key, pin)(asyncProps);
-
-              case 15:
-                return _context17.abrupt("return", _context17.sent);
-
-              case 16:
-                _context17.next = 18;
-                return updateStorage(proof, key, pin)(props);
-
-              case 18:
-                return _context17.abrupt("return", _context17.sent);
-
-              case 19:
-                _context17.next = 21;
-                return updateStorage()({ alias: 'delete' });
-
-              case 21:
-                return _context17.abrupt("return", _context17.sent);
-
-              case 22:
-              case "end":
-                return _context17.stop();
-            }
-          }
-        }, _callee17, _this14);
-      }));
-
-      return function authPersist(_x36, _x37, _x38) {
-        return _ref28.apply(this, arguments);
-      };
-    }();
-    module.exports = authPersist;
+      if (proof && alias && exp) {
+        const iat = Math.ceil(Date.now() / 1000)  // seconds
+        const remember = Gun.obj.has(opts, 'pin') || undefined  // for hook - not stored
+        const props = authsettings.hook({ alias: alias, iat: iat, exp: exp, remember: remember })
+        const pub = user.pub
+        const epub = user.epub
+        const priv = user.sea.priv
+        const epriv = user.sea.epriv
+        const key = { pub: pub, priv: priv, epub: epub, epriv: epriv }
+        if (props instanceof Promise) {
+          const asyncProps = await props.then()
+          return await updateStorage(proof, key, pin)(asyncProps)
+        }
+        return await updateStorage(proof, key, pin)(props)
+      }
+      return await updateStorage()({ alias: 'delete' })
+    }
+    module.exports = authPersist
   })(USE, './persist');
 
-  ;USE(function (module) {
-    var _this15 = this;
-
-    var authPersist = USE('./persist');
+  ;USE(function(module){
+    const authPersist = USE('./persist')
     // This internal func finalizes User authentication
-    var finalizeLogin = function () {
-      var _ref30 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(alias, key, gunRoot, opts) {
-        var user, opt, pub, priv, epub, epriv;
-        return regeneratorRuntime.wrap(function _callee18$(_context18) {
-          while (1) {
-            switch (_context18.prev = _context18.next) {
-              case 0:
-                user = gunRoot._.user;
-                // add our credentials in-memory only to our root gun instance
-                //var tmp = user._.tag;
-
-                opt = user._.opt;
-
-                user._ = key.at.gun._;
-                user._.opt = opt;
-                //user._.tag = tmp || user._.tag;
-                // so that way we can use the credentials to encrypt/decrypt data
-                // that is input/output through gun (see below)
-                pub = key.pub, priv = key.priv, epub = key.epub, epriv = key.epriv;
-
-                user._.is = user.is = { alias: alias, pub: pub };
-                Object.assign(user._, { alias: alias, pub: pub, epub: epub, sea: { pub: pub, priv: priv, epub: epub, epriv: epriv } });
-                //console.log("authorized", user._);
-                // persist authentication
-                //await authPersist(user._, key.proof, opts) // temporarily disabled
-                // emit an auth event, useful for page redirects and stuff.
-                try {
-                  gunRoot._.on('auth', user._);
-                } catch (e) {
-                  console.log('Your \'auth\' callback crashed with:', e);
-                }
-                // returns success with the user data credentials.
-                return _context18.abrupt("return", user._);
-
-              case 9:
-              case "end":
-                return _context18.stop();
-            }
-          }
-        }, _callee18, _this15);
-      }));
-
-      return function finalizeLogin(_x39, _x40, _x41, _x42) {
-        return _ref30.apply(this, arguments);
-      };
-    }();
-    module.exports = finalizeLogin;
+    const finalizeLogin = async (alias, key, gunRoot, opts) => {
+      const user = gunRoot._.user
+      // add our credentials in-memory only to our root gun instance
+      //var tmp = user._.tag;
+      var opt = user._.opt;
+      user._ = key.at.gun._;
+      user._.opt = opt;
+      //user._.tag = tmp || user._.tag;
+      // so that way we can use the credentials to encrypt/decrypt data
+      // that is input/output through gun (see below)
+      const pub = key.pub
+      const priv = key.priv
+      const epub = key.epub
+      const epriv = key.epriv
+      user._.is = user.is = {alias: alias, pub: pub};
+      Object.assign(user._, { alias: alias, pub: pub, epub: epub, sea: { pub: pub, priv: priv, epub: epub, epriv: epriv } })
+      //console.log("authorized", user._);
+      // persist authentication
+      //await authPersist(user._, key.proof, opts) // temporarily disabled
+      // emit an auth event, useful for page redirects and stuff.
+      try {
+        gunRoot._.on('auth', user._)
+      } catch (e) {
+        console.log('Your \'auth\' callback crashed with:', e)
+      }
+      // returns success with the user data credentials.
+      return user._
+    }
+    module.exports = finalizeLogin
   })(USE, './login');
 
-  ;USE(function (module) {
-    var _this16 = this;
-
-    var Buffer = USE('./buffer');
-    var authsettings = USE('./settings');
+  ;USE(function(module){
+    const Buffer = USE('./buffer')
+    const authsettings = USE('./settings')
     //const { scope: seaIndexedDb } = USE('./indexed')
-    var queryGunAliases = USE('./query');
-    var parseProps = USE('./parse');
-    var updateStorage = USE('./update');
-    var SEA = USE('./sea');
-    var Gun = SEA.Gun;
-    var finalizeLogin = USE('./login');
+    const queryGunAliases = USE('./query')
+    const parseProps = USE('./parse')
+    const updateStorage = USE('./update')
+    const SEA = USE('./sea')
+    const Gun = SEA.Gun;
+    const finalizeLogin = USE('./login')
 
     // This internal func recalls persisted User authentication if so configured
-    var authRecall = function () {
-      var _ref31 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(gunRoot, authprops) {
-        var remember, _ref32, _ref32$alias, alias, pIn, pin, checkRememberData, readAndDecrypt, aliases, err, _ref37, _ref38, _ref38$, key, at, proof, newPin, user, pIN, pinProp, _ref39, _ref39$err, _err;
-
-        return regeneratorRuntime.wrap(function _callee23$(_context23) {
-          while (1) {
-            switch (_context23.prev = _context23.next) {
-              case 0:
-                // window.sessionStorage only holds signed { alias, pin } !!!
-                remember = authprops || sessionStorage.getItem('remember');
-                _ref32 = authprops || {}, _ref32$alias = _ref32.alias, alias = _ref32$alias === undefined ? sessionStorage.getItem('user') : _ref32$alias, pIn = _ref32.pin; // @mhelander what is pIn?
-
-                pin = pIn && Buffer.from(pIn, 'utf8').toString('base64');
-                // Checks for existing proof, matching alias and expiration:
-
-                checkRememberData = function () {
-                  var _ref33 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(_ref34) {
-                    var proof = _ref34.proof,
-                        aLias = _ref34.alias,
-                        iat = _ref34.iat,
-                        exp = _ref34.exp,
-                        remember = _ref34.remember;
-                    var checkNotExpired, hooked;
-                    return regeneratorRuntime.wrap(function _callee19$(_context19) {
-                      while (1) {
-                        switch (_context19.prev = _context19.next) {
-                          case 0:
-                            if (!(!!proof && alias === aLias)) {
-                              _context19.next = 12;
-                              break;
-                            }
-
-                            checkNotExpired = function checkNotExpired(args) {
-                              if (Math.floor(Date.now() / 1000) < iat + args.exp) {
-                                // No way hook to update 'iat'
-                                return Object.assign(args, { iat: iat, proof: proof });
-                              } else {
-                                Gun.log('Authentication expired!');
-                              }
-                            };
-                            // We're not gonna give proof to hook!
-
-
-                            hooked = authsettings.hook({ alias: alias, iat: iat, exp: exp, remember: remember });
-                            _context19.t1 = hooked instanceof Promise;
-
-                            if (!_context19.t1) {
-                              _context19.next = 8;
-                              break;
-                            }
-
-                            _context19.next = 7;
-                            return hooked.then(checkNotExpired);
-
-                          case 7:
-                            _context19.t1 = _context19.sent;
-
-                          case 8:
-                            _context19.t0 = _context19.t1;
-
-                            if (_context19.t0) {
-                              _context19.next = 11;
-                              break;
-                            }
-
-                            _context19.t0 = checkNotExpired(hooked);
-
-                          case 11:
-                            return _context19.abrupt("return", _context19.t0);
-
-                          case 12:
-                          case "end":
-                            return _context19.stop();
-                        }
-                      }
-                    }, _callee19, _this16);
-                  }));
-
-                  return function checkRememberData(_x45) {
-                    return _ref33.apply(this, arguments);
-                  };
-                }();
-
-                readAndDecrypt = function () {
-                  var _ref35 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(data, pub, key) {
-                    return regeneratorRuntime.wrap(function _callee20$(_context20) {
-                      while (1) {
-                        switch (_context20.prev = _context20.next) {
-                          case 0:
-                            _context20.t0 = parseProps;
-                            _context20.t1 = SEA;
-                            _context20.next = 4;
-                            return SEA.verify(data, pub);
-
-                          case 4:
-                            _context20.t2 = _context20.sent;
-                            _context20.t3 = key;
-                            _context20.next = 8;
-                            return _context20.t1.decrypt.call(_context20.t1, _context20.t2, _context20.t3);
-
-                          case 8:
-                            _context20.t4 = _context20.sent;
-                            return _context20.abrupt("return", (0, _context20.t0)(_context20.t4));
-
-                          case 10:
-                          case "end":
-                            return _context20.stop();
-                        }
-                      }
-                    }, _callee20, _this16);
-                  }));
-
-                  return function readAndDecrypt(_x46, _x47, _x48) {
-                    return _ref35.apply(this, arguments);
-                  };
-                }();
-
-                // Already authenticated?
-
-
-                if (!(gunRoot._.user && Gun.obj.has(gunRoot._.user._, 'pub') && Gun.obj.has(gunRoot._.user._, 'sea'))) {
-                  _context23.next = 7;
-                  break;
-                }
-
-                return _context23.abrupt("return", gunRoot._.user._);
-
-              case 7:
-                if (alias) {
-                  _context23.next = 9;
-                  break;
-                }
-
-                throw { err: 'No authentication session found!' };
-
-              case 9:
-                if (remember) {
-                  _context23.next = 23;
-                  break;
-                }
-
-                _context23.next = 12;
-                return seaIndexedDb.get(alias, 'auth');
-
-              case 12:
-                _context23.t2 = _context23.sent;
-
-                if (!_context23.t2) {
-                  _context23.next = 15;
-                  break;
-                }
-
-                _context23.t2 = authsettings.validity;
-
-              case 15:
-                _context23.t1 = _context23.t2;
-
-                if (!_context23.t1) {
-                  _context23.next = 18;
-                  break;
-                }
-
-                _context23.t1 = 'Missing PIN and alias!';
-
-              case 18:
-                _context23.t0 = _context23.t1;
-
-                if (_context23.t0) {
-                  _context23.next = 21;
-                  break;
-                }
-
-                _context23.t0 = 'No authentication session found!';
-
-              case 21:
-                _context23.t3 = _context23.t0;
-                throw {
-                  err: _context23.t3
-                };
-
-              case 23:
-                _context23.next = 25;
-                return queryGunAliases(alias, gunRoot);
-
-              case 25:
-                _context23.t4 = function () {
-                  var _ref36 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-                      pub = _ref36.pub;
-
-                  return !!pub;
-                };
-
-                aliases = _context23.sent.filter(_context23.t4);
-
-                if (aliases.length) {
-                  _context23.next = 29;
-                  break;
-                }
-
-                throw { err: 'Public key does not exist!' };
-
-              case 29:
-                err = void 0;
-                // Yes, then attempt to log into each one until we find ours!
-                // (if two users have the same username AND the same password... that would be bad)
-
-                _context23.next = 32;
-                return Promise.all(aliases.filter(function (_ref40) {
-                  var _ref40$at = _ref40.at;
-                  _ref40$at = _ref40$at === undefined ? {} : _ref40$at;
-                  var put = _ref40$at.put;
-                  return !!put;
-                }).map(function () {
-                  var _ref41 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(_ref42) {
-                    var at = _ref42.at,
-                        pub = _ref42.pub;
-
-                    var readStorageData, _ref44, data, newPin, _ref45, proof, auth, sea, priv, epriv, epub;
-
-                    return regeneratorRuntime.wrap(function _callee22$(_context22) {
-                      while (1) {
-                        switch (_context22.prev = _context22.next) {
-                          case 0:
-                            readStorageData = function () {
-                              var _ref43 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(args) {
-                                var props, pin, aLias, data;
-                                return regeneratorRuntime.wrap(function _callee21$(_context21) {
-                                  while (1) {
-                                    switch (_context21.prev = _context21.next) {
-                                      case 0:
-                                        _context21.t0 = args;
-
-                                        if (_context21.t0) {
-                                          _context21.next = 7;
-                                          break;
-                                        }
-
-                                        _context21.t1 = parseProps;
-                                        _context21.next = 5;
-                                        return SEA.verify(remember, pub, true);
-
-                                      case 5:
-                                        _context21.t2 = _context21.sent;
-                                        _context21.t0 = (0, _context21.t1)(_context21.t2);
-
-                                      case 7:
-                                        props = _context21.t0;
-                                        pin = props.pin, aLias = props.alias;
-
-                                        if (!(!pin && alias === aLias)) {
-                                          _context21.next = 15;
-                                          break;
-                                        }
-
-                                        _context21.next = 12;
-                                        return checkRememberData(props);
-
-                                      case 12:
-                                        _context21.t3 = _context21.sent;
-                                        _context21.next = 28;
-                                        break;
-
-                                      case 15:
-                                        _context21.t4 = checkRememberData;
-                                        _context21.t5 = readAndDecrypt;
-                                        _context21.next = 19;
-                                        return seaIndexedDb.get(alias, 'auth');
-
-                                      case 19:
-                                        _context21.t6 = _context21.sent;
-                                        _context21.t7 = pub;
-                                        _context21.t8 = pin;
-                                        _context21.next = 24;
-                                        return (0, _context21.t5)(_context21.t6, _context21.t7, _context21.t8);
-
-                                      case 24:
-                                        _context21.t9 = _context21.sent;
-                                        _context21.next = 27;
-                                        return (0, _context21.t4)(_context21.t9);
-
-                                      case 27:
-                                        _context21.t3 = _context21.sent;
-
-                                      case 28:
-                                        data = _context21.t3;
-
-                                        pin = pin || data.pin;
-                                        delete data.pin;
-                                        return _context21.abrupt("return", { pin: pin, data: data });
-
-                                      case 32:
-                                      case "end":
-                                        return _context21.stop();
-                                    }
-                                  }
-                                }, _callee21, _this16);
-                              }));
-
-                              return function readStorageData(_x51) {
-                                return _ref43.apply(this, arguments);
-                              };
-                            }();
-                            // got pub, try auth with pin & alias :: or unwrap Storage data...
-
-
-                            _context22.next = 3;
-                            return readStorageData(pin && { pin: pin, alias: alias });
-
-                          case 3:
-                            _ref44 = _context22.sent;
-                            data = _ref44.data;
-                            newPin = _ref44.pin;
-                            _ref45 = data || {}, proof = _ref45.proof;
-
-                            if (proof) {
-                              _context22.next = 20;
-                              break;
-                            }
-
-                            if (data) {
-                              _context22.next = 11;
-                              break;
-                            }
-
-                            err = 'No valid authentication session found!';
-                            return _context22.abrupt("return");
-
-                          case 11:
-                            _context22.prev = 11;
-                            _context22.next = 14;
-                            return updateStorage()(data);
-
-                          case 14:
-                            _context22.next = 18;
-                            break;
-
-                          case 16:
-                            _context22.prev = 16;
-                            _context22.t0 = _context22["catch"](11);
-
-                          case 18:
-                            //eslint-disable-line no-empty
-                            err = 'Expired session!';
-                            return _context22.abrupt("return");
-
-                          case 20:
-                            _context22.prev = 20;
-                            // auth parsing or decryption fails or returns empty - silently done
-                            auth = at.put.auth.auth;
-                            _context22.next = 24;
-                            return SEA.decrypt(auth, proof);
-
-                          case 24:
-                            sea = _context22.sent;
-
-                            if (sea) {
-                              _context22.next = 28;
-                              break;
-                            }
-
-                            err = 'Failed to decrypt private key!';
-                            return _context22.abrupt("return");
-
-                          case 28:
-                            priv = sea.priv, epriv = sea.epriv;
-                            epub = at.put.epub;
-                            // Success! we've found our private data!
-
-                            err = null;
-                            return _context22.abrupt("return", { proof: proof, at: at, pin: newPin, key: { pub: pub, priv: priv, epriv: epriv, epub: epub } });
-
-                          case 34:
-                            _context22.prev = 34;
-                            _context22.t1 = _context22["catch"](20);
-
-                            err = 'Failed to decrypt private key!';
-                            return _context22.abrupt("return");
-
-                          case 38:
-                          case "end":
-                            return _context22.stop();
-                        }
-                      }
-                    }, _callee22, _this16, [[11, 16], [20, 34]]);
-                  }));
-
-                  return function (_x50) {
-                    return _ref41.apply(this, arguments);
-                  };
-                }()).filter(function (props) {
-                  return !!props;
-                }));
-
-              case 32:
-                _ref37 = _context23.sent;
-                _ref38 = _slicedToArray(_ref37, 1);
-                _ref38$ = _ref38[0];
-                _ref38$ = _ref38$ === undefined ? {} : _ref38$;
-                key = _ref38$.key, at = _ref38$.at, proof = _ref38$.proof, newPin = _ref38$.pin;
-
-                if (key) {
-                  _context23.next = 39;
-                  break;
-                }
-
-                throw { err: err || 'Public key does not exist!' };
-
-              case 39:
-                _context23.prev = 39;
-                _context23.next = 42;
-                return updateStorage(proof, key, newPin || pin)(key);
-
-              case 42:
-                user = Object.assign(key, { at: at, proof: proof });
-                pIN = newPin || pin;
-                pinProp = pIN && { pin: Buffer.from(pIN, 'base64').toString('utf8') };
-                _context23.next = 47;
-                return finalizeLogin(alias, user, gunRoot, pinProp);
-
-              case 47:
-                return _context23.abrupt("return", _context23.sent);
-
-              case 50:
-                _context23.prev = 50;
-                _context23.t5 = _context23["catch"](39);
-                // TODO: right log message ?
-                Gun.log('Failed to finalize login with new password!');
-                _ref39 = _context23.t5 || {}, _ref39$err = _ref39.err, _err = _ref39$err === undefined ? '' : _ref39$err;
-                throw { err: 'Finalizing new password login failed! Reason: ' + _err };
-
-              case 55:
-              case "end":
-                return _context23.stop();
+    const authRecall = async (gunRoot, authprops) => {
+      // window.sessionStorage only holds signed { alias, pin } !!!
+      const remember = authprops || sessionStorage.getItem('remember')
+      const { alias = sessionStorage.getItem('user'), pin: pIn } = authprops || {} // @mhelander what is pIn?
+      const pin = pIn && Buffer.from(pIn, 'utf8').toString('base64')
+      // Checks for existing proof, matching alias and expiration:
+      const checkRememberData = async ({ proof, alias: aLias, iat, exp, remember }) => {
+        if (!!proof && alias === aLias) {
+          const checkNotExpired = (args) => {
+            if (Math.floor(Date.now() / 1000) < (iat + args.exp)) {
+              // No way hook to update 'iat'
+              return Object.assign(args, { iat: iat, proof: proof })
+            } else {
+              Gun.log('Authentication expired!')
             }
           }
-        }, _callee23, _this16, [[39, 50]]);
-      }));
+          // We're not gonna give proof to hook!
+          const hooked = authsettings.hook({ alias: alias, iat: iat, exp: exp, remember: remember })
+          return ((hooked instanceof Promise)
+          && await hooked.then(checkNotExpired)) || checkNotExpired(hooked)
+        }
+      }
+      const readAndDecrypt = async (data, pub, key) =>
+        parseProps(await SEA.decrypt(await SEA.verify(data, pub), key))
 
-      return function authRecall(_x43, _x44) {
-        return _ref31.apply(this, arguments);
-      };
-    }();
-    module.exports = authRecall;
+      // Already authenticated?
+      if (gunRoot._.user
+      && Gun.obj.has(gunRoot._.user._, 'pub')
+      && Gun.obj.has(gunRoot._.user._, 'sea')) {
+        return gunRoot._.user._  // Yes, we're done here.
+      }
+      // No, got persisted 'alias'?
+      if (!alias) {
+        throw { err: 'No authentication session found!' }
+      }
+      // Yes, got persisted 'remember'?
+      if (!remember) {
+        throw {  // And return proof if for matching alias
+          err: (await seaIndexedDb.get(alias, 'auth') && authsettings.validity
+          && 'Missing PIN and alias!') || 'No authentication session found!'
+        }
+      }
+      // Yes, let's get (all?) matching aliases
+      const aliases = (await queryGunAliases(alias, gunRoot))
+      .filter(({ pub } = {}) => !!pub)
+      // Got any?
+      if (!aliases.length) {
+        throw { err: 'Public key does not exist!' }
+      }
+      let err
+      // Yes, then attempt to log into each one until we find ours!
+      // (if two users have the same username AND the same password... that would be bad)
+      const [ { key, at, proof, pin: newPin } = {} ] = await Promise
+      .all(aliases.filter(({ at: { put } = {} }) => !!put)
+      .map(async ({ at: at, pub: pub }) => {
+        const readStorageData = async (args) => {
+          const props = args || parseProps(await SEA.verify(remember, pub, true))
+          let pin = props.pin
+          let aLias = props.alias
+
+          const data = (!pin && alias === aLias)
+          // No PIN, let's try short-term proof if for matching alias
+          ? await checkRememberData(props)
+          // Got PIN so get IndexedDB secret if signature is ok
+          : await checkRememberData(await readAndDecrypt(await seaIndexedDb.get(alias, 'auth'), pub, pin))
+          pin = pin || data.pin
+          delete data.pin
+          return { pin: pin, data: data }
+        }
+        // got pub, try auth with pin & alias :: or unwrap Storage data...
+        const __gky20 = await readStorageData(pin && { pin, alias })
+        const data = __gky20.data
+        const newPin = __gky20.pin
+        const proof = data.proof
+
+        if (!proof) {
+          if (!data) {
+            err = 'No valid authentication session found!'
+            return
+          }
+          try { // Wipes IndexedDB silently
+            await updateStorage()(data)
+          } catch (e) {}  //eslint-disable-line no-empty
+          err = 'Expired session!'
+          return
+        }
+
+        try { // auth parsing or decryption fails or returns empty - silently done
+          const auth= at.put.auth.auth
+          const sea = await SEA.decrypt(auth, proof)
+          if (!sea) {
+            err = 'Failed to decrypt private key!'
+            return
+          }
+          const priv = sea.priv
+          const epriv = sea.epriv
+          const epub = at.put.epub
+          // Success! we've found our private data!
+          err = null
+          return { proof: proof, at: at, pin: newPin, key: { pub: pub, priv: priv, epriv: epriv, epub: epub } }
+        } catch (e) {
+          err = 'Failed to decrypt private key!'
+          return
+        }
+      }).filter((props) => !!props))
+
+      if (!key) {
+        throw { err: err || 'Public key does not exist!' }
+      }
+
+      // now we have AES decrypted the private key,
+      // if we were successful, then that means we're logged in!
+      try {
+        await updateStorage(proof, key, newPin || pin)(key)
+
+        const user = Object.assign(key, { at: at, proof: proof })
+        const pIN = newPin || pin
+
+        const pinProp = pIN && { pin: Buffer.from(pIN, 'base64').toString('utf8') }
+
+        return await finalizeLogin(alias, user, gunRoot, pinProp)
+      } catch (e) { // TODO: right log message ?
+        Gun.log('Failed to finalize login with new password!')
+        const { err = '' } = e || {}
+        throw { err: 'Finalizing new password login failed! Reason: '+err }
+      }
+    }
+    module.exports = authRecall
   })(USE, './recall');
 
-  ;USE(function (module) {
-    var _this17 = this;
-
-    var authPersist = USE('./persist');
-    var authsettings = USE('./settings');
+  ;USE(function(module){
+    const authPersist = USE('./persist')
+    const authsettings = USE('./settings')
     //const { scope: seaIndexedDb } = USE('./indexed')
     // This internal func executes logout actions
-    var authLeave = function () {
-      var _ref46 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(gunRoot) {
-        var alias = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : gunRoot._.user._.alias;
-        var user;
-        return regeneratorRuntime.wrap(function _callee24$(_context24) {
-          while (1) {
-            switch (_context24.prev = _context24.next) {
-              case 0:
-                user = gunRoot._.user._ || {};
-
-                ['get', 'soul', 'ack', 'put', 'is', 'alias', 'pub', 'epub', 'sea'].map(function (key) {
-                  return delete user[key];
-                });
-                if (user.gun) {
-                  delete user.gun.is;
-                }
-                // Let's use default
-                gunRoot.user();
-                // Removes persisted authentication & CryptoKeys
-                _context24.prev = 4;
-                _context24.next = 7;
-                return authPersist({ alias: alias });
-
-              case 7:
-                _context24.next = 11;
-                break;
-
-              case 9:
-                _context24.prev = 9;
-                _context24.t0 = _context24["catch"](4);
-
-              case 11:
-                return _context24.abrupt("return", { ok: 0 });
-
-              case 12:
-              case "end":
-                return _context24.stop();
-            }
-          }
-        }, _callee24, _this17, [[4, 9]]);
-      }));
-
-      return function authLeave(_x52) {
-        return _ref46.apply(this, arguments);
-      };
-    }();
-    module.exports = authLeave;
+    const authLeave = async (gunRoot, alias = gunRoot._.user._.alias) => {
+      var user = gunRoot._.user._ || {};
+      [ 'get', 'soul', 'ack', 'put', 'is', 'alias', 'pub', 'epub', 'sea' ].map((key) => delete user[key])
+      if(user.gun){
+        delete user.gun.is;
+      }
+      // Let's use default
+      gunRoot.user();
+      // Removes persisted authentication & CryptoKeys
+      try {
+        await authPersist({ alias: alias })
+      } catch (e) {}  //eslint-disable-line no-empty
+      return { ok: 0 }
+    }
+    module.exports = authLeave
   })(USE, './leave');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     var Gun = USE('./sea').Gun;
-    Gun.chain.then = function (cb) {
-      var gun = this,
-          p = new Promise(function (res, rej) {
+    Gun.chain.then = function(cb){
+      var gun = this, p = (new Promise(function(res, rej){
         gun.once(res);
-      });
-      return cb ? p.then(cb) : p;
-    };
+      }));
+      return cb? p.then(cb) : p;
+    }
   })(USE, './then');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     var SEA = USE('./sea');
     var Gun = SEA.Gun;
     var then = USE('./then');
 
-    function User() {
-      this._ = { gun: this };
-      Gun.call();
+    function User(){
+      this._ = {gun: this}
+      Gun.call()
     }
-    User.prototype = function () {
-      function F() {};F.prototype = Gun.chain;return new F();
-    }(); // Object.create polyfill
+    User.prototype = (function(){ function F(){}; F.prototype = Gun.chain; return new F() }()) // Object.create polyfill
     User.prototype.constructor = User;
 
     // let's extend the gun chain with a `user` function.
     // only one user can be logged in at a time, per gun instance.
-    Gun.chain.user = function (pub) {
-      var gun = this,
-          root = gun.back(-1),
-          user;
-      if (pub) {
-        return root.get('~' + pub);
-      }
-      if (user = root.back('user')) {
-        return user;
-      }
-      var root = root._,
-          at = root,
-          uuid = at.opt.uuid || Gun.state.lex;
-      (at = (user = at.user = gun.chain(new User()))._).opt = {};
-      at.opt.uuid = function (cb) {
-        var id = uuid(),
-            pub = root.user;
-        if (!pub || !(pub = pub._.sea) || !(pub = pub.pub)) {
-          return id;
-        }
+    Gun.chain.user = function(pub){
+      var gun = this, root = gun.back(-1), user;
+      if(pub){ return root.get('~'+pub) }
+      if(user = root.back('user')){ return user }
+      var root = (root._), at = root, uuid = at.opt.uuid || Gun.state.lex;
+      (at = (user = at.user = gun.chain(new User))._).opt = {};
+      at.opt.uuid = function(cb){
+        var id = uuid(), pub = root.user;
+        if(!pub || !(pub = (pub._).sea) || !(pub = pub.pub)){ return id }
         id = id + '~' + pub + '.';
-        if (cb && cb.call) {
-          cb(null, id);
-        }
+        if(cb && cb.call){ cb(null, id) }
         return id;
-      };
+      }
       return user;
-    };
+    }
     module.exports = User;
   })(USE, './user');
 
-  ;USE(function (module) {
+  ;USE(function(module){
     // TODO: This needs to be split into all separate functions.
     // Not just everything thrown into 'create'.
 
-    var SEA = USE('./sea');
-    var User = USE('./user');
-    var authRecall = USE('./recall');
-    var authsettings = USE('./settings');
-    var authenticate = USE('./authenticate');
-    var finalizeLogin = USE('./login');
-    var authLeave = USE('./leave');
-
-    var _USE6 = USE('./settings'),
-        _initial_authsettings = _USE6.recall;
-
-    var Gun = SEA.Gun;
+    const SEA = USE('./sea')
+    const User = USE('./user')
+    const authRecall = USE('./recall')
+    const authsettings = USE('./settings')
+    const authenticate = USE('./authenticate')
+    const finalizeLogin = USE('./login')
+    const authLeave = USE('./leave')
+    const _initial_authsettings = USE('./settings').recall
+    const Gun = SEA.Gun;
 
     var u;
     // Well first we have to actually create a user. That is what this function does.
-    User.prototype.create = function (username, pass, cb) {
-      var _this18 = this;
-
+    User.prototype.create = function(username, pass, cb){
       // TODO: Needs to be cleaned up!!!
-      var gunRoot = this.back(-1);
-      var gun = this,
-          cat = gun._;
-      cb = cb || function () {};
-      if (cat.ing) {
-        cb({ err: Gun.log("User is already being created or authenticated!"), wait: true });
+      const gunRoot = this.back(-1)
+      var gun = this, cat = (gun._);
+      cb = cb || function(){};
+      if(cat.ing){
+        cb({err: Gun.log("User is already being created or authenticated!"), wait: true});
         return gun;
       }
       cat.ing = true;
-      var resolve = function resolve() {},
-          reject = resolve;
+      var resolve = function(){}, reject = resolve;
       // Because more than 1 user might have the same username, we treat the alias as a list of those users.
-      if (cb) {
-        resolve = reject = cb;
-      }
-      gunRoot.get('~@' + username).get(function () {
-        var _ref47 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(at, ev) {
-          var err, salt, proof, pairs, pub, priv, epriv, alias, epub, auth, user, tmp;
-          return regeneratorRuntime.wrap(function _callee25$(_context25) {
-            while (1) {
-              switch (_context25.prev = _context25.next) {
-                case 0:
-                  ev.off();
+      if(cb){ resolve = reject = cb }
+      gunRoot.get('~@'+username).get(async (at, ev) => {
+        ev.off()
+        if (at.put) {
+          // If we can enforce that a user name is already taken, it might be nice to try, but this is not guaranteed.
+          const err = 'User already created!'
+          Gun.log(err)
+          cat.ing = false;
+          gun.leave();
+          return reject({ err: err })
+        }
+        const salt = Gun.text.random(64)
+        // pseudo-randomly create a salt, then use CryptoJS's PBKDF2 function to extend the password with it.
+        try {
+          const proof = await SEA.work(pass, salt)
+          // this will take some short amount of time to produce a proof, which slows brute force attacks.
+          const pairs = await SEA.pair()
+          // now we have generated a brand new ECDSA key pair for the user account.
+          const pub = pairs.pub
+          const priv = pairs.priv
+          const epriv = pairs.epriv
+          // the user's public key doesn't need to be signed. But everything else needs to be signed with it!
+          const alias = await SEA.sign(username, pairs)
+          if(u === alias){ throw SEA.err }
+          const epub = await SEA.sign(pairs.epub, pairs)
+          if(u === epub){ throw SEA.err }
+          // to keep the private key safe, we AES encrypt it with the proof of work!
+          const auth = await SEA.encrypt({ priv: priv, epriv: epriv }, proof)
+          .then((auth) => // TODO: So signedsalt isn't needed?
+          // SEA.sign(salt, pairs).then((signedsalt) =>
+            SEA.sign({ek: auth, s: salt}, pairs)
+          // )
+          ).catch((e) => { Gun.log('SEA.en or SEA.write calls failed!'); cat.ing = false; gun.leave(); reject(e) })
+          const user = { alias: alias, pub: pub, epub: epub, auth: auth }
+          const tmp = '~'+pairs.pub;
+          // awesome, now we can actually save the user with their public key as their ID.
+          try{
 
-                  if (!at.put) {
-                    _context25.next = 7;
-                    break;
-                  }
-
-                  // If we can enforce that a user name is already taken, it might be nice to try, but this is not guaranteed.
-                  err = 'User already created!';
-
-                  Gun.log(err);
-                  cat.ing = false;
-                  gun.leave();
-                  return _context25.abrupt("return", reject({ err: err }));
-
-                case 7:
-                  salt = Gun.text.random(64);
-                  // pseudo-randomly create a salt, then use CryptoJS's PBKDF2 function to extend the password with it.
-
-                  _context25.prev = 8;
-                  _context25.next = 11;
-                  return SEA.work(pass, salt);
-
-                case 11:
-                  proof = _context25.sent;
-                  _context25.next = 14;
-                  return SEA.pair();
-
-                case 14:
-                  pairs = _context25.sent;
-
-                  // now we have generated a brand new ECDSA key pair for the user account.
-                  pub = pairs.pub, priv = pairs.priv, epriv = pairs.epriv;
-                  // the user's public key doesn't need to be signed. But everything else needs to be signed with it!
-
-                  _context25.next = 18;
-                  return SEA.sign(username, pairs);
-
-                case 18:
-                  alias = _context25.sent;
-
-                  if (!(u === alias)) {
-                    _context25.next = 21;
-                    break;
-                  }
-
-                  throw SEA.err;
-
-                case 21:
-                  _context25.next = 23;
-                  return SEA.sign(pairs.epub, pairs);
-
-                case 23:
-                  epub = _context25.sent;
-
-                  if (!(u === epub)) {
-                    _context25.next = 26;
-                    break;
-                  }
-
-                  throw SEA.err;
-
-                case 26:
-                  _context25.next = 28;
-                  return SEA.encrypt({ priv: priv, epriv: epriv }, proof).then(function (auth) {
-                    return (// TODO: So signedsalt isn't needed?
-                      // SEA.sign(salt, pairs).then((signedsalt) =>
-                      SEA.sign({ ek: auth, s: salt }, pairs)
-                    );
-                  }
-                  // )
-                  ).catch(function (e) {
-                    Gun.log('SEA.en or SEA.write calls failed!');cat.ing = false;gun.leave();reject(e);
-                  });
-
-                case 28:
-                  auth = _context25.sent;
-                  user = { alias: alias, pub: pub, epub: epub, auth: auth };
-                  tmp = '~' + pairs.pub;
-                  // awesome, now we can actually save the user with their public key as their ID.
-
-                  try {
-
-                    gunRoot.get(tmp).put(user);
-                  } catch (e) {
-                    console.log(e);
-                  }
-                  // next up, we want to associate the alias with the public key. So we add it to the alias list.
-                  gunRoot.get('~@' + username).put(Gun.obj.put({}, tmp, Gun.val.rel.ify(tmp)));
-                  // callback that the user has been created. (Note: ok = 0 because we didn't wait for disk to ack)
-                  setTimeout(function () {
-                    cat.ing = false;resolve({ ok: 0, pub: pairs.pub });
-                  }, 10); // TODO: BUG! If `.auth` happens synchronously after `create` finishes, auth won't work. This setTimeout is a temporary hack until we can properly fix it.
-                  _context25.next = 42;
-                  break;
-
-                case 36:
-                  _context25.prev = 36;
-                  _context25.t0 = _context25["catch"](8);
-
-                  Gun.log('SEA.create failed!');
-                  cat.ing = false;
-                  gun.leave();
-                  reject(_context25.t0);
-
-                case 42:
-                case "end":
-                  return _context25.stop();
-              }
-            }
-          }, _callee25, _this18, [[8, 36]]);
-        }));
-
-        return function (_x54, _x55) {
-          return _ref47.apply(this, arguments);
-        };
-      }());
-      return gun; // gun chain commands must return gun chains!
-    };
+          gunRoot.get(tmp).put(user)
+        }catch(e){console.log(e)}
+          // next up, we want to associate the alias with the public key. So we add it to the alias list.
+          gunRoot.get('~@'+username).put(Gun.obj.put({}, tmp, Gun.val.rel.ify(tmp)))
+          // callback that the user has been created. (Note: ok = 0 because we didn't wait for disk to ack)
+          setTimeout(() => { cat.ing = false; resolve({ ok: 0, pub: pairs.pub}) }, 10) // TODO: BUG! If `.auth` happens synchronously after `create` finishes, auth won't work. This setTimeout is a temporary hack until we can properly fix it.
+        } catch (e) {
+          Gun.log('SEA.create failed!')
+          cat.ing = false;
+          gun.leave();
+          reject(e)
+        }
+      })
+      return gun;  // gun chain commands must return gun chains!
+    }
     // now that we have created a user, we want to authenticate them!
-    User.prototype.auth = function (alias, pass, cb, opt) {
+    User.prototype.auth = function(alias, pass, cb, opt){
       // TODO: Needs to be cleaned up!!!!
-      var opts = opt || typeof cb !== 'function' && cb;
-
-      var _ref48 = opts || {},
-          pin = _ref48.pin,
-          newpass = _ref48.newpass;
-
-      var gunRoot = this.back(-1);
-      cb = typeof cb === 'function' ? cb : function () {};
-      newpass = newpass || (opts || {}).change;
-      var gun = this,
-          cat = gun._;
-      if (cat.ing) {
-        cb({ err: "User is already being created or authenticated!", wait: true });
+      const opts = opt || (typeof cb !== 'function' && cb)
+      let pin = opts && opts.pin
+      let newpass = opts && opts.newpass
+      const gunRoot = this.back(-1)
+      cb = typeof cb === 'function' ? cb : () => {}
+      newpass = newpass || (opts||{}).change;
+      var gun = this, cat = (gun._);
+      if(cat.ing){
+        cb({err: "User is already being created or authenticated!", wait: true});
         return gun;
       }
       cat.ing = true;
 
-      if (!pass && pin) {
-        _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee26() {
-          var r, err;
-          return regeneratorRuntime.wrap(function _callee26$(_context26) {
-            while (1) {
-              switch (_context26.prev = _context26.next) {
-                case 0:
-                  _context26.prev = 0;
-                  _context26.next = 3;
-                  return authRecall(gunRoot, { alias: alias, pin: pin });
-
-                case 3:
-                  r = _context26.sent;
-                  return _context26.abrupt("return", (cat.ing = false, cb(r), gun));
-
-                case 7:
-                  _context26.prev = 7;
-                  _context26.t0 = _context26["catch"](0);
-                  err = { err: 'Auth attempt failed! Reason: No session data for alias & PIN' };
-                  return _context26.abrupt("return", (cat.ing = false, gun.leave(), cb(err), gun));
-
-                case 11:
-                case "end":
-                  return _context26.stop();
-              }
-            }
-          }, _callee26, this, [[0, 7]]);
-        }))();
+      if (!pass && pin) { (async function(){
+        try {
+          var r = await authRecall(gunRoot, { alias: alias, pin: pin })
+          return cat.ing = false, cb(r), gun;
+        } catch (e) {
+          var err = { err: 'Auth attempt failed! Reason: No session data for alias & PIN' }
+          return cat.ing = false, gun.leave(), cb(err), gun;
+        }}())
         return gun;
       }
 
-      var putErr = function putErr(msg) {
-        return function (e) {
-          var message = e.message,
-              _e$err = e.err,
-              err = _e$err === undefined ? message || '' : _e$err;
-
-          Gun.log(msg);
-          var error = { err: msg + ' Reason: ' + err };
-          return cat.ing = false, gun.leave(), cb(error), gun;
-        };
-      };
-
-      _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee27() {
-        var keys, pub, priv, epub, epriv, salt, encSigAuth, signedEpub, signedAlias, user, login, _login;
-
-        return regeneratorRuntime.wrap(function _callee27$(_context27) {
-          while (1) {
-            switch (_context27.prev = _context27.next) {
-              case 0:
-                _context27.prev = 0;
-                _context27.next = 3;
-                return authenticate(alias, pass, gunRoot);
-
-              case 3:
-                keys = _context27.sent;
-
-                if (keys) {
-                  _context27.next = 6;
-                  break;
-                }
-
-                return _context27.abrupt("return", putErr('Auth attempt failed!')({ message: 'No keys' }));
-
-              case 6:
-                pub = keys.pub, priv = keys.priv, epub = keys.epub, epriv = keys.epriv;
-                // we're logged in!
-
-                if (!newpass) {
-                  _context27.next = 37;
-                  break;
-                }
-
-                _context27.prev = 8;
-                salt = Gun.text.random(64);
-                _context27.next = 12;
-                return SEA.work(newpass, salt).then(function (key) {
-                  return SEA.encrypt({ priv: priv, epriv: epriv }, key).then(function (auth) {
-                    return SEA.sign({ ek: auth, s: salt }, keys);
-                  });
-                });
-
-              case 12:
-                encSigAuth = _context27.sent;
-                _context27.next = 15;
-                return SEA.sign(epub, keys);
-
-              case 15:
-                signedEpub = _context27.sent;
-                _context27.next = 18;
-                return SEA.sign(alias, keys);
-
-              case 18:
-                signedAlias = _context27.sent;
-                user = {
-                  pub: pub,
-                  alias: signedAlias,
-                  auth: encSigAuth,
-                  epub: signedEpub
-                  // awesome, now we can update the user using public key ID.
-                };
-                gunRoot.get('~' + user.pub).put(user);
-                // then we're done
-                login = finalizeLogin(alias, keys, gunRoot, { pin: pin });
-
-                login.catch(putErr('Failed to finalize login with new password!'));
-                cat.ing = false;
-                _context27.t0 = cb;
-                _context27.next = 27;
-                return login;
-
-              case 27:
-                _context27.t1 = _context27.sent;
-                (0, _context27.t0)(_context27.t1);
-                return _context27.abrupt("return", gun);
-
-              case 32:
-                _context27.prev = 32;
-                _context27.t2 = _context27["catch"](8);
-                return _context27.abrupt("return", putErr('Password set attempt failed!')(_context27.t2));
-
-              case 35:
-                _context27.next = 46;
-                break;
-
-              case 37:
-                _login = finalizeLogin(alias, keys, gunRoot, { pin: pin });
-
-                _login.catch(putErr('Finalizing login failed!'));
-                cat.ing = false;
-                _context27.t3 = cb;
-                _context27.next = 43;
-                return _login;
-
-              case 43:
-                _context27.t4 = _context27.sent;
-                (0, _context27.t3)(_context27.t4);
-                return _context27.abrupt("return", gun);
-
-              case 46:
-                _context27.next = 51;
-                break;
-
-              case 48:
-                _context27.prev = 48;
-                _context27.t5 = _context27["catch"](0);
-                return _context27.abrupt("return", putErr('Auth attempt failed!')(_context27.t5));
-
-              case 51:
-              case "end":
-                return _context27.stop();
-            }
-          }
-        }, _callee27, this, [[0, 48], [8, 32]]);
-      }))();
-      return gun;
-    };
-    User.prototype.pair = function () {
-      var user = this;
-      if (!user.is) {
-        return false;
+      const putErr = (msg) => (e) => {
+        const { message, err = message || '' } = e
+        Gun.log(msg)
+        var error = { err: msg+' Reason: '+err }
+        return cat.ing = false, gun.leave(), cb(error), gun;
       }
-      return user._.sea;
-    };
-    User.prototype.leave = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee28() {
-      return regeneratorRuntime.wrap(function _callee28$(_context28) {
-        while (1) {
-          switch (_context28.prev = _context28.next) {
-            case 0:
-              _context28.next = 2;
-              return authLeave(this.back(-1));
 
-            case 2:
-              return _context28.abrupt("return", _context28.sent);
-
-            case 3:
-            case "end":
-              return _context28.stop();
-          }
+      (async function(){ try {
+        const keys = await authenticate(alias, pass, gunRoot)
+        if (!keys) {
+          return putErr('Auth attempt failed!')({ message: 'No keys' })
         }
-      }, _callee28, this);
-    }));
-    // If authenticated user wants to delete his/her account, let's support it!
-    User.prototype.delete = function () {
-      var _ref52 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee29(alias, pass) {
-        var gunRoot, _ref53, pub, _gunRoot$_$user, user;
-
-        return regeneratorRuntime.wrap(function _callee29$(_context29) {
-          while (1) {
-            switch (_context29.prev = _context29.next) {
-              case 0:
-                gunRoot = this.back(-1);
-                _context29.prev = 1;
-                _context29.next = 4;
-                return authenticate(alias, pass, gunRoot);
-
-              case 4:
-                _ref53 = _context29.sent;
-                pub = _ref53.pub;
-                _context29.next = 8;
-                return authLeave(gunRoot, alias);
-
-              case 8:
-                // Delete user data
-                gunRoot.get('~' + pub).put(null);
-                // Wipe user data from memory
-                _gunRoot$_$user = gunRoot._.user, user = _gunRoot$_$user === undefined ? { _: {} } : _gunRoot$_$user;
-                // TODO: is this correct way to 'logout' user from Gun.User ?
-
-                ['alias', 'sea', 'pub'].map(function (key) {
-                  return delete user._[key];
-                });
-                user._.is = user.is = {};
-                gunRoot.user();
-                return _context29.abrupt("return", { ok: 0 // TODO: proper return codes???
-                });
-
-              case 16:
-                _context29.prev = 16;
-                _context29.t0 = _context29["catch"](1);
-
-                Gun.log('User.delete failed! Error:', _context29.t0);
-                throw _context29.t0;
-
-              case 20:
-              case "end":
-                return _context29.stop();
+        const pub = keys.pub
+        const priv = keys.priv
+        const epub = keys.epub
+        const epriv = keys.epriv
+        // we're logged in!
+        if (newpass) {
+          // password update so encrypt private key using new pwd + salt
+          try {
+            const salt = Gun.text.random(64);
+            const encSigAuth = await SEA.work(newpass, salt)
+            .then((key) =>
+              SEA.encrypt({ priv: priv, epriv: epriv }, key)
+              .then((auth) => SEA.sign({ek: auth, s: salt}, keys))
+            )
+            const signedEpub = await SEA.sign(epub, keys)
+            const signedAlias = await SEA.sign(alias, keys)
+            const user = {
+              pub: pub,
+              alias: signedAlias,
+              auth: encSigAuth,
+              epub: signedEpub
             }
+            // awesome, now we can update the user using public key ID.
+            gunRoot.get('~'+user.pub).put(user)
+            // then we're done
+            const login = finalizeLogin(alias, keys, gunRoot, { pin })
+            login.catch(putErr('Failed to finalize login with new password!'))
+            return cat.ing = false, cb(await login), gun
+          } catch (e) {
+            return putErr('Password set attempt failed!')(e)
           }
-        }, _callee29, this, [[1, 16]]);
-      }));
-
-      return function (_x56, _x57) {
-        return _ref52.apply(this, arguments);
-      };
-    }();
+        } else {
+          const login = finalizeLogin(alias, keys, gunRoot, { pin: pin })
+          login.catch(putErr('Finalizing login failed!'))
+          return cat.ing = false, cb(await login), gun;
+        }
+      } catch (e) {
+        return putErr('Auth attempt failed!')(e)
+      } }());
+      return gun;
+    }
+    User.prototype.pair = function(){
+      var user = this;
+      if(!user.is){ return false }
+      return user._.sea;
+    }
+    User.prototype.leave = async function(){
+      return await authLeave(this.back(-1))
+    }
+    // If authenticated user wants to delete his/her account, let's support it!
+    User.prototype.delete = async function(alias, pass){
+      const gunRoot = this.back(-1)
+      try {
+        const __gky40 = await authenticate(alias, pass, gunRoot)
+        const pub = __gky40.pub
+        await authLeave(gunRoot, alias)
+        // Delete user data
+        gunRoot.get('~'+pub).put(null)
+        // Wipe user data from memory
+        const { user = { _: {} } } = gunRoot._;
+        // TODO: is this correct way to 'logout' user from Gun.User ?
+        [ 'alias', 'sea', 'pub' ].map((key) => delete user._[key])
+        user._.is = user.is = {}
+        gunRoot.user()
+        return { ok: 0 }  // TODO: proper return codes???
+      } catch (e) {
+        Gun.log('User.delete failed! Error:', e)
+        throw e // TODO: proper error codes???
+      }
+    }
     // If authentication is to be remembered over reloads or browser closing,
     // set validity time in minutes.
-    User.prototype.recall = function () {
-      var _ref54 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee30(setvalidity, options) {
-        var gunRoot, validity, opts, o, tmp, err;
-        return regeneratorRuntime.wrap(function _callee30$(_context30) {
-          while (1) {
-            switch (_context30.prev = _context30.next) {
-              case 0:
-                gunRoot = this.back(-1);
-                validity = void 0;
-                opts = void 0;
-                o = setvalidity;
+    User.prototype.recall = async function(setvalidity, options){
+      const gunRoot = this.back(-1)
 
-                if (!(o && o.sessionStorage)) {
-                  _context30.next = 7;
-                  break;
-                }
+      let validity
+      let opts
 
-                if (typeof window !== 'undefined') {
-                  tmp = window.sessionStorage;
-
-                  if (tmp) {
-                    gunRoot._.opt.remember = true;
-                    if (tmp.alias && tmp.tmp) {
-                      gunRoot.user().auth(tmp.alias, tmp.tmp);
-                    }
-                  }
-                }
-                return _context30.abrupt("return", this);
-
-              case 7:
-
-                if (!Gun.val.is(setvalidity)) {
-                  opts = setvalidity;
-                  validity = _initial_authsettings.validity;
-                } else {
-                  opts = options;
-                  validity = setvalidity * 60; // minutes to seconds
-                }
-
-                _context30.prev = 8;
-
-                // opts = { hook: function({ iat, exp, alias, proof }) }
-                // iat == Date.now() when issued, exp == seconds to expire from iat
-                // How this works:
-                // called when app bootstraps, with wanted options
-                // IF authsettings.validity === 0 THEN no remember-me, ever
-                // IF PIN then signed 'remember' to window.sessionStorage and 'auth' to IndexedDB
-                authsettings.validity = typeof validity !== 'undefined' ? validity : _initial_authsettings.validity;
-                authsettings.hook = Gun.obj.has(opts, 'hook') && typeof opts.hook === 'function' ? opts.hook : _initial_authsettings.hook;
-                // All is good. Should we do something more with actual recalled data?
-                _context30.next = 13;
-                return authRecall(gunRoot);
-
-              case 13:
-                return _context30.abrupt("return", _context30.sent);
-
-              case 16:
-                _context30.prev = 16;
-                _context30.t0 = _context30["catch"](8);
-                err = 'No session!';
-
-                Gun.log(err);
-                // NOTE! It's fine to resolve recall with reason why not successful
-                // instead of rejecting...
-                return _context30.abrupt("return", { err: _context30.t0 && _context30.t0.err || err });
-
-              case 21:
-              case "end":
-                return _context30.stop();
+      var o = setvalidity;
+      if(o && o.sessionStorage){
+        if(typeof window !== 'undefined'){
+          var tmp = window.sessionStorage;
+          if(tmp){
+            gunRoot._.opt.remember = true;
+            if(tmp.alias && tmp.tmp){
+              gunRoot.user().auth(tmp.alias, tmp.tmp);
             }
-          }
-        }, _callee30, this, [[8, 16]]);
-      }));
-
-      return function (_x58, _x59) {
-        return _ref54.apply(this, arguments);
-      };
-    }();
-    User.prototype.alive = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee31() {
-      var gunRoot, err;
-      return regeneratorRuntime.wrap(function _callee31$(_context31) {
-        while (1) {
-          switch (_context31.prev = _context31.next) {
-            case 0:
-              gunRoot = this.back(-1);
-              _context31.prev = 1;
-              _context31.next = 4;
-              return authRecall(gunRoot);
-
-            case 4:
-              return _context31.abrupt("return", gunRoot._.user._);
-
-            case 7:
-              _context31.prev = 7;
-              _context31.t0 = _context31["catch"](1);
-              err = 'No session!';
-
-              Gun.log(err);
-              throw { err: err };
-
-            case 12:
-            case "end":
-              return _context31.stop();
           }
         }
-      }, _callee31, this, [[1, 7]]);
-    }));
-    User.prototype.trust = function () {
-      var _ref56 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee32(user) {
-        return regeneratorRuntime.wrap(function _callee32$(_context32) {
-          while (1) {
-            switch (_context32.prev = _context32.next) {
-              case 0:
-                // TODO: BUG!!! SEA `node` read listener needs to be async, which means core needs to be async too.
-                //gun.get('alice').get('age').trust(bob);
-                if (Gun.is(user)) {
-                  user.get('pub').get(function (ctx, ev) {
-                    console.log(ctx, ev);
-                  });
-                }
+        return this;
+      }
 
-              case 1:
-              case "end":
-                return _context32.stop();
-            }
-          }
-        }, _callee32, this);
-      }));
+      if (!Gun.val.is(setvalidity)) {
+        opts = setvalidity
+        validity = _initial_authsettings.validity
+      } else {
+        opts = options
+        validity = setvalidity * 60 // minutes to seconds
+      }
 
-      return function (_x60) {
-        return _ref56.apply(this, arguments);
-      };
-    }();
-    User.prototype.grant = function (to, cb) {
+      try {
+        // opts = { hook: function({ iat, exp, alias, proof }) }
+        // iat == Date.now() when issued, exp == seconds to expire from iat
+        // How this works:
+        // called when app bootstraps, with wanted options
+        // IF authsettings.validity === 0 THEN no remember-me, ever
+        // IF PIN then signed 'remember' to window.sessionStorage and 'auth' to IndexedDB
+        authsettings.validity = typeof validity !== 'undefined'
+        ? validity : _initial_authsettings.validity
+        authsettings.hook = (Gun.obj.has(opts, 'hook') && typeof opts.hook === 'function')
+        ? opts.hook : _initial_authsettings.hook
+        // All is good. Should we do something more with actual recalled data?
+        return await authRecall(gunRoot)
+      } catch (e) {
+        const err = 'No session!'
+        Gun.log(err)
+        // NOTE! It's fine to resolve recall with reason why not successful
+        // instead of rejecting...
+        return { err: (e && e.err) || err }
+      }
+    }
+    User.prototype.alive = async function(){
+      const gunRoot = this.back(-1)
+      try {
+        // All is good. Should we do something more with actual recalled data?
+        await authRecall(gunRoot)
+        return gunRoot._.user._
+      } catch (e) {
+        const err = 'No session!'
+        Gun.log(err)
+        throw { err }
+      }
+    }
+    User.prototype.trust = async function(user){
+      // TODO: BUG!!! SEA `node` read listener needs to be async, which means core needs to be async too.
+      //gun.get('alice').get('age').trust(bob);
+      if (Gun.is(user)) {
+        user.get('pub').get((ctx, ev) => {
+          console.log(ctx, ev)
+        })
+      }
+    }
+    User.prototype.grant = function(to, cb){
       console.log("`.grant` API MAY BE DELETED OR CHANGED OR RENAMED, DO NOT USE!");
-      var gun = this,
-          user = gun.back(-1).user(),
-          pair = user.pair(),
-          path = '';
-      gun.back(function (at) {
-        if (at.pub) {
-          return;
-        }path += at.get || '';
-      });
-      _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee33() {
-        var enc, sec, pub, epub, dh;
-        return regeneratorRuntime.wrap(function _callee33$(_context33) {
-          while (1) {
-            switch (_context33.prev = _context33.next) {
-              case 0:
-                _context33.next = 2;
-                return user.get('trust').get(pair.pub).get(path).then();
-
-              case 2:
-                sec = _context33.sent;
-                _context33.next = 5;
-                return SEA.decrypt(sec, pair);
-
-              case 5:
-                sec = _context33.sent;
-
-                if (sec) {
-                  _context33.next = 12;
-                  break;
-                }
-
-                sec = SEA.random(16).toString();
-                _context33.next = 10;
-                return SEA.encrypt(sec, pair);
-
-              case 10:
-                enc = _context33.sent;
-
-                user.get('trust').get(pair.pub).get(path).put(enc);
-
-              case 12:
-                pub = to.get('pub').then();
-                epub = to.get('epub').then();
-                _context33.next = 16;
-                return pub;
-
-              case 16:
-                pub = _context33.sent;
-                _context33.next = 19;
-                return epub;
-
-              case 19:
-                epub = _context33.sent;
-                _context33.next = 22;
-                return SEA.secret(epub, pair);
-
-              case 22:
-                dh = _context33.sent;
-                _context33.next = 25;
-                return SEA.encrypt(sec, dh);
-
-              case 25:
-                enc = _context33.sent;
-
-                user.get('trust').get(pub).get(path).put(enc, cb);
-
-              case 27:
-              case "end":
-                return _context33.stop();
-            }
-          }
-        }, _callee33, this);
-      }))();
+      var gun = this, user = gun.back(-1).user(), pair = user.pair(), path = '';
+      gun.back(function(at){ if(at.pub){ return } path += (at.get||'') });
+      (async function(){
+      var enc, sec = await user.get('trust').get(pair.pub).get(path).then();
+      sec = await SEA.decrypt(sec, pair);
+      if(!sec){
+        sec = SEA.random(16).toString();
+        enc = await SEA.encrypt(sec, pair);
+        user.get('trust').get(pair.pub).get(path).put(enc);
+      }
+      var pub = to.get('pub').then();
+      var epub = to.get('epub').then();
+      pub = await pub; epub = await epub;
+      var dh = await SEA.secret(epub, pair);
+      enc = await SEA.encrypt(sec, dh);
+      user.get('trust').get(pub).get(path).put(enc, cb);
+      }());
       return gun;
-    };
-    User.prototype.secret = function (data, cb) {
+    }
+    User.prototype.secret = function(data, cb){
       console.log("`.secret` API MAY BE DELETED OR CHANGED OR RENAMED, DO NOT USE!");
-      var gun = this,
-          user = gun.back(-1).user(),
-          pair = user.pair(),
-          path = '';
-      gun.back(function (at) {
-        if (at.pub) {
-          return;
-        }path += at.get || '';
-      });
-      _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee34() {
-        var enc, sec;
-        return regeneratorRuntime.wrap(function _callee34$(_context34) {
-          while (1) {
-            switch (_context34.prev = _context34.next) {
-              case 0:
-                _context34.next = 2;
-                return user.get('trust').get(pair.pub).get(path).then();
-
-              case 2:
-                sec = _context34.sent;
-                _context34.next = 5;
-                return SEA.decrypt(sec, pair);
-
-              case 5:
-                sec = _context34.sent;
-
-                if (sec) {
-                  _context34.next = 12;
-                  break;
-                }
-
-                sec = SEA.random(16).toString();
-                _context34.next = 10;
-                return SEA.encrypt(sec, pair);
-
-              case 10:
-                enc = _context34.sent;
-
-                user.get('trust').get(pair.pub).get(path).put(enc);
-
-              case 12:
-                _context34.next = 14;
-                return SEA.encrypt(data, sec);
-
-              case 14:
-                enc = _context34.sent;
-
-                gun.put(enc, cb);
-
-              case 16:
-              case "end":
-                return _context34.stop();
-            }
-          }
-        }, _callee34, this);
-      }))();
+      var gun = this, user = gun.back(-1).user(), pair = user.pair(), path = '';
+      gun.back(function(at){ if(at.pub){ return } path += (at.get||'') });
+      (async function(){
+      var enc, sec = await user.get('trust').get(pair.pub).get(path).then();
+      sec = await SEA.decrypt(sec, pair);
+      if(!sec){
+        sec = SEA.random(16).toString();
+        enc = await SEA.encrypt(sec, pair);
+        user.get('trust').get(pair.pub).get(path).put(enc);
+      }
+      enc = await SEA.encrypt(data, sec);
+      gun.put(enc, cb);
+      }());
       return gun;
-    };
-    module.exports = User;
+    }
+    module.exports = User
   })(USE, './create');
 
-  ;USE(function (module) {
-    var SEA = USE('./sea');
-    var Gun = SEA.Gun;
+  ;USE(function(module){
+    const SEA = USE('./sea')
+    const Gun = SEA.Gun;
     // After we have a GUN extension to make user registration/login easy, we then need to handle everything else.
 
     // We do this with a GUN adapter, we first listen to when a gun instance is created (and when its options change)
-    Gun.on('opt', function (at) {
-      if (!at.sea) {
-        // only add SEA once per instance, on the "at" context.
-        at.sea = { own: {} };
+    Gun.on('opt', function(at){
+      if(!at.sea){ // only add SEA once per instance, on the "at" context.
+        at.sea = {own: {}};
         at.on('in', security, at); // now listen to all input data, acting as a firewall.
         at.on('out', signature, at); // and output listeners, to encrypt outgoing data.
         at.on('node', each, at);
@@ -2928,35 +1427,25 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // Here is a problem: Multiple public keys can "claim" any node's ID, so this is dangerous!
     // This means we should ONLY trust our "friends" (our key ring) public keys, not any ones.
     // I have not yet added that to SEA yet in this alpha release. That is coming soon, but beware in the meanwhile!
-    function each(msg) {
-      // TODO: Warning: Need to switch to `gun.on('node')`! Do not use `Gun.on('node'` in your apps!
+    function each(msg){ // TODO: Warning: Need to switch to `gun.on('node')`! Do not use `Gun.on('node'` in your apps!
       // NOTE: THE SECURITY FUNCTION HAS ALREADY VERIFIED THE DATA!!!
       // WE DO NOT NEED TO RE-VERIFY AGAIN, JUST TRANSFORM IT TO PLAINTEXT.
-      var to = this.to,
-          vertex = msg.gun._.put,
-          c = 0,
-          d;
-      Gun.node.is(msg.put, function (val, key, node) {
-        c++; // for each property on the node
+      var to = this.to, vertex = (msg.gun._).put, c = 0, d;
+      Gun.node.is(msg.put, function(val, key, node){ c++; // for each property on the node
         // TODO: consider async/await use here...
-        SEA.verify(val, false, function (data) {
-          c--; // false just extracts the plain data.
+        SEA.verify(val, false, function(data){ c--; // false just extracts the plain data.
           node[key] = val = data; // transform to plain value.
-          if (d && !c && (c = -1)) {
-            to.next(msg);
-          }
+          if(d && !c && (c = -1)){ to.next(msg) }
         });
       });
       d = true;
-      if (d && !c) {
-        to.next(msg);
-      }
+      if(d && !c){ to.next(msg) }
       return;
     }
 
     // signature handles data output, it is a proxy to the security function.
-    function signature(msg) {
-      if (msg.user) {
+    function signature(msg){
+      if(msg.user){
         return this.to.next(msg);
       }
       var ctx = this.as;
@@ -2967,187 +1456,138 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // okay! The security function handles all the heavy lifting.
     // It needs to deal read and write of input and output of system data, account/public key data, and regular data.
     // This is broken down into some pretty clear edge cases, let's go over them:
-    function security(msg) {
-      var at = this.as,
-          sea = at.sea,
-          to = this.to;
-      if (msg.get) {
+    function security(msg){
+      var at = this.as, sea = at.sea, to = this.to;
+      if(msg.get){
         // if there is a request to read data from us, then...
         var soul = msg.get['#'];
-        if (soul) {
-          // for now, only allow direct IDs to be read.
-          if ('alias' === soul) {
-            // Allow reading the list of usernames/aliases in the system?
+        if(soul){ // for now, only allow direct IDs to be read.
+          if('alias' === soul){ // Allow reading the list of usernames/aliases in the system?
             return to.next(msg); // yes.
-          } else if ('~@' === soul.slice(0, 2)) {
-            // Allow reading the list of public keys associated with an alias?
+          } else
+          if('~@' === soul.slice(0,2)){ // Allow reading the list of public keys associated with an alias?
             return to.next(msg); // yes.
-          } else {
-            // Allow reading everything?
+          } else { // Allow reading everything?
             return to.next(msg); // yes // TODO: No! Make this a callback/event that people can filter on.
           }
         }
       }
-      if (msg.put) {
-        var relpub = function relpub(s) {
-          if (!s) {
-            return;
-          }
-          s = s.split('~');
-          if (!s || !(s = s[1])) {
-            return;
-          }
-          s = s.split('.');
-          if (!s || 2 > s.length) {
-            return;
-          }
-          s = s.slice(0, 2).join('.');
-          return s;
-        };
-
+      if(msg.put){
         // potentially parallel async operations!!!
-        var check = {},
-            each = {},
-            u;
-        each.node = function (node, soul) {
-          if (Gun.obj.empty(node, '_')) {
-            return check['node' + soul] = 0;
-          } // ignore empty updates, don't reject them.
-          Gun.obj.map(node, each.way, { soul: soul, node: node });
+        var check = {}, each = {}, u;
+        each.node = function(node, soul){
+          if(Gun.obj.empty(node, '_')){ return check['node'+soul] = 0 } // ignore empty updates, don't reject them.
+          Gun.obj.map(node, each.way, {soul: soul, node: node});
         };
-        each.way = function (val, key) {
-          var soul = this.soul,
-              node = this.node,
-              tmp;
-          if ('_' === key) {
-            return;
-          } // ignore meta data
-          if ('~@' === soul) {
-            // special case for shared system data, the list of aliases.
-            each.alias(val, key, node, soul);return;
+        each.way = function(val, key){
+          var soul = this.soul, node = this.node, tmp;
+          if('_' === key){ return } // ignore meta data
+          if('~@' === soul){  // special case for shared system data, the list of aliases.
+            each.alias(val, key, node, soul); return;
           }
-          if ('~@' === soul.slice(0, 2)) {
-            // special case for shared system data, the list of public keys for an alias.
-            each.pubs(val, key, node, soul);return;
+          if('~@' === soul.slice(0,2)){ // special case for shared system data, the list of public keys for an alias.
+            each.pubs(val, key, node, soul); return;
           }
-          if ('~' === soul.slice(0, 1) && 2 === (tmp = soul.slice(1)).split('.').length) {
-            // special case, account data for a public key.
-            each.pub(val, key, node, soul, tmp, msg.user);return;
+          if('~' === soul.slice(0,1) && 2 === (tmp = soul.slice(1)).split('.').length){ // special case, account data for a public key.
+            each.pub(val, key, node, soul, tmp, msg.user); return;
           }
-          each.any(val, key, node, soul, msg.user);return;
-          return each.end({ err: "No other data allowed!" });
+          each.any(val, key, node, soul, msg.user); return;
+          return each.end({err: "No other data allowed!"});
         };
-        each.alias = function (val, key, node, soul) {
-          // Example: {_:#~@, ~@alice: {#~@alice}}
-          if (!val) {
-            return each.end({ err: "Data must exist!" });
-          } // data MUST exist
-          if ('~@' + key === Gun.val.rel.is(val)) {
-            return check['alias' + key] = 0;
-          } // in fact, it must be EXACTLY equal to itself
-          each.end({ err: "Mismatching alias." }); // if it isn't, reject.
+        each.alias = function(val, key, node, soul){ // Example: {_:#~@, ~@alice: {#~@alice}}
+          if(!val){ return each.end({err: "Data must exist!"}) } // data MUST exist
+          if('~@'+key === Gun.val.rel.is(val)){ return check['alias'+key] = 0 } // in fact, it must be EXACTLY equal to itself
+          each.end({err: "Mismatching alias."}); // if it isn't, reject.
         };
-        each.pubs = function (val, key, node, soul) {
-          // Example: {_:#~@alice, ~asdf: {#~asdf}}
-          if (!val) {
-            return each.end({ err: "Alias must exist!" });
-          } // data MUST exist
-          if (key === Gun.val.rel.is(val)) {
-            return check['pubs' + soul + key] = 0;
-          } // and the ID must be EXACTLY equal to its property
-          each.end({ err: "Alias must match!" }); // that way nobody can tamper with the list of public keys.
+        each.pubs = function(val, key, node, soul){ // Example: {_:#~@alice, ~asdf: {#~asdf}}
+          if(!val){ return each.end({err: "Alias must exist!"}) } // data MUST exist
+          if(key === Gun.val.rel.is(val)){ return check['pubs'+soul+key] = 0 } // and the ID must be EXACTLY equal to its property
+          each.end({err: "Alias must match!"}); // that way nobody can tamper with the list of public keys.
         };
-        each.pub = function (val, key, node, soul, pub, user) {
-          // Example: {_:#~asdf, hello:SEA{'world',fdsa}}
-          if ('pub' === key) {
-            if (val === pub) {
-              return check['pub' + soul + key] = 0;
-            } // the account MUST match `pub` property that equals the ID of the public key.
-            return each.end({ err: "Account must match!" });
+        each.pub = function(val, key, node, soul, pub, user){ // Example: {_:#~asdf, hello:SEA{'world',fdsa}}
+          if('pub' === key){
+            if(val === pub){ return (check['pub'+soul+key] = 0) } // the account MUST match `pub` property that equals the ID of the public key.
+            return each.end({err: "Account must match!"});
           }
-          check['user' + soul + key] = 1;
-          if (user && (user = user._) && user.sea && pub === user.pub) {
+          check['user'+soul+key] = 1;
+          if(user && (user = user._) && user.sea && pub === user.pub){
             //var id = Gun.text.random(3);
-            SEA.sign(val, user.sea, function (data) {
-              var rel;
-              if (u === data) {
-                return each.end({ err: SEA.err || 'Pub signature fail.' });
-              }
-              if (rel = Gun.val.rel.is(val)) {
+            SEA.sign(val, user.sea, function(data){ var rel;
+              if(u === data){ return each.end({err: SEA.err || 'Pub signature fail.'}) }
+              if(rel = Gun.val.rel.is(val)){
                 (at.sea.own[rel] = at.sea.own[rel] || {})[pub] = true;
               }
               node[key] = data;
-              check['user' + soul + key] = 0;
-              each.end({ ok: 1 });
+              check['user'+soul+key] = 0;
+              each.end({ok: 1});
             });
             // TODO: Handle error!!!!
             return;
           }
-          SEA.verify(val, pub, function (data) {
-            var rel, tmp;
-            if (u === data) {
-              // make sure the signature matches the account it claims to be on.
-              return each.end({ err: "Unverified data." }); // reject any updates that are signed with a mismatched account.
+          SEA.verify(val, pub, function(data){ var rel, tmp;
+            if(u === data){ // make sure the signature matches the account it claims to be on.
+              return each.end({err: "Unverified data."}); // reject any updates that are signed with a mismatched account.
             }
-            if ((rel = Gun.val.rel.is(data)) && pub === relpub(rel)) {
+            if((rel = Gun.val.rel.is(data)) && pub === relpub(rel)){
               (at.sea.own[rel] = at.sea.own[rel] || {})[pub] = true;
             }
-            check['user' + soul + key] = 0;
-            each.end({ ok: 1 });
+            check['user'+soul+key] = 0;
+            each.end({ok: 1});
           });
         };
-
-        each.any = function (val, key, node, soul, user) {
-          var tmp, pub;
-          if (!user || !(user = user._) || !(user = user.sea)) {
-            if (tmp = relpub(soul)) {
-              check['any' + soul + key] = 1;
-              SEA.verify(val, pub = tmp, function (data) {
-                var rel;
-                if (!data) {
-                  return each.end({ err: "Mismatched owner on '" + key + "'." });
-                }
-                if ((rel = Gun.val.rel.is(data)) && pub === relpub(rel)) {
+        function relpub(s){
+          if(!s){ return }
+          s = s.split('~');
+          if(!s || !(s = s[1])){ return }
+          s = s.split('.');
+          if(!s || 2 > s.length){ return }
+          s = s.slice(0,2).join('.');
+          return s;
+        }
+        each.any = function(val, key, node, soul, user){ var tmp, pub;
+          if(!user || !(user = user._) || !(user = user.sea)){
+            if(tmp = relpub(soul)){
+              check['any'+soul+key] = 1;
+              SEA.verify(val, pub = tmp, function(data){ var rel;
+                if(!data){ return each.end({err: "Mismatched owner on '" + key + "'."}) }
+                if((rel = Gun.val.rel.is(data)) && pub === relpub(rel)){
                   (at.sea.own[rel] = at.sea.own[rel] || {})[pub] = true;
                 }
-                check['any' + soul + key] = 0;
-                each.end({ ok: 1 });
+                check['any'+soul+key] = 0;
+                each.end({ok: 1});
               });
               return;
             }
-            check['any' + soul + key] = 1;
-            at.on('secure', function (msg) {
-              this.off();
-              check['any' + soul + key] = 0;
-              if (at.opt.secure) {
-                msg = null;
-              }
-              each.end(msg || { err: "Data cannot be modified." });
+            check['any'+soul+key] = 1;
+            at.on('secure', function(msg){ this.off();
+              check['any'+soul+key] = 0;
+              if(at.opt.secure){ msg = null }
+              each.end(msg || {err: "Data cannot be modified."});
             }).on.on('secure', msg);
             //each.end({err: "Data cannot be modified."});
             return;
           }
-          if (!(tmp = relpub(soul))) {
-            if (at.opt.secure) {
-              each.end({ err: "Soul is missing public key at '" + key + "'." });
+          if(!(tmp = relpub(soul))){
+            if(at.opt.secure){
+              each.end({err: "Soul is missing public key at '" + key + "'."});
               return;
             }
-            if (val && val.slice && 'SEA{' === val.slice(0, 4)) {
-              check['any' + soul + key] = 0;
-              each.end({ ok: 1 });
+            if(val && val.slice && 'SEA{' === (val).slice(0,4)){
+              check['any'+soul+key] = 0;
+              each.end({ok: 1});
               return;
             }
             //check['any'+soul+key] = 1;
             //SEA.sign(val, user, function(data){
-            // if(u === data){ return each.end({err: 'Any signature failed.'}) }
+             // if(u === data){ return each.end({err: 'Any signature failed.'}) }
             //  node[key] = data;
-            check['any' + soul + key] = 0;
-            each.end({ ok: 1 });
+              check['any'+soul+key] = 0;
+              each.end({ok: 1});
             //});
             return;
           }
           var pub = tmp;
-          if (pub !== user.pub) {
+          if(pub !== user.pub){
             each.any(val, key, node, soul);
             return;
           }
@@ -3158,42 +1598,32 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             each.any(val, key, node, soul);
             return;
           }*/
-          check['any' + soul + key] = 1;
-          SEA.sign(val, user, function (data) {
-            if (u === data) {
-              return each.end({ err: 'My signature fail.' });
-            }
+          check['any'+soul+key] = 1;
+          SEA.sign(val, user, function(data){
+            if(u === data){ return each.end({err: 'My signature fail.'}) }
             node[key] = data;
-            check['any' + soul + key] = 0;
-            each.end({ ok: 1 });
+            check['any'+soul+key] = 0;
+            each.end({ok: 1});
           });
-        };
-        each.end = function (ctx) {
-          // TODO: Can't you just switch this to each.end = cb?
-          if (each.err) {
-            return;
-          }
-          if ((each.err = ctx.err) || ctx.no) {
+        }
+        each.end = function(ctx){ // TODO: Can't you just switch this to each.end = cb?
+          if(each.err){ return }
+          if((each.err = ctx.err) || ctx.no){
             console.log('NO!', each.err, msg.put);
             return;
           }
-          if (!each.end.ed) {
-            return;
-          }
-          if (Gun.obj.map(check, function (no) {
-            if (no) {
-              return true;
-            }
-          })) {
-            return;
-          }
+          if(!each.end.ed){ return }
+          if(Gun.obj.map(check, function(no){
+            if(no){ return true }
+          })){ return }
           to.next(msg);
         };
         Gun.obj.map(msg.put, each.node);
-        each.end({ end: each.end.ed = true });
+        each.end({end: each.end.ed = true});
         return; // need to manually call next after async.
       }
       to.next(msg); // pass forward any data we do not know how to handle or process (this allows custom security protocols).
     }
+
   })(USE, './index');
-})();
+}());

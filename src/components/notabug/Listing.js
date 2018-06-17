@@ -44,22 +44,23 @@ class ListingBase extends PureComponent {
 
   render() {
     const { ids} = this.state;
-    const { myContent = {}, Empty } = this.props;
+    const { myContent = {}, Empty, Container=Fragment, containerProps={} } = this.props;
     const count = parseInt(this.props.count, 10) || 0;
     if (!this.state.ids.length && Empty) return <Empty />;
 
     return (
-      <Fragment>
+      <Container {...containerProps} >
         {ids.map((id, idx) =>(
           <Thing
             id={id}
             key={id}
             isMine={!!myContent[id]}
             rank={count + idx + 1}
+            onDidUpdate={this.props.onDidUpdate}
             collapseThreshold={this.props.collapseThreshold}
           />
         ))}
-      </Fragment>
+      </Container>
     );
   }
 
@@ -80,9 +81,12 @@ class ListingBase extends PureComponent {
   }
 
   onUpdate(props) {
+    const { onDidUpdate } = this.props;
     const ids = (props || this.props).state.notabugApi
       .getListingIds(this.getListingParams(props));
-    this.setState({ ids });
+    if (ids.join("|") !== this.state.ids.join("|")) {
+      this.setState({ ids }, onDidUpdate);
+    }
   }
 }
 

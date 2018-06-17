@@ -1,18 +1,18 @@
 import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
-import { Route, Switch, withRouter } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import { Subreddit } from "snew-classic-ui";
+import { NavTab } from "./NavTab";
 import { Topic } from "./Topic";
 import { Provider } from "./Provider";
 import { SidebarTitlebox } from "./SidebarTitlebox";
 import { SubmissionForm } from "./SubmissionForm";
 import { SubmissionDetail } from "./SubmissionDetail";
 import { UserInfo } from "./UserInfo";
-import { Chat } from "./Chat";
+import { Chat, ChatPage } from "./Chat";
 import { FooterParent } from "./FooterParent";
 import { Notifications } from "./Notifications";
 import { LoginSignupPage, LoginFormSide } from "./LoginSignupPage";
-import { NavTab as SnewNavTab } from "snew-classic-ui";
 import { Link } from "./Link";
 import { router } from "state";
 import ScrollToTop from "./ScrollToTop";
@@ -21,14 +21,6 @@ import { PrivacyPolicy } from "../PrivacyPolicy";
 import { UserAgreement } from "../UserAgreement";
 import { KnownPeers } from "../KnownPeers";
 import { injectState } from "freactal";
-
-const NavTab = withRouter(({
-  match: { params: { sort="hot" } },
-  ...props
-}) =>
-  ["new", "hot", "top", "controversial"].find(x => x === props.children)
-    ? <SnewNavTab {...props} className={sort === props.children ? "selected" : ""} /> : null);
-
 
 const TopicRoute = injectState(({
   state: { notabugUser },
@@ -87,16 +79,22 @@ export const App = router(() => (
     <Provider>
       <ScrollToTop>
         <Switch>
+          <Route path="/t/:topic/chat" component={ChatPage} />
           <Route path="/t/:topic/:sort" component={TopicRoute} />
           <Route path="/t/:topic/*" component={TopicRoute} />
           <Route path="/t/:topic" component={TopicRoute} />
           <Route path="/domain/:domain/:sort" component={TopicRoute} />
           <Route path="/login" component={LoginSignupPage} />
+          <Route path="/chat" component={ChatPage} />
           <Route path="/:sort" component={TopicRoute} />
           <Route path="/*" component={TopicRoute} />
         </Switch>
       </ScrollToTop>
-      <Chat />
+      <Switch>
+        <Route path="/t/:topic/chat" component={() => null} />
+        <Route path="/chat" component={() => null} />
+        <Route path="/*" component={Chat} />
+      </Switch>
       <Notifications />
     </Provider>
   </Fragment>

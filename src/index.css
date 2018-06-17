@@ -2,3 +2,67 @@
 #header-img.default-header, .thumbnail.nsfw, .thumbnail.self { background-image: url(/media/img/notabug-logo.png); }
 body > .content .link .rank, .rank-spacer { width: 3.3ex; }
 body > .content .link .midcol, .midcol-spacer { width: 6ex; }
+
+.chat-modal {
+  position: fixed;
+  background-color: #EFF7FF;
+  border: 1px solid #5f99cf;
+  right: 1em;
+  bottom: 0;
+  width: 560px;
+  height: 380px;
+}
+
+.fullscreen-chat {
+  background-color: white;
+  right: 0;
+  left: 0;
+  width: auto;
+  height: auto;
+  top: 45px;
+}
+
+.chat-modal .chat-message-display {
+  position: absolute;
+  display: block;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 28px;
+  padding-top: 0.5em;
+}
+
+.chat-modal .chat-input {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.chat-modal .chat-input input {
+  width: 90%;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  text-indent: 0.5em;
+  margin: 0 0 0 0;
+}
+.chat-modal .chat-input .send-btn {
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  right: 0;
+  width: 9%;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+.fullscreen-chat .chat-input input {
+}
+
+.chat-modal .close-chat {
+  position: absolute;
+  background-color: #cee3f8;
+  border-color: #5f99cf;
+  top: 0;
+  right: 0;
+}

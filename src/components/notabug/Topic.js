@@ -1,9 +1,10 @@
 import React from "react";
 import { Listing } from "./Listing";
 import { withRouter, Link } from "react-router-dom";
+import { Loading } from "./Loading";
 import qs from "qs";
 
-const Empty = () => <h1>Loading Listing...</h1>;
+const Empty = () => <Loading name="ball-grid-beat" />;
 
 const DEF_THRESHOLD = (window && window.location && window.location.search)
   ? parseInt(qs.parse(window.location.search).threshold, 10) || 1 : 1;
@@ -24,7 +25,7 @@ export const Topic = withRouter(({
           key={`${topic}/${domain}/${sort}`}
           sort={sort || "hot"}
           topics={[topic]}
-          days={topic === "all" ? 7 : 30}
+          days={topic === "all" ? 3 : 30}
           threshold={(sort === "new" || sort === "controversial") ? null : DEF_THRESHOLD}
           domain={domain}
           limit={limit}
