@@ -79,11 +79,14 @@ export class Chat extends PureComponent {
     return this.props.isOpen || this.state.isOpen ? (
       <div className={`chat-modal ${this.props.className}`}>
         <Listing
+          noRank
           Empty={Loading}
           sort={"new"}
-          topics={[`chat:${this.state.topic}`]}
+          topics={this.props.withSubmissions
+            ? [`chat:${this.state.topic}`, "all"]
+            : [`chat:${this.state.topic}`]}
           days={2}
-          //threshold={-1}
+          threshold={-1}
           limit={this.state.messagesShown}
           Container={ChatView}
           onDidUpdate={this.scrollToBottom}
@@ -146,6 +149,6 @@ export const ChatPage = withRouter(injectState(({
     siteprefix="t"
     isShowingCustomStyleOption={false}
   >
-    <Chat className="fullscreen-chat" isOpen />
+    <Chat className="fullscreen-chat" isOpen withSubmissions />
   </Subreddit>
 )));

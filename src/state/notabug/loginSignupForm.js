@@ -25,7 +25,7 @@ const onSignup = (effects) => effects.getLoginState()
   .then(({ notabugApi, ...state }) => {
     if (isSignupValid(state)) {
       return notabugApi.signup(state.username, state.password)
-        .then(() => effects.replaceRouterState("/"));
+        .then(() => effects.replaceRouterState("/chat"));
     }
   })
   .then(() => state => state)
@@ -48,7 +48,7 @@ const onLoginAndRedirect = (effects) => effects.getLoginState()
   .then(state => effects.getState().then(baseState => ({ ...baseState,  ...state })))
   .then(({ notabugApi, ...state }) =>
     (isLoginValid(state) && notabugApi.login(state.username, state.password)
-      .then(() => effects.replaceRouterState("/"))))
+      .then(() => effects.replaceRouterState("/chat"))))
   .then(() => state => state)
   .catch(loginError => state => ({ ...state, loginError }));
 

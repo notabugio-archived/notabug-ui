@@ -55,7 +55,7 @@ class ListingBase extends PureComponent {
             id={id}
             key={id}
             isMine={!!myContent[id]}
-            rank={count + idx + 1}
+            rank={this.props.noRank ? null : count + idx + 1}
             onDidUpdate={this.props.onDidUpdate}
             collapseThreshold={this.props.collapseThreshold}
           />
