@@ -19,8 +19,8 @@ const initialState = ({ history }) => {
     countVotes: COUNT_VOTES,
     disableValidation: true,
     peers: [
-      window.location.origin + "/gun",
-      //"https://notabug.io/gun",
+      //window.location.origin + "/gun",
+      "https://notabug.io/gun",
     ]
   });
 

@@ -1,8 +1,10 @@
 import Promise from "promise";
-import React, { PureComponent, Fragment } from "react";
+import React, { PureComponent } from "react";
 import debounce from "lodash/debounce";
+import { Subreddit } from "snew-classic-ui";
 import { withRouter } from "react-router-dom";
-import { Header } from "snew-classic-ui";
+import { SidebarTitlebox } from "./SidebarTitlebox";
+import { LoginFormSide } from "./LoginSignupPage";
 import { NavTab } from "./NavTab";
 import { UserInfo } from "./UserInfo";
 import { Link } from "./Link";
@@ -123,18 +125,27 @@ export class Chat extends PureComponent {
 
 }
 
-export const ChatPage = withRouter(({
+export const ChatPage = withRouter(injectState(({
+  state: { notabugUser },
   match: { params: { topic } },
 }) => (
-  <Fragment>
-    <Header
-      UserInfo={UserInfo}
-      SrHeaderArea={() => null}
-      NavTab={NavTab}
-      Link={Link}
-      siteprefix="t"
-      subreddit={topic}
-    />
+  <Subreddit
+    Link={Link}
+    SidebarTitlebox={SidebarTitlebox}
+    FooterParent={() => null}
+    SidebarSearch={() => null}
+    LoginFormSide={LoginFormSide}
+    RecentlyViewedLinks={() => null}
+    AccountActivityBox={() => null}
+    Timestamp={() => null}
+    SrHeaderArea={() => null}
+    UserInfo={UserInfo}
+    NavTab={NavTab}
+    username={notabugUser}
+    subreddit={topic || ""}
+    siteprefix="t"
+    isShowingCustomStyleOption={false}
+  >
     <Chat className="fullscreen-chat" isOpen />
-  </Fragment>
-));
+  </Subreddit>
+)));
