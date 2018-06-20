@@ -1,3 +1,3 @@
 module.exports = [
-  // list of bllocked souls goes here
+  // list of blocked souls goes here
 ];
