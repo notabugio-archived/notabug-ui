@@ -12,6 +12,7 @@ import { Listing } from "./Listing";
 import { injectState } from "freactal";
 import ChatView from "react-chatview";
 import { Loading } from "./Loading";
+import { LoadingChatMsg } from "./LoadingChatMsg";
 
 class ChatInputBase extends PureComponent {
   constructor(props) {
@@ -80,13 +81,16 @@ export class Chat extends PureComponent {
       <div className={`chat-modal ${this.props.className}`}>
         <Listing
           noRank
+          disableChildren
           Empty={Loading}
-          sort={"new"}
+          Loading={LoadingChatMsg}
+          sort={"active"}
           topics={this.props.withSubmissions
             ? [`chat:${this.state.topic}`, "all"]
             : [`chat:${this.state.topic}`]}
           days={2}
           threshold={-1}
+          collapseThreshold={0}
           limit={this.state.messagesShown}
           Container={ChatView}
           onDidUpdate={this.scrollToBottom}

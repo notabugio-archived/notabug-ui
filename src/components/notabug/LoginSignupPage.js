@@ -15,7 +15,6 @@ const AlphaWarning = () => (
     <h3>PASSWORD MANAGER RECOMMENDED!!!</h3>
     <h3>auth is alpha, may take multiple tries</h3>
     <p>password changes are not yet possible, will be later</p>
-    <h3>LOGIN NOT NEEDED TO CONTRIBUTE</h3>
   </div>
 );
 

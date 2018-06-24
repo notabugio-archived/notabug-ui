@@ -1,4 +1,5 @@
 var Gun = require("gun/gun");
+//require("./src/sea");
 var compress = require("compression");
 var commandLineArgs = require("command-line-args");
 var blocked = require("./blocked");
@@ -9,9 +10,10 @@ var options = commandLineArgs([
   { name: "score", alias: "s", type: Boolean },
   { name: "evict", alias: "e", type: Boolean },
   { name: "debug", alias: "d", type: Boolean },
-  { name: "port", alias: "p", type: Number, defaultValue: 3333 },
+  { name: "port", alias: "p", type: Number, defaultValue: null },
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
-  { name: "peer", alias: "c", multiple: true, type: String }
+  { name: "peer", alias: "c", multiple: true, type: String },
+  { name: "until", alias: "u", multiple: true, type: Number, defaultValue: 5000 }
 ]);
 
 process.env.GUN_ENV = process.env.GUN_ENV || options.debug ? "debug" : undefined;
@@ -39,23 +41,39 @@ var path = require("path");
 var express = require("express");
 var router = express.Router();
 var init = require("notabug-peer").default;
-var app = express();
-var web = app.listen(options.port, options.host);
+var web;
 
-router.use(compress());
-router.use(express.static(path.join(__dirname, "build")));
-app.use(router);
+if (options.port) {
+  var app = express();
+  web = app.listen(options.port, options.host);
 
-app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "build", "index.html"));
-});
+  router.use(compress());
+  router.use(express.static(path.join(__dirname, "build")));
+  app.use(router);
 
-init({
+  app.get("/*", function (req, res) {
+    res.sendFile(path.join(__dirname, "build", "index.html"));
+  });
+}
+
+var nab = init({
   blocked,
   peers: options.peer,
   persist: options.persist,
   disableValidation: options.disableValidation,
   scoreThingsForPeers: options.score,
+  until: options.until,
   super: true,
   web
 });
+
+if (options.persist || !options.port) {
+  nab.watchListing({ days: 1 });
+  setInterval(function() {
+    nab.watchListing({ days: 1 });
+  }, 1000*60*60);
+}
+
+if(options.persist) {
+  nab.gun.get("nab/things").map().get("data").on(function () { });
+}

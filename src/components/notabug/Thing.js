@@ -1,5 +1,5 @@
 import React, { PureComponent } from "react";
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 import { Submission } from "./Submission";
 import { Comment } from "./Comment";
 import { ChatMsg } from "./ChatMsg";
@@ -17,10 +17,15 @@ class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
     this.state = { item: null, scores: {} };
-    this.onRefresh = debounce(this.onRefresh.bind(this), 50, { trailing: true });
+    this.onUpdate = this.onUpdate.bind(this);
+    this.onRefresh = throttle(this.onUpdate, 100, { trailing: true });
     this.onReceiveItem = this.onReceiveItem.bind(this);
     this.onReceiveSignedItem = this.onReceiveSignedItem.bind(this);
     this.onFetchItem = this.onFetchItem.bind(this);
+  }
+
+  componentDidMount() {
+    this.onUpdate();
   }
 
   componentWillUnmount() {
@@ -31,7 +36,10 @@ class ThingBase extends PureComponent {
 
   render() {
     const { item, scores } = this.state;
-    const { id, expanded, isMine, rank, collapseThreshold=null, ...props } = this.props;
+    const {
+      id, expanded, isMine, rank, collapseThreshold=null,
+      Loading: LoadingComponent = Loading, ...props
+    } = this.props;
     const score = scores.ups - scores.downs;
     const ThingComponent = (item ? components[item.kind] : null);
     if (item && !ThingComponent) return null;
@@ -42,13 +50,23 @@ class ThingBase extends PureComponent {
         onChange={isVisible => isVisible && this.onFetchItem()}
         scrollThrottle={50}
         resizeThrottle={50}
-        offset={{ top: 50, bottom: 50 }}
         partialVisibility
         resizeCheck
       >
         {({ isVisible }) => !item
           ? (
-            <Loading isVisible={isVisible} onClick={this.onFetchItem} />
+            <LoadingComponent
+              {...props}
+              isVisible={isVisible}
+              id={id}
+              item={item}
+              expanded={expanded}
+              collapsed={collapsed}
+              collapseThreshold={collapseThreshold}
+              isMine={isMine}
+              rank={rank}
+              {...scores}
+            />
           ) : (
             <ThingComponent
               {...props}
@@ -110,7 +128,7 @@ class ThingBase extends PureComponent {
     this.setState({ item, scores: this.getScores() });
   }
 
-  onRefresh() {
+  onUpdate() {
     this.setState({ scores: this.getScores() });
   }
 }

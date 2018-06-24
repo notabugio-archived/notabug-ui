@@ -5434,9 +5434,9 @@ normalize-url@^1.4.0:
     query-string "^4.1.0"
     sort-keys "^1.0.0"
 
-"notabug-peer@https://github.com/notabugio/notabug-peer.git#0.3.0":
-  version "0.3.0"
-  resolved "https://github.com/notabugio/notabug-peer.git#44d3c1ccf44458e05c9782414152619a63894f72"
+"notabug-peer@https://github.com/notabugio/notabug-peer.git":
+  version "0.4.0"
+  resolved "https://github.com/notabugio/notabug-peer.git#0d619425d0cde8f92cfd5bd0c32c72c104804510"
   dependencies:
     babel-cli "^6.26.0"
     babel-plugin-module-resolver "^3.1.1"
@@ -7216,7 +7216,7 @@ snapdragon@^0.8.1:
 
 "snew-classic-ui@https://github.com/notabugio/snew-classic-ui.git#0.2.0":
   version "0.2.0"
-  resolved "https://github.com/notabugio/snew-classic-ui.git#3eb657953435966b1ac4fc1fc23d7453de75d573"
+  resolved "https://github.com/notabugio/snew-classic-ui.git#3c45c60eab581987c797e9734ffca37d7b2954d1"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"

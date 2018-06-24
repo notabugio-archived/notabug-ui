@@ -13,6 +13,10 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   height: 380px;
 }
 
+.chat-modal .arrow {
+  display: none;
+}
+
 .fullscreen-chat {
   background-color: white;
   right: 310px;
@@ -20,6 +24,10 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   width: auto;
   height: auto;
   top: 45px;
+}
+
+.fullscreen-chat .arrow {
+  display: block;
 }
 
 .chat-modal .chat-message-display {

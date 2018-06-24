@@ -29,7 +29,7 @@ const TopicRoute = injectState(({
   <Subreddit
     Link={Link}
     SidebarTitlebox={SidebarTitlebox}
-    FooterParent={FooterParent}
+    FooterParent={() => null}
     SidebarSearch={() => null}
     LoginFormSide={LoginFormSide}
     RecentlyViewedLinks={() => null}
@@ -80,7 +80,8 @@ export const App = router(() => (
       <ScrollToTop>
         <Switch>
           <Route path="/t/:topic/chat" component={ChatPage} />
-          <Route path="/t/:topic/:sort" component={TopicRoute} />
+          <Route path="/t/:topic/comments/*/*" component={TopicRoute} />
+          <Route path="/t/:topic/:sort/" component={TopicRoute} />
           <Route path="/t/:topic/*" component={TopicRoute} />
           <Route path="/t/:topic" component={TopicRoute} />
           <Route path="/domain/:domain/:sort" component={TopicRoute} />
@@ -95,6 +96,7 @@ export const App = router(() => (
         <Route path="/chat" component={() => null} />
         <Route path="/*" component={Chat} />
       </Switch>
+      <FooterParent />
       <Notifications />
     </Provider>
   </Fragment>

@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from "react";
-import debounce from "lodash/debounce";
+import throttle from "lodash/throttle";
 import { injectState } from "freactal";
 import pick from "ramda/es/pick";
 import { Thing } from "./Thing";
@@ -22,7 +22,7 @@ class ListingBase extends PureComponent {
     const ids = this.props.state.notabugApi.getListingIds(this.getListingParams());
     this.state = { ids };
     this.onUpdate = this.onUpdate.bind(this);
-    this.onRefresh = debounce(() => this.onUpdate(), 100, { trailing: true });
+    this.onRefresh = throttle(() => this.onUpdate(), 150);
     props.state.notabugApi.onChange(null, this.onRefresh);
   }
 
@@ -52,6 +52,8 @@ class ListingBase extends PureComponent {
       <Container {...containerProps} >
         {ids.map((id, idx) =>(
           <Thing
+            Loading={this.props.Loading}
+            disableChildren={this.props.disableChildren}
             id={id}
             key={id}
             isMine={!!myContent[id]}

@@ -13,3 +13,20 @@ These are all the public peers known to exist on the notabug network.
 This list does not represent an endorsement of these peers.
 
 Different peers may maintain a more or less restrictive content policy and differing featuresets.
+
+
+## Peer Setup
+
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+    nvm use 10 && npm install -g yarn forever && git clone https://github.com/notabugio/notabug.git && cd notabug
+    yarn start
+
+This will give you a basic ram only peer connected to notabug.io serving the UI on 0.0.0.0:3001
+
+See https://github.com/notabugio/notabug/tree/master/peer-configs for more config examples.
+
+For a more full featured peer:
+
+    yarn server
+
+This will give you 3 scoring ram peers on ports 3001, 3002, 3003 suitable for hosting behind nginx or another reverse proxy.

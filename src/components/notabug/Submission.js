@@ -64,6 +64,7 @@ const SubmissionBase = ({
         isVoting={isVotingUp || isVotingDown}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
         linkTarget="_blank"
+        scoreTooltip={`+${ups} / -${downs}`}
         onVoteUp={effects.onVoteUp}
         onVoteDown={effects.onVoteDown}
       />

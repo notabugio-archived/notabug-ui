@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.3.3.3",
+  "version": "0.4.0",
   "private": true,
   "dependencies": {
     "babel-cli": "^6.26.0",
@@ -21,7 +21,7 @@
     "freactal": "^2.0.3",
     "gun": "^0.9.9991",
     "lodash": "^4.17.10",
-    "notabug-peer": "https://github.com/notabugio/notabug-peer.git#0.3.0",
+    "notabug-peer": "https://github.com/notabugio/notabug-peer.git",
     "qs": "^6.5.2",
     "ramda": "^0.25.0",
     "raw-loader": "^0.5.1",
@@ -41,20 +41,26 @@
     "slugify": "^1.2.9",
     "snew-classic-ui": "https://github.com/notabugio/snew-classic-ui.git#0.2.0",
     "snuownd": "https://github.com/JordanMilne/snuownd.git",
+    "text-encoding": "^0.6.4",
     "urllite": "^0.5.0",
     "uuid": "^3.2.1",
     "worker-loader": "^1.1.1"
   },
   "scripts": {
     "ui": "NODE_PATH=src/ react-app-rewired start",
-    "uidev": "concurrently \"yarn rampeer\" \"yarn ui\"",
-    "rampeer": "node server.js --score --peer https://notabug.io/gun --port 3333",
-    "legacy": "node server.js --persist --score --peer https://notabug.io/gun --port 3333 --host 0.0.0.0",
+    "uidev": "concurrently \"yarn basicaccesspeer\" \"yarn ui\"",
+    "legacy": "node server.js --persist --score --peer http://notabug.io/gun --port 3333 --host 0.0.0.0",
+    "basic": "forever peer-configs/basic.json",
+    "accesspeer": "forever peer-configs/access.json",
+    "relaypeer": "forever peer-configs/relay.json",
+    "persistpeer": "forever peer-configs/persist.json",
     "status": "forever list",
     "stop": "forever stopall",
     "restart": "forever restartall",
-    "start": "forever server-config.json",
-    "server": "yarn build && forever server-config.json",
+    "start": "yarn && yarn build && yarn stop && yarn basic",
+    "upgrade": "git stash && git pull origin master && yarn && git stash pop",
+    "superpeer": "yarn && yarn build && yarn stop && yarn server",
+    "server": "concurrently \"yarn accesspeer\" \"yarn relaypeer \" \"yarn persistpeer\"",
     "build": "NODE_PATH=src/ react-app-rewired build",
     "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom"
   },
@@ -69,7 +75,7 @@
   },
   "proxy": {
     "/gun": {
-      "target": "http://localhost:3333",
+      "target": "http://localhost:3001",
       "secure": false,
       "ws": true,
       "pathRewrite": {

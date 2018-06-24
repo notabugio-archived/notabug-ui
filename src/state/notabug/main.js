@@ -7,7 +7,8 @@ import { withRouter } from "react-router-dom";
 import "babel-polyfill";
 import notabugPeer, { PREFIX } from "notabug-peer";
 
-const COUNT_VOTES = !(/countVotes/.test(window.location.search));
+const COUNT_VOTES = !!(/countVotes/.test(window.location.search));
+const LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
 
 if (!(/nosea/.test(window.location.search))) {
   require("sea");
@@ -15,7 +16,7 @@ if (!(/nosea/.test(window.location.search))) {
 
 const initialState = ({ history }) => {
   const notabugApi = notabugPeer({
-    localStorage: true,
+    localStorage: LOCAL_STORAGE,
     countVotes: COUNT_VOTES,
     disableValidation: true,
     peers: [

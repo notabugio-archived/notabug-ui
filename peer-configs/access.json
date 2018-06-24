@@ -1,0 +1,37 @@
+[
+  {
+    "uid": "ram1",
+    "command": "node --max_old_space_size=4096",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3001"
+    ]
+  }, {
+    "uid": "ram2",
+    "command": "node --max_old_space_size=4096",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3002"
+    ]
+  }, {
+    "uid": "ram3",
+    "command": "node --max_old_space_size=4096",
+    "script": "server.js",
+    "args": [
+      "--score",
+      "--port", "3003"
+    ]
+  }, {
+    "uid": "internalrelay",
+    "script": "server.js",
+    "args": [
+      "--port", "3333",
+      "--debug",
+      "--peer", "http://localhost:3001/gun",
+      "--peer", "http://localhost:3002/gun",
+      "--peer", "http://localhost:3003/gun"
+    ]
+  }
+]

@@ -18,5 +18,12 @@ export const NavTab = withRouter(({
           className={isChat ? "selected" : ""}
           href={props.href.replace("gilded", "chat")}
         >chat</SnewNavTab>
+      )
+      : props.children === "rising" ? (
+        <SnewNavTab
+          {...props}
+          className={sort==="comments" ? "selected" : ""}
+          href={props.href.replace("rising", "comments")}
+        >discussed</SnewNavTab>
       ) : null;
 });

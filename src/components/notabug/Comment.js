@@ -21,7 +21,7 @@ export class Comment extends PureComponent {
   }
 
   render() {
-    const { id, item, ups, downs, isMine } = this.props;
+    const { id, item, ups, downs, isMine, disableChildren } = this.props;
 
     return (
       <ThingComment
@@ -29,7 +29,7 @@ export class Comment extends PureComponent {
         Markdown={Markdown}
         Timestamp={Timestamp}
         Link={Link}
-        NestedListing={NestedListing}
+        NestedListing={disableChildren ? () => null : NestedListing}
         {...this.props}
         id={id}
         body={item.body}
@@ -42,6 +42,7 @@ export class Comment extends PureComponent {
         downs={downs}
         votableId={id}
         score={ups-downs}
+        scoreTooltip={`+${ups} / -${downs}`}
         distinguished={isMine ? "me" : null}
         collapsed={this.state.collapsed}
         onToggleExpand={this.onToggleExpand}
