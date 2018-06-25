@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var Gun = require("gun/gun");
 //require("./src/sea");
 var compress = require("compression");
