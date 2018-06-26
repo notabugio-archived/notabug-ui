@@ -3,7 +3,7 @@ import "babel-polyfill";
 import React, { Fragment } from "react";
 import ReactDOM from "react-dom";
 import { Helmet } from "react-helmet";
-import "snew-classic-ui/static/css/reddit.css";
+import "snew-classic-ui/static/css/minimal.css";
 import "./index.css";
 import { App } from "./components/notabug";
 import { BrowserRouter } from "react-router-dom";

@@ -6,9 +6,6 @@
       "--score",
       "--debug",
       "--peer", "http://localhost:3333/gun",
-      "--peer", "https://blubit.space/gun",
-      "--peer", "https://communard.org/gun",
-      "--peer", "https://dontsuemebro.com/gun",
       "--peer", "http://notabug.io/gun",
       "--peer", "https://gun.redguardsaustin.com/gun"
     ]

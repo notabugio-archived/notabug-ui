@@ -7,10 +7,12 @@ var blocked = require("./blocked");
 
 var options = commandLineArgs([
   { name: "persist", alias: "P", type: Boolean },
+  { name: "localStorage", alias: "l", type: Boolean },
   { name: "disableValidation", alias: "D", type: Boolean },
   { name: "score", alias: "s", type: Boolean },
   { name: "evict", alias: "e", type: Boolean },
   { name: "debug", alias: "d", type: Boolean },
+  { name: "days", alias: "t", type: Number, defaultValue: 1 },
   { name: "port", alias: "p", type: Number, defaultValue: null },
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
   { name: "peer", alias: "c", multiple: true, type: String },
@@ -59,6 +61,7 @@ if (options.port) {
 
 var nab = init({
   blocked,
+  localStorage: options.localStorage,
   peers: options.peer,
   persist: options.persist,
   disableValidation: options.disableValidation,
@@ -69,12 +72,12 @@ var nab = init({
 });
 
 if (options.persist || !options.port) {
-  nab.watchListing({ days: 1 });
+  nab.watchListing({ days: options.days });
   setInterval(function() {
-    nab.watchListing({ days: 1 });
+    nab.watchListing({ days: options.days });
   }, 1000*60*60);
 }
 
-if(options.persist) {
+if(options.persist || options.localStorage) {
   nab.gun.get("nab/things").map().get("data").on(function () { });
 }

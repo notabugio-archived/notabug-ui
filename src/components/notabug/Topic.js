@@ -25,7 +25,7 @@ export const Topic = withRouter(({
           key={`${topic}/${domain}/${sort}`}
           sort={sort || "hot"}
           topics={[topic.toLowerCase()]}
-          days={topic === "all" ? 3 : 30}
+          days={(sort === "top" || sort === "comments") ? 30 : (topic === "all" || sort === "new") ? 5 : 30}
           threshold={(sort === "new" || sort === "controversial") ? null : DEF_THRESHOLD}
           domain={domain}
           limit={limit}

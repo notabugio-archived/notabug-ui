@@ -3653,9 +3653,9 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
 
-gun@^0.9.9991:
-  version "0.9.9991"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.9991.tgz#64e78c9d62d627688808873683e2462ef83990a1"
+gun@^0.9.9992:
+  version "0.9.9992"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.9992.tgz#ee8014d76f4fc658639a853eab9cec30deb63a3e"
   dependencies:
     ws "~>5.2.0"
 
@@ -7216,7 +7216,7 @@ snapdragon@^0.8.1:
 
 "snew-classic-ui@https://github.com/notabugio/snew-classic-ui.git#0.2.0":
   version "0.2.0"
-  resolved "https://github.com/notabugio/snew-classic-ui.git#3c45c60eab581987c797e9734ffca37d7b2954d1"
+  resolved "https://github.com/notabugio/snew-classic-ui.git#f72fff64681ffb6216e33cae1efc9f69db689387"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
