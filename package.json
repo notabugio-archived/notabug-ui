@@ -48,7 +48,7 @@
   },
   "scripts": {
     "ui": "NODE_PATH=src/ react-app-rewired start",
-    "uidev": "concurrently \"yarn basicaccesspeer\" \"yarn ui\"",
+    "uidev": "concurrently \"yarn basic\" \"yarn ui\"",
     "legacy": "node server.js --persist --score --peer http://notabug.io/gun --port 3333 --host 0.0.0.0",
     "basic": "forever peer-configs/basic.json",
     "accesspeer": "forever peer-configs/access.json",

@@ -7,8 +7,8 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   position: fixed;
   background-color: #EFF7FF;
   border: 1px solid #5f99cf;
-  right: 1em;
-  bottom: 0;
+  right: 0px;
+  bottom: 0px;
   width: 560px;
   height: 380px;
 }
@@ -36,8 +36,25 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   left: 0;
   right: 0;
   top: 0;
-  bottom: 28px;
+  bottom: 0;
   padding-top: 0.5em;
+}
+
+.chat-modal .chat-message-display .tagline {
+  font-size: small;
+}
+
+.chat-modal:not(.fullscreen-chat) {
+  bottom: 25px;
+  right: 25px;
+}
+
+.chat-modal .chat-message-display {
+  bottom: 50px;
+}
+
+.chat-modal:not(.fullscreen-chat) .chat-message-display .midcol {
+  float: none;
 }
 
 .chat-modal .chat-input {
@@ -45,14 +62,16 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   left: 0;
   right: 0;
   bottom: 0;
+  margin: 10px;
 }
 
 .chat-modal .chat-input input {
-  width: 90%;
+  width: 89%;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   text-indent: 0.5em;
   margin: 0 0 0 0;
+  border: 1px solid #5f99cf;
 }
 .chat-modal .chat-input .send-btn {
   position: absolute;
@@ -62,6 +81,7 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   width: 9%;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
+  border: 1px solid #5f99cf;
 }
 
 .fullscreen-chat .chat-input input {
@@ -69,8 +89,12 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
 
 .chat-modal .close-chat {
   position: absolute;
-  background-color: #cee3f8;
-  border-color: #5f99cf;
-  top: 0;
-  right: 0;
+  top: -25px;
+  right: -1px;
+  border: 1px solid #5f99cf;
+  padding: 4px 8px;
+}
+
+.chat-modal .comment {
+  margin: 4px 10px;
 }

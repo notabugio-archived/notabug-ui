@@ -118,10 +118,10 @@ export class Chat extends PureComponent {
         style={{
           position: "fixed",
           fontSize: "200%",
-          right: "1em",
-          bottom: 0,
-          backgroundColor: "#cee3f8",
-          borderColor: "#5f99cf"
+          right: "25px",
+          bottom: "25px",
+          border: "1px solid #5f99cf",
+          padding: "4px 10px"
         }}
         onClick={() => this.setState({ isOpen: true })}
       >
