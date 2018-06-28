@@ -1,8 +1,7 @@
-import Promise from "promise";
+/* globals Promise */
 import { prop, compose, always, identity, assocPath } from "ramda";
 import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
-import "babel-polyfill";
 import "gun";
 import notabugPeer, { PREFIX } from "notabug-peer";
 

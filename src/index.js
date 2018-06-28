@@ -1,4 +1,5 @@
 /* eslint import/no-webpack-loader-syntax: off */
+import "core-js";
 import "babel-polyfill";
 import React, { Fragment } from "react";
 import ReactDOM from "react-dom";

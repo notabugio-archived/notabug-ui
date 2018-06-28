@@ -1,4 +1,4 @@
-import Promise from "promise";
+/* globals Promise */
 import React, { PureComponent } from "react";
 import debounce from "lodash/debounce";
 import { Subreddit } from "snew-classic-ui";

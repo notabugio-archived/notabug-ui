@@ -1,4 +1,4 @@
-import Promise from "promise";
+/* globals Promise */
 import WorkProofer from "./pow.worker.js";
 import { pow, DEFAULT_POW_COMPLEXITY } from "notabug-peer";
 

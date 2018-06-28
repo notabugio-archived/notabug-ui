@@ -1,4 +1,4 @@
-import Promise from "promise";
+/* globals Promise */
 import { always, identity } from "ramda";
 import { update, provideState } from "freactal";
 import slugify from "slugify";

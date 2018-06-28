@@ -1334,7 +1334,7 @@ babel-register@^6.26.0:
     mkdirp "^0.5.1"
     source-map-support "^0.4.15"
 
-babel-runtime@6.26.0, "babel-runtime@>= 6 && < 7", babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
+babel-runtime@6.26.0, babel-runtime@^6.18.0, babel-runtime@^6.22.0, babel-runtime@^6.26.0:
   version "6.26.0"
   resolved "https://registry.yarnpkg.com/babel-runtime/-/babel-runtime-6.26.0.tgz#965c7058668e82b55d7bfe04ff2337bc8b5647fe"
   dependencies:
@@ -2190,7 +2190,7 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
 
-create-react-class@^15.5.1, create-react-class@^15.6.0, create-react-class@^15.6.2:
+create-react-class@^15.5.1, create-react-class@^15.6.2:
   version "15.6.3"
   resolved "https://registry.yarnpkg.com/create-react-class/-/create-react-class-15.6.3.tgz#2d73237fb3f970ae6ebe011a9e66f46dbca80036"
   dependencies:
@@ -6267,7 +6267,7 @@ prop-types@15.6.0:
     loose-envify "^1.3.1"
     object-assign "^4.1.1"
 
-"prop-types@>= 15 && < 16", prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0:
+prop-types@^15.5.10, prop-types@^15.5.4, prop-types@^15.5.8, prop-types@^15.6.0:
   version "15.6.1"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.6.1.tgz#36644453564255ddda391191fb3a125cbdf654ca"
   dependencies:
@@ -6420,14 +6420,6 @@ react-app-rewired@^1.5.2:
     cross-spawn "^5.1.0"
     dotenv "^4.0.0"
 
-react-body@^0.2.0:
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/react-body/-/react-body-0.2.0.tgz#a850451923fcf979644ee702b31109e93df7a2d6"
-  dependencies:
-    babel-runtime ">= 6 && < 7"
-    prop-types ">= 15 && < 16"
-    react ">= 15 && < 16"
-
 react-chatview@^0.2.5:
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/react-chatview/-/react-chatview-0.2.5.tgz#f5bb70ed2ec6d8a7f96b64883037ff19174c8e49"
@@ -6577,16 +6569,6 @@ react-visibility-sensor@^3.11.0:
 react-web-notification@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/react-web-notification/-/react-web-notification-0.3.1.tgz#f4fa8557a79548ccda7d831ab84c0ff9ba2597cf"
-
-"react@>= 15 && < 16":
-  version "15.6.2"
-  resolved "https://registry.yarnpkg.com/react/-/react-15.6.2.tgz#dba0434ab439cfe82f108f0f511663908179aa72"
-  dependencies:
-    create-react-class "^15.6.0"
-    fbjs "^0.8.9"
-    loose-envify "^1.1.0"
-    object-assign "^4.1.0"
-    prop-types "^15.5.10"
 
 react@^16.3.2:
   version "16.3.2"
@@ -7187,10 +7169,6 @@ slice-ansi@1.0.0:
   dependencies:
     is-fullwidth-code-point "^2.0.0"
 
-slugify@^1.2.9:
-  version "1.2.9"
-  resolved "https://registry.yarnpkg.com/slugify/-/slugify-1.2.9.tgz#c3d518f5136b3c69345d5d0bbbcde7412b5694aa"
-
 snapdragon-node@^2.0.1:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/snapdragon-node/-/snapdragon-node-2.1.1.tgz#6c175f86ff14bdb0724563e8f3c1b021a286853b"
@@ -7220,7 +7198,7 @@ snapdragon@^0.8.1:
 
 "snew-classic-ui@https://github.com/notabugio/snew-classic-ui.git#0.2.0":
   version "0.2.0"
-  resolved "https://github.com/notabugio/snew-classic-ui.git#f72fff64681ffb6216e33cae1efc9f69db689387"
+  resolved "https://github.com/notabugio/snew-classic-ui.git#41bddc4961c005386bc8f76db45397573a414124"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"
