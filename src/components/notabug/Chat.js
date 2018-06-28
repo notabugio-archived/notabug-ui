@@ -81,6 +81,7 @@ export class Chat extends PureComponent {
       <div className={`chat-modal ${this.props.className}`}>
         <Listing
           noRank
+          realtime
           disableChildren
           Empty={Loading}
           Loading={LoadingChatMsg}

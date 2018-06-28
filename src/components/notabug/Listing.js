@@ -1,7 +1,7 @@
 import React, { PureComponent, Fragment } from "react";
 import throttle from "lodash/throttle";
 import { injectState } from "freactal";
-import pick from "ramda/es/pick";
+import { pick } from "ramda";
 import { Thing } from "./Thing";
 
 const LISTING_PROPS = [
@@ -28,14 +28,13 @@ class ListingBase extends PureComponent {
 
   componentDidMount() {
     const ids = this.props.state.notabugApi.getListingIds(this.getListingParams());
-    this.onSubscribe();
     this.setState({ ids }, this.onRefresh);
+    this.onSubscribe();
   }
 
   componentWillReceiveProps(nextProps) {
     this.onUnsubscribe(this.props);
     this.onSubscribe(nextProps);
-    this.onUpdate(nextProps);
   }
 
   componentWillUnmount() {
@@ -74,7 +73,15 @@ class ListingBase extends PureComponent {
   }
 
   onSubscribe(props) {
-    (props || this.props).state.notabugApi.watchListing(this.getListingParams());
+    const { notabugApi } = (props || this.props).state;
+    const { effects, realtime } = (props || this.props);
+    const params = this.getListingParams();
+    effects.onNotabugPreloadListing(params)
+      .catch(error => console.warn("Error preloading listing", error))
+      .then(() => this.onUpdate())
+      .then(() => (this.state.ids && this.state.ids.length)
+        ? realtime && setTimeout(() => notabugApi.watchListing(params), 1000)
+        : notabugApi.watchListing(params));
     //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
   }
 

@@ -1,8 +1,9 @@
 {
   "name": "notabug",
-  "version": "0.4.3",
+  "version": "0.5.0",
   "private": true,
   "dependencies": {
+    "apicache": "^1.2.1",
     "babel-cli": "^6.26.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-polyfill": "^6.26.0",
@@ -80,6 +81,13 @@
       "ws": true,
       "pathRewrite": {
         "/gun": "/gun"
+      }
+    },
+    "/api": {
+      "target": "http://localhost:3001",
+      "secure": false,
+      "pathRewrite": {
+        "/api": "/api"
       }
     }
   }

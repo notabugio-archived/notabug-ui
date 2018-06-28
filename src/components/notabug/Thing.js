@@ -70,6 +70,7 @@ class ThingBase extends PureComponent {
           ) : (
             <ThingComponent
               {...props}
+              isVisible={isVisible}
               id={id}
               item={item}
               expanded={expanded}
@@ -86,11 +87,16 @@ class ThingBase extends PureComponent {
   }
 
   onFetchItem(e) {
+    const { state: { notabugApi } } = this.props;
+
     e && e.preventDefault && e.preventDefault();
     if (this.state.item || this.chain) return;
-    this.props.state.notabugApi.onChangeThing(this.props.id, this.onRefresh);
+    notabugApi.onChangeThing(this.props.id, this.onRefresh);
     this.chain && this.chain.off();
-    this.chain = this.props.state.notabugApi.souls.thingData.get({ thingid: this.props.id });
+    this.metaChain && this.metaChain.off();
+    this.metaChain = notabugApi.souls.thing.get({ thingid: this.props.id });
+    this.metaChain.on(notabugApi.watchThing);
+    this.chain = notabugApi.souls.thingData.get({ thingid: this.props.id });
     this.chain.on(this.onReceiveItem);
   }
 

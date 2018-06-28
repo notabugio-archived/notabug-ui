@@ -1,6 +1,4 @@
-import compose from "ramda/es/compose";
-import always from "ramda/es/always";
-import identity from "ramda/es/identity";
+import { compose, always, identity } from "ramda";
 import { provideState } from "freactal";
 import { withRouter } from "react-router-dom";
 

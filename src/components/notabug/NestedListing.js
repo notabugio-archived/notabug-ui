@@ -1,13 +1,14 @@
 import React, { Fragment } from "react";
 import { injectState } from "freactal";
 import { CommentForm } from "./CommentForm";
-import { LoadingComment } from "./LoadingComment";
+import { Comment } from "./Comment";
 import { Listing } from "./Listing";
 
 export const NestedListing = injectState(({
-  Loading=LoadingComment,
+  Loading=Comment,
   name,
   showReplyForm,
+  realtime,
   state: { myContent, notabugReplyToCommentId, notabugCommentsSort },
 }) => (
   <Fragment>
@@ -21,6 +22,7 @@ export const NestedListing = injectState(({
         myContent={myContent}
         replyToId={name}
         collapseThreshold={0}
+        realtime={realtime}
       />
     </div>
   </Fragment>

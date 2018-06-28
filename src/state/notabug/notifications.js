@@ -1,5 +1,4 @@
-import assocPath from "ramda/es/assocPath";
-import path from "ramda/es/path";
+import { assocPath, path } from "ramda";
 import uuid from "uuid";
 import { provideState, update } from "freactal";
 

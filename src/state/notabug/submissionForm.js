@@ -1,6 +1,5 @@
 import Promise from "promise";
-import always from "ramda/es/always";
-import identity from "ramda/es/identity";
+import { always, identity } from "ramda";
 import { update, provideState } from "freactal";
 import slugify from "slugify";
 import urllite from "urllite";

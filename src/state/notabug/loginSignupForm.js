@@ -1,6 +1,5 @@
 import { provideState, update } from "freactal";
-import always from "ramda/es/always";
-import identity from "ramda/es/identity";
+import { always, identity } from "ramda";
 
 const initialState = () => ({
   username: "",

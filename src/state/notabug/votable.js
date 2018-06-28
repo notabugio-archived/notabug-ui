@@ -1,6 +1,4 @@
-import prop from "ramda/es/prop";
-import always from "ramda/es/always";
-import identity from "ramda/es/identity";
+import { prop, always, identity } from "ramda";
 import { provideState } from "freactal";
 
 const initialState = ({ votableId }) => ({

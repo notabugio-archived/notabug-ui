@@ -1,5 +1,4 @@
-import always from "ramda/es/always";
-import identity from "ramda/es/identity";
+import { always, identity } from "ramda";
 import uuid from "uuid";
 import { provideState, update } from "freactal";
 import { COMMENT_BODY_MAX } from "notabug-peer";

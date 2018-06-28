@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Helmet } from "react-helmet";
-import compose from "ramda/es/compose";
+import { compose } from "ramda";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
 import { notabugSubmissionSummary } from "state/notabug";

@@ -4,6 +4,7 @@ var Gun = require("gun/gun");
 var compress = require("compression");
 var commandLineArgs = require("command-line-args");
 var blocked = require("./blocked");
+var cache = require("apicache").middleware;
 
 var options = commandLineArgs([
   { name: "persist", alias: "P", type: Boolean },
@@ -45,6 +46,7 @@ var express = require("express");
 var router = express.Router();
 var init = require("notabug-peer").default;
 var web;
+var nab;
 
 if (options.port) {
   var app = express();
@@ -54,12 +56,20 @@ if (options.port) {
   router.use(express.static(path.join(__dirname, "build")));
   app.use(router);
 
+  app.get("/api/topics/:topic.json", cache("1 minute"), function (req, res) {
+    res.send(nab.getListingJson({ topics: [req.params.topic], sort: "new", days: 30 }));
+  });
+
+  app.get("/api/submissions/:id.json", cache("1 minute"), function (req, res) {
+    res.send(nab.getListingJson({ opId: req.params.id, sort: "new" }));
+  });
+
   app.get("/*", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 }
 
-var nab = init({
+nab = init({
   blocked,
   localStorage: options.localStorage,
   peers: options.peer,

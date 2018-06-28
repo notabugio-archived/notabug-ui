@@ -1,10 +1,9 @@
-import compose from "ramda/es/compose";
-import always from "ramda/es/always";
-import identity from "ramda/es/identity";
-import assocPath from "ramda/es/assocPath";
+import Promise from "promise";
+import { prop, compose, always, identity, assocPath } from "ramda";
 import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
 import "babel-polyfill";
+import "gun";
 import notabugPeer, { PREFIX } from "notabug-peer";
 
 const COUNT_VOTES = !!(/countVotes/.test(window.location.search));
@@ -32,6 +31,7 @@ const initialState = ({ history }) => {
     notabugApi,
     notabugUser: null,
     notabugUserId: null,
+    preloaded: {},
     myContent: {}
   };
 };
@@ -43,6 +43,32 @@ const onNotabugMarkMine = (effects, id) => {
   return effects.getState()
     .then(() => assocPath(["myContent", id], true));
 };
+
+const onNotabugPreloadFromUrl = (effects, url) =>
+  effects.getState().then(({ notabugApi, preloaded }) =>
+    prop(url, preloaded)
+      ? Promise.resolve().then(always(identity))
+      : fetch(url)
+        .then(response => {
+          if (response.status !== 200) throw new Error("Bad response from server");
+          return response.json();
+        })
+        .then(notabugApi.reconstituteState)
+        .then(notabugApi.mergeState)
+        .then(always(assocPath(["preloaded", url], true))));
+
+const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
+  .then(({ notabugApi }) => {
+    const reducer = always(identity);
+    if (listingProps.topics && listingProps.topics.length) {
+      return Promise.all(listingProps.topics
+        .map(topicName => effects.onNotabugPreloadFromUrl(`/api/topics/${topicName}.json`))
+      ).then(reducer);
+    } else if (listingProps.replyToId) {
+      return effects.onNotabugPreloadFromUrl(`/api/submissions/${notabugApi.getOpId(listingProps.replyToId)}.json`).then(reducer);
+    }
+    return Promise.resolve().then(reducer);
+  });
 
 const onListenForReplies = (effects, id) => effects.getState()
   .then(({ notabugApi }) => {
@@ -82,6 +108,8 @@ export const notabug = compose(
       initialize,
       getState,
       onNotabugMarkMine,
+      onNotabugPreloadFromUrl,
+      onNotabugPreloadListing,
       onListenForReplies,
       onLogin
     }

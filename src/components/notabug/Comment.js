@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import Spinner from "react-spinkit";
 import { ThingComment } from "snew-classic-ui";
 import { Markdown } from "./Markdown";
 import { Timestamp } from "./Timestamp";
@@ -21,12 +22,26 @@ export class Comment extends PureComponent {
   }
 
   render() {
-    const { id, item, ups, downs, isMine, disableChildren } = this.props;
+    const { id, ups, downs, isMine, disableChildren } = this.props;
+    const item = this.props.item || {
+      body: "loading...",
+      timestamp: this.props.state.notabugApi.getTimestamp(this.props.id)
+    };
 
     return (
       <ThingComment
         ThingCommentEntry={ThingCommentEntry}
-        Markdown={Markdown}
+        Markdown={this.props.item ? Markdown : () => (
+          <div className="usertext-body may-blank-within md-container">
+            <div className="md">
+              <Spinner
+                name="ball-beat"
+                color="#cee3f8"
+              />
+              <div className="clearleft" />
+            </div>
+          </div>
+        )}
         Timestamp={Timestamp}
         Link={Link}
         NestedListing={disableChildren ? () => null : NestedListing}
