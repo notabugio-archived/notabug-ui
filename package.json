@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "private": true,
   "dependencies": {
     "apicache": "^1.2.1",

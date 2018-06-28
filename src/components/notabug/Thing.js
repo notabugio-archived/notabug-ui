@@ -95,7 +95,7 @@ class ThingBase extends PureComponent {
     this.chain && this.chain.off();
     this.metaChain && this.metaChain.off();
     this.metaChain = notabugApi.souls.thing.get({ thingid: this.props.id });
-    this.metaChain.on(notabugApi.watchThing);
+    this.metaChain.on(thing => thing && thing.id && notabugApi.watchThing(thing));
     this.chain = notabugApi.souls.thingData.get({ thingid: this.props.id });
     this.chain.on(this.onReceiveItem);
   }
