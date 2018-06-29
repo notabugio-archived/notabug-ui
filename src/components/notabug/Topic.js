@@ -1,4 +1,6 @@
-import React from "react";
+/* globals Promise */
+import React, { PureComponent } from "react";
+import ChatView from "react-chatview";
 import { Listing } from "./Listing";
 import { withRouter, Link } from "react-router-dom";
 import { Loading } from "./Loading";
@@ -9,43 +11,95 @@ const Empty = () => <Loading name="ball-grid-beat" />;
 const DEF_THRESHOLD = (window && window.location && window.location.search)
   ? parseInt(qs.parse(window.location.search).threshold, 10) || 1 : 1;
 
-export const Topic = withRouter(({
-  match: { params: { sort, topic="all", domain } },
-  location: { search, pathname },
-}) => {
-  const query = qs.parse(search.slice(1));
-  const limit = parseInt(query.limit, 10) || 25;
-  const count = parseInt(query.count, 10) || 0;
+class TopicBase extends PureComponent {
+  constructor(props) {
+    super(props);
+    const query = qs.parse(props.location.search.slice(1));
+    const limit = parseInt(query.limit, 10) || 25;
 
-  return (
-    <div className="content" role="main">
-      <div className="sitetable" id="siteTable">
+    this.state = {
+      isInfinite: false,
+      limit
+    };
+
+    this.onLoadMore = this.onLoadMore.bind(this);
+    this.onToggleInfinite = this.onToggleInfinite.bind(this);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.location.search !== this.props.location.search) {
+      const query = qs.parse(nextProps.location.search.slice(1));
+      const limit = parseInt(query.limit, 10) || 25;
+      this.setState({ limit });
+    }
+  }
+
+  render() {
+    const {
+      match: { params: { sort, topic="all", domain } },
+      location: { search, pathname },
+    } = this.props;
+    const { limit, isInfinite } = this.state;
+    const query = qs.parse(search.slice(1));
+    const count = parseInt(query.count, 10) || 0;
+
+    const listing = {
+      Empty,
+      key: `${topic}/${domain}/${sort}`,
+      sort: sort || "hot",
+      topics: [topic.toLowerCase()],
+      days: (sort === "top" || sort === "comments") ? 30 : (sort ==="active" || sort === "new") ? 7 : 30,
+      threshold: (sort === "new" || sort === "controversial") ? null : DEF_THRESHOLD,
+      realtime: sort === "new" || sort === "active",
+      domain,
+      limit,
+      count
+    };
+
+    return isInfinite ? (
+      <div className="content" role="main">
         <Listing
-          Empty={Empty}
-          key={`${topic}/${domain}/${sort}`}
-          sort={sort || "hot"}
-          topics={[topic.toLowerCase()]}
-          days={(sort === "top" || sort === "comments") ? 30 : (topic === "all" || sort === "new") ? 7 : 30}
-          threshold={(sort === "new" || sort === "controversial") ? null : DEF_THRESHOLD}
-          realtime={sort === "new" || sort === "active"}
-          domain={domain}
-          limit={limit}
-          count={count}
+          {...listing}
+          Container={ChatView}
+          containerProps={{
+            id: "siteTable",
+            className: "sitetable infinite-listing",
+            scrollLoadThreshold: 1280,
+            onInfiniteLoad: this.onLoadMore
+          }}
         />
-        <div className="nav-buttons">
-          <span className="nextprev">
-            {"view more: "}
-            {(count - limit) >= 0 ? (
+      </div>
+    ) : (
+      <div className="content" role="main">
+        <div className="sitetable" id="siteTable">
+          <Listing {...listing} />
+          <div className="nav-buttons">
+            <span className="nextprev">
+              {"view more: "}
+              {(count - limit) >= 0 ? (
+                <Link
+                  to={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
+                >‹ prev</Link>
+              ) : null}
+              <a onClick={this.onToggleInfinite} href="">∞</a>
               <Link
-                to={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
-              >‹ prev</Link>
-            ) : null}
-            <Link
-              to={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
-            >next ›</Link>
-          </span>
+                to={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
+              >next ›</Link>
+            </span>
+          </div>
         </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+
+  onLoadMore() {
+    return Promise.resolve(this.setState({ limit: this.state.limit + 25 }));
+  }
+
+  onToggleInfinite(e) {
+    e.preventDefault();
+    this.setState({ isInfinite: !this.state.isInfinite });
+  }
+}
+
+export const Topic = withRouter(TopicBase);

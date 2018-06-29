@@ -52,6 +52,7 @@ class ThingBase extends PureComponent {
         resizeThrottle={50}
         partialVisibility
         resizeCheck
+        offset={{top: 100}}
       >
         {({ isVisible }) => !item
           ? (

@@ -98,3 +98,15 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
 .chat-modal .comment {
   margin: 4px 10px;
 }
+
+.infinite-listing {
+  background-color: white;
+  position: fixed;
+  top: 45px;
+  padding-top: 7px;
+  padding-left: 5px;
+  right: 310px;
+  bottom: 0px;
+  overflow-y: scroll !important;
+  -webkit-overflow-scrolling: touch;
+}
