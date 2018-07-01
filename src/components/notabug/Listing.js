@@ -23,18 +23,28 @@ class ListingBase extends PureComponent {
     this.state = { ids };
     this.onUpdate = this.onUpdate.bind(this);
     this.onRefresh = throttle(() => this.onUpdate(), 150);
-    props.state.notabugApi.onChange(null, this.onRefresh);
   }
 
   componentDidMount() {
-    const ids = this.props.state.notabugApi.getListingIds(this.getListingParams());
-    this.setState({ ids }, this.onRefresh);
+    this.onRefresh();
     this.onSubscribe();
+
+    if (this.props.realtime) {
+      this.props.state.notabugApi.onChange(null, this.onRefresh);
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.onUnsubscribe(this.props);
-    this.onSubscribe(nextProps);
+
+    if (nextProps.realtime) {
+      nextProps.state.notabugApi.onChange(null, this.onRefresh);
+      this.onSubscribe(nextProps);
+    }
+
+    if (JSON.stringify(this.getListingParams()) !== JSON.stringify(this.getListingParams(nextProps))) {
+      this.onUpdate(nextProps);
+    }
   }
 
   componentWillUnmount() {
@@ -42,26 +52,37 @@ class ListingBase extends PureComponent {
   }
 
   render() {
-    const { ids} = this.state;
-    const { myContent = {}, Empty, Container=Fragment, containerProps={} } = this.props;
-    const count = parseInt(this.props.count, 10) || 0;
+    const { ids } = this.state;
+    const { Empty, Container=Fragment, containerProps={}, childrenPropName="children" } = this.props;
     if (!this.state.ids.length && Empty) return <Empty />;
 
+    const contProps = {
+      ...containerProps,
+      [childrenPropName]: ids.map((id, idx) => this.renderThing(idx, id))
+    };
+
     return (
-      <Container {...containerProps} >
-        {ids.map((id, idx) =>(
-          <Thing
-            Loading={this.props.Loading}
-            disableChildren={this.props.disableChildren}
-            id={id}
-            key={id}
-            isMine={!!myContent[id]}
-            rank={this.props.noRank ? null : count + idx + 1}
-            onDidUpdate={this.props.onDidUpdate}
-            collapseThreshold={this.props.collapseThreshold}
-          />
-        ))}
-      </Container>
+      <Container {...contProps} />
+    );
+  }
+
+  renderThing(idx, key) {
+    const id = this.state.ids[idx];
+    const { myContent = {} } = this.props;
+    const count = parseInt(this.props.count, 10) || 0;
+    return (
+      <Thing
+        Loading={this.props.Loading}
+        isVisible={this.props.autoVisible}
+        realtime={this.props.realtime}
+        disableChildren={this.props.disableChildren}
+        id={id}
+        key={key || id}
+        isMine={!!myContent[id]}
+        rank={this.props.noRank ? null : count + idx + 1}
+        onDidUpdate={this.props.onDidUpdate}
+        collapseThreshold={this.props.collapseThreshold}
+      />
     );
   }
 
@@ -80,9 +101,14 @@ class ListingBase extends PureComponent {
       .catch(error => console.warn("Error preloading listing", error))
       .then(() => this.onUpdate())
       .then(() => (this.state.ids && this.state.ids.length)
-        ? realtime && setTimeout(() => notabugApi.watchListing(params), 1000)
-        : notabugApi.watchListing(params));
+        ? realtime && setTimeout(() => notabugApi.watchListing(params), 300)
+        : this.onGunFallback());
     //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
+  }
+
+  onGunFallback() {
+    this.props.state.notabugApi.onChange(null, this.onRefresh);
+    this.props.state.notabugApi.watchListing(this.getListingParams());
   }
 
   onUnsubscribe() {

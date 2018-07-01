@@ -22,7 +22,7 @@ export class Comment extends PureComponent {
   }
 
   render() {
-    const { id, ups, downs, isMine, disableChildren } = this.props;
+    const { id, ups=0, downs=0, isMine, disableChildren } = this.props;
     const item = this.props.item || {
       body: "loading...",
       timestamp: this.props.state.notabugApi.getTimestamp(this.props.id)

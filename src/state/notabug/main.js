@@ -30,6 +30,7 @@ const initialState = ({ history }) => {
     notabugApi,
     notabugUser: null,
     notabugUserId: null,
+    notabugInfiniteScroll: false,
     preloaded: {},
     myContent: {}
   };
@@ -43,7 +44,7 @@ const onNotabugMarkMine = (effects, id) => {
     .then(() => assocPath(["myContent", id], true));
 };
 
-const onNotabugPreloadFromUrl = (effects, url) =>
+const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
   effects.getState().then(({ notabugApi, preloaded }) =>
     prop(url, preloaded)
       ? Promise.resolve().then(always(identity))
@@ -52,6 +53,7 @@ const onNotabugPreloadFromUrl = (effects, url) =>
           if (response.status !== 200) throw new Error("Bad response from server");
           return response.json();
         })
+        .then(state => ({ ...state, ...preState }))
         .then(notabugApi.reconstituteState)
         .then(notabugApi.mergeState)
         .then(always(assocPath(["preloaded", url], true))));
@@ -61,10 +63,15 @@ const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
     const reducer = always(identity);
     if (listingProps.topics && listingProps.topics.length) {
       return Promise.all(listingProps.topics
-        .map(topicName => effects.onNotabugPreloadFromUrl(`/api/topics/${topicName}.json`))
+        .map(topicName => effects
+          .onNotabugPreloadFromUrl(`/api/topics/${topicName}.json`, { topic: topicName }))
       ).then(reducer);
     } else if (listingProps.replyToId) {
-      return effects.onNotabugPreloadFromUrl(`/api/submissions/${notabugApi.getOpId(listingProps.replyToId)}.json`).then(reducer);
+      const opId = notabugApi.getOpId(listingProps.replyToId);
+      return effects.onNotabugPreloadFromUrl(
+        `/api/submissions/${opId}.json`,
+        { collectionSoul: notabugApi.souls.thingAllComments.soul({ thingid: opId }) }
+      ).then(reducer);
     }
     return Promise.resolve().then(reducer);
   });
@@ -96,6 +103,9 @@ const onListenForReplies = (effects, id) => effects.getState()
 
 const onLogin = update((state, { alias, pub }) => ({ notabugUser: alias, notabugUserId: pub }));
 
+const onNotabugToggleInfiniteScroll = update(({ notabugInfiniteScroll }) =>
+  ({ notabugInfiniteScroll: !notabugInfiniteScroll }));
+
 const initialize = effects => effects.getState()
   .then(({ notabugApi }) => notabugApi.onLogin(effects.onLogin))
   .then(always(identity));
@@ -109,6 +119,7 @@ export const notabug = compose(
       onNotabugMarkMine,
       onNotabugPreloadFromUrl,
       onNotabugPreloadListing,
+      onNotabugToggleInfiniteScroll,
       onListenForReplies,
       onLogin
     }

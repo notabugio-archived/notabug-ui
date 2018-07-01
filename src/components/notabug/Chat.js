@@ -61,7 +61,7 @@ export class Chat extends PureComponent {
     super(props);
     this.state = {
       topic: props.topic || "whatever",
-      messagesShown: 50,
+      messagesShown: 30,
       isOpen: !!props.isOpen
     };
 
@@ -82,6 +82,7 @@ export class Chat extends PureComponent {
         <Listing
           noRank
           realtime
+          autoVisible
           disableChildren
           Empty={Loading}
           Loading={LoadingChatMsg}

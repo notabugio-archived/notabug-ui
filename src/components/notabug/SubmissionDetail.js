@@ -3,6 +3,7 @@ import { injectState } from "freactal";
 import { notabugSubmissionDetail } from "state/notabug";
 import { NestedListing } from "./NestedListing";
 import { Thing } from "./Thing";
+import { Submission } from "./Submission";
 import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
 
 export const SubmissionDetail = notabugSubmissionDetail(injectState(({
@@ -14,8 +15,11 @@ export const SubmissionDetail = notabugSubmissionDetail(injectState(({
         <Thing
           id={notabugSubmissionId}
           listing={notabugListing}
+          Loading={Submission}
+          isVisible
           isViewing
           expanded
+          realtime
         />
       </div>
       <div className="commentarea">

@@ -18,6 +18,7 @@ class ThingBase extends PureComponent {
     super(props);
     this.state = { item: null, scores: {} };
     this.onUpdate = this.onUpdate.bind(this);
+    this.onSubscribe = this.onSubscribe.bind(this);
     this.onRefresh = throttle(this.onUpdate, 100, { trailing: true });
     this.onReceiveItem = this.onReceiveItem.bind(this);
     this.onReceiveSignedItem = this.onReceiveSignedItem.bind(this);
@@ -25,7 +26,7 @@ class ThingBase extends PureComponent {
   }
 
   componentDidMount() {
-    this.onUpdate();
+    if (this.props.isVisible) this.onFetchItem();
   }
 
   componentWillUnmount() {
@@ -34,56 +35,64 @@ class ThingBase extends PureComponent {
     this.chain = null;
   }
 
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.isVisible && nextProps.realtime !== this.props.realtime && nextProps.realtime) {
+      this.onFetchItem();
+    }
+  }
+
   render() {
     const { item, scores } = this.state;
     const {
       id, expanded, isMine, rank, collapseThreshold=null,
       Loading: LoadingComponent = Loading, ...props
     } = this.props;
-    const score = scores.ups - scores.downs;
+    const score = ((scores.ups || 0) - (scores.downs || 0) || 0);
     const ThingComponent = (item ? components[item.kind] : null);
     if (item && !ThingComponent) return null;
     const collapsed = !isMine && !!((collapseThreshold!==null && (score < collapseThreshold)));
 
-    return (
+    const renderComponent = ({ isVisible }) => !item
+      ? (
+        <LoadingComponent
+          {...props}
+          id={id}
+          item={item}
+          expanded={expanded}
+          collapsed={collapsed}
+          collapseThreshold={collapseThreshold}
+          isVisible={isVisible}
+          isMine={isMine}
+          rank={rank}
+          onSubscribe={this.onSubscribe}
+          {...scores}
+        />
+      ) : (
+        <ThingComponent
+          {...props}
+          id={id}
+          item={item}
+          expanded={expanded}
+          collapsed={collapsed}
+          collapseThreshold={collapseThreshold}
+          isVisible={isVisible}
+          isMine={isMine}
+          rank={rank}
+          onSubscribe={this.onSubscribe}
+          {...scores}
+        />
+      );
+
+    return this.props.isVisible ? (
+      renderComponent({ isVisible: true })
+    ) : (
       <VisibilitySensor
         onChange={isVisible => isVisible && this.onFetchItem()}
         scrollThrottle={50}
         resizeThrottle={50}
         partialVisibility
         resizeCheck
-        offset={{top: 100}}
-      >
-        {({ isVisible }) => !item
-          ? (
-            <LoadingComponent
-              {...props}
-              isVisible={isVisible}
-              id={id}
-              item={item}
-              expanded={expanded}
-              collapsed={collapsed}
-              collapseThreshold={collapseThreshold}
-              isMine={isMine}
-              rank={rank}
-              {...scores}
-            />
-          ) : (
-            <ThingComponent
-              {...props}
-              isVisible={isVisible}
-              id={id}
-              item={item}
-              expanded={expanded}
-              collapsed={collapsed}
-              collapseThreshold={collapseThreshold}
-              isMine={isMine}
-              rank={rank}
-              {...scores}
-            />
-          )
-        }
-      </VisibilitySensor>
+      >{renderComponent}</VisibilitySensor>
     );
   }
 
@@ -92,11 +101,14 @@ class ThingBase extends PureComponent {
 
     e && e.preventDefault && e.preventDefault();
     if (this.state.item || this.chain) return;
-    notabugApi.onChangeThing(this.props.id, this.onRefresh);
+
+    this.onUpdate();
     this.chain && this.chain.off();
-    this.metaChain && this.metaChain.off();
-    this.metaChain = notabugApi.souls.thing.get({ thingid: this.props.id });
-    this.metaChain.on(thing => thing && thing.id && notabugApi.watchThing(thing));
+
+    if (this.props.realtime) {
+      this.onSubscribe();
+    }
+
     this.chain = notabugApi.souls.thingData.get({ thingid: this.props.id });
     this.chain.on(this.onReceiveItem);
   }
@@ -105,6 +117,14 @@ class ThingBase extends PureComponent {
     const { state: { notabugApi }, id } = this.props;
     return ["up", "down", "comment"].reduce(
       (scores, type) => ({ ...scores, [type+"s"]: notabugApi.getVoteCount(id, type) }), {});
+  }
+
+  onSubscribe() {
+    const { state: { notabugApi } } = this.props;
+    notabugApi.onChangeThing(this.props.id, this.onRefresh);
+    this.metaChain && this.metaChain.off();
+    this.metaChain = notabugApi.souls.thing.get({ thingid: this.props.id });
+    this.metaChain.on(thing => thing && thing.id && notabugApi.watchThing(thing));
   }
 
   onReceiveItem(item) {
