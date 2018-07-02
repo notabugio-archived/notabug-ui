@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "dependencies": {
     "apicache": "^1.2.1",
     "babel-cli": "^6.26.0",
