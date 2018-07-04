@@ -7198,7 +7198,7 @@ snapdragon@^0.8.1:
 
 "snew-classic-ui@https://github.com/notabugio/snew-classic-ui.git#0.2.0":
   version "0.2.0"
-  resolved "https://github.com/notabugio/snew-classic-ui.git#52ea5a0e5f34f2c5d6c56e2c0e582c69ad940ce5"
+  resolved "https://github.com/notabugio/snew-classic-ui.git#58ca23bf719bbecfcd94c62834d22222d269f5b0"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"

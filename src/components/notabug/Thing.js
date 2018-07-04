@@ -16,7 +16,9 @@ const components = {
 class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
-    this.state = { item: null, scores: {} };
+    const { expanded = false } = props;
+    this.state = { item: null, scores: {}, expanded };
+    this.onToggleExpando = this.onToggleExpando.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
     this.onSubscribe = this.onSubscribe.bind(this);
     this.onRefresh = throttle(this.onUpdate, 100, { trailing: true });
@@ -42,9 +44,9 @@ class ThingBase extends PureComponent {
   }
 
   render() {
-    const { item, scores } = this.state;
+    const { item, scores, expanded } = this.state;
     const {
-      id, expanded, isMine, rank, collapseThreshold=null,
+      id, isMine, rank, collapseThreshold=null,
       Loading: LoadingComponent = Loading, ...props
     } = this.props;
     const score = ((scores.ups || 0) - (scores.downs || 0) || 0);
@@ -72,13 +74,14 @@ class ThingBase extends PureComponent {
           {...props}
           id={id}
           item={item}
-          expanded={expanded}
+          expanded={this.state.expanded}
           collapsed={collapsed}
           collapseThreshold={collapseThreshold}
           isVisible={isVisible}
           isMine={isMine}
           rank={rank}
           onSubscribe={this.onSubscribe}
+          onToggleExpando={this.onToggleExpando}
           {...scores}
         />
       );
@@ -157,6 +160,9 @@ class ThingBase extends PureComponent {
 
   onUpdate() {
     this.setState({ scores: this.getScores() });
+  }
+  onToggleExpando() {
+    this.setState({ expanded: !this.state.expanded });
   }
 }
 

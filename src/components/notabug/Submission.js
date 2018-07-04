@@ -10,6 +10,7 @@ import { Timestamp } from "./Timestamp";
 import { Link } from "./Link";
 import { withRouter } from "react-router-dom";
 import slugify from "slugify";
+import { Expando, getExpando } from "./Expando";
 
 const nsfwRe = /(nsfw|porn|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
 
@@ -29,6 +30,7 @@ class SubmissionBase extends PureComponent {
       expanded,
       rank,
       isViewing,
+      onToggleExpando,
       state: { notabugApi, isVotingUp, isVotingDown },
     } = this.props;
     let { item } = this.props;
@@ -41,6 +43,10 @@ class SubmissionBase extends PureComponent {
       ? (urlInfo.host || "").replace(/^www\./, "")
       : item.topic ? `self.${item.topic}` : null;
 
+    const { image, video, iframe } = getExpando(item, domain);
+
+    const expandoType = item.body ? "selftext" : video ? "video" : image ? "video" : iframe ? "video": null;
+
     return (
       <Fragment>
         {isViewing ? (
@@ -50,8 +56,10 @@ class SubmissionBase extends PureComponent {
         ) : null}
         <ThingLink
           Markdown={Markdown}
+          Expando={Expando}
           Timestamp={Timestamp}
           Link={Link}
+          isDetail={isViewing}
           id={id}
           title={item.title}
           author={item.author}
@@ -79,6 +87,11 @@ class SubmissionBase extends PureComponent {
           scoreTooltip={`+${ups} / -${downs}`}
           onVoteUp={this.onVoteUp}
           onVoteDown={this.onVoteDown}
+          expandoType={expandoType}
+          onToggleExpando={expandoType ? onToggleExpando : null}
+          image={image}
+          video={video}
+          iframe={iframe}
         />
       </Fragment>
     );
