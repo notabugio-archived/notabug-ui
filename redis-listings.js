@@ -4,6 +4,7 @@ const FRESH = 1000 * 60 * 1;
 
 function calculateListing(nab, req) {
   var things = {};
+  var data;
   var params;
 
   if (req.params.topic) {
@@ -50,7 +51,14 @@ function calculateListing(nab, req) {
       }));
     });
   })).then(function() {
+    if (req.params.opId) {
+      return calculateThings(nab, { params: { id: Object.keys(things).join(",") } })
+        .then(result => data = result);
+    }
+  }).then(function() {
     var result = { timestamp: (new Date()).getTime(), things: things };
+
+    if (data) result.data = data;
 
     if (Object.keys(things).length) {
       nab.gun.redis.put(req.url, result, function(err) {
@@ -59,6 +67,22 @@ function calculateListing(nab, req) {
     }
 
     return result;
+  });
+}
+
+function calculateThings(nab, req) {
+  var things = {};
+  var ids = req.params.id.split(",");
+
+  return Promise.all(ids.map(function(id) {
+    return nab.gun.redis.get("nab/things/" + id + "/data").then(function(data) {
+      if(data) {
+        delete data["_"];
+        things[id] = data;
+      }
+    });
+  })).then(function() {
+    return things;
   });
 }
 
@@ -90,4 +114,11 @@ function listingMeta(nab, req, res) {
   });
 }
 
+function things(nab, req, res) {
+  calculateThings(nab, req).then(function(result) {
+    res.send(result);
+  });
+}
+
 module.exports.listingMeta = listingMeta;
+module.exports.things = things;

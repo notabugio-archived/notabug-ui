@@ -82,7 +82,7 @@ class TopicBase extends PureComponent {
     ) : (
       <div className="content" role="main">
         <div className="sitetable" id="siteTable">
-          <Listing {...listing} />
+          <Listing redis {...listing} />
           <div className="nav-buttons">
             <span className="nextprev">
               {"view more: "}

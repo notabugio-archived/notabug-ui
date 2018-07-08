@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import { path } from "ramda";
 import throttle from "lodash/throttle";
 import { Submission } from "./Submission";
 import { Comment } from "./Comment";
@@ -44,11 +45,13 @@ class ThingBase extends PureComponent {
   }
 
   render() {
-    const { item, scores, expanded } = this.state;
+    const { scores, expanded } = this.state;
     const {
       id, isMine, rank, collapseThreshold=null,
       Loading: LoadingComponent = Loading, ...props
     } = this.props;
+
+    const item = this.state.item || path(["state", "thingData", id], this.props);
     const score = ((scores.ups || 0) - (scores.downs || 0) || 0);
     const ThingComponent = (item ? components[item.kind] : null);
     if (item && !ThingComponent) return null;

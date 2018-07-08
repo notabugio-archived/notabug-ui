@@ -87,6 +87,14 @@ if (options.port) {
     }
   });
 
+  app.get("/api/things/:id.json", function (req, res) {
+    if (options.redis) {
+      listings.things(nab, req, res);
+    } else {
+      res.send({});
+    }
+  });
+
   app.get("/*", function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });

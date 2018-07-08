@@ -102,7 +102,11 @@ class ListingBase extends PureComponent {
       .catch(error => console.warn("Error preloading listing", error))
       .then(() => this.onUpdate())
       .then(() => (this.state.ids && this.state.ids.length)
-        ? realtime && setTimeout(() => notabugApi.watchListing(params), 300)
+        ? realtime
+          ? this.props.redis
+            ? effects.onNotabugPreloadIds(this.state.ids) && setTimeout(() => notabugApi.watchListing(params), 300)
+            : setTimeout(() => notabugApi.watchListing(params), 300)
+          : this.props.redis && effects.onNotabugPreloadIds(this.state.ids)
         : this.onGunFallback());
     //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
   }
