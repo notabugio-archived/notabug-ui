@@ -11,10 +11,9 @@ import { notabugLoginSignupForm } from "state/notabug";
 import { injectState } from "freactal";
 
 const AlphaWarning = () => (
-  <div className="reddit-infobar">
-    <h3>PASSWORD MANAGER RECOMMENDED!!!</h3>
-    <h3>auth is alpha, may take multiple tries</h3>
-    <p>password changes are not yet possible, will be later</p>
+  <div className="reddit-infobar with-icon locked-infobar">
+    <h3>auth is <strong>alpha</strong>, may take multiple tries</h3>
+    <p>password changes are not yet possible</p>
   </div>
 );
 
@@ -59,7 +58,6 @@ export const LoginFormSide = notabugLoginSignupForm(injectState(({
         onLogin();
       }}
     />
-    {notabugUsername ? null : <AlphaWarning />}
   </Fragment>
 ) : null));
 

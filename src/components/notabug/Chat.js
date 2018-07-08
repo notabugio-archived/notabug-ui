@@ -90,7 +90,7 @@ export class Chat extends PureComponent {
           topics={this.props.withSubmissions
             ? [`chat:${this.state.topic}`, "all"]
             : [`chat:${this.state.topic}`]}
-          days={2}
+          days={3}
           threshold={-1}
           collapseThreshold={0}
           limit={this.state.messagesShown}

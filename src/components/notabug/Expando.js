@@ -31,16 +31,19 @@ export const Expando = ({
   </div>
 );
 
+const matchesExt = (exts, url) => !!exts.find(ext => url.toLowerCase().indexOf("."+ext) !== -1);
+
 export const getExpando = (item, domain) => {
-  const image = (item.url && (item.url.indexOf(".jpg") !== -1 || item.url.indexOf(".png") !== -1 || item.url.indexOf(".gif") !== -1) && item.url.indexOf(".gifv") === -1) ? item.url : null;
+  const imgExts = ["jpg", "jpeg", "png", "gif", "gifv"];
+  const vidExts = ["mp4", "mov", "webm", "ogv", "m4v"];
+  const image = (item.url && matchesExt(imgExts, item.url)) ? item.url : null;
+  const video = (item.url && matchesExt(vidExts, item.url)) ? item.url
+    : (item.url && item.url.indexOf(".gifv") !== -1)
+      ? item.url.replace(".gifv",".mp4") : null;
 
-  const video = (item.url && (item.url.indexOf(".mp4") !== -1 || item.url.indexOf(".mov") !== -1 || item.url.indexOf(".webm") !== -1 || item.url.indexOf(".ogv") !== -1)) ? item.url :
-  (item.url && item.url.indexOf(".gifv") !== -1) ? item.url.replace(".gifv",".mp4") :
-  null;
-
-  const iframe = (domain === "youtube.com" && item.url.indexOf("?v=") !== -1) ? "https://www.youtube.com/embed/" + item.url.substring(item.url.indexOf("?v=")+3, item.url.length) :
-  (domain === "youtu.be" && item.url.indexOf(".be/") !== -1) ? "https://www.youtube.com/embed/" + item.url.substring(item.url.indexOf(".be/")+4, item.url.length) :
-  (domain === "hooktube.com" && item.url.indexOf("?v=") !== -1) ? "https://www.hooktube.com/embed/" + item.url.substring(item.url.indexOf("?v=")+3, item.url.length) :
+  const iframe = (domain === "youtube.com" && item.url.indexOf("?v=") !== -1) ? "https://www.hooktube.com/embed/" + item.url.substring(item.url.indexOf("?v=")+3, item.url.length) + "?autoplay=0":
+  (domain === "youtu.be" && item.url.indexOf(".be/") !== -1) ? "https://www.hooktube.com/embed/" + item.url.substring(item.url.indexOf(".be/")+4, item.url.length) + "?autoplay=0":
+  (domain === "hooktube.com" && item.url.indexOf("?v=") !== -1) ? "https://www.hooktube.com/embed/" + item.url.substring(item.url.indexOf("?v=")+3, item.url.length) + "?autoplay=0":
   (domain === "bitchute.com" && item.url.indexOf("/video/") !== -1) ? "https://www.bitchute.com/embed/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length) :
   (domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1) ? "https://www.dailymotion.com/embed/video/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length) :
   (domain === "vimeo.com" && item.url.indexOf(".com/") !== -1) ? "https://player.vimeo.com/video/" + item.url.substring(item.url.indexOf(".com/")+5, item.url.length) :

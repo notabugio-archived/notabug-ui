@@ -5,7 +5,9 @@
     "args": [
       "--debug",
       "--persist",
+      "--watch",
       "--score",
+      "--days", "30",
       "--peer", "http://localhost:3333/gun"
     ]
   }

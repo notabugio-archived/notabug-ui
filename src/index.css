@@ -45,8 +45,8 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
 }
 
 .chat-modal:not(.fullscreen-chat) {
-  bottom: 25px;
-  right: 25px;
+  bottom: 10px;
+  right: 10px;
 }
 
 .chat-modal .chat-message-display {
@@ -106,7 +106,13 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   padding-top: 7px;
   padding-left: 5px;
   right: 310px;
+  left: 0px;
   bottom: 0px;
   overflow-y: scroll !important;
   -webkit-overflow-scrolling: touch;
+}
+
+.expando img {
+  max-width: 100%;
+  max-height: 720px;
 }

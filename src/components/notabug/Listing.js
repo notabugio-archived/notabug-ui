@@ -26,7 +26,7 @@ class ListingBase extends PureComponent {
   }
 
   componentDidMount() {
-    this.onRefresh();
+    this.onUpdate();
     this.onSubscribe();
 
     if (this.props.realtime) {
@@ -97,6 +97,7 @@ class ListingBase extends PureComponent {
     const { notabugApi } = (props || this.props).state;
     const { effects, realtime } = (props || this.props);
     const params = this.getListingParams();
+    this.onUpdate();
     effects.onNotabugPreloadListing(params)
       .catch(error => console.warn("Error preloading listing", error))
       .then(() => this.onUpdate())

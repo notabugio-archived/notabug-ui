@@ -112,8 +112,11 @@ class ThingBase extends PureComponent {
       this.onSubscribe();
     }
 
+    this.metaChain && this.metaChain.off();
     this.chain = notabugApi.souls.thingData.get({ thingid: this.props.id });
     this.chain.on(this.onReceiveItem);
+    this.metaChain = notabugApi.souls.thing.get({ thingid: this.props.id });
+    this.metaChain.on(thing => thing && thing.id && notabugApi.watchThing(thing));
   }
 
   getScores() {
