@@ -23,7 +23,7 @@ function calculateListing(nab, req) {
         if (thingSoul === "_" || thingSoul === "#") return;
         return Promise.all([
           nab.gun.redis.get(thingSoul),
-          nab.gun.redis.get(thingSoul + "/comments"),
+          nab.gun.redis.get(thingSoul + "/allcomments"),
           nab.gun.redis.get(thingSoul + "/votesup"),
           nab.gun.redis.get(thingSoul + "/votesdown"),
         ]).then(function(res) {
