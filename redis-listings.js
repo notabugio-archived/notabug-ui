@@ -1,6 +1,6 @@
 /* globals Promise */
-
-const FRESH = 1000 * 60 * 1;
+var _ = require("ramda");
+var FRESH = 1000 * 60 * 1;
 
 function calculateListing(nab, req) {
   var things = {};
@@ -33,7 +33,13 @@ function calculateListing(nab, req) {
           var votesup = Object.keys(res[2] || { _: null }).length - 1;
           var votesdown = Object.keys(res[3] || { _: null }).length - 1;
           var votes = {};
+          var replyToSoul = _.path(["replyTo", "#"], res[0]);
+          var opSoul = _.path(["op", "#"], res[0]);
+          var opId = opSoul ? nab.souls.thing.isMatch(opSoul).thingid : null;
+          var replyToId = replyToSoul ? nab.souls.thing.isMatch(replyToSoul).thingid : null;
 
+          if (opId) thing.opId = opId;
+          if (replyToId) thing.replyToId = replyToId;
           if (allcomments) votes.comment = allcomments;
           if (votesup) votes.up = votesup;
           if (votesdown) votes.down = votesdown;
