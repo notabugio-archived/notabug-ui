@@ -1,3 +1,4 @@
+/* globals Promise */
 var flint = require("gun-flint");
 var redis = require("redis");
 var flatten = require("flat");
@@ -30,7 +31,7 @@ function fromRedis(obj) {
       obj[key] = undefined;
     }
 
-    if (key === "timestamp") {
+    if (key === "timestamp" || key === "lastActive") {
       obj[key] = parseInt(obj[key], 10) || 0;
     }
   });
@@ -38,37 +39,65 @@ function fromRedis(obj) {
   return obj;
 }
 
+var get = function(redis, key, done) {
+  if (!key) return done(null, null);
+  redis.hgetall(key, function(err, res) {
+    if (err) {
+      console.error("get error", err);
+      done && done(err);
+    } else {
+      var data = fromRedis(res);
+      done && done(null, data);
+    }
+  });
+};
+
 flint.Flint.register(new flint.NodeAdapter({
   get: function(key, done) {
-    if (!key) return done(null, null);
-    this.redis.hgetall(key, function(err, res) {
-      if (err) {
-        console.error("get error", err);
-        done(err);
-      } else {
-        var data = fromRedis(res);
-        done(null, data);
-      }
-    });
+    var redis = this.redis;
+    if (done) {
+      return get(redis, key, done);
+    } else {
+      return new Promise(function (resolve, reject) {
+        get(redis, key, function(err, result) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      });
+    }
   },
 
   put: function(key, node, done) {
-    if (node == null) return done(this.errors.internal);
+    if (key == null || node === null) return done(this.errors.internal);
+    var redis = this.redis;
+
     var data = toRedis(node);
-    this.redis.hmset(key, data, function(err) {
+    redis.hmset(key, data, function(err) {
       if(err) {
         console.error("put error", err);
-        done(err);
+        done && done(err);
       } else {
-        done(null);
+        done && done(null);
       }
     });
   },
 
-  opt: function() {
+  opt: function(context) {
     this.redis = redis.createClient();
+    context.gun.redis = this;
     this.redis.on("error", function(err) {
       console.error("redis error", err.stack || err);
+    });
+
+    var put = this.put.bind(this);
+
+    context.on("put", function(node) {
+      Object.keys((node && node.put) || {}).forEach(function(soul) {
+        put(soul, node.put[soul]);
+      });
     });
   }
 }));
