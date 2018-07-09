@@ -43,7 +43,11 @@ class ListingBase extends PureComponent {
     }
 
     if (JSON.stringify(this.getListingParams()) !== JSON.stringify(this.getListingParams(nextProps))) {
-      this.onUpdate(nextProps);
+      if (nextProps.count !== this.props.count && !nextProps.realtime) {
+        this.onSubscribe(nextProps);
+      } else {
+        this.onUpdate(nextProps);
+      }
     }
   }
 
