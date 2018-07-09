@@ -8,7 +8,7 @@ import notabugPeer, { PREFIX } from "notabug-peer";
 const COUNT_VOTES = !!(/countVotes/.test(window.location.search));
 const LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
 
-if (!(/nosea/.test(window.location.search))) {
+if ((/sea/.test(window.location.search))) {
   require("sea");
 }
 
