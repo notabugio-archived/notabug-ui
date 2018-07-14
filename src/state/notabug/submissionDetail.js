@@ -8,6 +8,7 @@ const initialState = (({
 }) => ({
   notabugSubmissionId: submission_id,
   notabugCommentsSort: qs.parse(search).sort || "best",
+  replied: false,
   notabugReplyToCommentId: null
 }));
 
@@ -35,7 +36,7 @@ const onNotabugSaveComment = (effects, body) => effects.getState()
     effects.onNotabugSetReplyTo(null);
     //effects.onNotabugQueueVote(id, "up");
   })
-  .then(always(identity));
+  .then(() => state => ({ ...state, replied: true }));
 
 export const notabugSubmissionDetail = provideState({
   initialState,

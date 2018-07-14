@@ -50,7 +50,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var SEA = USE('./root');
     if (SEA.window) {
       if (location.protocol.indexOf('s') < 0 && location.host.indexOf('localhost') < 0 && location.protocol.indexOf('file:') < 0) {
-        //location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
+        location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
       }
     }
   })(USE, './https');
@@ -403,7 +403,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 _r = shim.Buffer.from(result, 'binary').toString('utf8');
 
                 if (cb) {
-                  cb(_r);
+                  try {
+                    cb(_r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context2.abrupt("return", _r);
 
@@ -416,7 +420,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 r = hash && hash.toString('utf8');
 
                 if (cb) {
-                  cb(r);
+                  try {
+                    cb(r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context2.abrupt("return", r);
 
@@ -586,7 +594,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 r = { pub: sa.pub, priv: sa.priv, /* pubId, */epub: dh.epub, epriv: dh.epriv };
 
                 if (cb) {
-                  cb(r);
+                  try {
+                    cb(r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context5.abrupt("return", r);
 
@@ -642,7 +654,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 // So we may want to change this in the future.
                 // but for now, we want to prevent duplicate double signature.
                 if (cb) {
-                  cb(data);
+                  try {
+                    cb(data);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context6.abrupt("return", data);
 
@@ -668,7 +684,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
                 if (cb) {
-                  cb(r);
+                  try {
+                    cb(r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context6.abrupt("return", r);
 
@@ -727,7 +747,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 raw = json !== data ? json.s && json.m ? parse(json.m) : data : json;
 
                 if (cb) {
-                  cb(raw);
+                  try {
+                    cb(raw);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context7.abrupt("return", raw);
 
@@ -763,7 +787,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
                 if (cb) {
-                  cb(r);
+                  try {
+                    cb(r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context7.abrupt("return", r);
 
@@ -875,7 +903,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
                 if (cb) {
-                  cb(r);
+                  try {
+                    cb(r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context9.abrupt("return", r);
 
@@ -938,7 +970,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
 
                 if (cb) {
-                  cb(r);
+                  try {
+                    cb(r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context10.abrupt("return", r);
 
@@ -1036,7 +1072,11 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 r = derived;
 
                 if (cb) {
-                  cb(r);
+                  try {
+                    cb(r);
+                  } catch (e) {
+                    console.log(e);
+                  }
                 }
                 return _context12.abrupt("return", r);
 
@@ -1181,7 +1221,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // But all other behavior needs to be equally easy, like opinionated ways of
     // Adding friends (trusted public keys), sending private messages, etc.
     // Cheers! Tell me what you think.
-    var Gun = (SEA.window || {}).Gun;
+    var Gun = (SEA.window || {}).Gun; // || require("./gun");
     Gun.SEA = SEA;
     SEA.Gun = Gun;
 

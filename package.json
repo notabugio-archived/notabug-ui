@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.6.7",
+  "version": "0.6.8",
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-module-resolver": "^3.1.1",
@@ -14,6 +14,7 @@
     "create-react-server": "^0.3.2",
     "detect-node": "^2.0.3",
     "express": "^4.16.3",
+    "express-static-gzip": "^0.3.2",
     "flat": "^4.1.0",
     "forever": "^0.15.3",
     "formidable": "^1.2.1",
@@ -61,6 +62,7 @@
     "superpeer": "yarn && yarn build && yarn stop && yarn server",
     "server": "concurrently \"yarn accesspeer\" \"yarn relaypeer \" \"yarn persistpeer\"",
     "build": "NODE_PATH=src/ react-app-rewired build",
+    "postbuild": "gzip -r build",
     "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom"
   },
   "devDependencies": {

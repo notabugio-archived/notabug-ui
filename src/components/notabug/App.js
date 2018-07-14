@@ -65,6 +65,15 @@ const TopicRoute = injectState(({
           <h4>Your current contributions will be on your profile when they are ready</h4>
         </div>
       )} />
+      <Route path="/r/*" component={({ location: { pathname, search } }) => (
+        <div className="reddit-infobar">
+          <h1>This isn't snew</h1>
+          <h4>
+            {"Yes they share some code, but you're looking for "}
+            <a href={`https://snew.github.io${pathname}${search}`}>snew.github.io</a>
+          </h4>
+        </div>
+      )} />
       <Route path="/submit" component={SubmissionForm} />
       <Route path="/:sort" component={Topic} />
       <Route path="/" exact component={Topic} />

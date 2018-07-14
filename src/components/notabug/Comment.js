@@ -56,7 +56,7 @@ export class Comment extends PureComponent {
         ups={ups}
         downs={downs}
         votableId={id}
-        score={ups-downs}
+        score={(ups - downs) ? `(+${ups} | -${downs})` : null}
         scoreTooltip={`+${ups} / -${downs}`}
         distinguished={isMine ? "me" : null}
         collapsed={this.state.collapsed}

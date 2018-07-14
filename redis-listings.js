@@ -1,6 +1,6 @@
 /* globals Promise */
 var _ = require("ramda");
-var FRESH = 1000 * 60 * 1;
+var FRESH = 1000 * 30 * 1;
 
 function calculateListing(nab, req) {
   var things = {};
@@ -96,7 +96,7 @@ function listingMeta(nab, req, res) {
   nab.gun.redis.get(req.url).then(function(cached) {
     var now = (new Date()).getTime();
 
-    if (cached && cached.things && Object.keys(cached.things).length) {
+    if (false) { //cached && cached.things && Object.keys(cached.things).length) {
       Object.values(cached.things || {}).forEach(function(thing) {
         if (thing.timestamp) thing.timestamp = parseInt(thing.timestamp, 10);
         if (thing.lastActive) thing.lastActive = parseInt(thing.lastActive, 10);
@@ -108,6 +108,7 @@ function listingMeta(nab, req, res) {
       });
 
       res.send(cached);
+      res.end();
 
       if ((now - cached.timestamp) > FRESH) {
         calculateListing(nab, req);

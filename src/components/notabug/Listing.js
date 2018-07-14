@@ -79,6 +79,7 @@ class ListingBase extends PureComponent {
         Loading={this.props.Loading}
         isVisible={this.props.autoVisible}
         realtime={this.props.realtime}
+        redis={this.props.redis}
         disableChildren={this.props.disableChildren}
         id={id}
         key={key || id}
@@ -109,9 +110,9 @@ class ListingBase extends PureComponent {
         ? realtime
           ? this.props.redis
             ? effects.onNotabugPreloadIds(this.state.ids) && setTimeout(() => notabugApi.watchListing(params), 300)
-            : setTimeout(() => notabugApi.watchListing(params), 300)
+            : notabugApi.watchListing(params)
           : this.props.redis && effects.onNotabugPreloadIds(this.state.ids)
-        : this.onGunFallback());
+        : realtime && this.onGunFallback());
     //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
   }
 

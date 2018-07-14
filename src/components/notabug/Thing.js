@@ -103,7 +103,10 @@ class ThingBase extends PureComponent {
   }
 
   onFetchItem(e) {
-    const { state: { notabugApi } } = this.props;
+    const { redis, id, realtime, state: { notabugApi } } = this.props;
+    const existingItem = this.state.item || path(["state", "thingData", id], this.props);
+
+    if ((redis && !realtime) || existingItem) return this.onUpdate();
 
     e && e.preventDefault && e.preventDefault();
     if (this.state.item || this.chain) return;
@@ -115,11 +118,8 @@ class ThingBase extends PureComponent {
       this.onSubscribe();
     }
 
-    this.metaChain && this.metaChain.off();
     this.chain = notabugApi.souls.thingData.get({ thingid: this.props.id });
     this.chain.on(this.onReceiveItem);
-    this.metaChain = notabugApi.souls.thing.get({ thingid: this.props.id });
-    this.metaChain.on(thing => thing && thing.id && notabugApi.watchThing(thing));
   }
 
   getScores() {
