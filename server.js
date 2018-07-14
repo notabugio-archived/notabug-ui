@@ -62,12 +62,16 @@ if (options.port) {
   var expresStaticGzip = require("express-static-gzip");
   var app = express();
   var listings;
+  var cache = require("express-redis-cache")({
+    client: require("redis").createClient({ db: 1 }),
+    expire: 30
+  });
 
   if (options.redis) {
     listings = require("./redis-listings");
   }
 
-  app.get("/api/topics/:topic.json", function (req, res) {
+  app.get("/api/topics/:topic.json", cache.route({ expire: 60 }), function (req, res) {
     if (options.redis) {
       listings.listingMeta(nab, req, res);
     } else {
@@ -75,7 +79,7 @@ if (options.port) {
     }
   });
 
-  app.get("/api/submissions/:opId.json", function (req, res) {
+  app.get("/api/submissions/:opId.json", cache.route({ expire: 30 }), function (req, res) {
     if (options.redis) {
       listings.listingMeta(nab, req, res);
     } else {
@@ -83,7 +87,7 @@ if (options.port) {
     }
   });
 
-  app.get("/api/things/:id.json", function (req, res) {
+  app.get("/api/things/:id.json", cache.route({ expire: 60*60 }), function (req, res) {
     if (options.redis) {
       listings.things(nab, req, res);
     } else {
@@ -91,10 +95,10 @@ if (options.port) {
     }
   });
 
-  router.use(expresStaticGzip(path.join(__dirname, "build")));
+  router.use(cache.route({ expire: 60*60 }), expresStaticGzip(path.join(__dirname, "build")));
   app.use(router);
 
-  app.get("/*", function (req, res) {
+  app.get("/*", cache.route({ expire: 60 }), function (req, res) {
     res.sendFile(path.join(__dirname, "build", "index.html"));
   });
 

@@ -1,6 +1,5 @@
 /* globals Promise */
 var _ = require("ramda");
-var FRESH = 1000 * 30 * 1;
 
 function calculateListing(nab, req) {
   var things = {};
@@ -63,15 +62,7 @@ function calculateListing(nab, req) {
     }
   }).then(function() {
     var result = { timestamp: (new Date()).getTime(), things: things };
-
     if (data) result.data = data;
-
-    if (Object.keys(things).length) {
-      nab.gun.redis.put(req.url, result, function(err) {
-        err && console.error("error putting", err);
-      });
-    }
-
     return result;
   });
 }
@@ -93,31 +84,8 @@ function calculateThings(nab, req) {
 }
 
 function listingMeta(nab, req, res) {
-  nab.gun.redis.get(req.url).then(function(cached) {
-    var now = (new Date()).getTime();
-
-    if (false) { //cached && cached.things && Object.keys(cached.things).length) {
-      Object.values(cached.things || {}).forEach(function(thing) {
-        if (thing.timestamp) thing.timestamp = parseInt(thing.timestamp, 10);
-        if (thing.lastActive) thing.lastActive = parseInt(thing.lastActive, 10);
-        if (thing.votes) {
-          Object.keys(thing.votes).forEach(function(kind) {
-            thing.votes[kind] = parseInt(thing.votes[kind], 10);
-          });
-        }
-      });
-
-      res.send(cached);
-      res.end();
-
-      if ((now - cached.timestamp) > FRESH) {
-        calculateListing(nab, req);
-      }
-    } else {
-      calculateListing(nab, req).then(function(result) {
-        res.send(result);
-      });
-    }
+  calculateListing(nab, req).then(function(result) {
+    res.send(result);
   });
 }
 

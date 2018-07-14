@@ -12,7 +12,7 @@ const ChatMsgEntry = notabugVotable(injectState(({
 }) => (
   <SnewThingCommentEntry
     {...props}
-    score={props.score ? props.score : null}
+    score={(props.ups || props.downs) ? props.score : null}
     Link={Link}
     likes={isVotingUp ? true : isVotingDown ? false : undefined}
     isVoting={isVotingUp || isVotingDown}
