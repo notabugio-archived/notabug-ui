@@ -62,7 +62,7 @@
     "superpeer": "yarn && yarn build && yarn stop && yarn server",
     "server": "concurrently \"yarn accesspeer\" \"yarn relaypeer \" \"yarn persistpeer\"",
     "build": "NODE_PATH=src/ react-app-rewired build",
-    "postbuild": "gzip -r build",
+    "postbuild": "gzip -rk build",
     "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom"
   },
   "devDependencies": {
