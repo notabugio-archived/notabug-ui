@@ -1,5 +1,5 @@
 /* globals Promise */
-import { prop, compose, always, identity, assocPath } from "ramda";
+import { prop, compose, always, identity, assocPath, uniq } from "ramda";
 import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
 import "gun";
@@ -87,8 +87,9 @@ const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
   });
 
 const onNotabugPreloadIds = (effects, ids) => effects.getState()
-  .then(() => {
-    return fetch(`/api/things/${ids.sort().join(",")}.json`)
+  .then(({ notabugApi }) => {
+    const opIds = ids.map(notabugApi.getOpId).filter(x => !!x);
+    return fetch(`/api/things/${uniq(ids.concat(opIds)).sort().join(",")}.json`)
       .then(response => {
         if (response.status !== 200) throw new Error("Bad response from server");
         return response.json();

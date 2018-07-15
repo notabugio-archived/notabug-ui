@@ -23,7 +23,7 @@ class ThingCommentEntryBase extends PureComponent {
         {...props}
         Link={Link}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
-        onShowReply={e => {
+        onShowReply={this.props.hideReply ? null : e => {
           e.preventDefault();
           effects.onNotabugSetReplyTo(props.id);
         }}

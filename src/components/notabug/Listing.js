@@ -80,6 +80,8 @@ class ListingBase extends PureComponent {
         isVisible={this.props.autoVisible}
         realtime={this.props.realtime}
         redis={this.props.redis}
+        fetchParent={this.props.fetchParent}
+        hideReply={this.props.hideReply}
         disableChildren={this.props.disableChildren}
         id={id}
         key={key || id}

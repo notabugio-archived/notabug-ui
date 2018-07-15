@@ -87,9 +87,11 @@ export class Chat extends PureComponent {
           disableChildren
           Empty={Loading}
           Loading={LoadingChatMsg}
-          sort={"active"}
+          sort={"new"}
+          fetchParent
+          hideReply
           topics={this.props.withSubmissions
-            ? [`chat:${this.state.topic}`, "all"]
+            ? [`chat:${this.state.topic}`, "comments:all", "all"]
             : [`chat:${this.state.topic}`]}
           days={3}
           threshold={-1}

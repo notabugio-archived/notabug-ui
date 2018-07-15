@@ -1,4 +1,5 @@
 import React, { PureComponent } from "react";
+import { pathOr, compose } from "ramda";
 import Spinner from "react-spinkit";
 import { ThingComment } from "snew-classic-ui";
 import { Markdown } from "./Markdown";
@@ -6,6 +7,7 @@ import { Timestamp } from "./Timestamp";
 import { Link } from "./Link";
 import { NestedListing } from "./NestedListing";
 import { ThingCommentEntry } from "./CommentEntry";
+import slugify from "slugify";
 
 export class Comment extends PureComponent {
   constructor(props) {
@@ -22,11 +24,26 @@ export class Comment extends PureComponent {
   }
 
   render() {
-    const { id, ups=0, downs=0, isMine, disableChildren } = this.props;
+    const { id, ups=0, downs=0, isMine, disableChildren, fetchParent } = this.props;
     const item = this.props.item || {
       body: "loading...",
       timestamp: this.props.state.notabugApi.getTimestamp(this.props.id)
     };
+
+    const parentParams = fetchParent ? {
+      fetchParent: true,
+      showLink: true,
+      link_title: pathOr("", ["parentItem", "title"], this.props),
+      link_permalink: compose(
+        ({ topic, title }) => {
+          if (!item.opId || !topic || !title) return;
+          return `/t/${topic}/comments/${item.opId}/${slugify(title.toLowerCase())}`;
+        },
+        pathOr({}, ["parentItem"])
+      )(this.props),
+      link_author: pathOr(null, ["parentItem", "author"], this.props),
+      subreddit: pathOr(null, ["parentItem", "topic"], this.props),
+    } : {};
 
     return (
       <ThingComment
@@ -56,6 +73,8 @@ export class Comment extends PureComponent {
         ups={ups}
         downs={downs}
         votableId={id}
+        showLink
+        {...parentParams}
         score={`(+${ups} | -${downs})`}
         scoreTooltip={`+${ups} / -${downs}`}
         distinguished={isMine ? "me" : null}

@@ -18,12 +18,13 @@ class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
     const { expanded = false } = props;
-    this.state = { item: null, scores: {}, expanded };
+    this.state = { item: null, parentItem: null, scores: {}, expanded };
     this.onToggleExpando = this.onToggleExpando.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
     this.onSubscribe = this.onSubscribe.bind(this);
     this.onRefresh = throttle(this.onUpdate, 100, { trailing: true });
     this.onReceiveItem = this.onReceiveItem.bind(this);
+    this.onReceiveParentItem = this.onReceiveParentItem.bind(this);
     this.onReceiveSignedItem = this.onReceiveSignedItem.bind(this);
     this.onFetchItem = this.onFetchItem.bind(this);
   }
@@ -35,23 +36,31 @@ class ThingBase extends PureComponent {
   componentWillUnmount() {
     this.props.state.notabugApi.onChangeThingOff(this.props.id, this.onRefresh);
     this.chain && this.chain.off();
+    this.parentChain && this.parentChain.off();
     this.chain = null;
+    this.parentChain = null;
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isVisible && nextProps.realtime !== this.props.realtime && nextProps.realtime) {
       this.onFetchItem();
     }
+
+    if (nextProps.fetchParent) this.onFetchParentItem();
   }
 
   render() {
     const { scores, expanded } = this.state;
     const {
-      id, isMine, rank, collapseThreshold=null,
+      id, isMine, rank, collapseThreshold=null, hideReply=false,
       Loading: LoadingComponent = Loading, ...props
     } = this.props;
 
     const item = this.state.item || path(["state", "thingData", id], this.props);
+    const parentId = path(["opId"], item);
+    const parentItem = parentId
+      ? this.state.parentItem || path(["state", "thingData", parentId], this.props)
+      : null;
     const score = ((scores.ups || 0) - (scores.downs || 0) || 0);
     const ThingComponent = (item ? components[item.kind] : null);
     if (item && !ThingComponent) return null;
@@ -63,8 +72,10 @@ class ThingBase extends PureComponent {
           {...props}
           id={id}
           item={item}
+          parentItem={parentItem}
           expanded={expanded}
           collapsed={collapsed}
+          hideReply={hideReply}
           collapseThreshold={collapseThreshold}
           isVisible={isVisible}
           isMine={isMine}
@@ -77,8 +88,10 @@ class ThingBase extends PureComponent {
           {...props}
           id={id}
           item={item}
+          parentItem={parentItem}
           expanded={this.state.expanded}
           collapsed={collapsed}
+          hideReply={hideReply}
           collapseThreshold={collapseThreshold}
           isVisible={isVisible}
           isMine={isMine}
@@ -106,6 +119,8 @@ class ThingBase extends PureComponent {
     const { redis, id, realtime, state: { notabugApi } } = this.props;
     const existingItem = this.state.item || path(["state", "thingData", id], this.props);
 
+    this.props.fetchParent && this.onFetchParentItem();
+
     if ((redis && !realtime) || existingItem) return this.onUpdate();
 
     e && e.preventDefault && e.preventDefault();
@@ -120,6 +135,21 @@ class ThingBase extends PureComponent {
 
     this.chain = notabugApi.souls.thingData.get({ thingid: this.props.id });
     this.chain.on(this.onReceiveItem);
+  }
+
+  onFetchParentItem() {
+    const { id, state: { notabugApi } } = this.props;
+    const item = this.state.item || path(["state", "thingData", id], this.props);
+    const parentId = path(["opId"], item);
+    const parentItem = parentId
+      ? this.state.parentItem || path(["state", "thingData", parentId], this.props)
+      : null;
+
+    if (!parentItem && parentId) {
+      this.parentChain && this.parentChain.off();
+      this.parentChain = notabugApi.souls.thingData.get({ thingid: parentId });
+      this.parentChain.on(this.onReceiveParentItem);
+    }
   }
 
   getScores() {
@@ -155,6 +185,13 @@ class ThingBase extends PureComponent {
         .get("data");
       chain.on(this.onReceiveSignedItem);
     }
+  }
+
+  onReceiveParentItem(parentItem) {
+    if (!parentItem) return;
+    this.setState({ parentItem });
+    this.parentChain && this.parentChain.off();
+    this.parentChain = null;
   }
 
   onReceiveSignedItem(item) {
