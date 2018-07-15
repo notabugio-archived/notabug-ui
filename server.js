@@ -120,16 +120,16 @@ nab = init({
 
 if (options.score && options.redis) {
   nab.onMsg(function(msg) {
-    setTimeout(function() {
-      Object.keys(msg).forEach(function(key) {
-        if (key === "put" && msg.mesh && msg.how !== "mem") {
-          Object.keys(msg.put).forEach(function(soul) {
-            var votesMatch = (
-              nab.souls.thingVotes.isMatch(soul) ||
-              nab.souls.thingAllComments.isMatch(soul)
-            );
+    Object.keys(msg).forEach(function(key) {
+      if (key === "put" && msg.mesh && msg.how !== "mem") {
+        Object.keys(msg.put).forEach(function(soul) {
+          var votesMatch = (
+            nab.souls.thingVotes.isMatch(soul) ||
+            nab.souls.thingAllComments.isMatch(soul)
+          );
 
-            if (votesMatch) {
+          if (votesMatch) {
+            setTimeout(function() {
               var thingSoul = nab.souls.thing.soul({ thingid: votesMatch.thingid });
               nab.gun.redis.get(soul).then(function(votes) {
                 var votecount = Object.keys(votes || { _: null }).length - 1;
@@ -137,11 +137,11 @@ if (options.score && options.redis) {
                 chain.get(`votes${votesMatch.votekind || "comment"}count`).put(votecount);
                 chain.off();
               });
-            }
-          });
-        }
-      });
-    }, 200);
+            }, 200);
+          }
+        });
+      }
+    });
   });
 }
 
