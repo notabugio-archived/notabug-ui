@@ -18,7 +18,8 @@ var options = commandLineArgs([
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
   { name: "peer", alias: "c", multiple: true, type: String },
   { name: "until", alias: "u", multiple: true, type: Number, defaultValue: 1000 },
-  { name: "watch", alias: "w", type: Boolean, defaultValue: false }
+  { name: "watch", alias: "i", type: Boolean, defaultValue: false },
+  { name: "index", alias: "w", type: Boolean, defaultValue: false }
 ]);
 
 process.env.GUN_ENV = process.env.GUN_ENV || options.debug ? "debug" : undefined;
@@ -144,13 +145,21 @@ if (options.score && options.redis) {
   });
 }
 
-if (options.persist || !options.port || options.watch) {
+if (options.watch) {
   nab.watchListing({ days: options.days });
   setInterval(function() {
     nab.watchListing({ days: options.days });
   }, 1000*60*60);
 }
 
-if(options.persist || options.localStorage || options.watch) {
-  nab.gun.get("nab/things").map().get("data").on(function () { });
+if(options.watch || options.index) {
+  const indexed = {};
+  nab.gun.get("nab/things").map().once(function ({ id }) {
+    if (!options.index || !id || indexed[id]) return;
+    indexed[id] = true;
+    this.get("data").once(function(data) {
+      if (!data) return;
+      nab.indexThing(id, data);
+    });
+  });
 }
