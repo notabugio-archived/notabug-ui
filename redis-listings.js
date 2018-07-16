@@ -7,15 +7,16 @@ function calculateListing(nab, req) {
   var params;
 
   if (req.params.topic) {
-    params = { topics: [req.params.topic], sort: "new", days: 30 };
+    params = { topics: [req.params.topic], sort: "new", days: 90 };
   } else if (req.params.opId) {
-    params = { opId: req.params.opId, sort: "new", days: 30 };
+    params = { opId: req.params.opId, sort: "new" };
   }
 
-  var souls = nab.getListingSouls(params);
+  var souls = nab.getListingSouls(params).sort();
   nab.watchListing(params);
 
-  return Promise.all(souls.map(function(soul) {
+  const fetchSoul = () => {
+    const soul = souls.pop();
     return nab.gun.redis.get(soul).then(function(res) {
       if (!res) return;
       return Promise.all(Object.keys(res).map(function(thingSoul) {
@@ -55,7 +56,17 @@ function calculateListing(nab, req) {
         });
       }));
     });
-  })).then(function() {
+  };
+
+  const fetchItems = () => {
+    if (souls.length && (params.opId || Object.keys(things).length < 1000)) {
+      return fetchSoul().then(fetchItems);
+    }
+
+    return Promise.resolve(things);
+  };
+
+  return fetchItems().then(function() {
     if (req.params.opId) {
       return calculateThings(nab, { params: { id: Object.keys(things).join(",") } })
         .then(result => data = result);

@@ -7,7 +7,7 @@ import { Submission } from "./Submission";
 import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
 
 export const SubmissionDetailBase = notabugSubmissionDetail(injectState(({
-  state: { replied, notabugSubmissionId, notabugListing, notabugCommentsSort="best" },
+  state: { /*replied,*/ notabugSubmissionId, notabugListing, notabugCommentsSort="best" },
 }) => (
   <div className="content" role="main">
     <div className="spacer">
@@ -30,7 +30,7 @@ export const SubmissionDetailBase = notabugSubmissionDetail(injectState(({
           name={notabugSubmissionId}
           showReplyForm={true}
           sort={notabugCommentsSort}
-          realtime={!!replied}
+          realtime//={!!replied}
         />
       </div>
     </div>

@@ -66,6 +66,7 @@ export class Comment extends PureComponent {
         id={id}
         body={item.body}
         author={item.author}
+        siteprefix="t"
         name={id}
         parent_id={item.replyToId}
         created={item.timestamp / 1000}

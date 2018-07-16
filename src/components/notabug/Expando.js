@@ -45,8 +45,8 @@ export const getExpando = (item, domain, urlInfo) => {
 
   const iframe = (domain === "youtube.com" && query.v)
     ? "https://www.hooktube.com/embed/" + query.v + "?autoplay=0&t=" + query.t
-    : (domain === "youtu.be" && item.url.indexOf(".be/") !== -1) ? "https://www.hooktube.com/embed/" + item.url.substring(item.url.indexOf(".be/")+4, item.url.length) + "?autoplay=0"
-    : (domain === "hooktube.com" && query.v) ? "https://www.hooktube.com/embed/" + query.v + "?autoplay=0&t=" + query.t
+    : (domain === "youtu.be" && item.url.indexOf(".be/") !== -1) ? "https://youtube.com/embed/" + item.url.substring(item.url.indexOf(".be/")+4, item.url.length) + "?autoplay=0"
+    : (domain === "hooktube.com" && query.v) ? "https://youtube.com/embed/" + query.v + "?autoplay=0&t=" + query.t
     : (domain === "bitchute.com" && item.url.indexOf("/video/") !== -1) ? "https://www.bitchute.com/embed/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
     : (domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1) ? "https://www.dailymotion.com/embed/video/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
     : (domain === "vimeo.com" && item.url.indexOf(".com/") !== -1) ? "https://player.vimeo.com/video/" + item.url.substring(item.url.indexOf(".com/")+5, item.url.length)

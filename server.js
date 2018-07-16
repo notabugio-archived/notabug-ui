@@ -127,6 +127,7 @@ if (options.score && options.redis) {
             nab.souls.thingVotes.isMatch(soul) ||
             nab.souls.thingAllComments.isMatch(soul)
           );
+          var thingDataMatch = nab.souls.thingData.isMatch(soul);
 
           if (votesMatch) {
             setTimeout(function() {
@@ -137,6 +138,10 @@ if (options.score && options.redis) {
                 chain.get(`votes${votesMatch.votekind || "comment"}count`).put(votecount);
                 chain.off();
               });
+            }, 200);
+          } else if (thingDataMatch) {
+            setTimeout(function() {
+              nab.indexThing(thingDataMatch.thingid, msg.put[soul]);
             }, 200);
           }
         });

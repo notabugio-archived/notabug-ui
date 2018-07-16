@@ -114,6 +114,8 @@ class ThingBase extends PureComponent {
     this.props.fetchParent && this.onFetchParentItem();
     this.onUpdate();
 
+    if (this.props.realtime) this.onSubscribe();
+
     if (redis && !realtime && !existingItem && !this.props.noRealtime) {
       setTimeout(() => ( // fallback to gun if thing data not otherwise available
         !notabugApi.getThingData(id) &&
@@ -122,7 +124,6 @@ class ThingBase extends PureComponent {
     }
 
     if ((redis && !realtime) || existingItem) return;
-    if (this.props.realtime) this.onSubscribe();
     notabugApi.fetchThingData(id).then(this.onReceiveItem);
   }
 
@@ -137,7 +138,7 @@ class ThingBase extends PureComponent {
     const item = this.state.item || path(["state", "notabugState", "data", id], this.props);
     const parentId = path(["opId"], item);
     const parentItem = parentId
-      ? path(["state", "notabugState", "data", parentId], this.props)
+      ? this.state.parentItem || path(["state", "notabugState", "data", parentId], this.props)
       : null;
     return { item, parentId, parentItem };
   }
@@ -158,6 +159,7 @@ class ThingBase extends PureComponent {
 
   onReceiveItem(item) {
     item && this.setState({ item, scores: this.getScores() });
+    if (item && this.props.fetchParent) this.onFetchParentItem();
   }
 
   onReceiveParentItem(parentItem) {

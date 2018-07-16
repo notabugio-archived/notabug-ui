@@ -101,7 +101,6 @@ class ListingBase extends PureComponent {
   }
 
   onSubscribe(props) {
-    const { notabugApi } = (props || this.props).state;
     const { effects, realtime } = (props || this.props);
     const params = this.getListingParams();
     this.onUpdate();
@@ -111,8 +110,8 @@ class ListingBase extends PureComponent {
       .then(() => (this.state.ids && this.state.ids.length)
         ? realtime
           ? this.props.redis
-            ? effects.onNotabugPreloadIds(this.state.ids) && setTimeout(() => notabugApi.watchListing(params), 300)
-            : notabugApi.watchListing(params)
+            ? effects.onNotabugPreloadIds(this.state.ids) && setTimeout(() => this.onGunFallback(), 300)
+            : this.onGunFallback()
           : this.props.redis && effects.onNotabugPreloadIds(this.state.ids)
         : realtime && this.onGunFallback());
     //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
