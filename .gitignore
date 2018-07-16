@@ -9,6 +9,7 @@
 # production
 /build
 /build-lib
+/htdocs
 /data.json
 /radata
 /radata*
