@@ -28,6 +28,7 @@ const initialState = ({ history }) => {
   return {
     history,
     notabugApi,
+    notabugState: {},
     notabugUser: null,
     notabugUserId: null,
     notabugInfiniteScroll: false,
@@ -45,7 +46,13 @@ const onNotabugMarkMine = (effects, id) => {
     .then(() => assocPath(["myContent", id], true));
 };
 
-const onNotabugReceiveIdsData = update((state, thingData) => ({ thingData: { ...state.thingData, ...thingData } }));
+const onNotabugReceiveIdsData = (effects, data) => effects.getState()
+  .then(({ notabugApi }) => {
+    notabugApi.mergeState({ data });
+    return state => ({ ...state, notabugState: notabugApi.getState() });
+  });
+
+const onUpdateNotabugState = update(({ notabugApi }) => ({ notabugState: notabugApi.getState() }));
 
 const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
   effects.getState().then(({ notabugApi, preloaded }) =>
@@ -57,15 +64,8 @@ const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
           return response.json();
         })
         .then(state => ({ ...state, ...preState }))
-        .then(notabugApi.reconstituteState)
-        .then(state => {
-          if (state.data) {
-            effects.onNotabugReceiveIdsData(state.data);
-            delete state.data;
-          }
-          return state;
-        })
-        .then(notabugApi.mergeState)
+        .then(notabugApi.loadState)
+        .then(() => effects.onUpdateNotabugState())
         .then(always(assocPath(["preloaded", url], true))));
 
 const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
@@ -144,6 +144,7 @@ export const notabug = compose(
       onNotabugPreloadIds,
       onNotabugReceiveIdsData,
       onNotabugToggleInfiniteScroll,
+      onUpdateNotabugState,
       onListenForReplies,
       onLogin
     }

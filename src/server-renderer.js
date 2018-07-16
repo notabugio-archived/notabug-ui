@@ -26,7 +26,6 @@ export default (req, res) => {
       <StaticRouter context={context} location={req.url}><App /></StaticRouter>
     ));
 
-    /*
     initialize(<StaticApp />)
       .then(({ vdom, state }) => {
         const appHTML = renderToString(vdom);
@@ -38,8 +37,8 @@ export default (req, res) => {
           )
         );
       });
-    */
 
+    /*
     const html = renderToString(<StaticApp />);
     // inject the rendered app into our html and send it
     console.log(html);
@@ -49,5 +48,6 @@ export default (req, res) => {
         `<body class="loggedin subscriber">${html}`,
       )
     );
+    */
   });
 };

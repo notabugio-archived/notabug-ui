@@ -18,14 +18,13 @@ class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
     const { expanded = false } = props;
-    this.state = { item: null, parentItem: null, scores: {}, expanded };
+    this.state = { scores: {}, expanded };
     this.onToggleExpando = this.onToggleExpando.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
     this.onSubscribe = this.onSubscribe.bind(this);
     this.onRefresh = throttle(this.onUpdate, 100, { trailing: true });
     this.onReceiveItem = this.onReceiveItem.bind(this);
     this.onReceiveParentItem = this.onReceiveParentItem.bind(this);
-    this.onReceiveSignedItem = this.onReceiveSignedItem.bind(this);
     this.onFetchItem = this.onFetchItem.bind(this);
   }
 
@@ -36,35 +35,27 @@ class ThingBase extends PureComponent {
   componentWillUnmount() {
     this.props.state.notabugApi.onChangeThingOff(this.props.id, this.onRefresh);
     this.chain && this.chain.off();
-    this.parentChain && this.parentChain.off();
     this.chain = null;
-    this.parentChain = null;
   }
 
   componentWillReceiveProps(nextProps) {
     if (nextProps.isVisible && nextProps.realtime !== this.props.realtime && nextProps.realtime) {
       this.onFetchItem();
     }
-
     if (nextProps.fetchParent) this.onFetchParentItem();
   }
 
   render() {
-    const { scores, expanded } = this.state;
     const {
       id, isMine, rank, collapseThreshold=null, hideReply=false,
       Loading: LoadingComponent = Loading, ...props
     } = this.props;
-
-    const item = this.state.item || path(["state", "thingData", id], this.props);
-    const parentId = path(["opId"], item);
-    const parentItem = parentId
-      ? this.state.parentItem || path(["state", "thingData", parentId], this.props)
-      : null;
+    const { scores, expanded } = this.state;
+    const { item, parentItem } = this.getItemAndParent();
     const score = ((scores.ups || 0) - (scores.downs || 0) || 0);
     const ThingComponent = (item ? components[item.kind] : null);
-    if (item && !ThingComponent) return null;
     const collapsed = !isMine && !!((collapseThreshold!==null && (score < collapseThreshold)));
+    if (item && !ThingComponent) return null;
 
     const renderComponent = ({ isVisible }) => !item
       ? (
@@ -117,39 +108,38 @@ class ThingBase extends PureComponent {
 
   onFetchItem(e) {
     const { redis, id, realtime, state: { notabugApi } } = this.props;
-    const existingItem = this.state.item || path(["state", "thingData", id], this.props);
-
-    this.props.fetchParent && this.onFetchParentItem();
-
-    if ((redis && !realtime) || existingItem) return this.onUpdate();
+    const existingItem = notabugApi.getThingData(id);
 
     e && e.preventDefault && e.preventDefault();
-    if (this.state.item || this.chain) return;
-
+    this.props.fetchParent && this.onFetchParentItem();
     this.onUpdate();
-    this.chain && this.chain.off();
 
-    if (this.props.realtime) {
-      this.onSubscribe();
+    if (redis && !realtime && !existingItem && !this.props.noRealtime) {
+      setTimeout(() => ( // fallback to gun if thing data not otherwise available
+        !notabugApi.getThingData(id) &&
+        notabugApi.fetchThingData(id).then(this.onReceiveItem)
+      ), 1000);
     }
 
-    this.chain = notabugApi.souls.thingData.get({ thingid: this.props.id });
-    this.chain.on(this.onReceiveItem);
+    if ((redis && !realtime) || existingItem) return;
+    if (this.props.realtime) this.onSubscribe();
+    notabugApi.fetchThingData(id).then(this.onReceiveItem);
   }
 
   onFetchParentItem() {
-    const { id, state: { notabugApi } } = this.props;
-    const item = this.state.item || path(["state", "thingData", id], this.props);
+    const { parentItem, parentId } = this.getItemAndParent();
+    const notabugApi = this.props.state.notabugApi;
+    if (!parentItem && parentId) notabugApi.fetchThingData(parentId).then(this.onReceiveParentItem);
+  }
+
+  getItemAndParent() {
+    const { id } = this.props;
+    const item = this.state.item || path(["state", "notabugState", "data", id], this.props);
     const parentId = path(["opId"], item);
     const parentItem = parentId
-      ? this.state.parentItem || path(["state", "thingData", parentId], this.props)
+      ? path(["state", "notabugState", "data", parentId], this.props)
       : null;
-
-    if (!parentItem && parentId) {
-      this.parentChain && this.parentChain.off();
-      this.parentChain = notabugApi.souls.thingData.get({ thingid: parentId });
-      this.parentChain.on(this.onReceiveParentItem);
-    }
+    return { item, parentId, parentItem };
   }
 
   getScores() {
@@ -167,43 +157,17 @@ class ThingBase extends PureComponent {
   }
 
   onReceiveItem(item) {
-    if (!item || this.state.item) return;
-    const { author, authorId, ...itemData } = item;
-    //const { onDidUpdate } = this.props;
-    this.setState({
-      item: this.props.state.notabugApi.gun.user ? itemData : item,
-      scores: this.getScores()
-    }); //, onDidUpdate);
-    this.chain && this.chain.off();
-    this.chain = null;
-
-    if (author && authorId && this.props.state.notabugApi.gun.user) {
-      const chain = this.props.state.notabugApi.gun
-        .get(`~${authorId}`)
-        .get("things")
-        .get(this.props.state.notabugApi.souls.thing.soul({ thingid: this.props.id }))
-        .get("data");
-      chain.on(this.onReceiveSignedItem);
-    }
+    item && this.setState({ item, scores: this.getScores() });
   }
 
   onReceiveParentItem(parentItem) {
-    if (!parentItem) return;
-    this.setState({ parentItem });
-    this.parentChain && this.parentChain.off();
-    this.parentChain = null;
-  }
-
-  onReceiveSignedItem(item) {
-    if (!item) return;
-    this.chain && this.chain.off();
-    this.chain = null;
-    this.setState({ item, scores: this.getScores() });
+    parentItem && this.setState({ parentItem });
   }
 
   onUpdate() {
     this.setState({ scores: this.getScores() });
   }
+
   onToggleExpando() {
     this.setState({ expanded: !this.state.expanded });
   }

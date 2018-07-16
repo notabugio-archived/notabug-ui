@@ -6,7 +6,7 @@ import { Thing } from "./Thing";
 import { Submission } from "./Submission";
 import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
 
-export const SubmissionDetail = notabugSubmissionDetail(injectState(({
+export const SubmissionDetailBase = notabugSubmissionDetail(injectState(({
   state: { replied, notabugSubmissionId, notabugListing, notabugCommentsSort="best" },
 }) => (
   <div className="content" role="main">
@@ -36,3 +36,10 @@ export const SubmissionDetail = notabugSubmissionDetail(injectState(({
     </div>
   </div>
 )));
+
+export const SubmissionDetail = (props) => (
+  <SubmissionDetailBase
+    {...props}
+    key={props.match.params.submission_id}
+  />
+);
