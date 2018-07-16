@@ -6,6 +6,7 @@ import {
   RegisterForm as SnewRegisterForm
 } from "snew-classic-ui";
 import { Header as SnewHeader } from "snew-classic-ui";
+import { JavaScriptRequired } from "./JavaScriptRequired";
 import { Link } from "./Link";
 import { notabugLoginSignupForm } from "state/notabug";
 import { injectState } from "freactal";
@@ -90,13 +91,15 @@ const RegisterForm = notabugLoginSignupForm(injectState(({
 export const LoginSignupPage = props => (
   <Fragment>
     <Header />
-    <center><AlphaWarning /></center>
-    <SnewLoginSignupPage
-      {...props}
-      LoginForm={LoginForm}
-      RegisterForm={RegisterForm}
-    />
-    <center><AlphaWarning /></center>
+    <JavaScriptRequired>
+      <center><AlphaWarning /></center>
+      <SnewLoginSignupPage
+        {...props}
+        LoginForm={LoginForm}
+        RegisterForm={RegisterForm}
+      />
+      <center><AlphaWarning /></center>
+    </JavaScriptRequired>
   </Fragment>
 );
 

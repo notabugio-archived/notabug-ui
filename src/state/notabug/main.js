@@ -4,12 +4,18 @@ import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
 import "gun";
 import notabugPeer, { PREFIX } from "notabug-peer";
+import isNode from "detect-node";
 
-const COUNT_VOTES = !!(/countVotes/.test(window.location.search));
-const LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
+let COUNT_VOTES = false;
+let LOCAL_STORAGE = false;
 
-if ((/sea/.test(window.location.search))) {
-  require("sea");
+if (!isNode) {
+  COUNT_VOTES = !!(/countVotes/.test(window.location.search));
+  LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
+
+  if ((/sea/.test(window.location.search))) {
+    require("sea");
+  }
 }
 
 const initialState = ({ history }) => {
@@ -17,13 +23,13 @@ const initialState = ({ history }) => {
     localStorage: LOCAL_STORAGE,
     countVotes: COUNT_VOTES,
     disableValidation: true,
-    peers: [
+    peers: isNode ? [] : [
       window.location.origin + "/gun",
       //"https://notabug.io/gun",
     ]
   });
 
-  window.notabug = notabugApi;
+  if (!isNode) window.notabug = notabugApi;
 
   return {
     history,

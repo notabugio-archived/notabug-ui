@@ -11,6 +11,7 @@ import { Link } from "./Link";
 import { Listing } from "./Listing";
 import { injectState } from "freactal";
 import ChatView from "react-chatview";
+import { JavaScriptRequired } from "./JavaScriptRequired";
 import { Loading } from "./Loading";
 import { LoadingChatMsg } from "./LoadingChatMsg";
 
@@ -119,19 +120,21 @@ export class Chat extends PureComponent {
         <ChatInput topic={this.state.topic} />
       </div>
     ) : (
-      <button
-        style={{
-          position: "fixed",
-          fontSize: "200%",
-          right: "25px",
-          bottom: "25px",
-          border: "1px solid #5f99cf",
-          padding: "4px 10px"
-        }}
-        onClick={() => this.setState({ isOpen: true })}
-      >
-        open chat
-      </button>
+      <JavaScriptRequired silent>
+        <button
+          style={{
+            position: "fixed",
+            fontSize: "200%",
+            right: "25px",
+            bottom: "25px",
+            border: "1px solid #5f99cf",
+            padding: "4px 10px"
+          }}
+          onClick={() => this.setState({ isOpen: true })}
+        >
+          open chat
+        </button>
+      </JavaScriptRequired>
     );
   }
 
@@ -158,6 +161,8 @@ export const ChatPage = withRouter(injectState(({
     siteprefix="t"
     isShowingCustomStyleOption={false}
   >
-    <Chat className="fullscreen-chat" isOpen withSubmissions />
+    <JavaScriptRequired>
+      <Chat className="fullscreen-chat" isOpen withSubmissions />
+    </JavaScriptRequired>
   </Subreddit>
 )));

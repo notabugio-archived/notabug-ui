@@ -2,8 +2,11 @@ import React, { Component } from "react";
 import { Link } from "./Link";
 import { withRouter } from "react-router-dom";
 import VisibilitySensor from "react-visibility-sensor";
+import isNode from "detect-node";
 
-const sitename = window.location.hostname; // eslint-disable-line
+const sitename = isNode ? "this peer" : window.location.hostname; // eslint-disable-line
+
+const version = isNode ? require("../../../package.json").version : process.env.REACT_APP_VERSION;
 
 class FooterParentBase extends Component {
   constructor(props) {
@@ -21,7 +24,7 @@ class FooterParentBase extends Component {
         <p className="bottommenu">
           <Link href="https://github.com/notabugio">open-source code</Link>
           {" | "}
-          <Link href="https://github.com/notabugio/notabug">notabug {process.env.REACT_APP_VERSION}</Link>
+          <Link href="https://github.com/notabugio/notabug">notabug {version}</Link>
           {" | "}
           <Link href="/help/knownpeers">known peers</Link>
         </p>

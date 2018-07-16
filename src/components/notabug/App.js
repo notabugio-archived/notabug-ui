@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { Helmet } from "react-helmet";
 import { Route, Switch } from "react-router-dom";
 import { Subreddit } from "snew-classic-ui";
@@ -82,31 +82,30 @@ const TopicRoute = injectState(({
 ));
 
 export const App = router(() => (
-  <Fragment>
+  <Provider>
     <Helmet>
+      <title>notabug: the back page of the internet</title>
     </Helmet>
-    <Provider>
-      <ScrollToTop>
-        <Switch>
-          <Route path="/t/:topic/chat" component={ChatPage} />
-          <Route path="/t/:topic/comments/*/*" component={TopicRoute} />
-          <Route path="/t/:topic/:sort/" component={TopicRoute} />
-          <Route path="/t/:topic/*" component={TopicRoute} />
-          <Route path="/t/:topic" component={TopicRoute} />
-          <Route path="/domain/:domain/:sort" component={TopicRoute} />
-          <Route path="/login" component={LoginSignupPage} />
-          <Route path="/chat" component={ChatPage} />
-          <Route path="/:sort" component={TopicRoute} />
-          <Route path="/*" component={TopicRoute} />
-        </Switch>
-      </ScrollToTop>
+    <ScrollToTop>
       <Switch>
-        <Route path="/t/:topic/chat" component={() => null} />
-        <Route path="/chat" component={() => null} />
-        <Route path="/*" component={Chat} />
+        <Route path="/t/:topic/chat" component={ChatPage} />
+        <Route path="/t/:topic/comments/*/*" component={TopicRoute} />
+        <Route path="/t/:topic/:sort/" component={TopicRoute} />
+        <Route path="/t/:topic/*" component={TopicRoute} />
+        <Route path="/t/:topic" component={TopicRoute} />
+        <Route path="/domain/:domain/:sort" component={TopicRoute} />
+        <Route path="/login" component={LoginSignupPage} />
+        <Route path="/chat" component={ChatPage} />
+        <Route path="/:sort" component={TopicRoute} />
+        <Route path="/*" component={TopicRoute} />
       </Switch>
-      <FooterParent />
-      <Notifications />
-    </Provider>
-  </Fragment>
+    </ScrollToTop>
+    <Switch>
+      <Route path="/t/:topic/chat" component={() => null} />
+      <Route path="/chat" component={() => null} />
+      <Route path="/*" component={Chat} />
+    </Switch>
+    <FooterParent />
+    <Notifications />
+  </Provider>
 ));

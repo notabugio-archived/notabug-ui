@@ -3,6 +3,7 @@ import { injectState } from "freactal";
 import { notabugSubmissionForm } from "state";
 import { SubmitPage } from "snew-classic-ui";
 import { Link } from "./Link";
+import { JavaScriptRequired } from "./JavaScriptRequired";
 import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "notabug-peer";
 
 const SubmissionFormBase = notabugSubmissionForm(injectState(({
@@ -57,5 +58,7 @@ const SubmissionFormBase = notabugSubmissionForm(injectState(({
 )));
 
 export const SubmissionForm = props => (
-  <SubmissionFormBase {...props} key={props.location.search} />
+  <JavaScriptRequired>
+    <SubmissionFormBase {...props} key={props.location.search} />
+  </JavaScriptRequired>
 );

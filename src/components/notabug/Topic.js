@@ -6,12 +6,18 @@ import { Submission } from "./Submission";
 import { withRouter, Link } from "react-router-dom";
 import { Loading } from "./Loading";
 import { injectState } from "freactal";
+import { JavaScriptRequired } from "./JavaScriptRequired";
 import qs from "qs";
+import isNode from "detect-node";
 
 const Empty = () => <Loading name="ball-grid-beat" />;
 
-const DEF_THRESHOLD = (window && window.location && window.location.search)
-  ? parseInt(qs.parse(window.location.search).threshold, 10) || 1 : 1;
+let DEF_THRESHOLD = 1;
+
+if (!isNode) {
+  DEF_THRESHOLD = (window && window.location && window.location.search)
+    ? parseInt(qs.parse(window.location.search).threshold, 10) || 1 : 1;
+}
 
 class TopicBase extends PureComponent {
   constructor(props) {
@@ -81,23 +87,25 @@ class TopicBase extends PureComponent {
       </div>
     ) : (
       <div className="content" role="main">
-        <div className="sitetable" id="siteTable">
-          <Listing redis {...listing} />
-          <div className="nav-buttons">
-            <span className="nextprev">
-              {"view more: "}
-              {(count - limit) >= 0 ? (
+        <JavaScriptRequired>
+          <div className="sitetable" id="siteTable">
+            <Listing redis {...listing} />
+            <div className="nav-buttons">
+              <span className="nextprev">
+                {"view more: "}
+                {(count - limit) >= 0 ? (
+                  <Link
+                    to={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
+                  >‹ prev</Link>
+                ) : null}
+                <a onClick={this.onToggleInfinite} href="">∞</a>
                 <Link
-                  to={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
-                >‹ prev</Link>
-              ) : null}
-              <a onClick={this.onToggleInfinite} href="">∞</a>
-              <Link
-                to={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
-              >next ›</Link>
-            </span>
+                  to={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
+                >next ›</Link>
+              </span>
+            </div>
           </div>
-        </div>
+        </JavaScriptRequired>
       </div>
     );
   }
