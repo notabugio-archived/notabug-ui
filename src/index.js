@@ -7,7 +7,10 @@ import { BrowserRouter } from "react-router-dom";
 import "snew-classic-ui/static/css/minimal.css";
 import "./index.css";
 import { App } from "./components/notabug";
-import registerServiceWorker from "./registerServiceWorker";
+//import registerServiceWorker from "./registerServiceWorker";
+import { unregister } from "./registerServiceWorker";
 
 ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
-registerServiceWorker();
+
+//registerServiceWorker();
+unregister();

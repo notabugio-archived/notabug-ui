@@ -87,25 +87,25 @@ class TopicBase extends PureComponent {
       </div>
     ) : (
       <div className="content" role="main">
-        <JavaScriptRequired>
-          <div className="sitetable" id="siteTable">
-            <Listing redis {...listing} />
-            <div className="nav-buttons">
-              <span className="nextprev">
-                {"view more: "}
-                {(count - limit) >= 0 ? (
-                  <Link
-                    to={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
-                  >‹ prev</Link>
-                ) : null}
-                <a onClick={this.onToggleInfinite} href="">∞</a>
+        <div className="sitetable" id="siteTable">
+          <Listing redis {...listing} />
+          <div className="nav-buttons">
+            <span className="nextprev">
+              {"view more: "}
+              {(count - limit) >= 0 ? (
                 <Link
-                  to={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
-                >next ›</Link>
-              </span>
-            </div>
+                  to={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
+                >‹ prev</Link>
+              ) : null}
+              <JavaScriptRequired silent>
+                <a onClick={this.onToggleInfinite} href="">∞</a>
+              </JavaScriptRequired>
+              <Link
+                to={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
+              >next ›</Link>
+            </span>
           </div>
-        </JavaScriptRequired>
+        </div>
       </div>
     );
   }

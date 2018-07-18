@@ -5,7 +5,6 @@ import { NestedListing } from "./NestedListing";
 import { Thing } from "./Thing";
 import { Submission } from "./Submission";
 import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
-import { JavaScriptRequired } from "./JavaScriptRequired";
 
 export const SubmissionDetailBase = notabugSubmissionDetail(injectState(({
   state: { /*replied,*/ notabugSubmissionId, notabugListing, notabugCommentsSort="best" },
@@ -39,10 +38,8 @@ export const SubmissionDetailBase = notabugSubmissionDetail(injectState(({
 )));
 
 export const SubmissionDetail = (props) => (
-  <JavaScriptRequired>
-    <SubmissionDetailBase
-      {...props}
-      key={props.match.params.submission_id}
-    />
-  </JavaScriptRequired>
+  <SubmissionDetailBase
+    {...props}
+    key={props.match.params.submission_id}
+  />
 );

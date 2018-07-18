@@ -55,7 +55,8 @@ let nab, web;
 
 if (options.port) {
   const express = require("express");
-  const renderer = require("./renderer").default;
+  const rendererBase = require("./renderer").default;
+  const renderer = (...args) => rendererBase(nab, ...args);
   const router = express.Router();
   const expressStaticGzip = require("express-static-gzip");
   const app = express();
@@ -93,13 +94,12 @@ if (options.port) {
     }
   });
 
-  app.get("^/$", cache.route({ expire: 60 }), renderer);
-  app.get("/index.html", cache.route({ expire: 60 }), (req, res) => {
-    res.sendFile(path.join(__dirname, "..", "htdocs", "index.html"));
-  });
-  router.use(expressStaticGzip(path.join(__dirname, "..", "htdocs")));
-  app.use(router);
+  router.use("/media", expressStaticGzip(path.join(__dirname, "..", "htdocs", "media"), { index: false }));
+  router.use("/static", expressStaticGzip(path.join(__dirname, "..", "htdocs", "static"), { index: false }));
+  router.use(express.static(path.join(__dirname, "..", "htdocs"), { index: false }));
 
+  app.get("^/$", cache.route({ expire: 60 }), renderer);
+  app.use(router);
   app.get("*", cache.route({ expire: 60 }), renderer);
 
   web = app.listen(options.port, options.host);

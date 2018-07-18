@@ -19,58 +19,8 @@
       Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
       work correctly both with client-side routing and a non-root public URL.
       Learn how to configure a non-root public URL by running `npm run build`.
-      <script src="https://cdn.jsdelivr.net/npm/webcrypto-liner@0.1.35/dist/webcrypto-liner.lib.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/webcrypto-liner@0.1.35/dist/webcrypto-liner.lib.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/webcrypto-liner@0.1.35/dist/webcrypto-liner.shim.js"></script>
     -->
     <title>notabug</title>
-    <script type="text/javascript">
-      function emptyLocalStorage(e) {
-        console.warn((e && e.stack) || e);
-        debugger;
-        localStorage.clear();
-        window.location.reload(true);
-      }
-      // window.onerror = emptyLocalStorage;
-
-
-      function migrateCBCaccount(alias, pass){
-        G = window.Gun;
-        g = notabug.gun;
-        g.get('~@'+alias).map().once(async function(data){
-          if (!data.auth) {
-            //alert("Error: Could not decrypt key for one of the accounts. Please try again.");
-            return;
-          }
-          var proof = await G.SEA.work(pass, data.auth.s);
-          var sea = await G.SEA.decrypt(data.auth.ek, proof, null, {name: "AES-CBC"});
-          if(!sea){
-            //alert("Error: Could not decrypt old key for one of the accounts. Please try again.");
-            return;
-          }
-          console.log("SAVE YOUR KEYS IN CASE OF EXPLOSION:", sea.priv, sea.epriv);
-          sea.pub = data.pub;
-          sea.epub = data.epub;
-          var auth = await G.SEA.encrypt({priv: sea.priv, epriv: sea.epriv}, proof, null, {name: "AES-GCM"});
-          auth = await G.SEA.sign({ek: auth, s: data.auth.s}, sea);
-          console.log('~'+sea.pub, sea, auth);
-          g.get('~'+sea.pub).put({auth: auth}, function(ack){
-            notabug.login(alias, pass).then(function() {
-              notabug.chat({
-                body: alias + " has migrated their account to AES-GCM",
-                topic: "whatever"
-              });
-            }).catch(function (error) {
-              console.error("error migrating", error);
-            });
-
-            if(ack.err){
-              console.warn("migration warning", ack.err);
-            }
-          });
-        });
-      }
-    </script>
   </head>
   <body class="loggedin subscriber"></body>
 </html>

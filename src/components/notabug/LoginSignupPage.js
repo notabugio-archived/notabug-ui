@@ -22,7 +22,7 @@ const LoginForm = notabugLoginSignupForm(injectState(({
   state: { notabugApi, username, password, loginError },
   effects: { onChangeUsername, onChangePassword, onLoginAndRedirect },
   ...props
-}) => notabugApi.gun.user ? (
+}) => notabugApi.gun && notabugApi.gun.user ? (
   <Fragment>
     <SnewLoginForm
       {...props}
@@ -44,7 +44,7 @@ export const LoginFormSide = notabugLoginSignupForm(injectState(({
   state: { notabugApi, notabugUsername, username, password, loginError },
   effects: { onChangeUsername, onChangePassword, onLogin },
   ...props
-}) => notabugApi.gun.user ? (
+}) => notabugApi.gun && notabugApi.gun.user ? (
   <Fragment>
     <SnewLoginFormSide
       {...props}
@@ -66,7 +66,7 @@ const RegisterForm = notabugLoginSignupForm(injectState(({
   state: { notabugApi, username, password, passwordConfirm, passwordsMatch, signupError },
   effects: { onChangeUsername, onChangePassword, onChangePasswordConfirm, onSignup },
   ...props
-}) => notabugApi.gun.user ? (
+}) => notabugApi.gun && notabugApi.gun.user ? (
   <Fragment>
     <SnewRegisterForm
       {...props}

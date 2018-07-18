@@ -3,11 +3,8 @@ import { Helmet } from "react-helmet";
 import { Route, Switch } from "react-router-dom";
 import { Subreddit } from "snew-classic-ui";
 import { NavTab } from "./NavTab";
-import { Topic } from "./Topic";
 import { Provider } from "./Provider";
 import { SidebarTitlebox } from "./SidebarTitlebox";
-import { SubmissionForm } from "./SubmissionForm";
-import { SubmissionDetail } from "./SubmissionDetail";
 import { UserInfo } from "./UserInfo";
 import { Chat, ChatPage } from "./Chat";
 import { FooterParent } from "./FooterParent";
@@ -16,11 +13,9 @@ import { LoginSignupPage, LoginFormSide } from "./LoginSignupPage";
 import { Link } from "./Link";
 import { router } from "state";
 import ScrollToTop from "./ScrollToTop";
-import { ContentPolicy } from "../ContentPolicy";
-import { PrivacyPolicy } from "../PrivacyPolicy";
-import { UserAgreement } from "../UserAgreement";
-import { KnownPeers } from "../KnownPeers";
 import { injectState } from "freactal";
+
+import { routes } from "./routes";
 
 const TopicRoute = injectState(({
   state: { notabugUser },
@@ -44,45 +39,13 @@ const TopicRoute = injectState(({
     isShowingCustomStyleOption={false}
   >
     <Switch>
-      <Route path="/help/privacypolicy" component={PrivacyPolicy} />
-      <Route path="/help/useragreement" component={UserAgreement} />
-      <Route path="/help/contentpolicy" component={ContentPolicy} />
-      <Route path="/help/knownpeers" component={KnownPeers} />
-      <Route path="/rules" component={ContentPolicy} />
-      <Route path="/t/:topic/comments/:submission_id/:slug" component={SubmissionDetail} />
-      <Route path="/t/:topic/comments/:submission_id" component={SubmissionDetail} />
-      <Route path="/t/:topic/submit" component={SubmissionForm} />
-      <Route path="/t/:topic/:sort/" component={Topic} />
-      <Route path="/t/:topic" component={Topic} />
-      <Route path="/domain/:domain/:sort" component={Topic} />
-      <Route path="/domain/:domain" component={Topic} />
-      <Route path="/user/:username" component={() => (
-        <div className="reddit-infobar">
-          <h1>User profiles not implemented yet, Sorry!</h1>
-          <h4>
-            They will be, in classic open-source reddit style with karma counts, and orangereds plus encrypted private messaging.   Be patient, or help out
-          </h4>
-          <h4>Your current contributions will be on your profile when they are ready</h4>
-        </div>
-      )} />
-      <Route path="/r/*" component={({ location: { pathname, search } }) => (
-        <div className="reddit-infobar">
-          <h1>This isn't snew</h1>
-          <h4>
-            {"Yes they share some code, but you're looking for "}
-            <a href={`https://snew.github.io${pathname}${search}`}>snew.github.io</a>
-          </h4>
-        </div>
-      )} />
-      <Route path="/submit" component={SubmissionForm} />
-      <Route path="/:sort" component={Topic} />
-      <Route path="/" exact component={Topic} />
+      {routes.map(route => <Route {...route} key={route.path} />)}
     </Switch>
   </Subreddit>
 ));
 
-export const App = router(() => (
-  <Provider>
+export const App = router(({ notabugApi }) => (
+  <Provider notabugApi={notabugApi}>
     <Helmet>
       <title>notabug: the back page of the internet</title>
     </Helmet>

@@ -18,8 +18,9 @@ if (!isNode) {
   }
 }
 
-const initialState = ({ history }) => {
-  const notabugApi = notabugPeer({
+const initialState = ({ history, notabugApi }) => {
+  notabugApi = notabugApi || notabugPeer({
+    noGun: isNode ? true : false,
     localStorage: LOCAL_STORAGE,
     countVotes: COUNT_VOTES,
     disableValidation: true,
@@ -34,7 +35,7 @@ const initialState = ({ history }) => {
   return {
     history,
     notabugApi,
-    notabugState: {},
+    notabugState: notabugApi.getState(),
     notabugUser: null,
     notabugUserId: null,
     notabugInfiniteScroll: false,

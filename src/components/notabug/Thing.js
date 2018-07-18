@@ -18,7 +18,7 @@ class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
     const { expanded = false } = props;
-    this.state = { scores: {}, expanded };
+    this.state = { scores: this.getScores(), expanded };
     this.onToggleExpando = this.onToggleExpando.bind(this);
     this.onUpdate = this.onUpdate.bind(this);
     this.onSubscribe = this.onSubscribe.bind(this);
