@@ -1,5 +1,5 @@
 /* globals Promise */
-import { prop, compose, always, identity, assocPath, uniq } from "ramda";
+import { path, prop, compose, always, identity, assocPath, uniq } from "ramda";
 import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
 import "gun";
@@ -28,7 +28,7 @@ const initialState = ({ history, notabugApi }) => {
       window.location.origin + "/gun",
       //"https://notabug.io/gun",
     ]
-  });
+  }, isNode ? null : window.initNabState);
 
   if (!isNode) window.notabug = notabugApi;
 
@@ -63,7 +63,7 @@ const onUpdateNotabugState = update(({ notabugApi }) => ({ notabugState: notabug
 
 const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
   effects.getState().then(({ notabugApi, preloaded }) =>
-    prop(url, preloaded)
+    prop(url, preloaded) && (Date.now() - prop(url, preloaded)) < 1000*60
       ? Promise.resolve().then(always(identity))
       : fetch(url)
         .then(response => {
@@ -73,7 +73,7 @@ const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
         .then(state => ({ ...state, ...preState }))
         .then(notabugApi.loadState)
         .then(() => effects.onUpdateNotabugState())
-        .then(always(assocPath(["preloaded", url], true))));
+        .then(always(assocPath(["preloaded", url], Date.now()))));
 
 const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
   .then(({ notabugApi }) => {
@@ -95,7 +95,11 @@ const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
 
 const onNotabugPreloadIds = (effects, ids) => effects.getState()
   .then(({ notabugApi }) => {
+    const nabState = notabugApi.getState();
     const opIds = ids.map(notabugApi.getOpId).filter(x => !!x);
+    const fetchIds = uniq(ids.concat(opIds)).filter(id => !path(["data", id], nabState)).sort();
+    if (!fetchIds.length) return {};
+
     return fetch(`/api/things/${uniq(ids.concat(opIds)).sort().join(",")}.json`)
       .then(response => {
         if (response.status !== 200) throw new Error("Bad response from server");

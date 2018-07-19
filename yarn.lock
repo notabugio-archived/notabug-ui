@@ -3748,9 +3748,9 @@ gun-flint@^0.0.28:
     minimist "^1.2.0"
     mocha "^3.0.0"
 
-gun@^0.9.9993:
-  version "0.9.9993"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.9993.tgz#e4a89ec3d93a511d2531387da455b58d13158874"
+gun@^0.9.9995:
+  version "0.9.9995"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.9995.tgz#6499c7b9c851b7794bb3d143613b433755c64ec7"
   dependencies:
     ws "~>5.2.0"
 

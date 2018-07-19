@@ -6,6 +6,7 @@ import { ContentPolicy } from "../ContentPolicy";
 import { PrivacyPolicy } from "../PrivacyPolicy";
 import { UserAgreement } from "../UserAgreement";
 import { KnownPeers } from "../KnownPeers";
+import { ChatPage } from "./Chat";
 
 const UserProfile = () => (
   <div className="reddit-infobar">
@@ -24,6 +25,8 @@ const Reddit = ({ location: { pathname, search } }) => (
       {"Yes they share some code, but you're looking for "}
       <a href={`https://snew.github.io${pathname}${search}`}>snew.github.io</a>
     </h4>
+    <p>notabug does not rely on reddit's servers, api or content at all; it's its own network.</p>
+    <p>Only the open-source UI code from reddit is used.</p>
   </div>
 );
 
@@ -53,22 +56,12 @@ export const routes = [
     path: "/t/:topic/submit",
     component: SubmissionForm
   }, {
-    path: "/t/:topic/index.html",
-    component: SubmissionForm
-  }, {
-    path: "/t/:topic/:sort/index.html",
-    component: Topic
+    path: "/t/:topic/chat"
   }, {
     path: "/t/:topic/:sort",
     component: Topic
   }, {
     path: "/t/:topic",
-    component: Topic
-  }, {
-    path: "/domain/:domain/:sort/index.html",
-    component: Topic
-  }, {
-    path: "/domain/:domain/index.html",
     component: Topic
   }, {
     path: "/domain/:domain/:sort",
@@ -89,9 +82,6 @@ export const routes = [
     path: "/login",
   }, {
     path: "/chat",
-  }, {
-    path: "/:sort/index.html",
-    component: Topic
   }, {
     path: "/:sort",
     component: Topic

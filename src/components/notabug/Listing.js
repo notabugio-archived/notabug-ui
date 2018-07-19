@@ -1,5 +1,5 @@
 import React, { PureComponent, Fragment } from "react";
-import throttle from "lodash/throttle";
+import debounce from "lodash/debounce";
 import { injectState } from "freactal";
 import { pick } from "ramda";
 import { Thing } from "./Thing";
@@ -22,7 +22,7 @@ class ListingBase extends PureComponent {
     const ids = this.props.state.notabugApi.getListingIds(this.getListingParams());
     this.state = { ids };
     this.onUpdate = this.onUpdate.bind(this);
-    this.onRefresh = throttle(() => this.onUpdate(), 150);
+    this.onRefresh = debounce(() => this.onUpdate(), 500);
   }
 
   componentDidMount() {

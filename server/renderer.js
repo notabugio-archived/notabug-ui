@@ -46,10 +46,15 @@ export default (nab, req, res) => {
           ));
           // inject the rendered app into our html and send it
           console.log("server rendered", req.url);
+          const stateScript = `
+<script type="text/javascript">
+window.initNabState = ${JSON.stringify(staticPeer.getState())};
+</script>
+          `;
           return res.send(
             htmlData.replace(
               "<body class=\"loggedin subscriber\">",
-              `<body class="loggedin subscriber">${html}`,
+              `<body class="loggedin subscriber">${html}${stateScript}`,
             )
           );
         } catch (e) {

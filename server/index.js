@@ -94,8 +94,8 @@ if (options.port) {
     }
   });
 
-  router.use("/media", expressStaticGzip(path.join(__dirname, "..", "htdocs", "media"), { index: false }));
-  router.use("/static", expressStaticGzip(path.join(__dirname, "..", "htdocs", "static"), { index: false }));
+  router.use("/media", cache.route({ expire: 60*60*24 }), expressStaticGzip(path.join(__dirname, "..", "htdocs", "media"), { index: false }));
+  router.use("/static", cache.route({ expire: 60*60*24 }), expressStaticGzip(path.join(__dirname, "..", "htdocs", "static"), { index: false }));
   router.use(express.static(path.join(__dirname, "..", "htdocs"), { index: false }));
 
   app.get("^/$", cache.route({ expire: 60 }), renderer);
@@ -111,13 +111,12 @@ nab = init({
   peers: options.peer,
   persist: options.persist,
   disableValidation: options.disableValidation,
-  scoreThingsForPeers: options.score && !options.redis,
   until: options.until,
   super: true,
   web
 });
 
-if (options.score && options.redis) {
+if (options.score) {
   nab.onMsg(msg => {
     Object.keys(msg).forEach(key => {
       if (key === "put" && msg.mesh && msg.how !== "mem") {
@@ -131,7 +130,8 @@ if (options.score && options.redis) {
           if (votesMatch) {
             setTimeout(() => {
               const thingSoul = nab.souls.thing.soul({ thingid: votesMatch.thingid });
-              nab.gun.redis.get(soul).then(votes => {
+              nab.gun.get(soul).once(votes => {
+                if (!votes) return;
                 const votecount = Object.keys(votes || { _: null }).length - 1;
                 const chain = nab.gun.get(thingSoul);
                 chain.get(`votes${votesMatch.votekind || "comment"}count`).put(votecount);
@@ -152,7 +152,7 @@ if (options.watch) {
   setInterval(() => nab.watchListing({ days: options.days }), 1000*60*60);
 }
 
-if(options.watch || options.index) {
+if(options.index) {
   const indexed = {};
   nab.gun.get("nab/things").map().once(function ({ id }) {
     if (!options.index || !id || indexed[id]) return;

@@ -26,7 +26,7 @@ export const Expando = ({
       ) : video ? (
         <video src={video}/>
       ) : iframe ? (
-        <iframe src={iframe} title="uservideo" height="320" width="480px"/>
+        <iframe src={iframe} title="uservideo" height="320" width="480px" frameborder="0" />
       ) : null
     ) : null}
   </div>

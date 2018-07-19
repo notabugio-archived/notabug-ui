@@ -8,7 +8,6 @@ export const calculateListing = (nab, req, routeMatch) => {
   const opId = req.params.opId || (routeMatch && routeMatch.params.submission_id);
   let params;
 
-
   if (opId) {
     params = { opId, sort: "new" };
     result.collectionSoul = nab.souls.thingAllComments.soul({ thingid: opId });
@@ -22,11 +21,9 @@ export const calculateListing = (nab, req, routeMatch) => {
     const threshold = sort === "new" || sort === "controversial" ? null : 1;
     params = { topics, sort, threshold, days, count, limit };
     result.topic = topic;
-    console.log(params);
   }
 
   const souls = nab.getListingSouls(params).sort();
-
   if (!req.query.days) delete params.days;
 
   const fetchThingSoul = thingSoul => {
