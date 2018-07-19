@@ -1,3 +1,4 @@
+import Promise from "promise";
 import React, { PureComponent, Fragment } from "react";
 import debounce from "lodash/debounce";
 import { injectState } from "freactal";
@@ -104,16 +105,21 @@ class ListingBase extends PureComponent {
     const { effects, realtime } = (props || this.props);
     const params = this.getListingParams();
     this.onUpdate();
-    effects.onNotabugPreloadListing(params)
+
+    const promise = (this.state.ids && this.state.ids.length)
+      ? Promise.resolve()
+      : effects.onNotabugPreloadListing(params).then(() => this.onUpdate());
+
+    return promise
       .catch(error => console.warn("Error preloading listing", error))
-      .then(() => this.onUpdate())
       .then(() => (this.state.ids && this.state.ids.length)
         ? realtime
           ? this.props.redis
             ? effects.onNotabugPreloadIds(this.state.ids) && setTimeout(() => this.onGunFallback(), 300)
             : this.onGunFallback()
           : this.props.redis && effects.onNotabugPreloadIds(this.state.ids)
-        : realtime && this.onGunFallback());
+        : realtime && this.onGunFallback())
+      .then(() => effects.onNotabugPreloadListing(params));
     //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
   }
 

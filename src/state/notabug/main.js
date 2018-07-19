@@ -9,6 +9,8 @@ import isNode from "detect-node";
 let COUNT_VOTES = false;
 let LOCAL_STORAGE = false;
 
+const preloadTimes = {};
+
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
@@ -17,6 +19,8 @@ if (!isNode) {
     require("sea");
   }
 }
+
+const markPreloaded = url => Promise.resolve(preloadTimes[url] = Date.now());
 
 const initialState = ({ history, notabugApi }) => {
   notabugApi = notabugApi || notabugPeer({
@@ -62,10 +66,10 @@ const onNotabugReceiveIdsData = (effects, data) => effects.getState()
 const onUpdateNotabugState = update(({ notabugApi }) => ({ notabugState: notabugApi.getState() }));
 
 const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
-  effects.getState().then(({ notabugApi, preloaded }) =>
-    prop(url, preloaded) && (Date.now() - prop(url, preloaded)) < 1000*60
+  effects.getState().then(({ notabugApi }) =>
+    prop(url, preloadTimes) && (Date.now() - prop(url, preloadTimes)) < 1000*60
       ? Promise.resolve().then(always(identity))
-      : fetch(url)
+      : markPreloaded(url) && fetch(url)
         .then(response => {
           if (response.status !== 200) throw new Error("Bad response from server");
           return response.json();
@@ -73,7 +77,7 @@ const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
         .then(state => ({ ...state, ...preState }))
         .then(notabugApi.loadState)
         .then(() => effects.onUpdateNotabugState())
-        .then(always(assocPath(["preloaded", url], Date.now()))));
+        .then(always(identity)));
 
 const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
   .then(({ notabugApi }) => {
