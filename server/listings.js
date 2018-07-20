@@ -39,14 +39,14 @@ export const calculateListing = (nab, req, routeMatch) => {
   if (!req.query.days) delete params.days;
 
   const fetchThingSoul = thingSoul => {
-    if (thingSoul === "_" || thingSoul === "#") return;
+    if (thingSoul === "_" || thingSoul === "#" || thingSoul === "undefined" || !thingSoul) return;
     return Promise.all([
       getRecord(nab, thingSoul),
       getRecord(nab, thingSoul + "/allcomments"),
       getRecord(nab, thingSoul + "/votesup"),
       getRecord(nab, thingSoul + "/votesdown"),
     ]).then(res => {
-      if (!res[0] || !res[0].id) return;
+      if (!res[0] || !res[0].id || res[0].id === "undefined") return;
       const thing = { timestamp: res[0].timestamp };
       const allcomments = Object.keys(res[1] || { _: null }).length - 1;
       const votesup = Object.keys(res[2] || { _: null }).length - 1;
@@ -106,7 +106,8 @@ export const calculateListing = (nab, req, routeMatch) => {
     const listingThings = {};
     const tmp = init({ noGun: true, localStorage: false, disableValidation: true });
     tmp.loadState(mergeDeepRight({}, result));
-    const ids = tmp.getListingIds(params);
+    delete(things["undefined"]);
+    const ids = tmp.getListingIds(params).filter(id => id && id !== "undefined");
     if (opId) ids.push(opId);
     ids.forEach(id => listingThings[id] = things[id]);
     if (opId || routeMatch) {
@@ -120,13 +121,14 @@ export const calculateListing = (nab, req, routeMatch) => {
 
 const calculateThings = (nab, req) => {
   const things = {};
-  return Promise.all(req.params.id.split(",").map(id =>
-    getRecord(nab, "nab/things/" + id + "/data").then(data => {
+  return Promise.all(req.params.id.split(",").map(id => {
+    if (!id || id === "undefined") return Promise.resolve();
+    return getRecord(nab, "nab/things/" + id + "/data").then(data => {
       if(!data) return;
       delete data["_"];
       things[id] = data;
-    })
-  )).then(() => things);
+    });
+  })).then(() => things);
 };
 
 const listingMeta = (nab, req, res) => calculateListing(nab, req).then(res.send);
