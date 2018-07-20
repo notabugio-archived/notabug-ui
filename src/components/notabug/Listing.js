@@ -1,4 +1,3 @@
-import Promise from "promise";
 import React, { PureComponent, Fragment } from "react";
 import debounce from "lodash/debounce";
 import { injectState } from "freactal";
@@ -36,9 +35,8 @@ class ListingBase extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    this.onUnsubscribe(this.props);
-
     if (nextProps.realtime) {
+      this.props.state.notabugApi.onChangeOff(null, this.onRefresh);
       nextProps.state.notabugApi.onChange(null, this.onRefresh);
       this.onSubscribe(nextProps);
     }
@@ -106,30 +104,25 @@ class ListingBase extends PureComponent {
     const params = this.getListingParams();
     this.onUpdate(props);
 
-    const promise = (this.state.ids && this.state.ids.length)
-      ? Promise.resolve()
-      : effects.onNotabugPreloadListing(params).then(() => this.onUpdate());
-
+    const promise = effects.onNotabugPreloadListing(params).then(() => this.onUpdate());
     return promise
       .catch(error => console.warn("Error preloading listing", error))
-      .then(() => (this.state.ids && this.state.ids.length)
-        ? realtime
-          ? this.props.redis
-            ? effects.onNotabugPreloadIds(this.state.ids) && setTimeout(() => this.onGunFallback(), 300)
-            : this.onGunFallback()
-          : this.props.redis && effects.onNotabugPreloadIds(this.state.ids)
-        : realtime && this.onGunFallback())
-      .then(() => effects.onNotabugPreloadListing(params));
-    //(props || this.props).state.notabugApi.onChangeListing(this.getListingParams(), this.onRefresh);
+      .then(() => {
+        if (realtime) {
+          if (this.props.redis) {
+            setTimeout(() => this.onGunFallback(), 300);
+            return effects.onNotabugPreloadIds(this.state.ids);
+          }
+        } else if (this.props.redis) {
+          return effects.onNotabugPreloadIds(this.state.ids);
+        }
+      })
+      .then(() => this.onUpdate());
   }
 
   onGunFallback() {
     this.props.state.notabugApi.onChange(null, this.onRefresh);
     this.props.state.notabugApi.watchListing(this.getListingParams());
-  }
-
-  onUnsubscribe() {
-    //(props || this.props).state.notabugApi.onChangeListingOff(this.getListingParams(), this.onRefresh);
   }
 
   onUpdate(props) {

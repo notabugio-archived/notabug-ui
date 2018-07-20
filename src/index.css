@@ -30,6 +30,10 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   display: block;
 }
 
+.chat-message-display {
+  -webkit-overflow-scrolling: touch;
+}
+
 .chat-modal .chat-message-display {
   position: absolute;
   display: block;

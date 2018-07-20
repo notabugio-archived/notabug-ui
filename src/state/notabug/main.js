@@ -10,6 +10,7 @@ let COUNT_VOTES = false;
 let LOCAL_STORAGE = false;
 
 const preloadTimes = {};
+const preloadPromises = {};
 
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
@@ -68,8 +69,8 @@ const onUpdateNotabugState = update(({ notabugApi }) => ({ notabugState: notabug
 const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
   effects.getState().then(({ notabugApi }) =>
     prop(url, preloadTimes) && (Date.now() - prop(url, preloadTimes)) < 1000*60
-      ? Promise.resolve().then(always(identity))
-      : markPreloaded(url) && fetch(url)
+      ? (preloadPromises[url] || Promise.resolve().then(always(identity)))
+      : preloadPromises[url] = markPreloaded(url) && fetch(url)
         .then(response => {
           if (response.status !== 200) throw new Error("Bad response from server");
           return response.json();
