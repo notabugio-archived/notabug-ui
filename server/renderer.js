@@ -9,6 +9,7 @@ import { routes } from "components/notabug/routes";
 //import { provideState } from "freactal";
 import { calculateListing } from "./listings";
 import init from "notabug-peer";
+import serialize from "serialize-javascript";
 
 const path = require("path");
 const fs = require("fs");
@@ -48,18 +49,15 @@ export default (nab, req, res) => {
           console.log("server rendered", req.url);
           const stateScript = `
 <script type="text/javascript">
-window.initNabState = ${JSON.stringify(staticPeer.getState())};
+window.initNabState = ${serialize(staticPeer.getState(), { isJSON: true })};
 </script>
           `;
-          return res.send(
-            htmlData.replace(
-              "<body class=\"loggedin subscriber\">",
-              `<body class="loggedin subscriber">${html}${stateScript}`,
-            )
-          );
+          const parts = htmlData.split("!!!CONTENT!!!");
+          const result = [parts[0], html, stateScript, parts[1]].join("");
+          return res.send(result);
         } catch (e) {
           console.error("error generating page", (e && e.stack) || e);
-          res.send(htmlData);
+          res.send(htmlData.replace("!!!CONTENT!!!", "<noscript>Something Broke</noscript>"));
         }
       });
   });

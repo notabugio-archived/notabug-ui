@@ -8,6 +8,7 @@
 
 # production
 /build
+/server-build
 /build-lib
 /htdocs
 /data.json

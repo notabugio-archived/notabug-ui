@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.7.5",
+  "version": "0.7.6",
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-module-resolver": "^3.1.1",
@@ -42,6 +42,7 @@
     "redis": "^2.8.0",
     "regenerator-runtime": "^0.11.1",
     "reselect": "^3.0.1",
+    "serialize-javascript": "^1.5.0",
     "snew-classic-ui": "https://github.com/notabugio/snew-classic-ui.git#0.2.0",
     "snuownd": "https://github.com/JordanMilne/snuownd.git",
     "text-encoding": "^0.6.4",
@@ -64,7 +65,9 @@
     "upgrade": "git stash && git pull origin master && yarn && git stash pop",
     "superpeer": "yarn && yarn build && yarn stop && yarn server",
     "server": "concurrently \"yarn accesspeer\" \"yarn relaypeer \" \"yarn persistpeer\"",
-    "build": "NODE_PATH=src/ react-app-rewired build",
+    "buildserver": "NODE_PATH=src/ babel server -d server-build",
+    "buildui": "NODE_PATH=src/ react-app-rewired build",
+    "build": "yarn buildui && yarn buildserver",
     "postbuild": "gzip -rk build",
     "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom"
   },

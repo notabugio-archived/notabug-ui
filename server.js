@@ -6,4 +6,4 @@ require("babel-register")({
   presets: ["es2015", "react-app"]
 });
 
-require("./server/index");
+require("./server-build/index");

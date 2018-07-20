@@ -23,7 +23,6 @@ const options = commandLineArgs([
 ]);
 
 process.env.GUN_ENV = process.env.GUN_ENV || options.debug ? "debug" : undefined;
-Gun.serve = require("gun/lib/serve");
 require("gun/nts");
 require("gun/lib/store");
 require("gun/lib/rs3");
