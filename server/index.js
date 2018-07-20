@@ -18,6 +18,7 @@ const options = commandLineArgs([
   { name: "peer", alias: "c", multiple: true, type: String },
   { name: "until", alias: "u", multiple: true, type: Number, defaultValue: 1000 },
   { name: "watch", alias: "i", type: Boolean, defaultValue: false },
+  { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "index", alias: "w", type: Boolean, defaultValue: false }
 ]);
 
@@ -39,7 +40,6 @@ if (!options.persist && !options.redis && options.json6) {
   require("gun/lib/file");
 }
 
-require("gun/lib/bye");
 Gun.on("opt", function(root){
   this.to.next(root);
   if(root.once){ return; }
@@ -47,6 +47,7 @@ Gun.on("opt", function(root){
 });
 if (options.evict) require("gun/lib/evict");
 if (options.debug) require("gun/lib/debug");
+require("gun/lib/then");
 
 global.Gun = Gun;
 
@@ -55,6 +56,7 @@ let nab, web;
 
 if (options.port) {
   const express = require("express");
+  const listings = require("./listings");
   const rendererBase = require("./renderer").default;
   const renderer = (...args) => rendererBase(nab, ...args);
   const router = express.Router();
@@ -64,14 +66,9 @@ if (options.port) {
     client: require("redis").createClient({ db: 1 }),
     expire: 30
   });
-  let listings;
-
-  if (options.redis) {
-    listings = require("./redis-listings");
-  }
 
   app.get("/api/topics/:topic.json", cache.route({ expire: 60 }), (req, res) => {
-    if (options.redis) {
+    if (options.redis || options.listings) {
       listings.listingMeta(nab, req, res);
     } else {
       res.send(nab.getListingJson({ topics: [req.params.topic], sort: "new", days: 30 }));
@@ -79,7 +76,7 @@ if (options.port) {
   });
 
   app.get("/api/submissions/:opId.json", cache.route({ expire: 30 }), (req, res) => {
-    if (options.redis) {
+    if (options.redis || options.listings) {
       listings.listingMeta(nab, req, res);
     } else {
       res.send(nab.getListingJson({ opId: req.params.id, sort: "new" }));
@@ -87,7 +84,7 @@ if (options.port) {
   });
 
   app.get("/api/things/:id.json", cache.route({ expire: 60*60 }), (req, res) => {
-    if (options.redis) {
+    if (options.redis || options.listings) {
       listings.things(nab, req, res);
     } else {
       res.send({});
@@ -130,12 +127,11 @@ if (options.score) {
           if (votesMatch) {
             setTimeout(() => {
               const thingSoul = nab.souls.thing.soul({ thingid: votesMatch.thingid });
-              nab.gun.get(soul).once(votes => {
+              (nab.gun.redis || nab.gun).get(soul).then(votes => {
                 if (!votes) return;
                 const votecount = Object.keys(votes || { _: null }).length - 1;
                 const chain = nab.gun.get(thingSoul);
                 chain.get(`votes${votesMatch.votekind || "comment"}count`).put(votecount);
-                chain.off();
               });
             }, 200);
           } else if (thingDataMatch) {

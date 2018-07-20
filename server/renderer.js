@@ -7,7 +7,7 @@ import { renderToString } from "react-dom/server";
 import { App } from "components/notabug";
 import { routes } from "components/notabug/routes";
 //import { provideState } from "freactal";
-import { calculateListing } from "./redis-listings";
+import { calculateListing } from "./listings";
 import init from "notabug-peer";
 
 const path = require("path");

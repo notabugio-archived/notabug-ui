@@ -2,6 +2,21 @@
 import { path, mergeDeepRight } from "ramda";
 import init from "notabug-peer";
 
+const RECORD_TIMEOUT = 100;
+
+const getRecord = (nab, soul, timeout=RECORD_TIMEOUT) => (new Promise((resolve, reject) => {
+  if (!nab.gun.redis) {
+    console.log("getRecord", soul);
+  }
+  nab.gun.redis
+    ? nab.gun.redis.get(soul).then(resolve).catch(reject)
+    : nab.gun.once((data) => resolve(data));
+  setTimeout(() => reject("record timeout after " + timeout), timeout);
+})).catch(error => {
+  console.error("getRecord error " + soul, error.stack || error);
+  return null;
+});
+
 export const calculateListing = (nab, req, routeMatch) => {
   const things = {};
   const result = { timestamp: (new Date()).getTime(), things };
@@ -29,10 +44,10 @@ export const calculateListing = (nab, req, routeMatch) => {
   const fetchThingSoul = thingSoul => {
     if (thingSoul === "_" || thingSoul === "#") return;
     return Promise.all([
-      nab.gun.redis.get(thingSoul),
-      nab.gun.redis.get(thingSoul + "/allcomments"),
-      nab.gun.redis.get(thingSoul + "/votesup"),
-      nab.gun.redis.get(thingSoul + "/votesdown"),
+      getRecord(nab, thingSoul),
+      getRecord(nab, thingSoul + "/allcomments"),
+      getRecord(nab, thingSoul + "/votesup"),
+      getRecord(nab, thingSoul + "/votesdown"),
     ]).then(res => {
       if (!res[0] || !res[0].id) return;
       const thing = { timestamp: res[0].timestamp };
@@ -63,7 +78,7 @@ export const calculateListing = (nab, req, routeMatch) => {
     });
   };
 
-  const fetchSoul = () => nab.gun.redis.get(souls.pop()).then(res =>
+  const fetchSoul = () => getRecord(nab, souls.pop()).then(res =>
     res && Promise.all(Object.keys(res).map(fetchThingSoul)));
 
   const fetchItems = () =>
@@ -94,7 +109,7 @@ export const calculateListing = (nab, req, routeMatch) => {
 const calculateThings = (nab, req) => {
   const things = {};
   return Promise.all(req.params.id.split(",").map(id =>
-    nab.gun.redis.get("nab/things/" + id + "/data").then(data => {
+    getRecord(nab, "nab/things/" + id + "/data").then(data => {
       if(!data) return;
       delete data["_"];
       things[id] = data;
