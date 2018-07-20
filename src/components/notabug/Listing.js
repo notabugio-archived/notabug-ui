@@ -104,7 +104,7 @@ class ListingBase extends PureComponent {
   onSubscribe(props) {
     const { effects, realtime } = (props || this.props);
     const params = this.getListingParams();
-    this.onUpdate();
+    this.onUpdate(props);
 
     const promise = (this.state.ids && this.state.ids.length)
       ? Promise.resolve()
