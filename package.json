@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.7.7",
+  "version": "0.7.8",
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-plugin-module-resolver": "^3.1.1",
@@ -33,6 +33,7 @@
     "react-chatview": "^0.2.5",
     "react-dom": "^16.3.2",
     "react-helmet": "^5.2.0",
+    "react-player": "^1.6.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^1.1.4",
     "react-spinkit": "^3.0.0",
