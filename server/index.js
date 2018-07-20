@@ -68,27 +68,15 @@ if (options.port) {
   });
 
   app.get("/api/topics/:topic.json", cache.route({ expire: 60 }), (req, res) => {
-    if (options.redis || options.listings) {
-      listings.listingMeta(nab, req, res);
-    } else {
-      res.send(nab.getListingJson({ topics: [req.params.topic], sort: "new", days: 30 }));
-    }
+    listings.listingMeta(nab, req, res);
   });
 
   app.get("/api/submissions/:opId.json", cache.route({ expire: 30 }), (req, res) => {
-    if (options.redis || options.listings) {
-      listings.listingMeta(nab, req, res);
-    } else {
-      res.send(nab.getListingJson({ opId: req.params.id, sort: "new" }));
-    }
+    listings.listingMeta(nab, req, res);
   });
 
   app.get("/api/things/:id.json", cache.route({ expire: 60*60 }), (req, res) => {
-    if (options.redis || options.listings) {
-      listings.things(nab, req, res);
-    } else {
-      res.send({});
-    }
+    listings.things(nab, req, res);
   });
 
   router.use("/media", cache.route({ expire: 60*60*24 }), expressStaticGzip(path.join(__dirname, "..", "htdocs", "media"), { index: false }));

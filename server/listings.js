@@ -2,15 +2,12 @@
 import { path, mergeDeepRight } from "ramda";
 import init from "notabug-peer";
 
-const RECORD_TIMEOUT = 100;
+const RECORD_TIMEOUT = 5000;
 
 const getRecord = (nab, soul, timeout=RECORD_TIMEOUT) => (new Promise((resolve, reject) => {
-  if (!nab.gun.redis) {
-    console.log("getRecord", soul);
-  }
   nab.gun.redis
     ? nab.gun.redis.get(soul).then(resolve).catch(reject)
-    : nab.gun.once((data) => resolve(data));
+    : nab.gun.get(soul).once((data) => resolve(data), { wait: 1 });
   setTimeout(() => reject("record timeout after " + timeout), timeout);
 })).catch(error => {
   console.error("getRecord error " + soul, error.stack || error);
@@ -78,17 +75,32 @@ export const calculateListing = (nab, req, routeMatch) => {
     });
   };
 
-  const fetchSoul = () => getRecord(nab, souls.pop()).then(res =>
-    res && Promise.all(Object.keys(res).map(fetchThingSoul)));
+  const fetchCollections = () =>
+    Promise.all(souls.map(soul => getRecord(nab, soul)))
+      .then(collections => {
+        const merged = {};
+        const fetchNext = () => {
+          if (!collections.length) return things;
+          if (Object.keys(things).length > 1000 && !opId) return things;
+          return Promise.all(Object.keys(collections.pop()).map(fetchThingSoul)).then(fetchNext);
+        };
 
-  const fetchItems = () =>
-    (souls.length && (opId || Object.keys(things).length < 1000))
-      ? fetchSoul().then(fetchItems)
-      : Promise.resolve(things);
+        Object.values(collections || {}).reverse().find(collection => {
+          return Object.keys(collection || {}).find(soul => {
+            merged[soul] = collection[soul];
+            if (!opId && Object.keys(merged).length >= 1000) return true;
+          });
+        });
+
+        return merged;
+      });
+
+  const fetchThings = () => fetchCollections()
+    .then(res => res && Promise.all(Object.keys(res).map(fetchThingSoul)));
 
   const promise = opId
-    ? fetchThingSoul(nab.souls.thing.soul({ thingid: opId })).then(fetchItems)
-    : fetchItems();
+    ? fetchThingSoul(nab.souls.thing.soul({ thingid: opId })).then(fetchThings)
+    : fetchThings();
 
   return promise.then(() => {
     const listingThings = {};
