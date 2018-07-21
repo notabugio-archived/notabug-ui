@@ -9,7 +9,6 @@ export const Expando = ({
   selftext: body,
   selftext_html: html,
   image,
-  video,
   iframe,
   reactPlayer
 }) => (
@@ -26,7 +25,7 @@ export const Expando = ({
       ) : reactPlayer ? (
         <ReactPlayer url={reactPlayer} controls />
       ) : image ? (
-        <img src={image} alt="userimage"></img>
+        <img src={image} alt="userimage" rel="noreferrer"></img>
       ) : iframe ? (
         <iframe src={iframe} title="uservideo" height="320" width="480px" frameborder="0" />
       ) : null

@@ -2,14 +2,7 @@
 import { path, mergeDeepRight } from "ramda";
 import init from "notabug-peer";
 
-const RECORD_TIMEOUT = 5000;
-
-const getRecord = (nab, soul, timeout=RECORD_TIMEOUT) => (new Promise((resolve, reject) => {
-  nab.gun.redis
-    ? nab.gun.redis.get(soul).then(resolve).catch(reject)
-    : nab.gun.get(soul).once((data) => resolve(data), { wait: 1 });
-  setTimeout(() => reject("record timeout after " + timeout), timeout);
-})).catch(error => {
+const getRecord = (nab, soul) => nab.get(soul).catch(error => {
   console.error("getRecord error " + soul, error.stack || error);
   return null;
 });
