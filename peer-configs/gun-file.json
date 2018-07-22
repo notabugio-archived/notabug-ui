@@ -6,7 +6,7 @@
       "--port", "3001",
       "--json6",
       "--debug",
-      "--score",
+      "--render",
       "--peer", "https://notabug.io/gun",
       "--evict"
     ]

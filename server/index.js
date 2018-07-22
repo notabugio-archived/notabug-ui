@@ -11,6 +11,7 @@ const options = commandLineArgs([
   { name: "json6", alias: "j", type: Boolean }, // TODO: gun-file is broken do not use
   { name: "evict", alias: "e", type: Boolean, defaultValue: false },
   { name: "debug", alias: "d", type: Boolean, defaultValue: false },
+  { name: "render", alias: "z", type: Boolean, defaultValue: false },
   { name: "days", alias: "t", type: Number, defaultValue: 1 },
   { name: "port", alias: "p", type: Number, defaultValue: null },
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
@@ -67,6 +68,7 @@ const peerOptions = {
 if (options.port) {
   nab = initServer({
     ...peerOptions,
+    render: options.render,
     redis: options.redis,
     host: options.host,
     port: options.port,

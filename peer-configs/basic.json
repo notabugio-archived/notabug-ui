@@ -5,7 +5,8 @@
     "script": "server.js",
     "args": [
       "--score",
-      "--redis",
+      "--persist",
+      "--render",
       "--debug",
       "--host", "0.0.0.0",
       "--port", "3001",
