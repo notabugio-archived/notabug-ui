@@ -124,7 +124,7 @@ const calculateThings = (nab, req) => {
   })).then(() => things);
 };
 
-const listingMeta = (nab, req, res) => calculateListing(nab, req).then(res.send);
-const things = (nab, req, res) => calculateThings(nab, req).then(res.send);
+const listingMeta = (nab, req, res) => calculateListing(nab, req).then(json => res.send(json));
+const things = (nab, req, res) => calculateThings(nab, req).then(json => res.send(json));
 module.exports.listingMeta = listingMeta;
 module.exports.things = things;

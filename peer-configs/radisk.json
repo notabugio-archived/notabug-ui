@@ -1,0 +1,14 @@
+[
+  {
+    "uid": "notabug",
+    "script": "server.js",
+    "args": [
+      "--port", "3001",
+      "--persist",
+      "--debug",
+      "--score",
+      "--peer", "https://notabug.io/gun",
+      "--evict"
+    ]
+  }
+]

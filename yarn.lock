@@ -3748,6 +3748,13 @@ growly@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/growly/-/growly-1.3.0.tgz#f10748cbe76af964b7c96c93c6bcc28af120c081"
 
+gun-file@^1.0.123:
+  version "1.0.123"
+  resolved "https://registry.yarnpkg.com/gun-file/-/gun-file-1.0.123.tgz#ac4d25cde5c6e86da26011a943e74c976dbc3864"
+  dependencies:
+    gun "^0.9.96"
+    json-6 "^0"
+
 gun-flint@^0.0.28:
   version "0.0.28"
   resolved "https://registry.yarnpkg.com/gun-flint/-/gun-flint-0.0.28.tgz#844ab82b5de6170e0dc188e2029e434390809e6a"
@@ -3756,7 +3763,7 @@ gun-flint@^0.0.28:
     minimist "^1.2.0"
     mocha "^3.0.0"
 
-gun@^0.9.9995:
+gun@^0.9.96, gun@^0.9.9995:
   version "0.9.9995"
   resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.9995.tgz#6499c7b9c851b7794bb3d143613b433755c64ec7"
   dependencies:
@@ -4863,6 +4870,10 @@ jsesc@~0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
 
+json-6@^0:
+  version "0.1.128"
+  resolved "https://registry.yarnpkg.com/json-6/-/json-6-0.1.128.tgz#0c52ddf38af9bd2d8ca5fdb402fc0e70776ccbf2"
+
 json-loader@^0.5.4:
   version "0.5.7"
   resolved "https://registry.yarnpkg.com/json-loader/-/json-loader-0.5.7.tgz#dca14a70235ff82f0ac9a3abeb60d337a365185d"
@@ -5618,8 +5629,8 @@ normalize-url@^1.4.0:
     sort-keys "^1.0.0"
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.8.4"
-  resolved "https://github.com/notabugio/notabug-peer.git#3584947fa0d9ffbd557cfaf049e09b38dec96833"
+  version "0.8.5"
+  resolved "https://github.com/notabugio/notabug-peer.git#d65fcd70e1098a50bacb57795b1d1a706a1c4275"
   dependencies:
     babel-cli "^6.26.0"
     babel-plugin-module-resolver "^3.1.1"
