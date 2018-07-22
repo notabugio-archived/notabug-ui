@@ -31,7 +31,7 @@ function fromRedis(obj) {
       obj[key] = undefined;
     }
 
-    if (key === "timestamp" || key === "lastActive") {
+    if (key === "timestamp" || key === "lastActive" || />\./.test(key)) {
       obj[key] = parseInt(obj[key], 10) || 0;
     }
   });
