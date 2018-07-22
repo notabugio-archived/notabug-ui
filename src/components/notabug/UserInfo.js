@@ -5,13 +5,17 @@ import { injectState } from "freactal";
 
 export const UserInfo = injectState(({
   state: { notabugUser },
+  effects,
   ...props
 }) => notabugUser ? (
   <SnewUserInfo
     {...props}
     Link={Link}
     username={notabugUser}
-    onLogout={() => window.location.reload()}
+    onLogout={e => {
+      e.preventDefault();
+      effects.onLogout();
+    }}
     loginUrl="/login"
   />
 ) : (

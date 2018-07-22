@@ -141,6 +141,11 @@ const onListenForReplies = (effects, id) => effects.getState()
 
 const onLogin = update((state, { alias, pub }) => ({ notabugUser: alias, notabugUserId: pub }));
 
+const onLogout = update((state) => {
+  state.notabugApi.user().leave();
+  return { notabugUser: null, notabugUserId: null };
+});
+
 const onNotabugToggleInfiniteScroll = update(({ notabugInfiniteScroll }) =>
   ({ notabugInfiniteScroll: !notabugInfiniteScroll }));
 
@@ -162,7 +167,8 @@ export const notabug = compose(
       onNotabugToggleInfiniteScroll,
       onUpdateNotabugState,
       onListenForReplies,
-      onLogin
+      onLogin,
+      onLogout
     }
   })
 );
