@@ -28,7 +28,7 @@ export const calculateListing = (nab, req, routeMatch) => {
     result.topic = topic;
   }
 
-  const souls = nab.getListingSouls(params).sort();
+  const souls = nab.getListingSouls(params).reverse();
   if (!req.query.days) delete params.days;
 
   const fetchThingSoul = thingSoul => {
