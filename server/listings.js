@@ -2,7 +2,7 @@
 import { path, mergeDeepRight } from "ramda";
 import init from "notabug-peer";
 
-const getRecord = (nab, soul) => nab.get(soul).catch(error => {
+const getRecord = (nab, soul) => (nab.gun.redis ? nab.gun.redis.get : nab.get)(soul).catch(error => {
   console.error("getRecord error " + soul, error.stack || error);
   return null;
 });

@@ -1,7 +1,8 @@
 {
   "name": "notabug",
-  "version": "0.8.6",
+  "version": "0.8.7",
   "dependencies": {
+    "@trust/webcrypto": "^0.9.2",
     "babel-cli": "^6.26.0",
     "babel-plugin-module-resolver": "^3.1.1",
     "babel-polyfill": "^6.26.0",
@@ -22,11 +23,12 @@
     "forever": "^0.15.3",
     "formidable": "^1.2.1",
     "freactal": "^2.0.3",
-    "gun": "^0.9.9995",
+    "gun": "^0.9.9997",
     "gun-file": "^1.0.123",
     "gun-flint": "^0.0.28",
     "ignore-styles": "^5.0.1",
     "lodash": "^4.17.10",
+    "node-webcrypto-ossl": "^1.0.37",
     "notabug-peer": "https://github.com/notabugio/notabug-peer.git",
     "qs": "^6.5.2",
     "ramda": "^0.25.0",

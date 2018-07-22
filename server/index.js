@@ -28,12 +28,13 @@ require("gun/lib/rs3");
 require("gun/lib/wire");
 require("gun/lib/verify");
 require("gun/lib/then");
+//require("gun/sea");
 
 if (!options.persist && !options.redis && options.json6) {
   require("gun-file");
 } else if (options.redis) {
   require("./gun-redis");
-} else {
+} else if (options.localStorage) {
   require("gun/lib/file");
 }
 
