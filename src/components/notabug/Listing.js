@@ -112,6 +112,8 @@ class ListingBase extends PureComponent {
           if (this.props.redis) {
             setTimeout(() => this.onGunFallback(), 300);
             return effects.onNotabugPreloadIds(this.state.ids);
+          } else {
+            this.onGunFallback();
           }
         } else if (this.props.redis) {
           return effects.onNotabugPreloadIds(this.state.ids);

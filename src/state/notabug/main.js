@@ -16,7 +16,7 @@ if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
 
-  if ((/sea/.test(window.location.search))) {
+  if (!(/nosea/.test(window.location.search))) {
     require("sea");
   }
 }
