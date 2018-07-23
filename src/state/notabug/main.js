@@ -35,7 +35,9 @@ const initialState = ({ history, notabugApi }) => {
     ]
   }, isNode ? null : window.initNabState);
 
-  if (!isNode) window.notabug = notabugApi;
+  if (!isNode && notabugApi.gun && notabugApi.gun.user) {
+    window.notabug = notabugApi;
+  }
 
   return {
     history,
@@ -142,7 +144,9 @@ const onListenForReplies = (effects, id) => effects.getState()
 const onLogin = update((state, { alias, pub }) => ({ notabugUser: alias, notabugUserId: pub }));
 
 const onLogout = update((state) => {
-  state.notabugApi.user().leave();
+  state.notabugApi.gun.user().leave();
+  sessionStorage && sessionStorage.clear();
+  //window.location.reload();
   return { notabugUser: null, notabugUserId: null };
 });
 
@@ -150,7 +154,21 @@ const onNotabugToggleInfiniteScroll = update(({ notabugInfiniteScroll }) =>
   ({ notabugInfiniteScroll: !notabugInfiniteScroll }));
 
 const initialize = effects => effects.getState()
-  .then(({ notabugApi }) => notabugApi.onLogin(effects.onLogin))
+  .then(({ notabugApi }) => {
+    notabugApi.onLogin(effects.onLogin);
+    if (!isNode) {
+      console.log("attempting auto-login");
+      notabugApi.gun.user().recall({ sessionStorage: true });
+      const check = () => {
+        const auth = notabugApi.isLoggedIn();
+        if (notabugApi.isLoggedIn()) {
+          effects.onLogin(auth);
+        }
+        clearInterval(check);
+      };
+      setInterval(check, 100);
+    }
+  })
   .then(always(identity));
 
 export const notabug = compose(
