@@ -2,6 +2,7 @@ import React from "react";
 import { Markdown } from "./Markdown";
 import qs from "qs";
 import ReactPlayer from "react-player";
+import InstagramEmbed from "react-instagram-embed";
 
 export const Expando = ({
   expanded,
@@ -10,7 +11,7 @@ export const Expando = ({
   selftext_html: html,
   image,
   iframe,
-  reactPlayer
+  EmbedComponent
 }) => (
   <div className="expando">
     {expanded ? (
@@ -22,8 +23,8 @@ export const Expando = ({
             className="usertext-body may-blank-within md-container"
           />
         </form>
-      ) : reactPlayer ? (
-        <ReactPlayer url={reactPlayer} controls />
+      ) : EmbedComponent ? (
+        <EmbedComponent />
       ) : image ? (
         <img src={image} alt="userimage" rel="noreferrer"></img>
       ) : iframe ? (
@@ -35,10 +36,10 @@ export const Expando = ({
 
 const matchesExt = (exts, url) => !!exts.find(ext => url.toLowerCase().indexOf("."+ext) !== -1);
 
-export const getExpando = (item, domain, urlInfo) => {
-  const imgExts = ["jpg", "jpeg", "png", "gif", "gifv"];
-  const image = (item.url && matchesExt(imgExts, item.url)) ? item.url : null;
-  const query = qs.parse((urlInfo.search || "?").slice(1));
+export const getExpando = (item, domain) => {
+  const imgExts = ["jpg", "jpeg", "png", "gif"];
+  let iframe;
+  let EmbedComponent;
   let reactPlayer;
 
   if (ReactPlayer.canPlay(item.url)) {
@@ -47,15 +48,28 @@ export const getExpando = (item, domain, urlInfo) => {
     reactPlayer = item.url.replace("hooktube", "youtube");
   }
 
-  const iframe = (domain === "youtube.com" && query.v)
-    ? "https://www.hooktube.com/embed/" + query.v + "?autoplay=0&t=" + query.t
-    : (domain === "bitchute.com" && item.url.indexOf("/video/") !== -1) ? "https://www.bitchute.com/embed/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
-    : (domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1) ? "https://www.dailymotion.com/embed/video/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
-    : (domain === "vevo.com" && item.url.indexOf("/watch/") !== -1) ? "https://embed.vevo.com?isrc=" + item.url.substring(item.url.lastIndexOf("/")+1, item.url.length)
-    : (domain === "gfycat.com" && item.url.indexOf("/detail/") !== -1) ? "https://gfycat.com/ifr/" + item.url.substring(item.url.indexOf("/detail/")+8, item.url.length)
-    : (domain === "gfycat.com" && item.url.indexOf(".com/") !== -1) ? "https://gfycat.com/ifr/" + item.url.substring(item.url.indexOf(".com/")+5, item.url.length)
-    : (domain === "giphy.com" && item.url.indexOf("/html5") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("/gifs/")+6, item.url.length).replace("/html5","")
-    : (domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("-")+1, item.url.length) : null;
+  if (reactPlayer) {
+    EmbedComponent = () => <ReactPlayer url={reactPlayer} controls />;
+  }
 
-  return { image, iframe, reactPlayer };
+  if (domain === "instagr.am" || domain === "instagram.com") {
+    EmbedComponent = () => <InstagramEmbed url={item.url} />;
+  }
+
+  if (domain === "imgur.com" || domain === "i.imgur.com" && matchesExt(["gifv"], item.url)) {
+    iframe = item.url.replace(".gifv", "/embed");
+  } else {
+    iframe = (domain === "bitchute.com" && item.url.indexOf("/video/") !== -1) ? "https://www.bitchute.com/embed/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
+      : (domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1) ? "https://www.dailymotion.com/embed/video/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
+      : (domain === "vevo.com" && item.url.indexOf("/watch/") !== -1) ? "https://embed.vevo.com?isrc=" + item.url.substring(item.url.lastIndexOf("/")+1, item.url.length)
+      : (domain === "gfycat.com" && item.url.indexOf("/detail/") !== -1) ? "https://gfycat.com/ifr/" + item.url.substring(item.url.indexOf("/detail/")+8, item.url.length)
+      : (domain === "gfycat.com" && item.url.indexOf(".com/") !== -1) ? "https://gfycat.com/ifr/" + item.url.substring(item.url.indexOf(".com/")+5, item.url.length)
+      : (domain === "giphy.com" && item.url.indexOf("/html5") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("/gifs/")+6, item.url.length).replace("/html5","")
+      : (domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("-")+1, item.url.length)
+      : (domain === "liveleak.com") ? item.url.replace("/view", "/ll_embed") : null;
+  }
+
+  const image = (iframe || EmbedComponent) ? null : (item.url && matchesExt(imgExts, item.url)) ? item.url : null;
+
+  return { image, iframe, reactPlayer, EmbedComponent };
 };

@@ -43,9 +43,9 @@ class SubmissionBase extends PureComponent {
       ? (urlInfo.host || "").replace(/^www\./, "")
       : item.topic ? `self.${item.topic}` : null;
 
-    const { image, video, iframe, reactPlayer } = getExpando(item, domain, urlInfo);
+    const { image, video, iframe, EmbedComponent } = getExpando(item, domain, urlInfo);
 
-    const expandoType = item.body ? "selftext" : video ? "video" : image ? "video" : iframe ? "video": reactPlayer ? "video" : null;
+    const expandoType = item.body ? "selftext" : video ? "video" : image ? "video" : EmbedComponent ? "video" : iframe ? "video": null;
 
     return (
       <Fragment>
@@ -92,7 +92,7 @@ class SubmissionBase extends PureComponent {
           image={image}
           video={video}
           iframe={iframe}
-          reactPlayer={reactPlayer}
+          EmbedComponent={EmbedComponent}
         />
       </Fragment>
     );

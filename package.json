@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.8.13",
+  "version": "0.8.14",
   "dependencies": {
     "@trust/webcrypto": "^0.9.2",
     "babel-cli": "^6.26.0",
@@ -37,6 +37,7 @@
     "react-chatview": "^0.2.5",
     "react-dom": "^16.3.2",
     "react-helmet": "^5.2.0",
+    "react-instagram-embed": "^1.4.0",
     "react-player": "^1.6.4",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^1.1.4",

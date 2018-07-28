@@ -34,8 +34,6 @@ class ThingBase extends PureComponent {
 
   componentWillUnmount() {
     this.props.state.notabugApi.onChangeThingOff(this.props.id, this.onRefresh);
-    this.chain && this.chain.off();
-    this.chain = null;
   }
 
   componentWillReceiveProps(nextProps) {
