@@ -1,11 +1,11 @@
 import React from "react";
 import { Markdown } from "./Markdown";
-import qs from "qs";
 import ReactPlayer from "react-player";
 import InstagramEmbed from "react-instagram-embed";
 
 export const Expando = ({
   expanded,
+  url,
   is_self,
   selftext: body,
   selftext_html: html,
@@ -24,7 +24,7 @@ export const Expando = ({
           />
         </form>
       ) : EmbedComponent ? (
-        <EmbedComponent />
+        <EmbedComponent.Component {...EmbedComponent.props} key={url} />
       ) : image ? (
         <img src={image} alt="userimage" rel="noreferrer"></img>
       ) : iframe ? (
@@ -49,11 +49,22 @@ export const getExpando = (item, domain) => {
   }
 
   if (reactPlayer) {
-    EmbedComponent = () => <ReactPlayer url={reactPlayer} controls />;
+    EmbedComponent = {
+      Component: ReactPlayer,
+      props: {
+        url: reactPlayer,
+        controls: true
+      }
+    };
   }
 
   if (domain === "instagr.am" || domain === "instagram.com") {
-    EmbedComponent = () => <InstagramEmbed url={item.url} />;
+    EmbedComponent = {
+      Component: InstagramEmbed,
+      props: {
+        url: item.url
+      }
+    };
   }
 
   if (domain === "imgur.com" || domain === "i.imgur.com" && matchesExt(["gifv"], item.url)) {
