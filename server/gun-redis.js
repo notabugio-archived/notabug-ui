@@ -2,6 +2,7 @@
 var flint = require("gun-flint");
 var redis = require("redis");
 var flatten = require("flat");
+var unfuck = require("./unfuck-redis");
 
 function toRedis(obj) {
   if (!obj) return obj;
@@ -35,29 +36,8 @@ function fromRedis(obj) {
       obj[key] = parseInt(obj[key], 10) || 0;
     }
   });
-  obj = flatten.unflatten(obj);
 
-  var madeChanges = false;
-  var arrow = (obj._ && obj._[">"]) || {};
-  Object.keys(arrow).forEach(function(key) {
-    var value = arrow[key];
-    if (typeof value === "object") {
-      var valKeys = Object.keys(value);
-      var remainder = valKeys[0];
-      if (remainder) {
-        var realKey = [key, valKeys].join(".");
-        var realValue = value[remainder];
-        delete arrow[key];
-        arrow[realKey] = realValue;
-        realValue = obj[key][remainder];
-        delete obj[key];
-        obj[realKey] = realValue;
-        madeChanges = true;
-      }
-    }
-  });
-
-  if (madeChanges) console.log("unfuck redis", JSON.stringify(obj, null, 2));
+  obj = unfuck(flatten.unflatten(obj));
 
   return obj;
 }
@@ -93,9 +73,11 @@ flint.Flint.register(new flint.NodeAdapter({
     }
   },
 
-  put: function(key, node, done) {
-    if (key == null || node === null) return done(this.errors.internal);
+  put: function(key, node, done, shouldLog=true) {
+    if (!key || !node) return done(this.errors.internal);
     var redis = this.redis;
+
+    shouldLog && console.log("put", key, node);
 
     var data = toRedis(node);
     redis.hmset(key, data, function(err) {
@@ -119,7 +101,7 @@ flint.Flint.register(new flint.NodeAdapter({
 
     context.on("put", function(node) {
       Object.keys((node && node.put) || {}).forEach(function(soul) {
-        put(soul, node.put[soul]);
+        node.put[soul] && put(soul, node.put[soul], null, false);
       });
     });
   }

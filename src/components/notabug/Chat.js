@@ -72,8 +72,13 @@ export class Chat extends PureComponent {
           this.scrollable.scrollTop = this.scrollable.scrollHeight;
         }
       },
-      50,
+      200,
       { trailing: true }
+    );
+
+    this.stoppedScrolling = debounce(
+      () => this.setState({ isScrollingUp: false }),
+      5000
     );
   }
 
@@ -92,7 +97,7 @@ export class Chat extends PureComponent {
           fetchParent
           hideReply
           topics={this.props.withSubmissions
-            ? [`chat:${this.state.topic}`, "comments:all", "all"]
+            ? [`chat:${this.state.topic}`, "comments:all", "all"].reverse()
             : [`chat:${this.state.topic}`]}
           days={3}
           threshold={-1}
@@ -105,17 +110,30 @@ export class Chat extends PureComponent {
             onInfiniteLoad: () => {
               this.setState({ isScrollingUp: true });
               return Promise.resolve(this.setState({ messagesShown: this.state.messagesShown + 25 }))
-                .then(() => setTimeout(() => this.setState({ isScrollingUp: false }), 100));
+                .then(this.stoppedScrolling);
             },
             className: "chat-message-display",
             returnScrollable: scrollable => this.scrollable = scrollable,
           }}
         />
         {this.props.isOpen ? null : (
-          <button
-            className="close-chat"
-            onClick={() => this.setState({ isOpen: false })}
-          >close</button>
+          <div className="chat-modal-controls">
+            <Link href="/chat">
+              <button
+                className="chat-dialogue-fullpage-link"
+                title="fullpage chat with live submissions and comments"
+              >firehose</button>
+            </Link>
+            <Link href="/t/chat:all/new">
+              <button
+                className="chat-dialogue-history-link"
+              >history</button>
+            </Link>
+            <button
+              className="close-chat"
+              onClick={() => this.setState({ isOpen: false })}
+            >close</button>
+          </div>
         )}
         <ChatInput topic={this.state.topic} />
       </div>

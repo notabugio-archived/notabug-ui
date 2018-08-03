@@ -56,6 +56,7 @@ let nab;
 
 const peerOptions = {
   blocked,
+  putMutate: require("./unfuck-redis"),
   localStorage: options.localStorage,
   peers: options.peer,
   persist: options.persist,

@@ -17,7 +17,7 @@ export const NavTab = withRouter(({
           {...props}
           className={isChat ? "selected" : ""}
           href={props.href.replace("gilded", "chat")}
-        >chat</SnewNavTab>
+        >firehose</SnewNavTab>
       )
       : props.children === "rising" ? (
         <SnewNavTab

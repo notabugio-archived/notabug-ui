@@ -91,12 +91,15 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
 .fullscreen-chat .chat-input input {
 }
 
-.chat-modal .close-chat {
+.chat-modal .chat-modal-controls {
   position: absolute;
-  top: -25px;
-  right: -1px;
-  border: 1px solid #5f99cf;
-  padding: 4px 8px;
+  top: 0px;
+  right: 0px;
+}
+
+.chat-modal .chat-modal-controls button {
+  background-color: #5f99cf;
+  color: white;
 }
 
 .chat-modal .comment {

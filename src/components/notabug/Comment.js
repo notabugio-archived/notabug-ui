@@ -24,7 +24,7 @@ export class Comment extends PureComponent {
   }
 
   render() {
-    const { id, ups=0, downs=0, isMine, disableChildren, fetchParent } = this.props;
+    const { id, ups=0, downs=0, disableChildren, fetchParent } = this.props;
     const item = this.props.item || {
       body: "loading...",
       timestamp: this.props.state.notabugApi.getTimestamp(this.props.id)
@@ -78,7 +78,6 @@ export class Comment extends PureComponent {
         {...parentParams}
         score={`(+${ups} | -${downs})`}
         scoreTooltip={`+${ups} / -${downs}`}
-        distinguished={isMine ? "me" : null}
         collapsed={this.state.collapsed}
         onToggleExpand={this.onToggleExpand}
       />

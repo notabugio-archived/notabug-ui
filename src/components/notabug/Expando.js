@@ -2,6 +2,7 @@ import React from "react";
 import { Markdown } from "./Markdown";
 import ReactPlayer from "react-player";
 import InstagramEmbed from "react-instagram-embed";
+import qs from "qs";
 
 export const Expando = ({
   expanded,
@@ -28,7 +29,7 @@ export const Expando = ({
       ) : image ? (
         <img src={image} alt="userimage" rel="noreferrer"></img>
       ) : iframe ? (
-        <iframe src={iframe} title="uservideo" height="320" width="480px" frameborder="0" />
+        <iframe src={iframe} title="uservideo" height="360" width="640px" allowFullScreen scrolling="no" frameborder="0" />
       ) : null
     ) : null}
   </div>
@@ -36,8 +37,9 @@ export const Expando = ({
 
 const matchesExt = (exts, url) => !!exts.find(ext => url.toLowerCase().indexOf("."+ext) !== -1);
 
-export const getExpando = (item, domain) => {
+export const getExpando = (item, domain, urlInfo) => {
   const imgExts = ["jpg", "jpeg", "png", "gif"];
+  const query = qs.parse(urlInfo.search, { ignoreQueryPrefix: true });
   let iframe;
   let EmbedComponent;
   let reactPlayer;
@@ -77,6 +79,7 @@ export const getExpando = (item, domain) => {
       : (domain === "gfycat.com" && item.url.indexOf(".com/") !== -1) ? "https://gfycat.com/ifr/" + item.url.substring(item.url.indexOf(".com/")+5, item.url.length)
       : (domain === "giphy.com" && item.url.indexOf("/html5") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("/gifs/")+6, item.url.length).replace("/html5","")
       : (domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("-")+1, item.url.length)
+      : (domain === "pornhub.com" && query.viewkey) ? `https://www.pornhub.com/embed/${query.viewkey}`
       : (domain === "liveleak.com") ? item.url.replace("/view", "/ll_embed") : null;
   }
 

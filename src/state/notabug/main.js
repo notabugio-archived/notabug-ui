@@ -35,7 +35,7 @@ const initialState = ({ history, notabugApi }) => {
     ]
   }, isNode ? null : window.initNabState);
 
-  if (!isNode && notabugApi.gun && notabugApi.gun.user) {
+  if (!isNode && notabugApi.gun) {
     window.notabug = notabugApi;
   }
 
@@ -156,7 +156,7 @@ const onNotabugToggleInfiniteScroll = update(({ notabugInfiniteScroll }) =>
 const initialize = effects => effects.getState()
   .then(({ notabugApi }) => {
     notabugApi.onLogin(effects.onLogin);
-    if (!isNode) {
+    if (!isNode && notabugApi.gun.user) {
       console.log("attempting auto-login");
       notabugApi.gun.user().recall({ sessionStorage: true });
       const check = () => {
