@@ -11,6 +11,7 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   bottom: 0px;
   width: 560px;
   height: 380px;
+  z-index: 100;
 }
 
 .chat-modal .arrow {

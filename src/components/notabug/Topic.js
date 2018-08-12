@@ -12,11 +12,11 @@ import isNode from "detect-node";
 
 const Empty = () => <Loading name="ball-grid-beat" />;
 
-let DEF_THRESHOLD = 1;
+let DEF_THRESHOLD = -99999;
 
 if (!isNode) {
   DEF_THRESHOLD = (window && window.location && window.location.search)
-    ? parseInt(qs.parse(window.location.search).threshold, 10) || 1 : 1;
+    ? parseInt(qs.parse(window.location.search).threshold, 10) || DEF_THRESHOLD : DEF_THRESHOLD;
 }
 
 class TopicBase extends PureComponent {

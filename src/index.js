@@ -6,6 +6,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import "snew-classic-ui/static/css/minimal.css";
 import "./index.css";
+//import "./night.css";
 import { App } from "./components/notabug";
 //import registerServiceWorker from "./registerServiceWorker";
 import { unregister } from "./registerServiceWorker";

@@ -30,6 +30,10 @@ export default (nab, req, res) => {
       return match;
     });
 
+    if (!route) {
+      return res.status(404).end();
+    }
+
     route.getStaticPeer = () => {
       const staticPeer = init({ noGun: true, localStorage: false, disableValidation: true });
       return calculateListing(nab, req, routeMatch)

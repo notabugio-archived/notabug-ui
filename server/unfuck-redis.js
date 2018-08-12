@@ -7,7 +7,7 @@ module.exports = function (obj) {
   Object.keys(arrow || {}).forEach(function(key) {
     var value = arrow[key];
     if (typeof value === "object") {
-      var valKeys = Object.keys(value);
+      var valKeys = Object.keys(value || {});
       var remainder = valKeys[0];
       if (remainder) {
         var realKey = [key, valKeys].join(".");

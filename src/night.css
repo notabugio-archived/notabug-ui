@@ -1,0 +1,41 @@
+/*
+By OskarwaR CC-BY
+From: https://userstyles.org/styles/159589/reddit-night
+*/
+
+html {
+  background: #e5e5e5;
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.chat-message-display {
+  background: #e5e5e5;
+}
+
+.link {
+  /* background: #eaeaea; */
+}
+
+.with-listing-chooser div[role=banner], .default-header {
+  filter: none !important;
+}
+
+img, iframe, video, .footer-parent, .debuginfo, .listingsignupbar,.redesignbetabar, .flair {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+#header-img-a, .footer.rounded {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.footer-parent, .debuginfo {
+  background-color: transparent;
+}
+
+.side .md a, .titlebox .redditname {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+body::before {
+  filter: invert(1) hue-rotate(180deg);
+}

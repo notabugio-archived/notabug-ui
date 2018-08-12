@@ -1,17 +1,22 @@
 /* globals Promise */
 import { always, identity } from "ramda";
 import { update, provideState } from "freactal";
+import qs from "qs";
 import slugify from "slugify";
 import urllite from "urllite";
 import { TOPIC_NAME_MAX, SUBMISSION_BODY_MAX, SUBMISSION_TITLE_MAX } from "notabug-peer";
 
-const initialState = ({ location: { search }, match: { params: { topic } } }) => ({
-  submissionTitle: "",
-  submissionBody: "",
-  submissionUrl: "",
-  submissionTopic: topic || "whatever",
-  submissionIsSelf: !!(/selftext=true/).test((search))
-});
+const initialState = ({ location: { search }, match: { params: { topic } } }) => {
+  const query = qs.parse(search, { ignoreQueryPrefix: true });
+
+  return {
+    submissionTitle: query.title || "",
+    submissionBody: query.body || "",
+    submissionUrl: query.url || "",
+    submissionTopic: topic || "whatever",
+    submissionIsSelf: !!(/selftext=true/).test((search))
+  };
+};
 
 const getSubmissionFormState = always(identity);
 const onChangeSubmissionTitle = update((state, submissionTitle) => ({ submissionTitle }));

@@ -50,11 +50,10 @@ class FooterParentBase extends Component {
               style={{
                 textAlign: "center",
                 display: "inline-block",
-                background: "white",
-                marginTop: "1em",
+                marginTop: "1em"
               }}
             >
-              <h3 style={{ color: "black" }}>Interface Design</h3>
+              <h3>Interface Design</h3>
               <img
                 alt="Interface Design Powered by reddit."
                 src="/media/img/powered_by_reddit.png"

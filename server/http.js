@@ -19,7 +19,7 @@ export const initServer = ({ port, host, redis, render, ...options }) => {
     });
   }
 
-  const cache = redis ? require("express-redis-cache")({
+  const cache = (redis && false) ? require("express-redis-cache")({
     client: require("redis").createClient({ db: 1 }),
     expire: 30
   }) : { route() { return (req, res, next) => next(); } };
