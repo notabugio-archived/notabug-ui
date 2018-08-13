@@ -3,11 +3,12 @@
     "uid": "peer-relay",
     "script": "server.js",
     "args": [
-      "--score",
       "--debug",
-      "--peer", "http://localhost:3333/gun",
-      "--peer", "http://notabug.io/gun",
-      "--peer", "https://gun.redguardsaustin.com/gun"
+      "--peer", "https://notabug.io/gun",
+      "--peer", "https://gun.redguardsaustin.com/gun",
+      "--peer", "https://dontsuemebro.com/gun",
+      "--peer", "https://communard.org/gun",
+      "--peer", "https://blubit.space/gun"
     ]
   }
 ]

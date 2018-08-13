@@ -1,11 +1,11 @@
 [
   {
-    "uid": "notabug",
+    "uid": "redis",
     "script": "server.js",
     "args": [
-      "--port", "3333",
-      "--persist",
-      "--evict"
+      "--redis",
+      "--evict",
+      "--port", "3333"
     ]
   }, {
     "uid": "rest",
@@ -14,8 +14,7 @@
       "--port", "4444",
       "--redis",
       "--evict",
-      "--render",
-      "--peer", "http://localhost:3333/gun"
+      "--render"
     ]
   }
 ]

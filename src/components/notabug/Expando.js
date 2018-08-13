@@ -48,6 +48,8 @@ export const getExpando = (item, domain, urlInfo) => {
     reactPlayer = item.url;
   } else if (domain === "hooktube.com") {
     reactPlayer = item.url.replace("hooktube", "youtube");
+  } else if (domain === "invidio.us") {
+    reactPlayer = item.url.replace("invidio.us", "youtube.com");
   }
 
   if (reactPlayer) {

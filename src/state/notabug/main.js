@@ -2,7 +2,7 @@
 import { path, prop, compose, always, identity, assocPath, uniq } from "ramda";
 import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
-import "gun";
+import "gun/gun";
 import notabugPeer, { PREFIX } from "notabug-peer";
 import isNode from "detect-node";
 
@@ -29,6 +29,7 @@ const initialState = ({ history, notabugApi }) => {
     localStorage: LOCAL_STORAGE,
     countVotes: COUNT_VOTES,
     disableValidation: true,
+    leech: true,
     peers: isNode ? [] : [
       window.location.origin + "/gun",
       //"https://notabug.io/gun",

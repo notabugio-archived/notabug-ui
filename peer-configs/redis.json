@@ -3,17 +3,12 @@
     "uid": "notabug",
     "script": "server.js",
     "args": [
-      "--port", "4444",
+      "--port", "3001",
       "--redis",
       "--debug",
-      "--evict",
-      "--score",
-      "--peer", "http://localhost:3001/gun",
+      "--render",
       "--peer", "https://notabug.io/gun",
-      "--peer", "https://gun.redguardsaustin.com/gun",
-      "--peer", "https://dontsuemebro.com/gun",
-      "--peer", "https://communard.org/gun",
-      "--peer", "https://blubit.space/gun"
+      "--evict"
     ]
   }
 ]

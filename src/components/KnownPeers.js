@@ -25,17 +25,17 @@ Different peers may maintain a more or less restrictive content policy and diffe
 
     curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
     nvm use 10 && npm install -g yarn forever && git clone https://github.com/notabugio/notabug.git && cd notabug
-    yarn start
+    yarn && yarn build
+    mkdir htdocs && cp -R build/* htdocs/
+    forever start peer-configs/radisk.json
 
-This will give you a basic ram only peer connected to notabug.io serving the UI on 0.0.0.0:3001
+This will give you a basic radisk backed peer connected to notabug.io serving the UI on 127.0.0.1:3001
+
+    yarn ui
+
+Will then give you a UI dev server at port 3000
 
 See https://github.com/notabugio/notabug/tree/master/peer-configs for more config examples.
-
-For a more full featured peer:
-
-    yarn server
-
-This will give you 3 scoring ram peers on ports 3001, 3002, 3003 suitable for hosting behind nginx or another reverse proxy.
 `;
 
 export const KnownPeers = () => (
