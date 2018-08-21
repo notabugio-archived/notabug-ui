@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.8.21",
+  "version": "0.8.22",
   "dependencies": {
     "@trust/webcrypto": "^0.9.2",
     "babel-cli": "^6.26.0",

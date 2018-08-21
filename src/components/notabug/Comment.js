@@ -8,6 +8,7 @@ import { Link } from "./Link";
 import { NestedListing } from "./NestedListing";
 import { ThingCommentEntry } from "./CommentEntry";
 import slugify from "slugify";
+import { COMMENT_BODY_MAX } from "notabug-peer";
 
 export class Comment extends PureComponent {
   constructor(props) {
@@ -64,7 +65,7 @@ export class Comment extends PureComponent {
         NestedListing={disableChildren ? () => null : NestedListing}
         {...this.props}
         id={id}
-        body={item.body}
+        body={item.body ? item.body.slice(0, COMMENT_BODY_MAX) : item.body}
         author={item.author}
         siteprefix="t"
         name={id}

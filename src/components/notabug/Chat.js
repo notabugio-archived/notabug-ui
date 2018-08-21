@@ -1,5 +1,6 @@
 /* globals Promise */
 import React, { PureComponent } from "react";
+import { COMMENT_BODY_MAX } from "notabug-peer";
 import debounce from "lodash/debounce";
 import { Subreddit } from "snew-classic-ui";
 import { withRouter } from "react-router-dom";
@@ -45,7 +46,7 @@ class ChatInputBase extends PureComponent {
 
   onSend(e) {
     e.preventDefault();
-    if (!this.state.msg || !this.state.msg.trim()) return;
+    if (!this.state.msg || !this.state.msg.trim() || this.state.msg.length > COMMENT_BODY_MAX) return;
     const body = this.state.msg;
     this.setState({ msg: "" });
     this.props.state.notabugApi.chat({
