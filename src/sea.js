@@ -40,7 +40,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
     function SEA() {}
     if (typeof window !== "undefined") {
-      SEA.window = window;
+      (SEA.window = window).SEA = SEA;
     }
 
     module.exports = SEA;
@@ -50,7 +50,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var SEA = USE('./root');
     if (SEA.window) {
       if (location.protocol.indexOf('s') < 0 && location.host.indexOf('localhost') < 0 && location.protocol.indexOf('file:') < 0) {
-        // location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
+        location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
       }
     }
   })(USE, './https');
@@ -203,7 +203,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             _subtle = _require.subtle; // All but ECDH
 
 
-        var _eequire2 = require('text-encoding'),
+        var _require2 = require('text-encoding'),
             _TextEncoder = _require2.TextEncoder,
             _TextDecoder = _require2.TextDecoder;
 
@@ -218,7 +218,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         });
         try {
           var WebCrypto = require('node-webcrypto-ossl');
-          api.ossl = new WebCrypto({ directory: 'key_storage' }).subtle; // ECDH
+          api.ossl = new WebCrypto({ directory: 'ossl' }).subtle; // ECDH
         } catch (e) {
           console.log("node-webcrypto-ossl is optionally needed for ECDH, please install if needed.");
         }
@@ -295,19 +295,12 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   ;USE(function (module) {
     var _this2 = this;
 
-    var _USE = USE('./shim'),
-        subtle = _USE.subtle,
-        _USE$ossl = _USE.ossl,
-        ossl = _USE$ossl === undefined ? subtle : _USE$ossl,
-        getRandomBytes = _USE.random,
-        TextEncoder = _USE.TextEncoder,
-        TextDecoder = _USE.TextDecoder;
-
+    var shim = USE('./shim');
     var Buffer = USE('./buffer');
     var parse = USE('./parse');
 
-    var _USE2 = USE('./settings'),
-        pbkdf2 = _USE2.pbkdf2;
+    var _USE = USE('./settings'),
+        pbkdf2 = _USE.pbkdf2;
     // This internal func returns SHA-256 hashed data for signing
 
 
@@ -320,7 +313,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               case 0:
                 m = parse(mm);
                 _context.next = 3;
-                return ossl.digest({ name: pbkdf2.hash }, new TextEncoder().encode(m));
+                return shim.subtle.digest({ name: pbkdf2.hash }, new shim.TextEncoder().encode(m));
 
               case 3:
                 hash = _context.sent;
@@ -606,13 +599,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 _context5.prev = 26;
                 _context5.t1 = _context5["catch"](0);
 
+                console.log(_context5.t1);
                 SEA.err = _context5.t1;
                 if (cb) {
                   cb();
                 }
                 return _context5.abrupt("return");
 
-              case 31:
+              case 32:
               case "end":
                 return _context5.stop();
             }
@@ -696,13 +690,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 _context6.prev = 19;
                 _context6.t0 = _context6["catch"](0);
 
+                console.log(_context6.t0);
                 SEA.err = _context6.t0;
                 if (cb) {
                   cb();
                 }
                 return _context6.abrupt("return");
 
-              case 24:
+              case 25:
               case "end":
                 return _context6.stop();
             }
@@ -799,13 +794,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 _context7.prev = 25;
                 _context7.t0 = _context7["catch"](0);
 
+                console.log(_context7.t0);
                 SEA.err = _context7.t0;
                 if (cb) {
                   cb();
                 }
                 return _context7.abrupt("return");
 
-              case 30:
+              case 31:
               case "end":
                 return _context7.stop();
             }
@@ -1221,7 +1217,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // But all other behavior needs to be equally easy, like opinionated ways of
     // Adding friends (trusted public keys), sending private messages, etc.
     // Cheers! Tell me what you think.
-    var Gun = (SEA.window || {}).Gun;
+    var Gun = (SEA.window || {}).Gun; // || require("./gun");
     Gun.SEA = SEA;
     SEA.Gun = Gun;
 
@@ -2214,9 +2210,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var Gun = SEA.Gun;
     var then = USE('./then');
 
-    function User() {
+    function User(root) {
       this._ = { $: this };
-      Gun.call();
     }
     User.prototype = function () {
       function F() {};F.prototype = Gun.chain;return new F();
@@ -2606,7 +2601,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       return user._.sea;
     };
     User.prototype.leave = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee28() {
-      var gun, user;
+      var gun, user, tmp;
       return regeneratorRuntime.wrap(function _callee28$(_context28) {
         while (1) {
           switch (_context28.prev = _context28.next) {
@@ -2618,13 +2613,19 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 delete user._.is;
                 delete user._.sea;
               }
-              _context28.next = 4;
+              if (typeof window !== 'undefined') {
+                tmp = window.sessionStorage;
+
+                delete tmp.alias;
+                delete tmp.tmp;
+              }
+              _context28.next = 5;
               return authLeave(this.back(-1));
 
-            case 4:
+            case 5:
               return _context28.abrupt("return", _context28.sent);
 
-            case 5:
+            case 6:
             case "end":
               return _context28.stop();
           }
