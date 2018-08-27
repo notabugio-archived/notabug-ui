@@ -10,7 +10,7 @@ class LoadingChatMsgBase extends PureComponent {
         {...this.props}
         item={{
           body: "loading...",
-          timestamp: this.props.state.notabugApi.getTimestamp(this.props.id)
+          // timestamp: this.props.state.notabugApi.getTimestamp(this.props.id)
         }}
         Markdown={() => (
           <div className="usertext-body may-blank-within md-container">

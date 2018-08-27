@@ -1,5 +1,4 @@
-/* globals Promise */
-import { path, prop, compose, always, identity, assocPath, uniq } from "ramda";
+import { compose, always, identity, assocPath } from "ramda";
 import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
 import "gun/gun";
@@ -8,9 +7,6 @@ import isNode from "detect-node";
 
 let COUNT_VOTES = false;
 let LOCAL_STORAGE = false;
-
-const preloadTimes = {};
-const preloadPromises = {};
 
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
@@ -21,8 +17,6 @@ if (!isNode) {
   }
 }
 
-const markPreloaded = url => Promise.resolve(preloadTimes[url] = Date.now());
-
 const initialState = ({ history, notabugApi }) => {
   notabugApi = notabugApi || notabugPeer({
     noGun: isNode ? true : false,
@@ -32,9 +26,19 @@ const initialState = ({ history, notabugApi }) => {
     leech: true,
     peers: isNode ? [] : [
       window.location.origin + "/gun",
-      //"https://notabug.io/gun",
+      // "https://notabug.io/gun",
     ]
-  }, isNode ? null : window.initNabState);
+  });
+
+  if (!isNode && !notabugApi.scope) {
+    notabugApi.scope = notabugApi.newScope({
+      cache: window.initNabState,
+      onlyCache: true,
+      isCached: true,
+      isCacheing: true
+    });
+    // window.initNabState = null;
+  }
 
   if (!isNode && notabugApi.gun) {
     window.notabug = notabugApi;
@@ -43,7 +47,6 @@ const initialState = ({ history, notabugApi }) => {
   return {
     history,
     notabugApi,
-    notabugState: notabugApi.getState(),
     notabugUser: null,
     notabugUserId: null,
     notabugInfiniteScroll: false,
@@ -61,61 +64,7 @@ const onNotabugMarkMine = (effects, id) => {
     .then(() => assocPath(["myContent", id], true));
 };
 
-const onNotabugReceiveIdsData = (effects, data) => effects.getState()
-  .then(({ notabugApi }) => {
-    notabugApi.mergeState({ data });
-    return state => ({ ...state, notabugState: notabugApi.getState() });
-  });
-
 const onUpdateNotabugState = update(({ notabugApi }) => ({ notabugState: notabugApi.getState() }));
-
-const onNotabugPreloadFromUrl = (effects, url, preState={}) =>
-  effects.getState().then(({ notabugApi }) =>
-    prop(url, preloadTimes) && (Date.now() - prop(url, preloadTimes)) < 1000*60
-      ? (preloadPromises[url] || Promise.resolve().then(always(identity)))
-      : preloadPromises[url] = markPreloaded(url) && fetch(url)
-        .then(response => {
-          if (response.status !== 200) throw new Error("Bad response from server");
-          return response.json();
-        })
-        .then(state => ({ ...state, ...preState }))
-        .then(notabugApi.loadState)
-        .then(() => effects.onUpdateNotabugState())
-        .then(always(identity)));
-
-const onNotabugPreloadListing = (effects, listingProps) => effects.getState()
-  .then(({ notabugApi }) => {
-    const reducer = always(identity);
-    if (listingProps.topics && listingProps.topics.length) {
-      return Promise.all(listingProps.topics
-        .map(topicName => effects
-          .onNotabugPreloadFromUrl(`/api/topics/${topicName}.json`, { topic: topicName }))
-      ).then(reducer);
-    } else if (listingProps.replyToId) {
-      const opId = notabugApi.getOpId(listingProps.replyToId);
-      return effects.onNotabugPreloadFromUrl(
-        `/api/submissions/${opId}.json`,
-        { collectionSoul: notabugApi.souls.thingAllComments.soul({ thingid: opId }) }
-      ).then(reducer);
-    }
-    return Promise.resolve().then(reducer);
-  });
-
-const onNotabugPreloadIds = (effects, ids) => effects.getState()
-  .then(({ notabugApi }) => {
-    const nabState = notabugApi.getState();
-    const opIds = ids.map(notabugApi.getOpId).filter(x => !!x);
-    const fetchIds = uniq(ids.concat(opIds)).filter(id => !path(["data", id], nabState)).sort();
-    if (!fetchIds.length) return {};
-
-    return fetch(`/api/things/${uniq(ids.concat(opIds)).sort().join(",")}.json`)
-      .then(response => {
-        if (response.status !== 200) throw new Error("Bad response from server");
-        return response.json();
-      });
-  })
-  .then(effects.onNotabugReceiveIdsData)
-  .then(always(identity));
 
 const onListenForReplies = (effects, id) => effects.getState()
   .then(({ notabugApi }) => {
@@ -151,6 +100,15 @@ const onLogout = update((state) => {
   return { notabugUser: null, notabugUserId: null };
 });
 
+const onFetchCache = (effects, pathname, search) => effects.getState()
+  .then(({ notabugApi }) => fetch(`/api${pathname}.json${search}`)
+    .then(response => {
+      if (response.status !== 200) throw new Error("Bad response from server");
+      return response.json();
+    })
+    .then(notabugApi.scope.loadCachedResults))
+  .then(always(identity));
+
 const onNotabugToggleInfiniteScroll = update(({ notabugInfiniteScroll }) =>
   ({ notabugInfiniteScroll: !notabugInfiniteScroll }));
 
@@ -180,11 +138,8 @@ export const notabug = compose(
     effects: {
       initialize,
       getState,
+      onFetchCache,
       onNotabugMarkMine,
-      onNotabugPreloadFromUrl,
-      onNotabugPreloadListing,
-      onNotabugPreloadIds,
-      onNotabugReceiveIdsData,
       onNotabugToggleInfiniteScroll,
       onUpdateNotabugState,
       onListenForReplies,

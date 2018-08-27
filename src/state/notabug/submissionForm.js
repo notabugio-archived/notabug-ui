@@ -1,4 +1,4 @@
-/* globals Promise */
+import { ZalgoPromise as Promise } from "zalgo-promise";
 import { always, identity } from "ramda";
 import { update, provideState } from "freactal";
 import qs from "qs";

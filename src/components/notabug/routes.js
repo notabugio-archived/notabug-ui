@@ -6,7 +6,7 @@ import { ContentPolicy } from "../ContentPolicy";
 import { PrivacyPolicy } from "../PrivacyPolicy";
 import { UserAgreement } from "../UserAgreement";
 import { KnownPeers } from "../KnownPeers";
-import { ChatPage } from "./Chat";
+import { cached } from "./Cached";
 
 const UserProfile = () => (
   <div className="reddit-infobar">
@@ -48,21 +48,21 @@ export const routes = [
     component: ContentPolicy
   }, {
     path: "/t/:topic/comments/:submission_id/:slug",
-    component: SubmissionDetail
+    component: cached(SubmissionDetail)
   }, {
     path: "/t/:topic/comments/:submission_id",
-    component: SubmissionDetail
+    component: cached(SubmissionDetail)
   }, {
     path: "/t/:topic/submit",
-    component: SubmissionForm
+    component: cached(SubmissionForm)
   }, {
     path: "/t/:topic/chat"
   }, {
     path: "/t/:topic/:sort",
-    component: Topic
+    component: cached(Topic)
   }, {
     path: "/t/:topic",
-    component: Topic
+    component: cached(Topic)
   }, {
     path: "/domain/:domain/:sort",
     component: Topic
@@ -84,10 +84,10 @@ export const routes = [
     path: "/chat",
   }, {
     path: "/:sort",
-    component: Topic
+    component: cached(Topic)
   }, {
     path: "/",
     exact: true,
-    component: Topic
+    component: cached(Topic)
   }
 ];

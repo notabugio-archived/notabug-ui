@@ -1,14 +1,15 @@
 import React, { Fragment } from "react";
 import { injectState } from "freactal";
 import { CommentForm } from "./CommentForm";
-import { Comment } from "./Comment";
 import { Listing } from "./Listing";
 
 export const NestedListing = injectState(({
-  Loading=Comment,
   name,
   showReplyForm,
   realtime,
+  opId,
+  item,
+  listing,
   state: { myContent, notabugReplyToCommentId, notabugCommentsSort },
 }) => (
   <Fragment>
@@ -17,10 +18,11 @@ export const NestedListing = injectState(({
     ) : null}
     <div className={"sitetable nestedlisting"}>
       <Listing
-        Loading={Loading}
         sort={notabugCommentsSort}
+        listing={listing}
         myContent={myContent}
         replyToId={name}
+        opId={opId || (item && item.opId)}
         collapseThreshold={0}
         realtime={realtime}
       />

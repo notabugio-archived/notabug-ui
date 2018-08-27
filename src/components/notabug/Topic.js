@@ -1,4 +1,4 @@
-/* globals Promise */
+import { ZalgoPromise as Promise } from "zalgo-promise";
 import React, { PureComponent } from "react";
 import ChatView from "react-chatview";
 import { Listing } from "./Listing";
@@ -8,16 +8,8 @@ import { Loading } from "./Loading";
 import { injectState } from "freactal";
 import { JavaScriptRequired } from "./JavaScriptRequired";
 import qs from "qs";
-import isNode from "detect-node";
 
 const Empty = () => <Loading name="ball-grid-beat" />;
-
-let DEF_THRESHOLD = -99999;
-
-if (!isNode) {
-  DEF_THRESHOLD = (window && window.location && window.location.search)
-    ? parseInt(qs.parse(window.location.search).threshold, 10) || DEF_THRESHOLD : DEF_THRESHOLD;
-}
 
 class TopicBase extends PureComponent {
   constructor(props) {
@@ -62,9 +54,7 @@ class TopicBase extends PureComponent {
       Loading: Submission,
       key: `${topic}/${domain}/${sort}`,
       sort: sort || "hot",
-      topics: [topic.toLowerCase()],
-      //days: (sort === "top" || sort === "comments") ? 30 : (sort ==="active" || sort === "new") ? 30 : 30,
-      threshold: (sort === "new" || sort === "controversial") ? null : DEF_THRESHOLD,
+      topics: domain ? null : [topic.toLowerCase()],
       realtime: !!domain, //sort === "new" || sort === "active",
       autoVisible: true,
       domain,
@@ -76,6 +66,7 @@ class TopicBase extends PureComponent {
       <div className="content" role="main">
         <Listing
           {...listing}
+          realtime
           Container={ChatView}
           containerProps={{
             id: "siteTable",
@@ -88,7 +79,7 @@ class TopicBase extends PureComponent {
     ) : (
       <div className="content" role="main">
         <div className="sitetable" id="siteTable">
-          <Listing redis {...listing} />
+          <Listing {...listing} />
           <div className="nav-buttons">
             <span className="nextprev">
               {"view more: "}
