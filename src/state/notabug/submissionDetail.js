@@ -32,7 +32,6 @@ const onNotabugSaveComment = (effects, body) => effects.getState()
       replyToId: notabugReplyToCommentId || notabugSubmissionId
     });
   })
-  // .then(node => (new Promise((resolve) => node.once(resolve))))
   .then(({ id }) => {
     effects.onNotabugMarkMine(id);
     effects.onNotabugSetReplyTo(null);

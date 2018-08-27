@@ -7,7 +7,6 @@ const options = commandLineArgs([
   { name: "redis", alias: "r", type: Boolean, defaultValue: false },
   { name: "localStorage", alias: "l", type: Boolean, defaultValue: false },
   { name: "disableValidation", alias: "D", type: Boolean, defaultValue: false },
-  { name: "score", alias: "s", type: Boolean, defaultValue: false },
   { name: "json6", alias: "j", type: Boolean }, // TODO: gun-file is broken do not use
   { name: "evict", alias: "e", type: Boolean, defaultValue: false },
   { name: "debug", alias: "d", type: Boolean, defaultValue: false },
@@ -17,7 +16,6 @@ const options = commandLineArgs([
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
   { name: "peer", alias: "c", multiple: true, type: String },
   { name: "until", alias: "u", multiple: true, type: Number, defaultValue: 1000 },
-  { name: "watch", alias: "i", type: Boolean, defaultValue: false },
   { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "index", alias: "w", type: Boolean, defaultValue: false }
 ]);
@@ -62,7 +60,7 @@ const peerOptions = {
   persist: options.persist,
   disableValidation: options.disableValidation,
   until: options.until,
-  scoreThingsForPeers: options.score,
+  computed: true,
   super: true
 };
 
@@ -76,11 +74,6 @@ if (options.port) {
   });
 } else {
   nab = init(peerOptions);
-}
-
-if (options.watch) {
-  nab.watchListing({ days: options.days });
-  setInterval(() => nab.watchListing({ days: options.days }), 1000*60*60);
 }
 
 if (options.index) {

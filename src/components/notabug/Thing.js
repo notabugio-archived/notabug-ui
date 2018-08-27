@@ -1,11 +1,10 @@
 import React, { PureComponent } from "react";
-import { path } from "ramda";
-import throttle from "lodash/throttle";
+import debounce from "lodash/debounce";
 import { Submission } from "./Submission";
 import { Comment } from "./Comment";
 import { ChatMsg } from "./ChatMsg";
 import { injectState } from "freactal";
-import VisibilitySensor from "react-visibility-sensor";
+import { withRouter } from "react-router-dom";
 import { Loading } from "./Loading";
 
 const components = {
@@ -18,29 +17,25 @@ class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
     const { expanded = false } = props;
-    this.state = { scores: this.getScores(), expanded };
-    this.onToggleExpando = this.onToggleExpando.bind(this);
-    this.onUpdate = this.onUpdate.bind(this);
-    this.onSubscribe = this.onSubscribe.bind(this);
-    this.onRefresh = throttle(this.onUpdate, 100, { trailing: true });
-    this.onReceiveItem = this.onReceiveItem.bind(this);
-    this.onReceiveParentItem = this.onReceiveParentItem.bind(this);
-    this.onFetchItem = this.onFetchItem.bind(this);
+    const listing = props.listing || props.state.notabugApi.scopedListing();
+    const scores = listing.thingScores.now(props.id) || { ups: 0, downs: 0, score: 0, comments: 0 };
+    const item = listing.thingData.now(props.id);
+    const parentItem = props.fetchParent && item && item.opId ? listing.thingData.now(item.opId) : null;
+    this.listing = listing;
+    if (props.realtime) this.listing.scope.realtime();
+    this.state = { item, parentItem, scores, expanded };
+    this.onRefresh = debounce(() => this.onUpdate(), 250);
   }
 
-  componentDidMount() {
-    if (this.props.isVisible) this.onFetchItem();
-  }
+  componentDidMount = () => {
+    this.onFetchItem();
+    this.onSubscribe();
+  };
 
-  componentWillUnmount() {
-    this.props.state.notabugApi.onChangeThingOff(this.props.id, this.onRefresh);
-  }
+  componentWillUnmount = () => this.onUnsubscribe();
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.isVisible && nextProps.realtime !== this.props.realtime && nextProps.realtime) {
-      this.onFetchItem();
-    }
-    if (nextProps.fetchParent) this.onFetchParentItem();
+    if (nextProps.realtime && !this.props.realtime) this.listing.scope.realtime();
   }
 
   render() {
@@ -48,129 +43,39 @@ class ThingBase extends PureComponent {
       id, isMine, rank, collapseThreshold=null, hideReply=false,
       Loading: LoadingComponent = Loading, ...props
     } = this.props;
-    const { scores, expanded } = this.state;
-    const { item, parentItem } = this.getItemAndParent();
+    const { item, parentItem, scores, expanded } = this.state;
     const score = ((scores.ups || 0) - (scores.downs || 0) || 0);
     const ThingComponent = (item ? components[item.kind] : null);
     const collapsed = !isMine && !!((collapseThreshold!==null && (score < collapseThreshold)));
     if (item && !ThingComponent) return null;
-
+    const thingProps = {
+      ...props, ...scores,
+      rank, id, item, parentItem,
+      expanded, collapsed, collapseThreshold,
+      hideReply, isMine,
+      listing: this.listing,
+      // onSubscribe: this.onSubscribe,
+      onToggleExpando: this.onToggleExpando
+    };
     const renderComponent = ({ isVisible }) => !item
-      ? (
-        <LoadingComponent
-          {...props}
-          id={id}
-          item={item}
-          parentItem={parentItem}
-          expanded={expanded}
-          collapsed={collapsed}
-          hideReply={hideReply}
-          collapseThreshold={collapseThreshold}
-          isVisible={isVisible}
-          isMine={isMine}
-          rank={rank}
-          onSubscribe={this.onSubscribe}
-          {...scores}
-        />
-      ) : (
-        <ThingComponent
-          {...props}
-          id={id}
-          item={item}
-          parentItem={parentItem}
-          expanded={this.state.expanded}
-          collapsed={collapsed}
-          hideReply={hideReply}
-          collapseThreshold={collapseThreshold}
-          isVisible={isVisible}
-          isMine={isMine}
-          rank={rank}
-          onSubscribe={this.onSubscribe}
-          onToggleExpando={this.onToggleExpando}
-          {...scores}
-        />
-      );
-
-    return this.props.isVisible ? (
-      renderComponent({ isVisible: true })
-    ) : (
-      <VisibilitySensor
-        onChange={isVisible => isVisible && this.onFetchItem()}
-        scrollThrottle={50}
-        resizeThrottle={50}
-        partialVisibility
-        resizeCheck
-      >{renderComponent}</VisibilitySensor>
-    );
+      ? <LoadingComponent {...thingProps} isVisible={isVisible} />
+      : <ThingComponent {...thingProps} isVisible={isVisible} />;
+    return renderComponent({ isVisible: true });
   }
 
-  onFetchItem(e) {
-    const { redis, id, realtime, state: { notabugApi } } = this.props;
-    const existingItem = notabugApi.getThingData(id);
-
-    e && e.preventDefault && e.preventDefault();
-    this.props.fetchParent && this.onFetchParentItem();
-    this.onUpdate();
-
-    if (this.props.realtime) this.onSubscribe();
-
-    if (redis && !realtime && !existingItem && !this.props.noRealtime) {
-      setTimeout(() => ( // fallback to gun if thing data not otherwise available
-        !notabugApi.getThingData(id) &&
-        notabugApi.fetchThingData(id).then(this.onReceiveItem)
-      ), 1000);
-    }
-
-    if ((redis && !realtime) || existingItem) return;
-    notabugApi.fetchThingData(id).then(this.onReceiveItem);
-  }
-
-  onFetchParentItem() {
-    const { parentItem, parentId } = this.getItemAndParent();
-    const notabugApi = this.props.state.notabugApi;
-    if (!parentItem && parentId) notabugApi.fetchThingData(parentId).then(this.onReceiveParentItem);
-  }
-
-  getItemAndParent() {
-    const { id } = this.props;
-    const item = this.state.item || path(["state", "notabugState", "data", id], this.props);
-    const parentId = path(["opId"], item);
-    const parentItem = parentId
-      ? this.state.parentItem || path(["state", "notabugState", "data", parentId], this.props)
-      : null;
-    return { item, parentId, parentItem };
-  }
-
-  getScores() {
-    const { state: { notabugApi }, id } = this.props;
-    return ["up", "down", "comment"].reduce(
-      (scores, type) => ({ ...scores, [type+"s"]: notabugApi.getVoteCount(id, type) }), {});
-  }
-
-  onSubscribe() {
-    const { state: { notabugApi } } = this.props;
-    notabugApi.onChangeThing(this.props.id, this.onRefresh);
-    this.metaChain && this.metaChain.off();
-    this.metaChain = notabugApi.souls.thing.get({ thingid: this.props.id });
-    this.metaChain.on(thing => thing && thing.id && notabugApi.watchThing(thing));
-  }
-
-  onReceiveItem(item) {
-    item && this.setState({ item, scores: this.getScores() });
-    if (item && this.props.fetchParent) this.onFetchParentItem();
-  }
-
-  onReceiveParentItem(parentItem) {
-    parentItem && this.setState({ parentItem });
-  }
-
-  onUpdate() {
-    this.setState({ scores: this.getScores() });
-  }
-
-  onToggleExpando() {
-    this.setState({ expanded: !this.state.expanded });
-  }
+  onToggleExpando = () => this.setState(({ expanded }) => ({ expanded: !expanded }));
+  onSubscribe = () => this.listing.scope.on(this.onRefresh);
+  onUnsubscribe = () => this.listing.scope.off(this.onRefresh);
+  onFetchItem = () => this.listing.thingData(this.props.id)
+    .then(item => this.setState({ item }, () =>
+      (item && item.opId && this.props.fetchParent) && this.onFetchOpItem()))
+    .then(() => this.onUpdated());
+  onFetchOpItem = () => this.listing.thingData(this.state.item.opId)
+    .then(parentItem => this.setState({ parentItem }))
+    .then(() => this.onUpdated());
+  onUpdate = () => this.listing.thingScores(this.props.id)
+    .then(scores => this.setState({ scores }));
+  onUpdated = () => this.props.onDidUpdate && this.props.onDidUpdate();
 }
 
-export const Thing = injectState(ThingBase);
+export const Thing = withRouter(injectState(ThingBase));

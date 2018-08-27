@@ -1,3 +1,4 @@
+import { ZalgoPromise as Promise } from "zalgo-promise";
 import { provideState, update } from "freactal";
 import { always, identity } from "ramda";
 
@@ -35,7 +36,7 @@ const onLogin = (effects) => effects.getLoginState()
   .then(({ notabugApi, ...state }) =>
     (isLoginValid(state) && notabugApi
       .login(state.username, state.password)
-      .catch(() => new Promise((resolve) => setTimeout(() => resolve(notabugApi.login(state.username, state.password)), 300)))
+      .catch(() => new Promise((resolve) => setTimeout(() => notabugApi.login(state.username, state.password).then(resolve)), 300))
       .catch(loginError => {
         // migrateCBCaccount(state.username, state.password); // eslint-disable-line
         throw loginError;

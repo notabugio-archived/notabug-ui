@@ -11,7 +11,13 @@ import { App } from "./components/notabug";
 //import registerServiceWorker from "./registerServiceWorker";
 import { unregister } from "./registerServiceWorker";
 
-ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
+try {
+  ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
+} catch (e) {
+  console.error(e.stack || e);
+  localStorage.clear();
+  ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
+}
 
 //registerServiceWorker();
 unregister();

@@ -31,11 +31,11 @@ class SubmissionBase extends PureComponent {
       rank,
       isViewing,
       onToggleExpando,
-      state: { notabugApi, isVotingUp, isVotingDown },
+      state: { isVotingUp, isVotingDown },
     } = this.props;
     let { item } = this.props;
 
-    item = item || { title: "...", timestamp: notabugApi.getTimestamp(id)  }; // eslint-disable-line
+    item = item || { title: "...", timestamp: null }; // eslint-disable-line
 
     const urlInfo = item.url ? urllite(item.url) : {};
     const permalink = `/t/${item.topic || "all"}/comments/${id}/` + slugify(item.title.toLowerCase());
@@ -99,14 +99,12 @@ class SubmissionBase extends PureComponent {
   }
 
   onVoteUp() {
-    const { onSubscribe } = this.props;
-    onSubscribe && onSubscribe();
+    this.props.listing.scope.realtime();
     this.props.effects.onVoteUp();
   }
 
   onVoteDown() {
-    const { onSubscribe } = this.props;
-    onSubscribe && onSubscribe();
+    this.props.listing.scope.realtime();
     this.props.effects.onVoteDown();
   }
 }

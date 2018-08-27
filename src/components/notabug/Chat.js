@@ -1,4 +1,4 @@
-/* globals Promise */
+import { ZalgoPromise as Promise } from "zalgo-promise";
 import React, { PureComponent } from "react";
 import { COMMENT_BODY_MAX } from "notabug-peer";
 import debounce from "lodash/debounce";
@@ -73,8 +73,7 @@ export class Chat extends PureComponent {
           this.scrollable.scrollTop = this.scrollable.scrollHeight;
         }
       },
-      200,
-      { trailing: true }
+      100
     );
 
     this.stoppedScrolling = debounce(
@@ -88,7 +87,6 @@ export class Chat extends PureComponent {
       <div className={`chat-modal ${this.props.className}`}>
         <Listing
           noRank
-          redis
           realtime
           autoVisible
           disableChildren

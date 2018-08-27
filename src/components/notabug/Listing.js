@@ -1,12 +1,14 @@
 import React, { PureComponent, Fragment } from "react";
 import debounce from "lodash/debounce";
-import { injectState } from "freactal";
 import { pick } from "ramda";
+import { injectState } from "freactal";
+import { withRouter } from "react-router-dom";
 import { Thing } from "./Thing";
 
 const LISTING_PROPS = [
   "days",
   "topics",
+  "opId",
   "replyToId",
   "domain",
   "url",
@@ -19,66 +21,51 @@ const LISTING_PROPS = [
 class ListingBase extends PureComponent {
   constructor(props) {
     super(props);
-    const ids = this.props.state.notabugApi.getListingIds(this.getListingParams());
-    this.state = { ids };
-    this.onUpdate = this.onUpdate.bind(this);
-    this.onRefresh = debounce(() => this.onUpdate(), 500);
+    this.listing = props.listing || props.state.notabugApi.scopedListing({
+      onFetchCache() {
+        const url = `${this.props.location.pathname}.json?${this.props.location.search}`;
+        return fetch(url).then(response => {
+          if (response.status !== 200) throw new Error("Bad response from server");
+          return response.json();
+        });
+      }
+    });
+    if (props.realtime) this.listing.scope.realtime();
+    this.state = { ids: this.listing.ids.now(this.getListingParams(props)) || [] };
+    this.onRefresh = debounce(() => this.onUpdate(), 250);
   }
 
   componentDidMount() {
     this.onUpdate();
     this.onSubscribe();
-
-    if (this.props.realtime) {
-      this.props.state.notabugApi.onChange(null, this.onRefresh);
-    }
   }
 
   componentWillReceiveProps(nextProps) {
-    if (nextProps.realtime) {
-      this.props.state.notabugApi.onChangeOff(null, this.onRefresh);
-      nextProps.state.notabugApi.onChange(null, this.onRefresh);
-      this.onSubscribe(nextProps);
-    }
-
-    if (JSON.stringify(this.getListingParams()) !== JSON.stringify(this.getListingParams(nextProps))) {
-      if (nextProps.count !== this.props.count && !nextProps.realtime) {
-        this.onSubscribe(nextProps);
-      } else {
-        this.onUpdate(nextProps);
-      }
-    }
+    if (JSON.stringify(this.getListingParams()) !== JSON.stringify(this.getListingParams(nextProps)))
+      this.onUpdate(nextProps);
+    if (nextProps.realtime && !this.props.realtime) this.listing.scope.realtime();
   }
 
-  componentWillUnmount() {
-    this.props.state.notabugApi.onChangeOff(null, this.onRefresh);
-  }
+  componentWillUnmount = () => this.onUnsubscribe();
 
   render() {
-    const { ids } = this.state;
     const { Empty, Container=Fragment, containerProps={}, childrenPropName="children" } = this.props;
-    if (!this.state.ids.length && Empty) return <Empty />;
-
-    const contProps = {
-      ...containerProps,
-      [childrenPropName]: ids.map((id, idx) => this.renderThing(idx, id))
-    };
-
-    return (
-      <Container {...contProps} />
-    );
+    const { ids } = this.state;
+    if (!ids.length && Empty) return <Empty />;
+    const rendered = ids.map((id, idx) => this.renderThing(idx, id));
+    return <Container {...{...containerProps, [childrenPropName]: rendered }} />;
   }
 
   renderThing(idx, key) {
-    const id = this.state.ids[idx];
     const { myContent = {} } = this.props;
     const count = parseInt(this.props.count, 10) || 0;
+    const id = this.state.ids[idx];
     return (
       <Thing
         Loading={this.props.Loading}
         isVisible={this.props.autoVisible}
         realtime={this.props.realtime}
-        redis={this.props.redis}
+        listing={this.listing}
         fetchParent={this.props.fetchParent}
         hideReply={this.props.hideReply}
         disableChildren={this.props.disableChildren}
@@ -92,49 +79,18 @@ class ListingBase extends PureComponent {
     );
   }
 
-  getListingParams(props) {
-    return pick(
-      LISTING_PROPS,
-      props || this.props
-    );
-  }
-
-  onSubscribe(props) {
-    const { effects, realtime } = (props || this.props);
-    const params = this.getListingParams();
-    this.onUpdate(props);
-
-    const promise = effects.onNotabugPreloadListing(params).then(() => this.onUpdate());
-    return promise
-      .catch(error => console.warn("Error preloading listing", error))
-      .then(() => {
-        if (realtime) {
-          if (this.props.redis) {
-            setTimeout(() => this.onGunFallback(), 300);
-            return effects.onNotabugPreloadIds(this.state.ids);
-          } else {
-            this.onGunFallback();
-          }
-        } else if (this.props.redis) {
-          return effects.onNotabugPreloadIds(this.state.ids);
-        }
-      })
-      .then(() => this.onUpdate());
-  }
-
-  onGunFallback() {
-    this.props.state.notabugApi.onChange(null, this.onRefresh);
-    this.props.state.notabugApi.watchListing(this.getListingParams());
-  }
-
-  onUpdate(props) {
-    const { onDidUpdate } = this.props;
-    const ids = (props || this.props).state.notabugApi
-      .getListingIds(this.getListingParams(props));
-    if (ids.join("|") !== this.state.ids.join("|")) {
-      this.setState({ ids }, onDidUpdate);
-    }
-  }
+  onSubscribe = () => this.listing.scope.on(this.onRefresh);
+  onUnsubscribe = () => this.listing.scope.off(this.onRefresh);
+  getListingParams = (props) => ({ ...pick(LISTING_PROPS, props || this.props) });
+  onUpdate = (props) => {
+    this.setState({ ids: this.listing.ids.now(this.getListingParams(props || this.props)) || [] });
+    this.listing.ids(this.getListingParams(props || this.props))
+      .then(idsList => {
+        const ids = idsList || [];
+        if (ids.join("|") === this.state.ids.join("|")) return;
+        this.setState({ ids }, this.props.onDidUpdate);
+      }).catch(error => console.error(error.stack || error));
+  };
 }
 
-export const Listing = injectState(ListingBase);
+export const Listing = withRouter(injectState(ListingBase));

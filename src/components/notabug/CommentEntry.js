@@ -35,14 +35,12 @@ class ThingCommentEntryBase extends PureComponent {
   }
 
   onVoteUp() {
-    const { onSubscribe } = this.props;
-    onSubscribe && onSubscribe();
+    this.props.listing.scope.realtime();
     this.props.effects.onVoteUp();
   }
 
   onVoteDown() {
-    const { onSubscribe } = this.props;
-    onSubscribe && onSubscribe();
+    this.props.listing.scope.realtime();
     this.props.effects.onVoteDown();
   }
 }
