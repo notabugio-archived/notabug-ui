@@ -36,6 +36,7 @@ const onSubmitSubmission = (effects) => effects.getSubmissionFormState()
       isBodyInvalid(state) ||
       isTopicInvalid(state)
     ) return;
+    notabugApi.scope.realtime();
     return Promise.resolve(notabugApi
       .submit({
         title: submissionTitle,

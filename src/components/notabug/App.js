@@ -14,6 +14,7 @@ import { Link } from "./Link";
 import { router } from "state";
 import ScrollToTop from "./ScrollToTop";
 import { injectState } from "freactal";
+import { cached } from "./Cached";
 
 import { routes } from "./routes";
 
@@ -51,14 +52,14 @@ export const App = router(({ notabugApi }) => (
     </Helmet>
     <ScrollToTop>
       <Switch>
-        <Route path="/t/:topic/chat" component={ChatPage} />
+        <Route path="/t/:topic/chat" component={cached(ChatPage)} />
         <Route path="/t/:topic/comments/*/*" component={TopicRoute} />
         <Route path="/t/:topic/:sort/" component={TopicRoute} />
         <Route path="/t/:topic/*" component={TopicRoute} />
         <Route path="/t/:topic" component={TopicRoute} />
         <Route path="/domain/:domain/:sort" component={TopicRoute} />
         <Route path="/login" component={LoginSignupPage} />
-        <Route path="/chat" component={ChatPage} />
+        <Route path="/chat" component={cached(ChatPage)} />
         <Route path="/:sort" component={TopicRoute} />
         <Route path="/*" component={TopicRoute} />
       </Switch>

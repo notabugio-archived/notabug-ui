@@ -1,5 +1,5 @@
 import { ZalgoPromise as Promise } from "zalgo-promise";
-import React, { PureComponent } from "react";
+import React, { PureComponent, Fragment } from "react";
 import { COMMENT_BODY_MAX } from "notabug-peer";
 import debounce from "lodash/debounce";
 import { Subreddit } from "snew-classic-ui";
@@ -15,6 +15,7 @@ import ChatView from "react-chatview";
 import { JavaScriptRequired } from "./JavaScriptRequired";
 import { Loading } from "./Loading";
 import { LoadingChatMsg } from "./LoadingChatMsg";
+import isNode from "detect-node";
 
 class ChatInputBase extends PureComponent {
   constructor(props) {
@@ -33,13 +34,27 @@ class ChatInputBase extends PureComponent {
         className="chat-input"
         onSubmit={this.onSend.bind(this)}
       >
-        <input
-          type="text"
-          placeholder={`speaking as ${user ? user : "anon"} in ${chatName}`}
-          value={this.state.msg}
-          onChange={e => this.setState({ msg: e.target.value })}
-        />
-        <button className="send-btn" type="submit">send</button>
+        {isNode ? (
+          <noscript>
+            <input
+              type="text"
+              placeholder="chatting requires javascript"
+              disabled
+              readOnly
+            />
+            <button disabled className="send-btn" type="submit">send</button>
+          </noscript>
+        ) : (
+          <Fragment>
+            <input
+              type="text"
+              placeholder={`speaking as ${user ? user : "anon"} in ${chatName}`}
+              value={this.state.msg}
+              onChange={e => this.setState({ msg: e.target.value })}
+            />
+            <button className="send-btn" type="submit">send</button>
+          </Fragment>
+        )}
       </form>
     );
   }
@@ -178,8 +193,6 @@ export const ChatPage = withRouter(injectState(({
     siteprefix="t"
     isShowingCustomStyleOption={false}
   >
-    <JavaScriptRequired>
-      <Chat className="fullscreen-chat" isOpen withSubmissions />
-    </JavaScriptRequired>
+    <Chat className="fullscreen-chat" isOpen withSubmissions />
   </Subreddit>
 )));

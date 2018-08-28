@@ -10,25 +10,6 @@ import serialize from "serialize-javascript";
 const path = require("path");
 const { readFile } = require("fs");
 
-const calculateListing = (nab, req, routeMatch, scope) => {
-  let params;
-  const opId = req.params.opId || (routeMatch && routeMatch.params.submission_id);
-
-  if (opId) {
-    params = { submissionId: opId, sort: "new" };
-  } else {
-    const count = parseInt(req.query.count || 0, 10);
-    const topic = req.params.topic || (routeMatch && routeMatch.params.topic) || "all";
-    const topics = [topic];
-    const sort = req.params.sort || (routeMatch && routeMatch.params.sort);
-    const days = parseInt(req.query.days, 10);
-    const limit = parseInt(req.query.limit, 10) || 25;
-    params = { topics, sort, days, count, limit };
-  }
-
-  return nab.scopedListing({ scope: scope || nab.newScope() }).withData.query(params);
-};
-
 export default (nab, req, res) => readFile(
   path.resolve(__dirname, "..", "htdocs", "index.html"), "utf8",
   (err, htmlData) => {
@@ -41,7 +22,9 @@ export default (nab, req, res) => readFile(
     if (!route) return res.status(404).end();
     const staticPeer = init({ noGun: true, localStorage: false, disableValidation: true });
     const scope = staticPeer.scope = nab.newScope({ isCacheing: true });
-    route.query = () => calculateListing(nab, req, routeMatch, scope).then(() => staticPeer);
+    if (route.getListingParams)
+      route.query = () => nab.scopedListing({ scope })
+        .withData.query(route.getListingParams({ ...routeMatch, query: req.query }));
     return Promise.resolve(route.query && route.query(routeMatch)).then(() => {
       const html = renderToString((
         <Router context={{}} location={url}><App notabugApi={staticPeer} /></Router>

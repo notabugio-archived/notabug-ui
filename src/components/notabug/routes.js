@@ -30,6 +30,30 @@ const Reddit = ({ location: { pathname, search } }) => (
   </div>
 );
 
+const baseParams = ({ params: { sort="hot" }, query: { count, limit } }) => ({
+  sort,
+  count: parseInt(count, 10) || 0,
+  limit: parseInt(limit, 10) || 25,
+  days: parseInt(limit, 10) || 90,
+});
+
+const withParams = fn => (props) => {
+  const base = baseParams;
+  return { ...base, ...fn(props) };
+};
+
+
+const getTopicListingParams = withParams(({ params: { topic="all" } }) => ({ topics: [topic] }));
+const getDomainListingParams = withParams(({ params: { domain } }) => ({ domain }));
+const getSubmissionListingParams = withParams((
+  { params: { submission_id: opId  }, query: { sort="best" } }
+) => ({ opId, sort }));
+const getFirehoseListingParams = withParams(() => ({
+  topics: ["chat:whatever", "comments:all", "all"],
+  sort: "new",
+  days: 3
+}));
+
 export const routes = [
   {
     path: "/help/privacypolicy",
@@ -48,27 +72,34 @@ export const routes = [
     component: ContentPolicy
   }, {
     path: "/t/:topic/comments/:submission_id/:slug",
-    component: cached(SubmissionDetail)
+    component: cached(SubmissionDetail),
+    getListingParams: getSubmissionListingParams
   }, {
     path: "/t/:topic/comments/:submission_id",
-    component: cached(SubmissionDetail)
+    component: cached(SubmissionDetail),
+    getListingParams: getSubmissionListingParams
   }, {
     path: "/t/:topic/submit",
     component: cached(SubmissionForm)
   }, {
-    path: "/t/:topic/chat"
+    path: "/t/:topic/chat",
+    getListingParams: getFirehoseListingParams
   }, {
     path: "/t/:topic/:sort",
-    component: cached(Topic)
+    component: cached(Topic),
+    getListingParams: getTopicListingParams
   }, {
     path: "/t/:topic",
-    component: cached(Topic)
+    component: cached(Topic),
+    getListingParams: getTopicListingParams
   }, {
     path: "/domain/:domain/:sort",
-    component: Topic
+    component: cached(Topic),
+    getListingParams: getDomainListingParams
   }, {
     path: "/domain/:domain",
-    component: Topic
+    component: cached(Topic),
+    getListingParams: getDomainListingParams
   }, {
     path: "/user/:username",
     component: UserProfile
@@ -82,12 +113,15 @@ export const routes = [
     path: "/login",
   }, {
     path: "/chat",
+    getListingParams: getFirehoseListingParams
   }, {
     path: "/:sort",
-    component: cached(Topic)
+    component: cached(Topic),
+    getListingParams: getTopicListingParams
   }, {
     path: "/",
     exact: true,
-    component: cached(Topic)
+    component: cached(Topic),
+    getListingParams: getTopicListingParams
   }
 ];
