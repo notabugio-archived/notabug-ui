@@ -1,1 +1,0 @@
-../CONTENT_POLICY.md

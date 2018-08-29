@@ -1,1 +1,0 @@
-../KNOWN_PEERS.md

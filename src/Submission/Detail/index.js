@@ -1,0 +1,1 @@
+export { SubmissionDetail } from "./SubmissionDetail";

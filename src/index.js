@@ -5,11 +5,9 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import "snew-classic-ui/static/css/minimal.css";
-import "./index.css";
-//import "./night.css";
-import { App } from "./components/notabug";
-//import registerServiceWorker from "./registerServiceWorker";
-import { unregister } from "./registerServiceWorker";
+import "styles/index.css";
+import { App } from "App";
+import { unregister } from "utils/registerServiceWorker";
 
 try {
   ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
@@ -19,5 +17,4 @@ try {
   ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
 }
 
-//registerServiceWorker();
 unregister();
