@@ -5,7 +5,7 @@ import { withRouter } from "react-router-dom";
 import { Loading } from "utils";
 import { Submission } from "Submission";
 import { Comment } from "Comment";
-import { ChatMsg } from "Chat";
+import { ChatMsg } from "Chat/ChatMsg";
 
 const components = {
   submission: Submission,
