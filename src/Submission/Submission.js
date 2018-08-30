@@ -8,6 +8,7 @@ import { compose } from "ramda";
 import { injectState } from "freactal";
 import { withRouter } from "react-router-dom";
 import { submissionSummaryProvider } from "./state";
+import { AuthorLink } from "Auth";
 
 const nsfwRe = /(nsfw|porn|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
 
@@ -41,9 +42,11 @@ export const Submission = ({
       <ThingLink
         {...{ Markdown, Expando, Timestamp, Link, EmbedComponent, id, domain, permalink, expanded }}
         {...{ rank, ups, downs, onVoteUp, onVoteDown, expandoType, image, video, iframe }}
+        AuthorLink={AuthorLink}
         isDetail={isViewing}
         title={item.title}
         author={item.author}
+        author_fullname={item.authorId}
         over_18={!!nsfwRe.test(item.title + item.topic)}
         subreddit={item.topic ? item.topic.toLowerCase() : ""}
         selftext={item.body}

@@ -20,7 +20,7 @@ export class Topic extends PureComponent {
 
   render() {
     const {
-      match: { params: { sort="hot", topic="all", domain } },
+      match: { params: { sort, topic="all", domain, userid } },
       location: { search, pathname },
       state: { notabugInfiniteScroll: isInfinite }
     } = this.props;
@@ -31,10 +31,14 @@ export class Topic extends PureComponent {
       Empty,
       Loading: Submission,
       key: `${topic}/${domain}/${sort}`,
-      topics: domain ? null : [topic.toLowerCase()],
+      topics: (userid || domain) ? null : [topic.toLowerCase()],
+      authorIds: userid ? [userid] : null,
+      noRank: !!userid,
       autoVisible: true,
+      disableChildren: true,
+      fetchParent: true,
       domain,
-      sort,
+      sort: sort || (userid ? "new" : "hot"),
       limit,
       count
     };

@@ -10,6 +10,7 @@ const LISTING_PROPS = [
   "topics",
   "opId",
   "replyToId",
+  "authorIds",
   "domain",
   "url",
   "sort",

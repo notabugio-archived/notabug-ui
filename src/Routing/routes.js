@@ -1,5 +1,5 @@
-import { ContentPolicy, PrivacyPolicy, UserAgreement, KnownPeers, Reddit, UserProfile } from "static";
-import { cached, locationKey } from "utils";
+import { ContentPolicy, PrivacyPolicy, UserAgreement, KnownPeers, Reddit } from "static";
+import { cached } from "utils";
 import { Topic } from "Listing";
 import { SubmissionDetail } from "Submission/Detail";
 import { SubmissionForm } from "Submission/Form";
@@ -25,6 +25,10 @@ const getFirehoseListingParams = withParams(() => ({
   topics: ["chat:whatever", "comments:all", "all"],
   sort: "new",
   days: 3
+}));
+const getProfileListingParams = withParams(({ params: { userid }, sort="new" }) => ({
+  sort,
+  authorIds: [userid]
 }));
 
 export const routes = [
@@ -74,8 +78,13 @@ export const routes = [
     component: cached(Topic),
     getListingParams: getDomainListingParams
   }, {
-    path: "/user/:username",
-    component: UserProfile
+    path: "/user/:userid/:sort",
+    component: cached(Topic),
+    getListingParams: getProfileListingParams
+  }, {
+    path: "/user/:userid",
+    component: cached(Topic),
+    getListingParams: getProfileListingParams
   }, {
     path: "/r/*",
     component: Reddit

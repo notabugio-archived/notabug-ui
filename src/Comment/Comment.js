@@ -40,6 +40,7 @@ export class Comment extends PureComponent {
         pathOr({}, ["parentItem"])
       )(this.props),
       link_author: pathOr(null, ["parentItem", "author"], this.props),
+      link_author_fullname: pathOr(null, ["parentItem", "authorId"], this.props),
       subreddit: pathOr(null, ["parentItem", "topic"], this.props),
     } : {};
 
@@ -64,6 +65,7 @@ export class Comment extends PureComponent {
         id={id}
         body={item.body ? item.body.slice(0, COMMENT_BODY_MAX) : item.body}
         author={item.author}
+        author_fullname={item.authorId}
         siteprefix="t"
         name={id}
         parent_id={item.replyToId}

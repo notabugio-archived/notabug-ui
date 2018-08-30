@@ -216,14 +216,15 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
             return Buffer.from(crypto.randomBytes(len));
           }
         });
-        try {
-          var WebCrypto = require('node-webcrypto-ossl');
-          api.ossl = new WebCrypto({ directory: 'ossl' }).subtle; // ECDH
-        } catch (e) {
-          console.log("node-webcrypto-ossl is optionally needed for ECDH, please install if needed.");
-        }
+        //try{
+        var WebCrypto = require('node-webcrypto-ossl');
+        api.ossl = new WebCrypto({ directory: 'ossl' }).subtle; // ECDH
+        //}catch(e){
+        //console.log("node-webcrypto-ossl is optionally needed for ECDH, please install if needed.");
+        //}
       } catch (e) {
         console.log("@trust/webcrypto and text-encoding are not included by default, you must add it to your package.json!");
+        console.log("node-webcrypto-ossl is temporarily needed for ECDSA signature verification, and optionally needed for ECDH, please install if needed (currently necessary so add them to your package.json for now).");
         TRUST_WEBCRYPTO_OR_TEXT_ENCODING_NOT_INSTALLED;
       }
     }
@@ -754,7 +755,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 pub = pair.pub || pair;
                 jwk = S.jwk(pub);
                 _context7.next = 10;
-                return shim.subtle.importKey('jwk', jwk, S.ecdsa.pair, false, ['verify']);
+                return (shim.ossl || shim.subtle).importKey('jwk', jwk, S.ecdsa.pair, false, ['verify']);
 
               case 10:
                 key = _context7.sent;
@@ -765,7 +766,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 hash = _context7.sent;
                 sig = new Uint8Array(shim.Buffer.from(json.s, 'utf8'));
                 _context7.next = 17;
-                return shim.subtle.verify(S.ecdsa.sign, key, sig, new Uint8Array(hash));
+                return (shim.ossl || shim.subtle).verify(S.ecdsa.sign, key, sig, new Uint8Array(hash));
 
               case 17:
                 check = _context7.sent;
@@ -3260,3 +3261,4 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     }
   })(USE, './index');
 })();
+

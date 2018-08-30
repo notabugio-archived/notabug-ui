@@ -3,6 +3,18 @@
 body > .content .link .rank, .rank-spacer { width: 3.3ex; }
 body > .content .link .midcol, .midcol-spacer { width: 6ex; }
 
+.identicon svg {
+  background-color: white;
+  vertical-align: middle;
+}
+.identicon svg:hover {
+  position: absolute;
+  margin-left: -32px;
+  margin-top: -32px;
+  width: 64px;
+  height: 64px;
+}
+
 .chat-modal {
   position: fixed;
   background-color: #EFF7FF;

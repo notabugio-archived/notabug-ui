@@ -3,4 +3,3 @@ export { KnownPeers } from "./KnownPeers";
 export { PrivacyPolicy } from "./PrivacyPolicy";
 export { Reddit } from "./Reddit";
 export { UserAgreement } from "./UserAgreement";
-export { UserProfile } from "./UserProfile";

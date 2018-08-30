@@ -27,7 +27,7 @@ require("gun/lib/rs3");
 require("gun/lib/wire");
 require("gun/lib/verify");
 require("gun/lib/then");
-//require("gun/sea");
+require("gun/sea");
 
 if (!options.persist && !options.redis && options.json6) {
   require("gun-file");
