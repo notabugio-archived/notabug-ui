@@ -640,7 +640,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               case 0:
                 _context6.prev = 0;
 
-                if (!(data.slice && 'SEA{' === data.slice(0, 4) && '"m":' === data.slice(4, 8))) {
+                if (!(data && data.slice && 'SEA{' === data.slice(0, 4) && '"m":' === data.slice(4, 8))) {
                   _context6.next = 4;
                   break;
                 }
@@ -668,8 +668,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               case 10:
                 hash = _context6.sent;
                 _context6.next = 13;
-                return shim.subtle.importKey('jwk', jwk, S.ecdsa.pair, false, ['sign']).then(function (key) {
-                  return shim.subtle.sign(S.ecdsa.sign, key, new Uint8Array(hash));
+                return (shim.ossl || shim.subtle).importKey('jwk', jwk, S.ecdsa.pair, false, ['sign']).then(function (key) {
+                  return (shim.ossl || shim.subtle).sign(S.ecdsa.sign, key, new Uint8Array(hash));
                 });
 
               case 13:
@@ -1218,7 +1218,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // But all other behavior needs to be equally easy, like opinionated ways of
     // Adding friends (trusted public keys), sending private messages, etc.
     // Cheers! Tell me what you think.
-    var Gun = (SEA.window || {}).Gun; // || require("./gun");
+    var Gun = (SEA.window || {}).Gun;
     Gun.SEA = SEA;
     SEA.Gun = Gun;
 
@@ -3040,6 +3040,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         var soul = msg.get['#'];
         if (soul) {
           // for now, only allow direct IDs to be read.
+          if (soul !== 'string') {
+            return to.next(msg);
+          } // do not handle lexical cursors.
           if ('alias' === soul) {
             // Allow reading the list of usernames/aliases in the system?
             return to.next(msg); // yes.

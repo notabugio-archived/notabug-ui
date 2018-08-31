@@ -8,7 +8,7 @@ export const Identicon = ({
 }) => (
   <span
     className="identicon"
-    title={`This icon is generated from the ${author}'s public crypto key`}
-    dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(author_fullname, size) }}
+    title={`This icon is generated with ${author}'s public crypto key`}
+    dangerouslySetInnerHTML={{ __html: jdenticon.toSvg(`${author}${author_fullname}`, size) }}
   />
 );

@@ -7,12 +7,9 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   background-color: white;
   vertical-align: middle;
 }
-.identicon svg:hover {
-  position: absolute;
-  margin-left: -32px;
-  margin-top: -32px;
-  width: 64px;
-  height: 64px;
+
+.user-hover-info .identicon {
+  margin-right: 1em;
 }
 
 .chat-modal {

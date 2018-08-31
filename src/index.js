@@ -5,6 +5,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import "snew-classic-ui/static/css/minimal.css";
+import "react-tippy/dist/tippy.css";
 import "styles/index.css";
 import { App } from "App";
 import { unregister } from "utils/registerServiceWorker";

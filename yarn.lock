@@ -3795,9 +3795,9 @@ gun@^0.9.96:
   dependencies:
     ws "~>5.2.0"
 
-gun@^0.9.99992:
-  version "0.9.99992"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99992.tgz#7720d3962d880eca1382cd4dae589ddacc692416"
+gun@^0.9.99993:
+  version "0.9.99993"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99993.tgz#e72b4c0ef95cab0044394a728828ab3f12a0acfc"
   dependencies:
     ws "~>5.2.0"
 
@@ -6138,6 +6138,10 @@ polished@^1.8.1:
   version "1.9.2"
   resolved "https://registry.yarnpkg.com/polished/-/polished-1.9.2.tgz#d705cac66f3a3ed1bd38aad863e2c1e269baf6b6"
 
+popper.js@^1.11.1:
+  version "1.14.4"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.4.tgz#8eec1d8ff02a5a3a152dd43414a15c7b79fd69b6"
+
 portfinder@^1.0.9:
   version "1.0.13"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.13.tgz#bb32ecd87c27104ae6ee44b5a3ccbf0ebb1aede9"
@@ -6846,6 +6850,12 @@ react-timeago@^4.1.9:
   version "4.1.9"
   resolved "https://registry.yarnpkg.com/react-timeago/-/react-timeago-4.1.9.tgz#a5dee4ac072299a9a5ca5a61f56177a80f83c1fb"
 
+react-tippy@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/react-tippy/-/react-tippy-1.2.2.tgz#061467d34d29e7a5a9421822d125c451d6bb5153"
+  dependencies:
+    popper.js "^1.11.1"
+
 react-visibility-sensor@^3.11.0:
   version "3.11.0"
   resolved "https://registry.yarnpkg.com/react-visibility-sensor/-/react-visibility-sensor-3.11.0.tgz#2da089ccb18b33ec3539914b300b120684aff2e0"
@@ -7505,7 +7515,7 @@ snapdragon@^0.8.1:
 
 "snew-classic-ui@https://github.com/notabugio/snew-classic-ui.git#0.2.0":
   version "0.2.0"
-  resolved "https://github.com/notabugio/snew-classic-ui.git#54e45bbb200dcb46655167a082b1f1cc809a16fe"
+  resolved "https://github.com/notabugio/snew-classic-ui.git#1f5aa192b9d57eace85fed174155a65ffa5aa1b5"
   dependencies:
     babel-cli "^6.26.0"
     babel-core "^6.26.0"

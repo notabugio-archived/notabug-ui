@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.9.4",
+  "version": "0.9.5",
   "dependencies": {
     "@trust/webcrypto": "^0.9.2",
     "babel-cli": "^6.26.0",
@@ -23,7 +23,7 @@
     "forever": "^0.15.3",
     "formidable": "^1.2.1",
     "freactal": "^2.0.3",
-    "gun": "^0.9.99992",
+    "gun": "^0.9.99993",
     "gun-file": "^1.0.123",
     "gun-flint": "^0.0.28",
     "ignore-styles": "^5.0.1",
@@ -44,6 +44,7 @@
     "react-scripts": "^1.1.4",
     "react-spinkit": "^3.0.0",
     "react-timeago": "^4.1.9",
+    "react-tippy": "^1.2.2",
     "react-visibility-sensor": "^3.11.0",
     "react-web-notification": "^0.3.1",
     "redis": "^2.8.0",

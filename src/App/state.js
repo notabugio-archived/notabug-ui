@@ -2,15 +2,25 @@ import { compose, always, identity, assocPath } from "ramda";
 import { provideState, update } from "freactal";
 import { withRouter } from "react-router-dom";
 import "gun/gun";
-import notabugPeer, { PREFIX } from "notabug-peer";
 import isNode from "detect-node";
+/*
+if (!isNode) {
+  require("gun/lib/radix");
+  require("gun/lib/radisk");
+  require("gun/lib/store");
+  require("gun/lib/rindexed");
+}
+*/
+const { default: notabugPeer, PREFIX } = require("notabug-peer");
 
 let COUNT_VOTES = false;
 let LOCAL_STORAGE = false;
+let FORCE_REALTIME = false;
 
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
+  FORCE_REALTIME = !!/realtime/.test(window.location.search);
 
   if (!(/nosea/.test(window.location.search))) {
     require("utils/sea");
@@ -20,6 +30,7 @@ if (!isNode) {
 const initialState = ({ history, notabugApi }) => {
   notabugApi = notabugApi || notabugPeer({
     noGun: isNode ? true : false,
+    // store: isNode ? null : RindexedDB({}),
     localStorage: LOCAL_STORAGE,
     countVotes: COUNT_VOTES,
     disableValidation: true,
@@ -33,11 +44,13 @@ const initialState = ({ history, notabugApi }) => {
   if (!isNode && !notabugApi.scope) {
     notabugApi.scope = notabugApi.newScope({
       cache: window.initNabState,
-      onlyCache: true,
-      isCached: true,
-      isCacheing: true
+      isRealtime: FORCE_REALTIME,
+      onlyCache: !FORCE_REALTIME,
+      isCached: !FORCE_REALTIME,
+      isCacheing: !FORCE_REALTIME
     });
     // window.initNabState = null;
+
   }
 
   if (!isNode && notabugApi.gun) {

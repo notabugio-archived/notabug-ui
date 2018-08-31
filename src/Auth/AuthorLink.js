@@ -1,14 +1,26 @@
 import React from "react";
 import { Identicon } from "./Identicon";
 import { Link } from "utils";
+import { Tooltip } from "react-tippy";
 
 export const AuthorLink = ({
   className="author may-blank",
   author,
   author_fullname
 }) => author ? (
-  <Link href={`/user/~${author_fullname}`} className={className}>
-    <Identicon size={16} {...{ author, author_fullname }} />
-    {author}
-  </Link>
+  <Tooltip
+    followCursor
+    title={author}
+    html={(
+      <h1 className="user-hover-info">
+        <Identicon size={48} {...{ author, author_fullname }} />
+        {author}
+      </h1>
+    )}
+  >
+    <Link href={`/user/~${author_fullname}`} className={className}>
+      <Identicon size={16} {...{ author, author_fullname }} />
+      {author.length > 20 ? `${author.slice(0, 20)}...` : author}
+    </Link>
+  </Tooltip>
 ) : null;
