@@ -1,14 +1,13 @@
 import qs from "qs";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import React, { PureComponent } from "react";
+import { SortSelector } from "snew-classic-ui";
 import { injectState } from "freactal";
 import ChatView from "react-chatview";
-import { withRouter, Link } from "react-router-dom";
-import { Loading, JavaScriptRequired } from "utils";
+import { withRouter } from "react-router-dom";
+import { Dropdown, Link, Loading, JavaScriptRequired } from "utils";
 import { Submission } from "Submission";
 import Listing from "./Listing";
-
-const Empty = () => <Loading name="ball-grid-beat" />;
 
 export class Topic extends PureComponent {
   constructor(props) {
@@ -20,27 +19,21 @@ export class Topic extends PureComponent {
 
   render() {
     const {
-      match: { params: { sort, topic="all", domain, userid } },
+      match: { params: { userid } },
       location: { search, pathname },
-      state: { notabugInfiniteScroll: isInfinite }
+      state: { notabugInfiniteScroll: isInfinite },
+      listingParams = {},
     } = this.props;
     const { limit } = this.state;
     const query = qs.parse(search.slice(1));
     const count = parseInt(query.count, 10) || 0;
     const listing = {
-      Empty,
+      listingParams,
+      Empty: () => <Loading name="ball-grid-beat" />,
       Loading: Submission,
-      key: `${topic}/${domain}/${sort}`,
-      topics: (userid || domain) ? null : [topic.toLowerCase()],
-      authorIds: userid ? [userid] : null,
       noRank: !!userid,
-      autoVisible: true,
       disableChildren: true,
       fetchParent: true,
-      domain,
-      sort: sort || (userid ? "new" : "hot"),
-      limit,
-      count
     };
 
     return isInfinite ? (
@@ -58,6 +51,14 @@ export class Topic extends PureComponent {
       </div>
     ) : (
       <div className="content" role="main">
+        {userid ? (
+          <SortSelector
+            {...{ Dropdown, Link }}
+            currentSort={listingParams.sort}
+            permalink={pathname}
+            sortOptions={["hot", "new", "top", "controversial"]}
+          />
+        ) : null}
         <div className="sitetable" id="siteTable">
           <Listing {...listing} />
           <div className="nav-buttons">
@@ -65,14 +66,14 @@ export class Topic extends PureComponent {
               {"view more: "}
               {(count - limit) >= 0 ? (
                 <Link
-                  to={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
+                  href={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
                 >‹ prev</Link>
               ) : null}
               <JavaScriptRequired silent>
                 <a onClick={this.onToggleInfinite} href="">∞</a>
               </JavaScriptRequired>
               <Link
-                to={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
+                href={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
               >next ›</Link>
             </span>
           </div>

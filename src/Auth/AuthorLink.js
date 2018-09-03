@@ -5,6 +5,7 @@ import { Tooltip } from "react-tippy";
 
 export const AuthorLink = ({
   className="author may-blank",
+  iconSize=16,
   author,
   author_fullname
 }) => author ? (
@@ -19,7 +20,7 @@ export const AuthorLink = ({
     )}
   >
     <Link href={`/user/~${author_fullname}`} className={className}>
-      <Identicon size={16} {...{ author, author_fullname }} />
+      <Identicon size={iconSize} {...{ author, author_fullname }} />
       {author.length > 20 ? `${author.slice(0, 20)}...` : author}
     </Link>
   </Tooltip>

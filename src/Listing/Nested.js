@@ -10,6 +10,7 @@ export const NestedListing = injectState(({
   opId,
   item,
   listing,
+  listingParams,
   state: { myContent, notabugReplyToCommentId, notabugCommentsSort },
 }) => (
   <Fragment>
@@ -21,10 +22,18 @@ export const NestedListing = injectState(({
         sort={notabugCommentsSort}
         listing={listing}
         myContent={myContent}
-        replyToId={name}
-        opId={opId || (item && item.opId)}
         collapseThreshold={0}
         realtime={realtime}
+        listingParams={{
+          ...(listingParams || {}),
+          space: (listingParams && listingParams.space) || {
+            good: [{
+              submissionIds: [opId || item && item.opId]
+            }]
+          },
+          days: null,
+          replyToId: name
+        }}
       />
     </div>
   </Fragment>

@@ -76,7 +76,6 @@ export class Comment extends PureComponent {
         votableId={id}
         showLink
         {...parentParams}
-        score={`(+${ups} | -${downs})`}
         scoreTooltip={`+${ups} / -${downs}`}
         collapsed={this.state.collapsed}
         onToggleExpand={this.onToggleExpand}

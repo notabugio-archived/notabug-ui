@@ -53,6 +53,16 @@ export const SubmissionFormBase = ({
     onChangeSubreddit={e => onChangeSubmissionTopic(e.target.value)}
     onChangeIsSelf={onChangeSubmissionIsSelf}
     onSubmit={e => { e.preventDefault(); onSubmitSubmission(); }}
+    SelfPostInfobar={() => (
+      <div className="infobar" id="text-desc">
+        You are submitting a text-based post. Speak your mind. A title is required, but expanding further in the text field is not. It is suggested that you put your post in a topic that is relevant.
+      </div>
+    )}
+    LinkPostInfobar={() => (
+      <div className="infobar" id="link-desc">
+        You are submitting a link. Links to videos and images can be displayed as embedded content on the site. It is suggested that you submit direct links to images or videos.
+      </div>
+    )}
   />
 );
 

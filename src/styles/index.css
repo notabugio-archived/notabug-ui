@@ -12,6 +12,8 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   margin-right: 1em;
 }
 
+.dropdown { cursor: pointer }
+
 .chat-modal {
   position: fixed;
   background-color: #EFF7FF;
@@ -127,6 +129,13 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   bottom: 0px;
   overflow-y: scroll !important;
   -webkit-overflow-scrolling: touch;
+}
+
+.score.likes   { color: #FF8B60; }
+.score.dislikes { color: #9494FF; }
+
+.individual-vote-counts .score {
+  display: inline-block;
 }
 
 .expando img {

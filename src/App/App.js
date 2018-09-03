@@ -2,6 +2,7 @@ import React from "react";
 import { injectState } from "freactal";
 import { Helmet } from "react-helmet";
 import { Route, Switch } from "react-router-dom";
+import { Profile } from "Profile";
 import { Subreddit } from "snew-classic-ui";
 import { Link, ScrollToTop, cached } from "utils";
 import { UserInfo, LoginSignupPage, LoginFormSide } from "Auth";
@@ -37,6 +38,12 @@ const TopicRoute = injectState(({
   </Subreddit>
 ));
 
+const UserRoute = () => (
+  <Profile>
+    <Switch>{routes.map(route => <Route {...route} key={route.path} />)}</Switch>
+  </Profile>
+);
+
 export const App = () => (
   <Routing>
     <Voting>
@@ -53,6 +60,8 @@ export const App = () => (
           <Route path="/domain/:domain/:sort" component={TopicRoute} />
           <Route path="/login" component={LoginSignupPage} />
           <Route path="/chat" component={cached(ChatPage)} />
+          <Route path="/user/:userid/*" component={UserRoute} />
+          <Route path="/user/:userid" component={UserRoute} />
           <Route path="/:sort" component={TopicRoute} />
           <Route path="/*" component={TopicRoute} />
         </Switch>

@@ -36,20 +36,25 @@ export class Chat extends PureComponent {
       <Listing
         noRank
         realtime
-        autoVisible
         disableChildren
         Empty={Loading}
         Loading={LoadingChatMsg}
-        sort={"new"}
+        listingParams={{
+          sort: "new",
+          days: 3,
+          threshold: -1,
+          limit: this.state.messagesShown,
+          space: {
+            good: [{
+              topics: this.props.withSubmissions
+                ? [`chat:${this.state.topic}`, "comments:all", "all"].reverse()
+                : [`chat:${this.state.topic}`]
+            }]
+          }
+        }}
         fetchParent
         hideReply
-        topics={this.props.withSubmissions
-          ? [`chat:${this.state.topic}`, "comments:all", "all"].reverse()
-          : [`chat:${this.state.topic}`]}
-        days={3}
-        threshold={-1}
         collapseThreshold={0}
-        limit={this.state.messagesShown}
         Container={ChatView}
         onDidUpdate={this.scrollToBottom}
         containerProps={{

@@ -33,14 +33,12 @@ const Timestamp = (props) => (
 );
 
 export const SidebarTitlebox = (props) => (
-  <div>
-    <SnewSidebarTitlebox
-      {...props}
-      Markdown={Markdown}
-      Timestamp={Timestamp}
-      description={README}
-      created={1526267327.437}
-      created_utc={1526267327.437}
-    />
-  </div>
+  <SnewSidebarTitlebox
+    {...props}
+    Markdown={Markdown}
+    Timestamp={Timestamp}
+    description={README}
+    created={1526267327.437}
+    created_utc={1526267327.437}
+  />
 );

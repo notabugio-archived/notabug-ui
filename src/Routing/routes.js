@@ -3,6 +3,7 @@ import { cached } from "utils";
 import { Topic } from "Listing";
 import { SubmissionDetail } from "Submission/Detail";
 import { SubmissionForm } from "Submission/Form";
+import { toRoute } from "./toRoute";
 
 const baseParams = ({ params: { sort="hot" }, query: { count, limit } }) => ({
   sort,
@@ -11,24 +12,58 @@ const baseParams = ({ params: { sort="hot" }, query: { count, limit } }) => ({
   days: parseInt(limit, 10) || 90,
 });
 
-const withParams = fn => (props) => {
-  const base = baseParams;
-  return { ...base, ...fn(props) };
-};
+const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
 
-const getTopicListingParams = withParams(({ params: { topic="all" } }) => ({ topics: [topic] }));
-const getDomainListingParams = withParams(({ params: { domain } }) => ({ domain }));
+const getTopicListingParams = withParams(({ params: { topic="all" } }) => ({
+  space: {
+    good: [{
+      topics: topic.split("+")
+    }]
+  }
+}));
+
+const getDomainListingParams = withParams(({ params: { domain } }) => ({
+  space: {
+    good: [{
+      domains: domain.split("+")
+    }]
+  }
+}));
+
 const getSubmissionListingParams = withParams((
-  { params: { submission_id: opId  }, query: { sort="best" } }
-) => ({ opId, sort }));
+  { params: { submission_id  }, query: { sort="best" } }
+) => ({
+  space: {
+    good: [{
+      submissionIds: [submission_id]
+    }]
+  },
+  days: null,
+  limit: null,
+  sort
+}));
+
 const getFirehoseListingParams = withParams(() => ({
-  topics: ["chat:whatever", "comments:all", "all"],
+  space: {
+    good: [{
+      topics: ["chat:whatever", "comments:all", "all"],
+    }]
+  },
   sort: "new",
   days: 3
 }));
-const getProfileListingParams = withParams(({ params: { userid }, sort="new" }) => ({
-  sort,
-  authorIds: [userid]
+
+const getProfileListingParams = withParams((
+  { params: { userid, type=null }, query: { sort="new" } }
+) =>({
+  space: {
+    good: [{
+      authorIds: userid.split("+"),
+      type,
+    }]
+  },
+  type,
+  sort
 }));
 
 export const routes = [
@@ -57,7 +92,7 @@ export const routes = [
     getListingParams: getSubmissionListingParams
   }, {
     path: "/t/:topic/submit",
-    component: cached(SubmissionForm)
+    component: SubmissionForm
   }, {
     path: "/t/:topic/chat",
     getListingParams: getFirehoseListingParams
@@ -78,7 +113,19 @@ export const routes = [
     component: cached(Topic),
     getListingParams: getDomainListingParams
   }, {
-    path: "/user/:userid/:sort",
+    path: "/user/:userid/overview/:sort",
+    component: cached(Topic),
+    getListingParams: getProfileListingParams
+  }, {
+    path: "/user/:userid/overview",
+    component: cached(Topic),
+    getListingParams: getProfileListingParams
+  }, {
+    path: "/user/:userid/:type/:sort",
+    component: cached(Topic),
+    getListingParams: getProfileListingParams
+  }, {
+    path: "/user/:userid/:type",
     component: cached(Topic),
     getListingParams: getProfileListingParams
   }, {
@@ -106,4 +153,4 @@ export const routes = [
     component: cached(Topic),
     getListingParams: getTopicListingParams
   }
-];
+].map(toRoute);

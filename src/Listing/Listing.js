@@ -1,37 +1,15 @@
 import React, { PureComponent, Fragment } from "react";
 import debounce from "lodash/debounce";
-import { pick } from "ramda";
 import { injectState } from "freactal";
 import { withRouter } from "react-router-dom";
 import { Thing } from "./Thing";
 
-const LISTING_PROPS = [
-  "days",
-  "topics",
-  "opId",
-  "replyToId",
-  "authorIds",
-  "domain",
-  "url",
-  "sort",
-  "limit",
-  "count",
-  "threshold"
-];
-
 export class Listing extends PureComponent {
   constructor(props) {
     super(props);
-    this.listing = props.listing || props.state.notabugApi.scopedListing({
-      onFetchCache: () =>
-        fetch(`${this.props.location.pathname}.json?${this.props.location.search}`)
-          .then(response => {
-            if (response.status !== 200) throw new Error("Bad response from server");
-            return response.json();
-          })
-    });
+    this.listing = props.listing || props.state.notabugApi.scopedListing();
     if (props.realtime) this.listing.scope.realtime();
-    this.state = { ids: this.listing.ids.now(this.getListingParams(props)) || [] };
+    this.state = { ids: this.listing.ids.now(props.listingParams) || [] };
     this.onRefresh = debounce(() => this.onUpdate(), 250);
   }
 
@@ -41,7 +19,7 @@ export class Listing extends PureComponent {
   }
 
   componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(this.getListingParams()) !== JSON.stringify(this.getListingParams(nextProps)))
+    if (JSON.stringify(this.props.listingParams) !== JSON.stringify(nextProps.listingParams))
       this.onUpdate(nextProps);
     if (nextProps.realtime && !this.props.realtime) this.listing.scope.realtime();
   }
@@ -66,6 +44,7 @@ export class Listing extends PureComponent {
         isVisible={this.props.autoVisible}
         realtime={this.props.realtime}
         listing={this.listing}
+        listingParams={this.props.listingParams}
         fetchParent={this.props.fetchParent}
         hideReply={this.props.hideReply}
         disableChildren={this.props.disableChildren}
@@ -81,10 +60,10 @@ export class Listing extends PureComponent {
 
   onSubscribe = () => this.listing.scope.on(this.onRefresh);
   onUnsubscribe = () => this.listing.scope.off(this.onRefresh);
-  getListingParams = (props) => ({ ...pick(LISTING_PROPS, props || this.props) });
   onUpdate = (props) => {
-    this.setState({ ids: this.listing.ids.now(this.getListingParams(props || this.props)) || [] });
-    this.listing.ids(this.getListingParams(props || this.props))
+    const { listingParams } = (props || this.props);
+    this.setState({ ids: this.listing.ids.now(listingParams) || [] });
+    this.listing.ids(listingParams)
       .then(idsList => {
         const ids = idsList || [];
         if (ids.join("|") === this.state.ids.join("|")) return;

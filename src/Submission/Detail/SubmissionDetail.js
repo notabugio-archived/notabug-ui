@@ -1,5 +1,6 @@
 import React from "react";
 import { injectState } from "freactal";
+import { Dropdown, Link } from "utils";
 import { NestedListing } from "Listing/Nested";
 import { Thing } from "Listing/Thing";
 import { Submission } from "Submission";
@@ -7,7 +8,9 @@ import { submissionDetailProvider } from "./state";
 import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
 
 export const SubmissionDetailBase = ({
-  state: { replied, notabugSubmissionId, notabugCommentsSort="best" },
+  location: { pathname },
+  state: { replied, notabugSubmissionId },
+  listingParams
 }) => (
   <div className="content" role="main">
     <div className="spacer">
@@ -23,13 +26,17 @@ export const SubmissionDetailBase = ({
       </div>
       <div className="commentarea">
         <CommentAreaTitle />
-        <SortSelector currentSort={notabugCommentsSort} sortOptions={["hot", "new", "top"]} />
+        <SortSelector
+          {...{ Dropdown, Link }}
+          currentSort={listingParams.sort || "best"}
+          permalink={pathname}
+          sortOptions={["best", "hot", "new", "top", "controversial"]}
+        />
         <NestedListing
           name={notabugSubmissionId}
           showReplyForm={true}
-          sort={notabugCommentsSort}
-          opId={notabugSubmissionId}
           realtime={!!replied}
+          listingParams={listingParams}
         />
       </div>
     </div>

@@ -9,6 +9,7 @@ import { injectState } from "freactal";
 import { withRouter } from "react-router-dom";
 import { submissionSummaryProvider } from "./state";
 import { AuthorLink } from "Auth";
+// import { SaveThingButton } from "SaveThing";
 
 const nsfwRe = /(nsfw|porn|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
 
@@ -22,7 +23,7 @@ export const Submission = ({
   isViewing,
   onToggleExpando,
   item,
-  state: { isVotingUp, isVotingDown },
+  state: { isVotingUp, isVotingDown /*, notabugUser*/ },
   effects: { onVoteUp, onVoteDown }
 }) => {
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
@@ -63,6 +64,23 @@ export const Submission = ({
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
         linkTarget="_blank"
         scoreTooltip={`+${ups} / -${downs}`}
+        preTagline={(
+          <span className="individual-vote-counts">
+            <span className="score likes" title="upvotes">+{ups}</span>
+            {" "}
+            <span className="score dislikes" title="downvotes">-{downs}</span>
+            {" "}
+          </span>
+        )}
+        /*
+        postButtons={notabugUser ? (
+          <Fragment>
+            <SaveThingButton id={id} className="link-save-button save-button" />
+            <SaveThingButton label="hide" className="hide-button" id={id} />
+            <SaveThingButton label="spam" className="remove-button" id={id} />
+          </Fragment>
+        ) : null}
+        */
         onToggleExpando={expandoType ? onToggleExpando : null}
       />
     </Fragment>

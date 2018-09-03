@@ -1,6 +1,7 @@
 export { cached } from "./Cached";
 export { locationKey } from "./locationKey";
 export { JavaScriptRequired } from "./JavaScriptRequired";
+export { Dropdown } from "./Dropdown";
 export { Link } from "./Link";
 export { Loading } from "./Loading";
 export { Markdown } from "./Markdown";
