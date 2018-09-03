@@ -4,6 +4,8 @@ var redis = require("redis");
 var flatten = require("flat");
 var unfuck = require("./unfuck-redis");
 
+var FIELD_SIZE_LIMIT=100000;
+
 function toRedis(obj) {
   if (!obj) return obj;
 
@@ -15,6 +17,10 @@ function toRedis(obj) {
     }
     if (obj[key] === undefined) {
       obj[key] = "|UNDEFINED|";
+    }
+    if (obj[key] && obj[key].length > FIELD_SIZE_LIMIT) {
+      obj[key] = obj[key].slice(0, FIELD_SIZE_LIMIT);
+      console.log("truncated input", key);
     }
   });
 
@@ -35,6 +41,10 @@ function fromRedis(obj) {
     if (key === "timestamp" || key === "lastActive" || />\./.test(key)) {
       obj[key] = parseInt(obj[key], 10) || 0;
     }
+    if (obj[key] && obj[key].length > FIELD_SIZE_LIMIT) {
+      obj[key] = obj[key].slice(0, FIELD_SIZE_LIMIT);
+      console.log("truncated", key);
+    }
   });
 
   obj = unfuck(flatten.unflatten(obj));
@@ -50,6 +60,9 @@ var get = function(redis, key, done) {
       done && done(err);
     } else {
       var data = fromRedis(res);
+      if (key === "~0R5jFQNX4ff0gYPQwqg67qV8rmNLjp2gqyc7lkmvpSY.5lupP8_MAS3rIkdcPv9AiWZ93KcGD4zTSoPKn4nNI4k") {
+        console.log("data", data);
+      }
       done && done(null, data);
     }
   });
