@@ -20,6 +20,7 @@ export const UserInfo = injectState(({
       effects.onLogout();
     }}
     loginUrl="/login"
+    messagesUrl="/message/inbox"
   />
 ) : (
   <div id="header-bottom-right">

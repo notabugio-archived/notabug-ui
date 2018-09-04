@@ -29,6 +29,7 @@ export class Topic extends PureComponent {
     const count = parseInt(query.count, 10) || 0;
     const listing = {
       listingParams,
+      realtime: !!/^\/message\//.test(pathname),
       Empty: () => <Loading name="ball-grid-beat" />,
       Loading: Submission,
       noRank: !!userid,

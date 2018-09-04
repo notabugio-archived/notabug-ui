@@ -83,6 +83,44 @@ export const routes = [
     path: "/rules",
     component: ContentPolicy
   }, {
+    path: "/message/comments",
+    component: Topic,
+    getListingParams: withParams(({ userId }) => ({
+      space: {
+        good: [{
+          repliesToAuthorId: userId ? `~${userId}` : undefined,
+          type: "comments"
+        }]
+      },
+      days: null,
+      sort: "new"
+    }))
+  }, {
+    path: "/message/selfreply",
+    component: Topic,
+    getListingParams: withParams(({ userId }) => ({
+      space: {
+        good: [{
+          repliesToAuthorId: userId ? `~${userId}` : undefined,
+          type: "submitted"
+        }]
+      },
+      days: null,
+      sort: "new"
+    }))
+  }, {
+    path: "/message/inbox",
+    component: Topic,
+    getListingParams: withParams(({ userId }) => ({
+      space: {
+        good: [{
+          repliesToAuthorId: userId ? `~${userId}` : undefined
+        }]
+      },
+      days: null,
+      sort: "new"
+    }))
+  }, {
     path: "/t/:topic/comments/:submission_id/:slug",
     component: cached(SubmissionDetail),
     getListingParams: getSubmissionListingParams
