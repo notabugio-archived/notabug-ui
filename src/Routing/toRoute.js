@@ -10,7 +10,6 @@ const listingComponent = (Component, getParams) => injectState(props => {
     location: { search },
   } = props;
   const query = qs.parse(search, { ignoreQueryPrefix: true });
-  console.log({ params, query, userId });
   const listingParams = getParams({ params, query, userId });
   return <Component {...{ ...props, listingParams }} key={userId || "anon"}/>;
 });
