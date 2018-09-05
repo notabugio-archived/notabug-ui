@@ -1,4 +1,5 @@
 import React, { PureComponent, Fragment } from "react";
+import { path } from "ramda";
 import debounce from "lodash/debounce";
 import { injectState } from "freactal";
 import { withRouter } from "react-router-dom";
@@ -36,7 +37,7 @@ export class Listing extends PureComponent {
 
   renderThing(idx, key) {
     const { myContent = {} } = this.props;
-    const count = parseInt(this.props.count, 10) || 0;
+    const count = parseInt(path(["props", "listingParams", "count"], this) || 0);
     const id = this.state.ids[idx];
     return (
       <Thing

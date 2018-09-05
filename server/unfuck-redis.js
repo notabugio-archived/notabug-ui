@@ -1,3 +1,5 @@
+var FIELD_SIZE_LIMIT=100000;
+
 module.exports = function (obj) {
   if (!obj) return obj;
 
@@ -23,6 +25,13 @@ module.exports = function (obj) {
   });
 
   if (madeChanges) console.log("unfuck redis", JSON.stringify(obj, null, 2));
+
+  Object.keys(obj).forEach(key => {
+    if (obj[key] && obj[key].length > FIELD_SIZE_LIMIT) {
+      obj[key] = obj[key].slice(0, FIELD_SIZE_LIMIT);
+      console.log("truncated for other peer", key);
+    }
+  });
 
   return obj;
 };
