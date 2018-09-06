@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
+import clickOutside from "react-click-outside";
 import { Manager, Reference, Popper } from "react-popper";
-
 
 export class Dropdown extends PureComponent {
   constructor(props) {
@@ -9,6 +9,7 @@ export class Dropdown extends PureComponent {
   }
 
   onOpen = () => this.setState({ isOpen: true })
+  handleClickOutside = () => this.setState({ isOpen: false });
 
   render() {
     const { value, children } = this.props;
@@ -36,3 +37,5 @@ export class Dropdown extends PureComponent {
     );
   }
 }
+
+export default clickOutside(Dropdown);
