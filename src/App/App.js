@@ -49,6 +49,7 @@ export const App = () => (
     <Voting>
       <Helmet>
         <title>notabug: the back page of the internet</title>
+        <body class="loggedin subscriber" />
       </Helmet>
       <ScrollToTop>
         <Switch>
