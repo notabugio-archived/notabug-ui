@@ -8,7 +8,6 @@ import { votingItemProvider } from "Voting";
 export const ThingCommentEntryBase = ({
   state: { isVotingUp, isVotingDown },
   effects,
-  hideReply,
   ups,
   downs,
   ...props
@@ -18,10 +17,6 @@ export const ThingCommentEntryBase = ({
     Link={Link}
     AuthorLink={AuthorLink}
     likes={isVotingUp ? true : isVotingDown ? false : undefined}
-    onShowReply={hideReply ? null : e => {
-      e.preventDefault();
-      effects.onNotabugSetReplyTo(props.id);
-    }}
     score={null}
     afterAuthor={(
       <Fragment>

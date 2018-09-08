@@ -1,2 +1,2 @@
 export { Comment } from "./Comment";
-export { CommentForm } from "./Form";
+export { default as CommentForm } from "./Form";

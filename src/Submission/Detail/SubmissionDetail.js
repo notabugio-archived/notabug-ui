@@ -9,7 +9,7 @@ import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
 
 export const SubmissionDetailBase = ({
   location: { pathname },
-  state: { replied, notabugSubmissionId },
+  state: { replied, notabugSubmissionId, notabugSubmissionTopic: topic },
   listingParams
 }) => (
   <div className="content" role="main">
@@ -33,7 +33,9 @@ export const SubmissionDetailBase = ({
           sortOptions={["best", "hot", "new", "top", "controversial"]}
         />
         <NestedListing
-          name={notabugSubmissionId}
+          opId={notabugSubmissionId}
+          id={notabugSubmissionId}
+          topic={topic}
           showReplyForm={true}
           realtime={!!replied}
           listingParams={listingParams}

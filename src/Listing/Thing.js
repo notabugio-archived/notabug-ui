@@ -23,7 +23,7 @@ class ThingBase extends PureComponent {
     const parentItem = props.fetchParent && item && item.opId ? listing.thingData.now(item.opId) : null;
     this.listing = listing;
     if (props.realtime) this.listing.scope.realtime();
-    this.state = { item, parentItem, scores, expanded };
+    this.state = {item, parentItem, scores, expanded, isShowingReply: false };
     this.onRefresh = debounce(() => this.onUpdate(), 250);
   }
 
@@ -37,7 +37,7 @@ class ThingBase extends PureComponent {
       id, isMine, rank, collapseThreshold=null, hideReply=false,
       Loading: LoadingComponent = Loading, ...props
     } = this.props;
-    const { item, parentItem, scores, expanded } = this.state;
+    const { item, parentItem, scores, expanded, isShowingReply } = this.state;
     const score = ((scores.ups || 0) - (scores.downs || 0) || 0);
     const ThingComponent = (item ? components[item.kind] : null);
     const collapsed = !isMine && !!((collapseThreshold!==null && (score < collapseThreshold)));
@@ -46,8 +46,10 @@ class ThingBase extends PureComponent {
       ...props, ...scores,
       rank, id, item, parentItem,
       expanded, collapsed, collapseThreshold,
-      hideReply, isMine,
+      isShowingReply, hideReply, isMine,
       listing: this.listing,
+      onShowReply: !props.disableChildren && this.onShowReply,
+      onHideReply: this.onHideReply,
       onToggleExpando: this.onToggleExpando
     };
     const renderComponent = ({ isVisible }) => !item
@@ -69,6 +71,14 @@ class ThingBase extends PureComponent {
   onFetchOpItem = () => this.listing.thingData(this.state.item.opId)
     .then(parentItem => this.setState({ parentItem }))
     .then(() => this.onUpdated());
+  onShowReply = (e) => {
+    e && e.preventDefault();
+    this.setState({ isShowingReply: true });
+  };
+  onHideReply = (e) => {
+    e && e.preventDefault();
+    this.setState({ isShowingReply: false });
+  };
 }
 
 export const Thing = withRouter(injectState(ThingBase));

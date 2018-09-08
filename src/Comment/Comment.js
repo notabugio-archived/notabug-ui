@@ -63,12 +63,14 @@ export class Comment extends PureComponent {
         NestedListing={disableChildren ? () => null : NestedListing}
         {...this.props}
         id={id}
+        opId={item.opId}
         body={item.body ? item.body.slice(0, COMMENT_BODY_MAX) : item.body}
         author={item.author}
         author_fullname={item.authorId}
         siteprefix="t"
         name={id}
         parent_id={item.replyToId}
+        topic={this.props.topic || item.topic}
         created={item.timestamp / 1000}
         created_utc={item.timestamp / 1000}
         ups={ups}
@@ -78,12 +80,14 @@ export class Comment extends PureComponent {
         {...parentParams}
         scoreTooltip={`+${ups} / -${downs}`}
         collapsed={this.state.collapsed}
+        showReplyForm={this.props.isShowingReply}
         onToggleExpand={this.onToggleExpand}
       />
     );
   }
 
-  onToggleExpand() {
-    this.setState({ collapsed: !this.state.collapsed });
-  }
+  onToggleExpand = (e) => {
+    e && e.preventDefault();
+    this.setState(({ collapsed }) => ({ collapsed: !collapsed }));
+  };
 }

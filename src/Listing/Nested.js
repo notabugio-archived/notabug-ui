@@ -1,24 +1,27 @@
 import React, { Fragment } from "react";
 import { injectState } from "freactal";
-import { CommentForm } from "Comment/Form";
+import CommentForm from "Comment/Form";
 import Listing from "./Listing";
 
 export const NestedListing = injectState(({
-  name,
+  id,
   showReplyForm,
   realtime,
   opId,
   item,
   listing,
   listingParams,
-  state: { myContent, notabugReplyToCommentId, notabugCommentsSort },
+  state: { myContent, notabugCommentsSort },
+  ...props
 }) => (
   <Fragment>
-    {showReplyForm || notabugReplyToCommentId === name ? (
-      <CommentForm thingId={name} autoFocus={false} />
+    {showReplyForm ? (
+      <CommentForm {...{...props, id, opId }} thingId={id} autoFocus={false} />
     ) : null}
     <div className={"sitetable nestedlisting"}>
       <Listing
+        {...props}
+        id={id}
         sort={notabugCommentsSort}
         listing={listing}
         myContent={myContent}
@@ -32,7 +35,7 @@ export const NestedListing = injectState(({
             }]
           },
           days: null,
-          replyToId: name
+          replyToId: id
         }}
       />
     </div>

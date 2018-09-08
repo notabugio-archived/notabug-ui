@@ -44,6 +44,7 @@ export class Listing extends PureComponent {
         Loading={this.props.Loading}
         isVisible={this.props.autoVisible}
         realtime={this.props.realtime}
+        topic={this.props.topic}
         listing={this.listing}
         listingParams={this.props.listingParams}
         fetchParent={this.props.fetchParent}
