@@ -1,0 +1,13 @@
+[
+  {
+    "uid": "notabug",
+    "script": "server.js",
+    "args": [
+      "--debug",
+      "--listings",
+      "--redis",
+      "--peer", "http://localhost:3001/gun",
+      "--evict"
+    ]
+  }
+]

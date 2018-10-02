@@ -4,9 +4,11 @@ import { Topic } from "Listing";
 import { SubmissionDetail } from "Submission/Detail";
 import { SubmissionForm } from "Submission/Form";
 import { toRoute } from "./toRoute";
+import { tabulator } from "../config.json";
 
-const baseParams = ({ params: { sort="hot" }, query: { count, limit } }) => ({
+const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}) => ({
   sort,
+  tabulator,
   count: parseInt(count, 10) || 0,
   limit: parseInt(limit, 10) || 25,
   days: parseInt(limit, 10) || 90,
@@ -14,57 +16,30 @@ const baseParams = ({ params: { sort="hot" }, query: { count, limit } }) => ({
 
 const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
 
-const getTopicListingParams = withParams(({ params: { topic="all" } }) => ({
-  space: {
-    good: [{
-      topics: topic.split("+")
-    }]
-  }
-}));
+const getTopicListingParams = withParams(({ params: { sort="hot", topic="all" } }) =>
+  ({ soul: `nab/t/${topic}/${sort}@${tabulator}.` }));
 
-const getDomainListingParams = withParams(({ params: { domain } }) => ({
-  space: {
-    good: [{
-      domains: domain.split("+")
-    }]
-  }
-}));
+const getDomainListingParams = withParams(({ params: { sort="hot", domain } }) =>
+  ({ soul: `nab/domain/${domain}/${sort}@${tabulator}.` }));
 
 const getSubmissionListingParams = withParams((
   { params: { submission_id  }, query: { sort="best" } }
 ) => ({
-  space: {
-    good: [{
-      submissionIds: [submission_id]
-    }]
-  },
+  soul: `nab/things/${submission_id}/comments/${sort}@${tabulator}.`,
+  sort,
   days: null,
-  limit: null,
-  sort
+  limit: null
 }));
 
-const getFirehoseListingParams = withParams(() => ({
-  space: {
-    good: [{
-      topics: ["chat:whatever", "comments:all", "all"],
-    }]
-  },
-  sort: "new",
-  days: 3
+export const getFirehoseListingParams = withParams(({ withSubmissions }) => ({
+  soul: withSubmissions
+    ? `nab/t/chat:whatever+comments:all+all/new@${tabulator}.`
+    : `nab/t/chat:whatever/new@${tabulator}.`
 }));
 
 const getProfileListingParams = withParams((
-  { params: { userid, type=null }, query: { sort="new" } }
-) =>({
-  space: {
-    good: [{
-      authorIds: userid.split("+"),
-      type,
-    }]
-  },
-  type,
-  sort
-}));
+  { params: { userid, type="overview" }, query: { sort="new" } }
+) => ({ authorIds: userid.split("+"), soul: `nab/user/${userid}/${type}/${sort}@${tabulator}.`, sort }));
 
 export const routes = [
   {
@@ -86,39 +61,19 @@ export const routes = [
     path: "/message/comments",
     component: Topic,
     getListingParams: withParams(({ userId }) => ({
-      space: {
-        good: [{
-          repliesToAuthorId: userId ? `~${userId}` : undefined,
-          type: "comments"
-        }]
-      },
-      days: null,
-      sort: "new"
+      soul: `nab/user/${userId}/replies/comments/new@${tabulator}.`
     }))
   }, {
     path: "/message/selfreply",
     component: Topic,
     getListingParams: withParams(({ userId }) => ({
-      space: {
-        good: [{
-          repliesToAuthorId: userId ? `~${userId}` : undefined,
-          type: "submitted"
-        }]
-      },
-      days: null,
-      sort: "new"
+      soul: `nab/user/${userId}/replies/submitted/new@${tabulator}.`
     }))
   }, {
     path: "/message/inbox",
     component: Topic,
     getListingParams: withParams(({ userId }) => ({
-      space: {
-        good: [{
-          repliesToAuthorId: userId ? `~${userId}` : undefined
-        }]
-      },
-      days: null,
-      sort: "new"
+      soul: `nab/user/${userId}/replies/all/new@${tabulator}.`
     }))
   }, {
     path: "/t/:topic/comments/:submission_id/:slug",
@@ -151,23 +106,15 @@ export const routes = [
     component: cached(Topic),
     getListingParams: getDomainListingParams
   }, {
-    path: "/user/:userid/overview/:sort",
+    path: "/user/~:userid/:type/:sort",
     component: cached(Topic),
     getListingParams: getProfileListingParams
   }, {
-    path: "/user/:userid/overview",
+    path: "/user/~:userid/:type",
     component: cached(Topic),
     getListingParams: getProfileListingParams
   }, {
-    path: "/user/:userid/:type/:sort",
-    component: cached(Topic),
-    getListingParams: getProfileListingParams
-  }, {
-    path: "/user/:userid/:type",
-    component: cached(Topic),
-    getListingParams: getProfileListingParams
-  }, {
-    path: "/user/:userid",
+    path: "/user/~:userid",
     component: cached(Topic),
     getListingParams: getProfileListingParams
   }, {

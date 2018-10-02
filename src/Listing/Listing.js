@@ -1,57 +1,49 @@
-import React, { PureComponent, Fragment } from "react";
+import React from "react";
 import { path } from "ramda";
-import debounce from "lodash/debounce";
-import { injectState } from "freactal";
 import { withRouter } from "react-router-dom";
+import { ListingLimitedIds } from "./LimitedIds";
 import { Thing } from "./Thing";
+import { injectState } from "freactal";
 
-export class Listing extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.listing = props.listing || props.state.notabugApi.scopedListing();
-    if (props.realtime) this.listing.scope.realtime();
-    this.state = { ids: this.listing.ids.now(props.listingParams) || [] };
-    this.onRefresh = debounce(() => this.onUpdate(), 250);
-  }
-
+export class Listing extends React.PureComponent {
   componentDidMount() {
-    this.onUpdate();
-    this.onSubscribe();
+    if (this.props.realtime) this.props.state.notabugApi.scope.realtime();
   }
-
-  componentWillReceiveProps(nextProps) {
-    if (JSON.stringify(this.props.listingParams) !== JSON.stringify(nextProps.listingParams))
-      this.onUpdate(nextProps);
-    if (nextProps.realtime && !this.props.realtime) this.listing.scope.realtime();
-  }
-
-  componentWillUnmount = () => this.onUnsubscribe();
 
   render() {
-    const { Empty, Container=Fragment, containerProps={}, childrenPropName="children" } = this.props;
-    const { ids } = this.state;
-    if (!ids.length && Empty) return <Empty />;
-    const rendered = ids.map((id, idx) => this.renderThing(idx, id));
-    return <Container {...{...containerProps, [childrenPropName]: rendered }} />;
+    const {
+      Empty,
+      Container=React.Fragment,
+      containerProps={},
+      childrenPropName="children",
+      ids,
+      ...props
+    } = this.props;
+    const renderProps = ({ ids }) => {
+      if (!ids.length && Empty) return <Empty />;
+      const rendered = ids.map((id, idx) => this.renderThing(idx, id));
+      return <Container {...{...containerProps, [childrenPropName]: rendered }} />;
+    };
+    if (ids) return renderProps({ ids });
+    return <ListingLimitedIds {...props}>{renderProps}</ListingLimitedIds>;
   }
 
-  renderThing(idx, key) {
+  renderThing(idx, id) {
     const { myContent = {} } = this.props;
     const count = parseInt(path(["props", "listingParams", "count"], this) || 0);
-    const id = this.state.ids[idx];
     return (
       <Thing
         Loading={this.props.Loading}
         isVisible={this.props.autoVisible}
         realtime={this.props.realtime}
         topic={this.props.topic}
-        listing={this.listing}
         listingParams={this.props.listingParams}
+        replyTree={this.props.replyTree}
         fetchParent={this.props.fetchParent}
         hideReply={this.props.hideReply}
         disableChildren={this.props.disableChildren}
         id={id}
-        key={key || id}
+        key={id}
         isMine={!!myContent[id]}
         rank={this.props.noRank ? null : count + idx + 1}
         onDidUpdate={this.props.onDidUpdate}
@@ -59,19 +51,6 @@ export class Listing extends PureComponent {
       />
     );
   }
-
-  onSubscribe = () => this.listing.scope.on(this.onRefresh);
-  onUnsubscribe = () => this.listing.scope.off(this.onRefresh);
-  onUpdate = (props) => {
-    const { listingParams } = (props || this.props);
-    this.setState({ ids: this.listing.ids.now(listingParams) || [] });
-    this.listing.ids(listingParams)
-      .then(idsList => {
-        const ids = idsList || [];
-        if (ids.join("|") === this.state.ids.join("|")) return;
-        this.setState({ ids }, this.props.onDidUpdate);
-      }).catch(error => console.error(error.stack || error));
-  };
 }
 
 export default withRouter(injectState(Listing));

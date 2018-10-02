@@ -6,6 +6,7 @@ import { Link, Loading, JavaScriptRequired } from "utils";
 import { Listing } from "Listing";
 import { LoadingChatMsg } from "./LoadingChatMsg";
 import ChatInput from "./Input";
+import { getFirehoseListingParams } from "Routing/routes";
 
 export class Chat extends PureComponent {
   constructor(props) {
@@ -39,18 +40,11 @@ export class Chat extends PureComponent {
         disableChildren
         Empty={Loading}
         Loading={LoadingChatMsg}
+        limit={this.state.messagesShown}
         listingParams={{
+          ...getFirehoseListingParams(this.props),
           sort: "new",
-          days: 3,
-          threshold: -1,
-          limit: this.state.messagesShown,
-          space: {
-            good: [{
-              topics: this.props.withSubmissions
-                ? [`chat:${this.state.topic}`, "comments:all", "all"].reverse()
-                : [`chat:${this.state.topic}`]
-            }]
-          }
+          threshold: -1
         }}
         fetchParent
         hideReply

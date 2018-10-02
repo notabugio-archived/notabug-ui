@@ -34,6 +34,7 @@ const initialState = ({ history, notabugApi }) => {
     localStorage: LOCAL_STORAGE,
     countVotes: COUNT_VOTES,
     disableValidation: true,
+    super: false,
     leech: true,
     peers: isNode ? [] : [
       window.location.origin + "/gun",

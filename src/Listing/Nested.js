@@ -1,17 +1,14 @@
 import React, { Fragment } from "react";
-import { injectState } from "freactal";
+import { keysIn } from "ramda";
 import CommentForm from "Comment/Form";
 import Listing from "./Listing";
 
-export const NestedListing = injectState(({
+export const NestedListing = ({
   id,
   showReplyForm,
   realtime,
   opId,
-  item,
-  listing,
-  listingParams,
-  state: { myContent, notabugCommentsSort },
+  replyTree={},
   ...props
 }) => (
   <Fragment>
@@ -20,24 +17,10 @@ export const NestedListing = injectState(({
     ) : null}
     <div className={"sitetable nestedlisting"}>
       <Listing
-        {...props}
-        id={id}
-        sort={notabugCommentsSort}
-        listing={listing}
-        myContent={myContent}
+        {...{ ...props, realtime, replyTree }}
+        ids={keysIn(replyTree[id] || {})}
         collapseThreshold={0}
-        realtime={realtime}
-        listingParams={{
-          ...(listingParams || {}),
-          space: (listingParams && listingParams.space) || {
-            good: [{
-              submissionIds: [opId || item && item.opId]
-            }]
-          },
-          days: null,
-          replyToId: id
-        }}
       />
     </div>
   </Fragment>
-));
+);

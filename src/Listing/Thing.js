@@ -16,10 +16,11 @@ const components = {
 class ThingBase extends PureComponent {
   constructor(props) {
     super(props);
-    const { expanded = false } = props;
+    const { data, expanded = false } = props;
     const listing = props.listing || props.state.notabugApi.scopedListing();
-    const scores = listing.thingScores.now(props.id) || { ups: 0, downs: 0, score: 0, comments: 0 };
-    const item = listing.thingData.now(props.id);
+    const scores = listing.thingScores.now(props.id, props.listingParams.tabulator) ||
+      { ups: 0, downs: 0, score: 0, comments: 0 };
+    const item = data || listing.thingData.now(props.id);
     const parentItem = props.fetchParent && item && item.opId ? listing.thingData.now(item.opId) : null;
     this.listing = listing;
     if (props.realtime) this.listing.scope.realtime();
@@ -61,9 +62,13 @@ class ThingBase extends PureComponent {
   onToggleExpando = () => this.setState(({ expanded }) => ({ expanded: !expanded }));
   onSubscribe = () => this.listing.scope.on(this.onRefresh);
   onUnsubscribe = () => this.listing.scope.off(this.onRefresh);
-  onUpdate = () => this.listing.thingScores(this.props.id)
-    .then(scores => this.setState({ scores }));
+  onUpdate = () => {
+    this.listing.thingScores(this.props.id, this.props.listingParams.tabulator)
+      .then(scores => this.setState({ scores }));
+    if (!this.state.item) this.onFetchItem();
+  }
   onUpdated = () => this.props.onDidUpdate && this.props.onDidUpdate();
+
   onFetchItem = () => this.listing.thingData(this.props.id)
     .then(item => this.setState({ item }, () =>
       (item && item.opId && this.props.fetchParent) && this.onFetchOpItem()))

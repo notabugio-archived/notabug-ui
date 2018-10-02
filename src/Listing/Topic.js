@@ -29,7 +29,8 @@ export class Topic extends PureComponent {
     const count = parseInt(query.count, 10) || 0;
     const listing = {
       listingParams,
-      realtime: !!/^\/message\//.test(pathname),
+      limit,
+      realtime: !!/^\/message\//.test(pathname) || isInfinite,
       Empty: () => <Loading name="ball-grid-beat" />,
       Loading: Submission,
       noRank: !!userid,
@@ -61,7 +62,7 @@ export class Topic extends PureComponent {
           />
         ) : null}
         <div className="sitetable" id="siteTable">
-          <Listing {...listing} />
+          <Listing {...listing }/>
           <div className="nav-buttons">
             <span className="nextprev">
               {"view more: "}
@@ -83,7 +84,7 @@ export class Topic extends PureComponent {
     );
   }
 
-  onLoadMore = () => Promise.resolve(this.setState({ limit: this.state.limit + 5 }));
+  onLoadMore = () => Promise.resolve(this.setState(({ limit }) => ({ limit: limit + 10 })));
   onToggleInfinite = (e) => {
     e.preventDefault();
     this.props.effects.onNotabugToggleInfiniteScroll();

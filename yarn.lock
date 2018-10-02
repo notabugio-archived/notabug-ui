@@ -1458,7 +1458,7 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-better-queue-memory@^1.0.1:
+better-queue-memory@^1.0.1, better-queue-memory@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/better-queue-memory/-/better-queue-memory-1.0.3.tgz#4e71fbb5f5976188656e0c5610da7b411af41493"
 
@@ -2609,6 +2609,10 @@ detect-libc@^1.0.2:
 detect-node@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/detect-node/-/detect-node-2.0.3.tgz#a2033c09cc8e158d37748fbde7507832bd6ce127"
+
+detect-node@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/detect-node/-/detect-node-2.0.4.tgz#014ee8f8f669c5c58023da64b8179c083a28c46c"
 
 detect-port-alt@1.1.6:
   version "1.1.6"
@@ -3830,9 +3834,9 @@ gun@^0.9.96:
   dependencies:
     ws "~>5.2.0"
 
-gun@^0.9.99993:
-  version "0.9.99993"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99993.tgz#e72b4c0ef95cab0044394a728828ab3f12a0acfc"
+gun@^0.9.99995:
+  version "0.9.99995"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99995.tgz#2eb085e6ef0236df8dc912aa79fac55fa6f9b4f3"
   dependencies:
     ws "~>5.2.0"
 
@@ -5733,8 +5737,8 @@ normalize-url@^1.4.0:
     sort-keys "^1.0.0"
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.9.8"
-  resolved "https://github.com/notabugio/notabug-peer.git#c25c432166ad96fde0ab629d27c60d4a959d560e"
+  version "0.10.0"
+  resolved "https://github.com/notabugio/notabug-peer.git#4ed9f5a868f0608e48fa36e4851d414dbe24f1a1"
   dependencies:
     babel-cli "^6.26.0"
     babel-plugin-module-resolver "^3.1.1"
@@ -5744,6 +5748,8 @@ normalize-url@^1.4.0:
     babel-preset-react-app "^3.1.2"
     babel-preset-stage-0 "^6.24.1"
     better-queue "^3.8.10"
+    better-queue-memory "^1.0.3"
+    detect-node "^2.0.4"
     lodash "^4.17.10"
     proof-of-work "https://github.com/notabugio/proof-of-work.git#build-compat"
     ramda "^0.25.0"

@@ -19,8 +19,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   }
   root = root || {};
   var console = root.console || { log: function log() {} };
-  function USE(arg) {
-    return arg.slice ? USE[R(arg)] : function (mod, path) {
+  function USE(arg, req) {
+    return req ? require(arg) : arg.slice ? USE[R(arg)] : function (mod, path) {
       arg(mod = { exports: {} });
       USE[R(path)] = mod.exports;
     };
@@ -35,14 +35,32 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
   ;USE(function (module) {
     // Security, Encryption, and Authorization: SEA.js
-    // MANDATORY READING: http://gun.js.org/explainers/data/security.html
+    // MANDATORY READING: https://gun.eco/explainers/data/security.html
+    // IT IS IMPLEMENTED IN A POLYFILL/SHIM APPROACH.
     // THIS IS AN EARLY ALPHA!
 
-    function SEA() {}
     if (typeof window !== "undefined") {
-      (SEA.window = window).SEA = SEA;
+      module.window = window;
     }
 
+    var tmp = module.window || module;
+    var SEA = tmp.SEA || function () {};
+
+    if (SEA.window = module.window) {
+      try {
+        SEA.window.SEA = SEA;
+        tmp = document.createEvent('CustomEvent');
+        tmp.initCustomEvent('extension', false, false, { type: "SEA" });
+        (window.dispatchEvent || window.fireEvent)(tmp);
+        window.postMessage({ type: "SEA" }, '*');
+      } catch (e) {}
+    }
+
+    try {
+      if (typeof common !== "undefined") {
+        common.exports = SEA;
+      }
+    } catch (e) {}
     module.exports = SEA;
   })(USE, './root');
 
@@ -50,7 +68,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var SEA = USE('./root');
     if (SEA.window) {
       if (location.protocol.indexOf('s') < 0 && location.host.indexOf('localhost') < 0 && location.protocol.indexOf('file:') < 0) {
-        location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
+        // location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
       }
     }
   })(USE, './https');
@@ -181,7 +199,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var Buffer = USE('./buffer');
     var api = { Buffer: Buffer };
 
-    if (typeof __webpack_require__ === 'function' || typeof window !== 'undefined') {
+    if (typeof window !== 'undefined') {
       var crypto = window.crypto || window.msCrypto;
       var subtle = crypto.subtle || crypto.webkitSubtle;
       var TextEncoder = window.TextEncoder;
@@ -197,15 +215,15 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       });
     } else {
       try {
-        var crypto = require('crypto');
+        var crypto = USE('crypto', 1);
 
-        var _require = require('@trust/webcrypto'),
-            _subtle = _require.subtle; // All but ECDH
+        var _USE = USE('@trust/webcrypto', 1),
+            _subtle = _USE.subtle; // All but ECDH
 
 
-        var _require2 = require('text-encoding'),
-            _TextEncoder = _require2.TextEncoder,
-            _TextDecoder = _require2.TextDecoder;
+        var _USE2 = USE('text-encoding', 1),
+            _TextEncoder = _USE2.TextEncoder,
+            _TextDecoder = _USE2.TextDecoder;
 
         Object.assign(api, {
           crypto: crypto,
@@ -217,7 +235,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           }
         });
         //try{
-        var WebCrypto = require('node-webcrypto-ossl');
+        var WebCrypto = USE('node-webcrypto-ossl', 1);
         api.ossl = new WebCrypto({ directory: 'ossl' }).subtle; // ECDH
         //}catch(e){
         //console.log("node-webcrypto-ossl is optionally needed for ECDH, please install if needed.");
@@ -233,6 +251,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
   })(USE, './shim');
 
   ;USE(function (module) {
+    var SEA = USE('./root');
     var Buffer = USE('./buffer');
     var settings = {};
     // Encryption parameters
@@ -278,6 +297,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       jwk: keysToEcdsaJwk,
       recall: authsettings
     });
+    SEA.opt = settings;
     module.exports = settings;
   })(USE, './settings');
 
@@ -300,8 +320,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var Buffer = USE('./buffer');
     var parse = USE('./parse');
 
-    var _USE = USE('./settings'),
-        pbkdf2 = _USE.pbkdf2;
+    var _USE3 = USE('./settings'),
+        pbkdf2 = _USE3.pbkdf2;
     // This internal func returns SHA-256 hashed data for signing
 
 
@@ -352,19 +372,21 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var SEA = USE('./root');
     var shim = USE('./shim');
     var S = USE('./settings');
+    var sha = USE('./sha256');
     var u;
 
-    SEA.work = function () {
-      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(data, pair, cb) {
-        var salt, key, result, _r, crypto, hash, r;
-
+    SEA.work = SEA.work || function () {
+      var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(data, pair, cb, opt) {
+        var salt, rsha, key, result, r;
         return regeneratorRuntime.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.prev = 0;
                 // used to be named `proof`
-                salt = pair.epub || pair; // epub not recommended, salt should be random!
+                salt = (pair || {}).epub || pair; // epub not recommended, salt should be random!
+
+                opt = opt || {};
 
                 if (salt instanceof Function) {
                   cb = salt;
@@ -372,46 +394,47 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 }
                 salt = salt || shim.random(9);
 
-                if (!SEA.window) {
-                  _context2.next = 15;
+                if (!('SHA-256' === opt.name)) {
+                  _context2.next = 13;
                   break;
                 }
 
-                _context2.next = 7;
-                return shim.subtle.importKey('raw', new shim.TextEncoder().encode(data), { name: 'PBKDF2' }, false, ['deriveBits']);
+                _context2.t0 = shim.Buffer;
+                _context2.next = 9;
+                return sha(data);
 
-              case 7:
-                key = _context2.sent;
-                _context2.next = 10;
-                return shim.subtle.deriveBits({
-                  name: 'PBKDF2',
-                  iterations: S.pbkdf2.iter,
-                  salt: new shim.TextEncoder().encode(salt),
-                  hash: S.pbkdf2.hash
-                }, key, S.pbkdf2.ks * 8);
-
-              case 10:
-                result = _context2.sent;
-
-                data = shim.random(data.length); // Erase data in case of passphrase
-                _r = shim.Buffer.from(result, 'binary').toString('utf8');
+              case 9:
+                _context2.t1 = _context2.sent;
+                rsha = _context2.t0.from.call(_context2.t0, _context2.t1, 'binary').toString('utf8');
 
                 if (cb) {
                   try {
-                    cb(_r);
+                    cb(rsha);
                   } catch (e) {
                     console.log(e);
                   }
                 }
-                return _context2.abrupt("return", _r);
+                return _context2.abrupt("return", rsha);
+
+              case 13:
+                _context2.next = 15;
+                return (shim.ossl || shim.subtle).importKey('raw', new shim.TextEncoder().encode(data), { name: opt.name || 'PBKDF2' }, false, ['deriveBits']);
 
               case 15:
-                // For NodeJS crypto.pkdf2 rocks
-                crypto = shim.crypto;
-                hash = crypto.pbkdf2Sync(data, new shim.TextEncoder().encode(salt), S.pbkdf2.iter, S.pbkdf2.ks, S.pbkdf2.hash.replace('-', '').toLowerCase());
+                key = _context2.sent;
+                _context2.next = 18;
+                return (shim.ossl || shim.subtle).deriveBits({
+                  name: opt.name || 'PBKDF2',
+                  iterations: opt.iterations || S.pbkdf2.iter,
+                  salt: new shim.TextEncoder().encode(opt.salt || salt),
+                  hash: opt.hash || S.pbkdf2.hash
+                }, key, opt.length || S.pbkdf2.ks * 8);
 
-                data = shim.random(data.length); // Erase passphrase for app
-                r = hash && hash.toString('utf8');
+              case 18:
+                result = _context2.sent;
+
+                data = shim.random(data.length); // Erase data in case of passphrase
+                r = shim.Buffer.from(result, 'binary').toString('utf8');
 
                 if (cb) {
                   try {
@@ -422,25 +445,25 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 }
                 return _context2.abrupt("return", r);
 
-              case 23:
-                _context2.prev = 23;
-                _context2.t0 = _context2["catch"](0);
+              case 25:
+                _context2.prev = 25;
+                _context2.t2 = _context2["catch"](0);
 
-                SEA.err = _context2.t0;
+                SEA.err = _context2.t2;
                 if (cb) {
                   cb();
                 }
                 return _context2.abrupt("return");
 
-              case 28:
+              case 30:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, _this3, [[0, 23]]);
+        }, _callee2, _this3, [[0, 25]]);
       }));
 
-      return function (_x3, _x4, _x5) {
+      return function (_x3, _x4, _x5, _x6) {
         return _ref2.apply(this, arguments);
       };
     }();
@@ -457,7 +480,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var Buff = typeof Buffer !== 'undefined' ? Buffer : shim.Buffer;
 
     //SEA.pair = async (data, proof, cb) => { try {
-    SEA.pair = function () {
+    SEA.pair = SEA.pair || function () {
       var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee5(cb) {
         var ecdhSubtle, sa, dh, r;
         return regeneratorRuntime.wrap(function _callee5$(_context5) {
@@ -505,7 +528,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                     }, _callee3, _this4);
                   }));
 
-                  return function (_x7) {
+                  return function (_x8) {
                     return _ref4.apply(this, arguments);
                   };
                 }());
@@ -549,7 +572,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                     }, _callee4, _this4);
                   }));
 
-                  return function (_x8) {
+                  return function (_x9) {
                     return _ref5.apply(this, arguments);
                   };
                 }());
@@ -615,7 +638,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee5, _this4, [[0, 26], [5, 11]]);
       }));
 
-      return function (_x6) {
+      return function (_x7) {
         return _ref3.apply(this, arguments);
       };
     }();
@@ -631,7 +654,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var S = USE('./settings');
     var sha256hash = USE('./sha256');
 
-    SEA.sign = function () {
+    SEA.sign = SEA.sign || function () {
       var _ref6 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee6(data, pair, cb) {
         var pub, priv, jwk, msg, hash, sig, r;
         return regeneratorRuntime.wrap(function _callee6$(_context6) {
@@ -706,7 +729,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee6, _this5, [[0, 19]]);
       }));
 
-      return function (_x9, _x10, _x11) {
+      return function (_x10, _x11, _x12) {
         return _ref6.apply(this, arguments);
       };
     }();
@@ -724,9 +747,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var parse = USE('./parse');
     var u;
 
-    SEA.verify = function () {
+    SEA.verify = SEA.verify || function () {
       var _ref7 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee7(data, pair, cb) {
         var json, raw, pub, jwk, key, hash, sig, check, r;
+        pair = false;
         return regeneratorRuntime.wrap(function _callee7$(_context7) {
           while (1) {
             switch (_context7.prev = _context7.next) {
@@ -810,7 +834,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee7, _this6, [[0, 25]]);
       }));
 
-      return function (_x12, _x13, _x14) {
+      return function (_x13, _x14, _x15) {
         return _ref7.apply(this, arguments);
       };
     }();
@@ -856,7 +880,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee8, _this7);
       }));
 
-      return function importGen(_x15, _x16, _x17) {
+      return function importGen(_x16, _x17, _x18) {
         return _ref8.apply(this, arguments);
       };
     }();
@@ -871,7 +895,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var S = USE('./settings');
     var aeskey = USE('./aeskey');
 
-    SEA.encrypt = function () {
+    SEA.encrypt = SEA.encrypt || function () {
       var _ref9 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee9(data, pair, cb, opt) {
         var key, msg, rand, ct, r;
         return regeneratorRuntime.wrap(function _callee9$(_context9) {
@@ -885,9 +909,10 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 rand = { s: shim.random(8), iv: shim.random(16) };
                 _context9.next = 7;
                 return aeskey(key, rand.s, opt).then(function (aes) {
-                  return shim.subtle.encrypt({ // Keeping the AES key scope as private as possible...
-                    name: opt.name || 'AES-GCM', iv: new Uint8Array(rand.iv)
-                  }, aes, new shim.TextEncoder().encode(msg));
+                  return (/*shim.ossl ||*/shim.subtle.encrypt({ // Keeping the AES key scope as private as possible...
+                      name: opt.name || 'AES-GCM', iv: new Uint8Array(rand.iv)
+                    }, aes, new shim.TextEncoder().encode(msg))
+                  );
                 });
 
               case 7:
@@ -926,7 +951,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee9, _this8, [[0, 13]]);
       }));
 
-      return function (_x18, _x19, _x20, _x21) {
+      return function (_x19, _x20, _x21, _x22) {
         return _ref9.apply(this, arguments);
       };
     }();
@@ -943,7 +968,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var aeskey = USE('./aeskey');
     var parse = USE('./parse');
 
-    SEA.decrypt = function () {
+    SEA.decrypt = SEA.decrypt || function () {
       var _ref10 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee10(data, pair, cb, opt) {
         var key, json, ct, r;
         return regeneratorRuntime.wrap(function _callee10$(_context10) {
@@ -956,15 +981,15 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 json = parse(data);
                 _context10.next = 6;
                 return aeskey(key, shim.Buffer.from(json.s, 'utf8'), opt).then(function (aes) {
-                  return shim.subtle.decrypt({ // Keeping aesKey scope as private as possible...
-                    name: opt.name || 'AES-GCM', iv: new Uint8Array(shim.Buffer.from(json.iv, 'utf8'))
-                  }, aes, new Uint8Array(shim.Buffer.from(json.ct, 'utf8')));
+                  return (/*shim.ossl ||*/shim.subtle.decrypt({ // Keeping aesKey scope as private as possible...
+                      name: opt.name || 'AES-GCM', iv: new Uint8Array(shim.Buffer.from(json.iv, 'utf8'))
+                    }, aes, new Uint8Array(shim.Buffer.from(json.ct, 'utf8')))
+                  );
                 });
 
               case 6:
                 ct = _context10.sent;
                 r = parse(new shim.TextDecoder('utf8').decode(ct));
-
 
                 if (cb) {
                   try {
@@ -993,7 +1018,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee10, _this9, [[0, 12]]);
       }));
 
-      return function (_x22, _x23, _x24, _x25) {
+      return function (_x23, _x24, _x25, _x26) {
         return _ref10.apply(this, arguments);
       };
     }();
@@ -1008,7 +1033,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var shim = USE('./shim');
     var S = USE('./settings');
     // Derive shared secret from other's pub and my epub/epriv
-    SEA.secret = function () {
+    SEA.secret = SEA.secret || function () {
       var _ref11 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee12(key, pair, cb) {
         var pub, epub, epriv, ecdhSubtle, pubKeyData, props, privKeyData, derived, r;
         return regeneratorRuntime.wrap(function _callee12$(_context12) {
@@ -1059,7 +1084,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                     }, _callee11, _this10);
                   }));
 
-                  return function (_x29) {
+                  return function (_x30) {
                     return _ref12.apply(this, arguments);
                   };
                 }());
@@ -1095,7 +1120,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee12, _this10, [[0, 22]]);
       }));
 
-      return function (_x26, _x27, _x28) {
+      return function (_x27, _x28, _x29) {
         return _ref11.apply(this, arguments);
       };
     }();
@@ -1150,7 +1175,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     SEA.encrypt = USE('./encrypt');
     SEA.decrypt = USE('./decrypt');
 
-    SEA.random = getRandomBytes;
+    SEA.random = SEA.random || getRandomBytes;
 
     // This is easy way to use IndexedDB, all methods are Promises
     // Note: Not all SEA interfaces have to support this.
@@ -1158,7 +1183,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
     // This is Buffer used in SEA and usable from Gun/SEA application also.
     // For documentation see https://nodejs.org/api/buffer.html
-    SEA.Buffer = Buffer;
+    SEA.Buffer = SEA.Buffer || Buffer;
 
     // These SEA functions support now ony Promises or
     // async/await (compatible) code, use those like Promises.
@@ -1166,7 +1191,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // Creates a wrapper library around Web Crypto API
     // for various AES, ECDSA, PBKDF2 functions we called above.
     // Calculate public key KeyID aka PGPv4 (result: 8 bytes as hex string)
-    SEA.keyid = function () {
+    SEA.keyid = SEA.keyid || function () {
       var _ref14 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee13(pub) {
         var pb, id, sha1, hash;
         return regeneratorRuntime.wrap(function _callee13$(_context13) {
@@ -1205,7 +1230,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee13, _this11, [[0, 10]]);
       }));
 
-      return function (_x30) {
+      return function (_x31) {
         return _ref14.apply(this, arguments);
       };
     }();
@@ -1218,7 +1243,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // But all other behavior needs to be equally easy, like opinionated ways of
     // Adding friends (trusted public keys), sending private messages, etc.
     // Cheers! Tell me what you think.
-    var Gun = (SEA.window || {}).Gun;
+    var Gun = (SEA.window || {}).Gun || USE('./gun', 1);
     Gun.SEA = SEA;
     SEA.Gun = Gun;
 
@@ -1232,9 +1257,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var queryGunAliases = function queryGunAliases(alias, gunRoot) {
       return new Promise(function (resolve, reject) {
         // load all public keys associated with the username alias we want to log in with.
-        gunRoot.get('~@' + alias).get(function (rat, rev) {
-          rev.off();
-          if (!rat.put) {
+        gunRoot.get('~@' + alias).once(function (data, key) {
+          //rev.off();
+          if (!data) {
             // if no user, don't do anything.
             var err = 'No user!';
             Gun.log(err);
@@ -1244,19 +1269,18 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
           var aliases = [];
           var c = 0;
           // TODO: how about having real chainable map without callback ?
-          Gun.obj.map(rat.put, function (at, pub) {
+          Gun.obj.map(data, function (at, pub) {
             if (!pub.slice || '~' !== pub.slice(0, 1)) {
               // TODO: ... this would then be .filter((at, pub))
               return;
             }
             ++c;
             // grab the account associated with this public key.
-            gunRoot.get(pub).get(function (at, ev) {
+            gunRoot.get(pub).once(function (data) {
               pub = pub.slice(1);
-              ev.off();
               --c;
-              if (at.put) {
-                aliases.push({ pub: pub, at: at });
+              if (data) {
+                aliases.push({ pub: pub, put: data });
               }
               if (!c && (c = -1)) {
                 resolve(aliases);
@@ -1291,14 +1315,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 return queryGunAliases(alias, gunRoot);
 
               case 2:
-                _context15.t0 = function () {
-                  var _ref16 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-                      pub = _ref16.pub,
-                      _ref16$at = _ref16.at;
-
-                  _ref16$at = _ref16$at === undefined ? {} : _ref16$at;
-                  var put = _ref16$at.put;
-                  return !!pub && !!put;
+                _context15.t0 = function (a) {
+                  return !!a.pub && !!a.put;
                 };
 
                 aliases = _context15.sent.filter(_context15.t0);
@@ -1317,16 +1335,14 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
                 _context15.next = 9;
                 return Promise.all(aliases.map(function () {
-                  var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(_ref18, i) {
-                    var at = _ref18.at,
-                        pub = _ref18.pub;
-                    var auth, proof, props, salt, sea, priv, epriv, epub, tmp;
+                  var _ref16 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee14(a, i) {
+                    var auth, proof, salt, sea, priv, epriv, epub, tmp;
                     return regeneratorRuntime.wrap(function _callee14$(_context14) {
                       while (1) {
                         switch (_context14.prev = _context14.next) {
                           case 0:
                             // attempt to PBKDF2 extend the password with the salt. (Verifying the signature gives us the plain text salt.)
-                            auth = parseProps(at.put.auth);
+                            auth = parseProps(a.put.auth);
                             // NOTE: aliasquery uses `gun.get` which internally SEA.read verifies the data for us, so we do not need to re-verify it here.
                             // SEA.verify(at.put.auth, pub).then(function(auth){
 
@@ -1336,63 +1352,63 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
                           case 4:
                             proof = _context14.sent;
-                            props = { pub: pub, proof: proof, at: at
-                              // the proof of work is evidence that we've spent some time/effort trying to log in, this slows brute force.
-                              /*
-                              MARK TO @mhelander : pub vs epub!???
-                              */
-                            };
+
+                            //const props = { pub: pub, proof: proof, at: at }
+                            // the proof of work is evidence that we've spent some time/effort trying to log in, this slows brute force.
+                            /*
+                            MARK TO @mhelander : pub vs epub!???
+                            */
                             salt = auth.salt;
-                            _context14.next = 9;
+                            _context14.next = 8;
                             return SEA.decrypt(auth.ek, proof);
 
-                          case 9:
+                          case 8:
                             sea = _context14.sent;
 
                             if (sea) {
-                              _context14.next = 13;
+                              _context14.next = 12;
                               break;
                             }
 
-                            err = 'Failed to decrypt secret! ' + i + '/' + aliases.length;
+                            err = 'Failed to decrypt secret! ' + (i + 1) + '/' + aliases.length;
                             return _context14.abrupt("return");
 
-                          case 13:
+                          case 12:
                             // now we have AES decrypted the private key, from when we encrypted it with the proof at registration.
                             // if we were successful, then that meanswe're logged in!
                             priv = sea.priv;
                             epriv = sea.epriv;
-                            epub = at.put.epub;
+                            epub = a.put.epub;
                             // TODO: 'salt' needed?
 
                             err = null;
-                            if (typeof window !== 'undefined') {
-                              tmp = window.sessionStorage;
+                            if (SEA.window) {
+                              tmp = SEA.window.sessionStorage;
 
                               if (tmp && gunRoot._.opt.remember) {
-                                window.sessionStorage.alias = alias;
-                                window.sessionStorage.tmp = pass;
+                                SEA.window.sessionStorage.alias = alias;
+                                SEA.window.sessionStorage.tmp = pass;
                               }
                             }
-                            return _context14.abrupt("return", Object.assign(props, { priv: priv, salt: salt, epub: epub, epriv: epriv }));
+                            return _context14.abrupt("return", { priv: priv, pub: a.put.pub, salt: salt, epub: epub, epriv: epriv });
 
-                          case 21:
-                            _context14.prev = 21;
+                          case 20:
+                            _context14.prev = 20;
                             _context14.t0 = _context14["catch"](1);
 
                             err = 'Failed to decrypt secret!';
                             throw { err: err };
 
-                          case 25:
+                          case 24:
                           case "end":
                             return _context14.stop();
                         }
                       }
-                    }, _callee14, _this12, [[1, 21]]);
+                    }, _callee14, _this12, [[1, 20]]);
                   }));
 
                   return function (_x35, _x36) {
-                    return _ref17.apply(this, arguments);
+                    return _ref16.apply(this, arguments);
                   };
                 }()));
 
@@ -1422,7 +1438,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee15, _this12);
       }));
 
-      return function authenticate(_x31, _x32, _x33) {
+      return function authenticate(_x32, _x33, _x34) {
         return _ref15.apply(this, arguments);
       };
     }();
@@ -1439,7 +1455,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     // This updates sessionStorage & IndexedDB to persist authenticated "session"
     var updateStorage = function updateStorage(proof, key, pin) {
       return function () {
-        var _ref19 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(props) {
+        var _ref17 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee16(props) {
           var alias, id, remember, signed, encrypted, auth;
           return regeneratorRuntime.wrap(function _callee16$(_context16) {
             while (1) {
@@ -1527,7 +1543,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }));
 
         return function (_x37) {
-          return _ref19.apply(this, arguments);
+          return _ref17.apply(this, arguments);
         };
       }();
     };
@@ -1544,7 +1560,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var updateStorage = USE('./update');
     // This internal func persists User authentication if so configured
     var authPersist = function () {
-      var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(user, proof, opts) {
+      var _ref18 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee17(user, proof, opts) {
         var pin, alias, exp, iat, remember, props, pub, epub, priv, epriv, key, asyncProps;
         return regeneratorRuntime.wrap(function _callee17$(_context17) {
           while (1) {
@@ -1615,7 +1631,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }));
 
       return function authPersist(_x38, _x39, _x40) {
-        return _ref20.apply(this, arguments);
+        return _ref18.apply(this, arguments);
       };
     }();
     module.exports = authPersist;
@@ -1627,23 +1643,39 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     var authPersist = USE('./persist');
     // This internal func finalizes User authentication
     var finalizeLogin = function () {
-      var _ref21 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(alias, key, gunRoot, opts) {
-        var user, opt, pub, priv, epub, epriv;
+      var _ref19 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee18(alias, key, gunRoot, opts) {
+        var user, tmp, opt, tags, pub, priv, epub, epriv;
         return regeneratorRuntime.wrap(function _callee18$(_context18) {
           while (1) {
             switch (_context18.prev = _context18.next) {
               case 0:
                 user = gunRoot._.user;
                 // add our credentials in-memory only to our root gun instance
-                //var tmp = user._.tag;
 
+                tmp = user._.tag;
                 opt = user._.opt;
 
-                user._ = key.at.$._;
+                user._ = gunRoot.get('~' + key.pub)._;
                 user._.opt = opt;
+                tags = user._.tag;
+                /*Object.values && Object.values(tmp).forEach(function(tag){
+                  // TODO: This is ugly & buggy code, it needs to be refactored & tested into a event "merge" utility.
+                  var t = tags[tag.tag];
+                  console.log("hm??", tag, t);
+                  if(!t){
+                    tags[tag.tag] = tag;
+                    return;
+                  }
+                  if(tag.last){
+                    tag.last.to = t.to;
+                    t.last = tag.last = t.last || tag.last;
+                  }
+                  t.to = tag.to;
+                })*/
                 //user._.tag = tmp || user._.tag;
                 // so that way we can use the credentials to encrypt/decrypt data
                 // that is input/output through gun (see below)
+
                 pub = key.pub;
                 priv = key.priv;
                 epub = key.epub;
@@ -1656,14 +1688,15 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 //await authPersist(user._, key.proof, opts) // temporarily disabled
                 // emit an auth event, useful for page redirects and stuff.
                 try {
-                  gunRoot._.on('auth', user._);
+                  gunRoot._.on('auth', user._); // TODO: Deprecate this, emit on user instead! Update docs when you do.
+                  //user._.on('auth', user._) // Arrgh, this doesn't work without event "merge" code, but "merge" code causes stack overflow and crashes after logging in & trying to write data.
                 } catch (e) {
                   console.log('Your \'auth\' callback crashed with:', e);
                 }
                 // returns success with the user data credentials.
                 return _context18.abrupt("return", user._);
 
-              case 12:
+              case 14:
               case "end":
                 return _context18.stop();
             }
@@ -1672,7 +1705,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }));
 
       return function finalizeLogin(_x41, _x42, _x43, _x44) {
-        return _ref21.apply(this, arguments);
+        return _ref19.apply(this, arguments);
       };
     }();
     module.exports = finalizeLogin;
@@ -1693,8 +1726,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
     // This internal func recalls persisted User authentication if so configured
     var authRecall = function () {
-      var _ref22 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(gunRoot, authprops) {
-        var remember, _ref23, _ref23$alias, alias, pIn, pin, checkRememberData, readAndDecrypt, aliases, err, _ref28, _ref29, _ref29$, key, at, proof, newPin, user, pIN, pinProp, _ref30, _ref30$err, _err;
+      var _ref20 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee23(gunRoot, authprops) {
+        var remember, _ref21, _ref21$alias, alias, pIn, pin, checkRememberData, readAndDecrypt, aliases, err, _ref26, _ref27, _ref27$, key, at, proof, newPin, user, pIN, pinProp, _ref28, _ref28$err, _err;
 
         return regeneratorRuntime.wrap(function _callee23$(_context23) {
           while (1) {
@@ -1702,18 +1735,18 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               case 0:
                 // window.sessionStorage only holds signed { alias, pin } !!!
                 remember = authprops || sessionStorage.getItem('remember');
-                _ref23 = authprops || {}, _ref23$alias = _ref23.alias, alias = _ref23$alias === undefined ? sessionStorage.getItem('user') : _ref23$alias, pIn = _ref23.pin; // @mhelander what is pIn?
+                _ref21 = authprops || {}, _ref21$alias = _ref21.alias, alias = _ref21$alias === undefined ? sessionStorage.getItem('user') : _ref21$alias, pIn = _ref21.pin; // @mhelander what is pIn?
 
                 pin = pIn && Buffer.from(pIn, 'utf8').toString('base64');
                 // Checks for existing proof, matching alias and expiration:
 
                 checkRememberData = function () {
-                  var _ref24 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(_ref25) {
-                    var proof = _ref25.proof,
-                        aLias = _ref25.alias,
-                        iat = _ref25.iat,
-                        exp = _ref25.exp,
-                        remember = _ref25.remember;
+                  var _ref22 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee19(_ref23) {
+                    var proof = _ref23.proof,
+                        aLias = _ref23.alias,
+                        iat = _ref23.iat,
+                        exp = _ref23.exp,
+                        remember = _ref23.remember;
                     var checkNotExpired, hooked;
                     return regeneratorRuntime.wrap(function _callee19$(_context19) {
                       while (1) {
@@ -1771,12 +1804,12 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   }));
 
                   return function checkRememberData(_x47) {
-                    return _ref24.apply(this, arguments);
+                    return _ref22.apply(this, arguments);
                   };
                 }();
 
                 readAndDecrypt = function () {
-                  var _ref26 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(data, pub, key) {
+                  var _ref24 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee20(data, pub, key) {
                     return regeneratorRuntime.wrap(function _callee20$(_context20) {
                       while (1) {
                         switch (_context20.prev = _context20.next) {
@@ -1805,7 +1838,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   }));
 
                   return function readAndDecrypt(_x48, _x49, _x50) {
-                    return _ref26.apply(this, arguments);
+                    return _ref24.apply(this, arguments);
                   };
                 }();
 
@@ -1878,8 +1911,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
 
               case 25:
                 _context23.t4 = function () {
-                  var _ref27 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
-                      pub = _ref27.pub;
+                  var _ref25 = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {},
+                      pub = _ref25.pub;
 
                   return !!pub;
                 };
@@ -1899,15 +1932,15 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 // (if two users have the same username AND the same password... that would be bad)
 
                 _context23.next = 32;
-                return Promise.all(aliases.filter(function (_ref31) {
-                  var _ref31$at = _ref31.at;
-                  _ref31$at = _ref31$at === undefined ? {} : _ref31$at;
-                  var put = _ref31$at.put;
+                return Promise.all(aliases.filter(function (_ref29) {
+                  var _ref29$at = _ref29.at;
+                  _ref29$at = _ref29$at === undefined ? {} : _ref29$at;
+                  var put = _ref29$at.put;
                   return !!put;
                 }).map(function () {
-                  var _ref32 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(_ref33) {
-                    var at = _ref33.at,
-                        pub = _ref33.pub;
+                  var _ref30 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee22(_ref31) {
+                    var at = _ref31.at,
+                        pub = _ref31.pub;
 
                     var readStorageData, __gky20, data, newPin, proof, auth, sea, priv, epriv, epub;
 
@@ -1916,7 +1949,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                         switch (_context22.prev = _context22.next) {
                           case 0:
                             readStorageData = function () {
-                              var _ref34 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(args) {
+                              var _ref32 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee21(args) {
                                 var props, pin, aLias, data;
                                 return regeneratorRuntime.wrap(function _callee21$(_context21) {
                                   while (1) {
@@ -1992,7 +2025,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                               }));
 
                               return function readStorageData(_x53) {
-                                return _ref34.apply(this, arguments);
+                                return _ref32.apply(this, arguments);
                               };
                             }();
                             // got pub, try auth with pin & alias :: or unwrap Storage data...
@@ -2081,18 +2114,18 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                   }));
 
                   return function (_x52) {
-                    return _ref32.apply(this, arguments);
+                    return _ref30.apply(this, arguments);
                   };
                 }()).filter(function (props) {
                   return !!props;
                 }));
 
               case 32:
-                _ref28 = _context23.sent;
-                _ref29 = _slicedToArray(_ref28, 1);
-                _ref29$ = _ref29[0];
-                _ref29$ = _ref29$ === undefined ? {} : _ref29$;
-                key = _ref29$.key, at = _ref29$.at, proof = _ref29$.proof, newPin = _ref29$.pin;
+                _ref26 = _context23.sent;
+                _ref27 = _slicedToArray(_ref26, 1);
+                _ref27$ = _ref27[0];
+                _ref27$ = _ref27$ === undefined ? {} : _ref27$;
+                key = _ref27$.key, at = _ref27$.at, proof = _ref27$.proof, newPin = _ref27$.pin;
 
                 if (key) {
                   _context23.next = 39;
@@ -2121,7 +2154,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
                 _context23.t5 = _context23["catch"](39);
                 // TODO: right log message ?
                 Gun.log('Failed to finalize login with new password!');
-                _ref30 = _context23.t5 || {}, _ref30$err = _ref30.err, _err = _ref30$err === undefined ? '' : _ref30$err;
+                _ref28 = _context23.t5 || {}, _ref28$err = _ref28.err, _err = _ref28$err === undefined ? '' : _ref28$err;
                 throw { err: 'Finalizing new password login failed! Reason: ' + _err };
 
               case 55:
@@ -2133,7 +2166,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }));
 
       return function authRecall(_x45, _x46) {
-        return _ref22.apply(this, arguments);
+        return _ref20.apply(this, arguments);
       };
     }();
     module.exports = authRecall;
@@ -2147,7 +2180,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     //const { scope: seaIndexedDb } = USE('./indexed')
     // This internal func executes logout actions
     var authLeave = function () {
-      var _ref35 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(gunRoot) {
+      var _ref33 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee24(gunRoot) {
         var alias = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : gunRoot._.user._.alias;
         var user;
         return regeneratorRuntime.wrap(function _callee24$(_context24) {
@@ -2189,7 +2222,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }));
 
       return function authLeave(_x54) {
-        return _ref35.apply(this, arguments);
+        return _ref33.apply(this, arguments);
       };
     }();
     module.exports = authLeave;
@@ -2290,7 +2323,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         resolve = reject = cb;
       }
       gunRoot.get('~@' + username).get(function () {
-        var _ref36 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(at, ev) {
+        var _ref34 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee25(at, ev) {
           var err, salt, proof, pairs, pub, priv, epriv, alias, epub, auth, user, tmp;
           return regeneratorRuntime.wrap(function _callee25$(_context25) {
             while (1) {
@@ -2412,7 +2445,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }));
 
         return function (_x56, _x57) {
-          return _ref36.apply(this, arguments);
+          return _ref34.apply(this, arguments);
         };
       }());
       return gun; // gun chain commands must return gun chains!
@@ -2635,7 +2668,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
     }));
     // If authenticated user wants to delete his/her account, let's support it!
     User.prototype.delete = function () {
-      var _ref40 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee29(alias, pass) {
+      var _ref38 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee29(alias, pass) {
         var gunRoot, __gky40, pub, _gunRoot$_$user, user;
 
         return regeneratorRuntime.wrap(function _callee29$(_context29) {
@@ -2684,89 +2717,75 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }));
 
       return function (_x58, _x59) {
-        return _ref40.apply(this, arguments);
+        return _ref38.apply(this, arguments);
       };
     }();
     // If authentication is to be remembered over reloads or browser closing,
     // set validity time in minutes.
-    User.prototype.recall = function () {
-      var _ref41 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee30(setvalidity, options) {
-        var gunRoot, validity, opts, o, tmp, err;
-        return regeneratorRuntime.wrap(function _callee30$(_context30) {
-          while (1) {
-            switch (_context30.prev = _context30.next) {
-              case 0:
-                gunRoot = this.back(-1);
-                validity = void 0;
-                opts = void 0;
-                o = setvalidity;
+    User.prototype.recall = function (setvalidity, options) {
+      var gun = this;
+      var gunRoot = this.back(-1);
 
-                if (!(o && o.sessionStorage)) {
-                  _context30.next = 7;
-                  break;
-                }
+      var validity = void 0;
+      var opts = void 0;
 
-                if (typeof window !== 'undefined') {
-                  tmp = window.sessionStorage;
-
-                  if (tmp) {
-                    gunRoot._.opt.remember = true;
-                    if (tmp.alias && tmp.tmp) {
-                      gunRoot.user().auth(tmp.alias, tmp.tmp);
-                    }
-                  }
-                }
-                return _context30.abrupt("return", this);
-
-              case 7:
-
-                if (!Gun.val.is(setvalidity)) {
-                  opts = setvalidity;
-                  validity = _initial_authsettings.validity;
-                } else {
-                  opts = options;
-                  validity = setvalidity * 60; // minutes to seconds
-                }
-
-                _context30.prev = 8;
-
-                // opts = { hook: function({ iat, exp, alias, proof }) }
-                // iat == Date.now() when issued, exp == seconds to expire from iat
-                // How this works:
-                // called when app bootstraps, with wanted options
-                // IF authsettings.validity === 0 THEN no remember-me, ever
-                // IF PIN then signed 'remember' to window.sessionStorage and 'auth' to IndexedDB
-                authsettings.validity = typeof validity !== 'undefined' ? validity : _initial_authsettings.validity;
-                authsettings.hook = Gun.obj.has(opts, 'hook') && typeof opts.hook === 'function' ? opts.hook : _initial_authsettings.hook;
-                // All is good. Should we do something more with actual recalled data?
-                _context30.next = 13;
-                return authRecall(gunRoot);
-
-              case 13:
-                return _context30.abrupt("return", _context30.sent);
-
-              case 16:
-                _context30.prev = 16;
-                _context30.t0 = _context30["catch"](8);
-                err = 'No session!';
-
-                Gun.log(err);
-                // NOTE! It's fine to resolve recall with reason why not successful
-                // instead of rejecting...
-                return _context30.abrupt("return", { err: _context30.t0 && _context30.t0.err || err });
-
-              case 21:
-              case "end":
-                return _context30.stop();
+      var o = setvalidity;
+      if (o && o.sessionStorage) {
+        if (typeof window !== 'undefined') {
+          var tmp = window.sessionStorage;
+          if (tmp) {
+            gunRoot._.opt.remember = true;
+            if (tmp.alias && tmp.tmp) {
+              gunRoot.user().auth(tmp.alias, tmp.tmp);
             }
           }
-        }, _callee30, this, [[8, 16]]);
-      }));
+        }
+        return gun;
+      }
 
-      return function (_x60, _x61) {
-        return _ref41.apply(this, arguments);
-      };
-    }();
+      if (!Gun.val.is(setvalidity)) {
+        opts = setvalidity;
+        validity = _initial_authsettings.validity;
+      } else {
+        opts = options;
+        validity = setvalidity * 60; // minutes to seconds
+      }
+
+      try {
+        // opts = { hook: function({ iat, exp, alias, proof }) }
+        // iat == Date.now() when issued, exp == seconds to expire from iat
+        // How this works:
+        // called when app bootstraps, with wanted options
+        // IF authsettings.validity === 0 THEN no remember-me, ever
+        // IF PIN then signed 'remember' to window.sessionStorage and 'auth' to IndexedDB
+        authsettings.validity = typeof validity !== 'undefined' ? validity : _initial_authsettings.validity;
+        authsettings.hook = Gun.obj.has(opts, 'hook') && typeof opts.hook === 'function' ? opts.hook : _initial_authsettings.hook
+        // All is good. Should we do something more with actual recalled data?
+        (_asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee30() {
+          return regeneratorRuntime.wrap(function _callee30$(_context30) {
+            while (1) {
+              switch (_context30.prev = _context30.next) {
+                case 0:
+                  _context30.next = 2;
+                  return authRecall(gunRoot);
+
+                case 2:
+                case "end":
+                  return _context30.stop();
+              }
+            }
+          }, _callee30, this);
+        }))());
+        return gun;
+      } catch (e) {
+        var err = 'No session!';
+        Gun.log(err);
+        // NOTE! It's fine to resolve recall with reason why not successful
+        // instead of rejecting...
+        //return { err: (e && e.err) || err }
+        return gun;
+      }
+    };
     User.prototype.alive = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee31() {
       var gunRoot, err;
       return regeneratorRuntime.wrap(function _callee31$(_context31) {
@@ -2797,7 +2816,7 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
       }, _callee31, this, [[1, 7]]);
     }));
     User.prototype.trust = function () {
-      var _ref43 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee32(user) {
+      var _ref41 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee32(user) {
         return regeneratorRuntime.wrap(function _callee32$(_context32) {
           while (1) {
             switch (_context32.prev = _context32.next) {
@@ -2818,8 +2837,8 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
         }, _callee32, this);
       }));
 
-      return function (_x62) {
-        return _ref43.apply(this, arguments);
+      return function (_x60) {
+        return _ref41.apply(this, arguments);
       };
     }();
     User.prototype.grant = function (to, cb) {
@@ -3171,9 +3190,9 @@ function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr
               check['any' + soul + key] = 1;
               SEA.verify(val, pub = tmp, function (data) {
                 var rel;
-                if (!data) {
+                if (u === data) {
                   return each.end({ err: "Mismatched owner on '" + key + "'." });
-                }
+                } // thanks @rogowski !
                 if ((rel = Gun.val.link.is(data)) && pub === relpub(rel)) {
                   (at.sea.own[rel] = at.sea.own[rel] || {})[pub] = true;
                 }

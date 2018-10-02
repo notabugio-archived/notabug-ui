@@ -16,5 +16,14 @@
       "--evict",
       "--render"
     ]
+  }, {
+    "uid": "listings",
+    "script": "server.js",
+    "args": [
+      "--redis",
+      "--evict",
+      "--listings",
+      "--peer", "http://localhost:3333/gun"
+    ]
   }
 ]

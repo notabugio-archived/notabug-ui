@@ -1,1 +1,0 @@
-export { SubmissionDetail } from "./SubmissionDetail";

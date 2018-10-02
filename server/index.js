@@ -60,7 +60,7 @@ const peerOptions = {
   persist: options.persist,
   disableValidation: options.disableValidation,
   until: options.until,
-  computed: true,
+  computed: options.listings,
   super: true
 };
 
@@ -83,4 +83,9 @@ if (options.index) {
     indexed[id] = true;
     this.get("data").once(data => data && nab.indexThing(id, data));
   });
+}
+
+if (options.listings) {
+  const { username, password } = require("../server-config.json");
+  nab.login(username, password);
 }
