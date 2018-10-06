@@ -1,27 +1,28 @@
 [
   {
-    "uid": "redis",
+    "uid": "gun",
     "script": "server.js",
+    "command": "node --max-old-space-size=16384",
     "args": [
-      "--redis",
-      "--evict",
-      "--port", "3333"
+      "--port", "3333",
+      "--debug"
     ]
   }, {
-    "uid": "rest",
+    "uid": "render",
     "script": "server.js",
     "args": [
       "--port", "4444",
-      "--redis",
       "--evict",
+      "--redis",
+      "--peer", "http://localhost:3333/gun",
       "--render"
     ]
   }, {
-    "uid": "listings",
+    "uid": "indexer",
     "script": "server.js",
     "args": [
-      "--redis",
       "--evict",
+      "--redis",
       "--listings",
       "--peer", "http://localhost:3333/gun"
     ]

@@ -22,6 +22,7 @@ class Cached extends PureComponent {
 
   doFetch = (props) => {
     const { location: { pathname, search } } = props || this.props;
+    if (this.props.state.notabugApi.scope.getIsRealtime()) return;
     return this.props.effects.onFetchCache(pathname, search)
       .catch(error => {
         console.error(error.stack || error);

@@ -6,7 +6,7 @@ export class ListingIdsBase extends React.PureComponent {
     super(props);
     const api = props.state.notabugApi;
     const ids = api.queries.listingIds.now(api.scope, props.listingParams.soul) || [];
-    console.log("soul", props.listingParams.soul);
+    // console.log("soul", props.listingParams.soul);
     this.state = { ids };
   }
 

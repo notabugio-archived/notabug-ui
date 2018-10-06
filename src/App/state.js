@@ -36,6 +36,7 @@ const initialState = ({ history, notabugApi }) => {
     disableValidation: true,
     super: false,
     leech: true,
+    super: false,
     peers: isNode ? [] : [
       window.location.origin + "/gun",
       // "https://notabug.io/gun",
@@ -126,7 +127,6 @@ const onNotabugToggleInfiniteScroll = update(({ notabugInfiniteScroll }) =>
 const initialize = effects => effects.getState()
   .then(({ notabugApi }) => {
     notabugApi.onLogin(effects.onLogin);
-    /*
     if (!isNode && notabugApi.gun.user) {
       console.log("attempting auto-login");
       notabugApi.gun.user().recall({ sessionStorage: true });
@@ -139,7 +139,6 @@ const initialize = effects => effects.getState()
       };
       setInterval(check, 100);
     }
-    */
   })
   .then(always(identity));
 

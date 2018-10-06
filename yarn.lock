@@ -5737,8 +5737,8 @@ normalize-url@^1.4.0:
     sort-keys "^1.0.0"
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.10.0"
-  resolved "https://github.com/notabugio/notabug-peer.git#4ed9f5a868f0608e48fa36e4851d414dbe24f1a1"
+  version "0.10.1"
+  resolved "https://github.com/notabugio/notabug-peer.git#fbb8eab63234d694770fb590e4c0c017989a913a"
   dependencies:
     babel-cli "^6.26.0"
     babel-plugin-module-resolver "^3.1.1"
