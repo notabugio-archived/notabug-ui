@@ -32,7 +32,7 @@ require("gun/sea");
 if (!options.persist && !options.redis && options.json6) {
   require("gun-file");
 } else if (options.redis) {
-  require("./gun-redis");
+  require("./redis-adapter");
 } else if (options.localStorage) {
   require("gun/lib/file");
 }

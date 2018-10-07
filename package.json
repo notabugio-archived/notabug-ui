@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.11.3",
+  "version": "0.11.4",
   "dependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
@@ -35,7 +35,6 @@
     "freactal": "^2.0.3",
     "gun": "^0.9.99995",
     "gun-file": "^1.0.123",
-    "gun-flint": "^0.0.28",
     "ignore-styles": "^5.0.1",
     "jdenticon": "^2.1.0",
     "lodash": "^4.17.10",
