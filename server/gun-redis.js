@@ -68,7 +68,7 @@ var get = function(redis, key, done) {
   });
 };
 
-flint.Flint.register(new flint.NodeAdapter({
+flint.Flint.register(new flint.DeltaAdapter({
   get: function(key, done) {
     var redis = this.redis;
     if (done) {
@@ -86,20 +86,23 @@ flint.Flint.register(new flint.NodeAdapter({
     }
   },
 
-  put: function(key, node, done, shouldLog=true) {
-    if (!key || !node) return done(this.errors.internal);
+  put: function(delta, done) {
+    if (!delta || !done) return done(this.errors.internal);
     var redis = this.redis;
-
-    shouldLog && console.log("put", key, node);
-
-    var data = toRedis(node);
-    redis.hmset(key, data, function(err) {
-      if(err) {
-        console.error("put error", err);
-        done && done(err);
-      } else {
-        done && done(null);
-      }
+    Promise.all(Object.keys(delta).map(function(key) {
+      console.log("put", key);
+      const node = delta[key];
+      var data = toRedis(node);
+      return new Promise(function (resolve, reject) {
+        redis.hmset(key, data, function(err) {
+          if(err) return reject(err);
+          return resolve();
+        });
+      });
+    })).then(function () {
+      done && done(null);
+    }).catch(function (err) {
+      done && done(err);
     });
   },
 
@@ -110,6 +113,7 @@ flint.Flint.register(new flint.NodeAdapter({
       console.error("redis error", err.stack || err);
     });
 
+    /*
     var put = this.put.bind(this);
 
     context.on("put", function(node) {
@@ -117,5 +121,6 @@ flint.Flint.register(new flint.NodeAdapter({
         node.put[soul] && put(soul, node.put[soul], null, false);
       });
     });
+    */
   }
 }));

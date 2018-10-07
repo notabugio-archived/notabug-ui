@@ -1,0 +1,203 @@
+.policy-page {
+  position: relative;
+  margin: 0 auto;
+  padding-left: 195px;
+  width: 43em;
+  font-size: 11pt;
+}
+.policy-page .md {
+  line-height: 1.75em;
+  overflow: visible;
+  margin: 0;
+}
+.policy-page .md a:hover {
+  text-decoration: underline;
+}
+.policy-page .md h1 {
+  font-size: 1.75em;
+  font-weight: bold;
+  margin: 1.5em 0;
+}
+.policy-page .md h1 a {
+  color: black;
+  padding-bottom: 2px;
+}
+.policy-page .md h1 a:hover {
+  text-decoration: none;
+  border-bottom: 1px solid #777;
+}
+.policy-page .md h1 strong {
+  margin-right: .5em;
+}
+.policy-page .md h1 em {
+  font-size: .60em;
+  font-style: normal;
+  color: #777;
+  white-space: nowrap;
+}
+.policy-page .md h2 {
+  font-size: 1.4em;
+  margin: 1em 0 .75em;
+  padding-top: 1em;
+  color: #336699;
+}
+.policy-page .md h3 {
+  color: #333;
+  font-size: 1.1em;
+  margin-top: 1.5em;
+}
+.policy-page .md h3 a {
+  color: black;
+}
+.policy-page .md h1,
+.policy-page .md h2,
+.policy-page .md h3 {
+  text-transform: lowercase;
+}
+.policy-page .md p {
+  margin-bottom: 1em;
+  color: #222;
+}
+.policy-page .md p em {
+  line-height: 1.5em;
+  font-style: normal;
+  display: block;
+  background: #fcfbd7;
+  padding: .5em .75em;
+  margin: 0 -0.75em;
+  margin-top: 1.5em;
+  position: relative;
+  top: -0.5em;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px #d1d0bb;
+}
+.policy-page .md a.p-anchor {
+  float: left;
+  font-size: 10pt;
+  font-weight: normal;
+  color: #ddd;
+  margin-left: -3.5em;
+  width: 1.5em;
+  text-align: right;
+  -webkit-transition: color 1.5s ease 0s;
+  -moz-transition: color 1.5s ease 0s;
+  -o-transition: color 1.5s ease 0s;
+  -ms-transition: color 1.5s ease 0s;
+  transition: color 1.5s ease 0s;
+}
+.policy-page .md h1:hover > a.p-anchor,
+.policy-page .md h2:hover > a.p-anchor,
+.policy-page .md h3:hover > a.p-anchor,
+.policy-page .md p:hover > a.p-anchor {
+  color: #555;
+  -webkit-transition: color 0.25s ease 0.5s;
+  -moz-transition: color 0.25s ease 0.5s;
+  -o-transition: color 0.25s ease 0.5s;
+  -ms-transition: color 0.25s ease 0.5s;
+  transition: color 0.25s ease 0.5s;
+}
+.policy-page .md h1:hover > a.p-anchor:hover,
+.policy-page .md h2:hover > a.p-anchor:hover,
+.policy-page .md h3:hover > a.p-anchor:hover,
+.policy-page .md p:hover > a.p-anchor:hover {
+  -webkit-transition: color 0s ease 0s;
+  -moz-transition: color 0s ease 0s;
+  -o-transition: color 0s ease 0s;
+  -ms-transition: color 0s ease 0s;
+  transition: color 0s ease 0s;
+}
+.policy-page .md blockquote {
+  margin: .5em 0;
+  padding: 0;
+  border: none;
+  font-size: 1.7em;
+}
+.policy-page .md blockquote p {
+  line-height: 1.5em;
+  color: #555;
+}
+.policy-page .doc-info,
+.policy-page .md blockquote {
+  top: 2.5em;
+  margin-top: 1.5em;
+}
+.policy-page .doc-info h4,
+.policy-page .md blockquote h4 {
+  margin-bottom: .75em;
+}
+.policy-page .doc-info {
+  position: absolute;
+  margin-left: -13em;
+  width: 10em;
+}
+.policy-page .doc-info h4 {
+  color: #555;
+  font-size: .9em;
+}
+.policy-page .doc-info .revisions li {
+  font-size: .85em;
+}
+.policy-page .doc-info .toc ul ul li {
+  font-size: .85em;
+}
+.policy-page .doc-info li {
+  margin: .75em 0;
+}
+.policy-page .doc-info li.selected {
+  font-weight: bold;
+}
+.policy-page .doc-info .revisions li {
+  white-space: nowrap;
+}
+.policy-page .doc-info .toc {
+  position: relative;
+  text-transform: lowercase;
+}
+.policy-page .doc-info .toc > ul {
+  margin-bottom: 1.5em;
+}
+.policy-page .doc-info .toc > ul > li {
+  display: none;
+}
+.policy-page .doc-info .toc > ul > li.toc_child {
+  display: block;
+}
+.policy-page .doc-info .toc > ul ul ul {
+  display: none;
+}
+.policy-page .doc-info .toc .location {
+  position: absolute;
+  left: -11px;
+  margin-top: 2px;
+  border: 5px solid transparent;
+  border-left-color: orangered;
+}
+@media (max-width: 835px) {
+  .policy-page {
+    padding-left: 0;
+  }
+  .policy-page .doc-info.scroll-fixed-standin {
+    display: none;
+  }
+  .policy-page .doc-info {
+    position: static;
+    margin: 2em 0;
+    width: auto;
+  }
+  .policy-page .doc-info.scroll-fixed {
+    position: static !important;
+  }
+  .policy-page .doc-info .toc {
+    display: none;
+  }
+  .policy-page .doc-info .revisions li {
+    display: inline-block;
+    margin: 0 .5em;
+  }
+}
+@media (max-width: 635px) {
+  .policy-page {
+    margin: 0 1em;
+    width: auto;
+  }
+}

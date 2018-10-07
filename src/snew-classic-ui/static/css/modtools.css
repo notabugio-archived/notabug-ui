@@ -1,0 +1,698 @@
+/* 
+  do not use these colors directly! create local aliases with descriptive names
+  i.e.
+   
+  @my-background-color: @color-eggshell;
+ */
+.md-container-small,
+.md-container {
+  font-size: small;
+}
+.md {
+  color: #222222;
+  max-width: 60em;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+.md .-headers,
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6 {
+  border: 0;
+  color: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+.md .-headers code,
+.md h1 code,
+.md h2 code,
+.md h3 code,
+.md h4 code,
+.md h5 code,
+.md h6 code {
+  font-size: inherit;
+}
+.md blockquote,
+.md del {
+  color: #4F4F4F;
+}
+.md a {
+  color: #0079D3;
+  text-decoration: none;
+}
+.md a del {
+  color: inherit;
+}
+.md h6 {
+  text-decoration: underline;
+}
+.md em {
+  font-style: italic;
+  font-weight: inherit;
+}
+.md th,
+.md strong,
+.md .-headers,
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6 {
+  font-weight: 600;
+  font-style: inherit;
+}
+.md h2,
+.md h4 {
+  font-weight: 500;
+}
+.md,
+.md h6 {
+  font-weight: 400;
+}
+.md * {
+  margin-left: 0;
+  margin-right: 0;
+}
+.md tr,
+.md code,
+.md .-cells,
+.md .-lists,
+.md .-blocks,
+.md .-headers,
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6,
+.md th,
+.md td,
+.md ul,
+.md ol,
+.md .-lists,
+.md pre,
+.md blockquote,
+.md table,
+.md p,
+.md ul,
+.md ol {
+  margin: 0;
+  padding: 0;
+}
+.md hr {
+  border: 0;
+  color: transparent;
+  background: #c5c1ad;
+  height: 2px;
+  padding: 0;
+}
+.md blockquote {
+  border-left: 2px solid #c5c1ad;
+}
+.md code,
+.md pre {
+  border: 1px solid #eeeed2;
+  background-color: #FCFCF7;
+  border-radius: 2px;
+}
+.md code {
+  margin: 0 2px;
+  white-space: nowrap;
+  word-break: normal;
+}
+.md p code {
+  line-height: 1em;
+}
+.md pre {
+  overflow: auto;
+}
+.md pre code {
+  white-space: pre;
+  background-color: transparent;
+  border: 0;
+  display: block;
+  padding: 0 !important;
+}
+.md td,
+.md th {
+  border: 1px solid #E5E3DA;
+  text-align: left;
+}
+.md td[align=center],
+.md th[align=center] {
+  text-align: center;
+}
+.md td[align=right],
+.md th[align=right] {
+  text-align: right;
+}
+.md img {
+  max-width: 100%;
+}
+.md ul {
+  list-style-type: disc;
+}
+.md ol {
+  list-style-type: decimal;
+}
+.md blockquote {
+  padding: 0 8px;
+  margin-left: 5px;
+}
+.md code {
+  padding: 0 4px;
+}
+.md pre,
+.md .-cells,
+.md th,
+.md td {
+  padding: 4px 9px;
+}
+.md .-lists,
+.md ul,
+.md ol {
+  padding-left: 40px;
+}
+.md sup {
+  font-size: 0.86em;
+  line-height: 0;
+}
+.md li li,
+.md li p {
+  font-size: 1em !important;
+}
+.link .usertext .md {
+  padding: 5px 10px;
+}
+.new-comment .md :not(pre) > code,
+.link .md :not(pre) > code,
+.usertext.border .md :not(pre) > code,
+.new-comment .md pre,
+.link .md pre,
+.usertext.border .md pre {
+  background-color: #FFFFFF;
+}
+.linklisting .md,
+.commentarea .md {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+textarea {
+  background-color: white;
+  color: black;
+}
+code {
+  font-family: monospace,monospace;
+}
+.md {
+  font-size: 1.07692308em;
+}
+.md h1,
+.md h2 {
+  font-size: 1.28571429em;
+  line-height: 1.38888889em;
+  margin-top: 0.83333333em;
+  margin-bottom: 0.83333333em;
+}
+.md h3,
+.md h4 {
+  font-size: 1.14285714em;
+  line-height: 1.25em;
+  margin-top: 0.625em;
+  margin-bottom: 0.625em;
+}
+.md h5,
+.md h6 {
+  font-size: 1em;
+  line-height: 1.42857143em;
+  margin-top: 0.71428571em;
+  margin-bottom: 0.35714286em;
+}
+.md .-blocks,
+.md .-lists,
+.md pre,
+.md blockquote,
+.md table,
+.md p,
+.md ul,
+.md ol {
+  margin-top: 0.35714286em;
+  margin-bottom: 0.35714286em;
+}
+.md textarea,
+.md .-text,
+.md p,
+.md pre > code,
+.md th,
+.md td,
+.md li {
+  font-size: 1em;
+  line-height: 1.42857143em;
+}
+.md-container-small .md,
+.side .md {
+  font-size: 0.92307692em;
+}
+.md-container-small .md h1,
+.side .md h1,
+.md-container-small .md h2,
+.side .md h2 {
+  font-size: 1.5em;
+  line-height: 1.38888889em;
+  margin-top: 0.55555556em;
+  margin-bottom: 0.55555556em;
+}
+.md-container-small .md h3,
+.side .md h3,
+.md-container-small .md h4,
+.side .md h4 {
+  font-size: 1.33333333em;
+  line-height: 1.25em;
+  margin-top: 0.625em;
+  margin-bottom: 0.625em;
+}
+.md-container-small .md h5,
+.side .md h5,
+.md-container-small .md h6,
+.side .md h6 {
+  font-size: 1.16666667em;
+  line-height: 1.42857143em;
+  margin-top: 0.71428571em;
+  margin-bottom: 0.35714286em;
+}
+.md-container-small .md .-blocks,
+.side .md .-blocks,
+.md-container-small .md .-lists,
+.side .md .-lists,
+.md-container-small .md pre,
+.side .md pre,
+.md-container-small .md blockquote,
+.side .md blockquote,
+.md-container-small .md table,
+.side .md table,
+.md-container-small .md p,
+.side .md p,
+.md-container-small .md ul,
+.side .md ul,
+.md-container-small .md ol,
+.side .md ol {
+  margin-top: 0.41666667em;
+  margin-bottom: 0.41666667em;
+}
+.md-container-small .md .-text,
+.side .md .-text,
+.md-container-small .md p,
+.side .md p,
+.md-container-small .md pre > code,
+.side .md pre > code,
+.md-container-small .md th,
+.side .md th,
+.md-container-small .md td,
+.side .md td,
+.md-container-small .md li,
+.side .md li {
+  font-size: 1em;
+  line-height: 1.25em;
+}
+.wiki-page-content .md h1 {
+  font-size: 2.28571429em;
+  line-height: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.78125em;
+}
+.wiki-page-content .md h2 {
+  font-size: 1.71428571em;
+  line-height: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.625em;
+}
+.wiki-page-content .md h3 {
+  font-size: 1.42857143em;
+  line-height: 1.25em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+.wiki-page-content .md .-blocks,
+.wiki-page-content .md .-lists,
+.wiki-page-content .md pre,
+.wiki-page-content .md blockquote,
+.wiki-page-content .md table,
+.wiki-page-content .md p,
+.wiki-page-content .md ul,
+.wiki-page-content .md ol {
+  margin-top: 0.35714286em;
+  margin-bottom: 0.71428571em;
+}
+.wiki-page-content .md h1,
+.wiki-page-content .md h6 {
+  color: #4F4F4F;
+  font-weight: 300;
+}
+.wiki-page-content .md h2 {
+  color: #336699;
+}
+.wiki-page-content .md h2,
+.wiki-page-content .md h3 {
+  font-weight: 600;
+}
+.wiki-page-content .md h4 {
+  font-style: italic;
+}
+.wiki-page-content .md h5 {
+  text-decoration: underline;
+}
+.wiki-page-content .md h4,
+.wiki-page-content .md h5 {
+  font-weight: 400;
+}
+.wiki-page-content .md h6 {
+  font-size: 1em;
+  line-height: 1.42857143em;
+  margin-top: 1.07142857em;
+  margin-bottom: 0.35714286em;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.md > :first-child,
+.md .-cells > :first-child,
+.md .-lists > :first-child,
+.md .-blocks > :first-child,
+.md .-headers > :first-child,
+.md h1 > :first-child,
+.md h2 > :first-child,
+.md h3 > :first-child,
+.md h4 > :first-child,
+.md h5 > :first-child,
+.md h6 > :first-child,
+.md th > :first-child,
+.md td > :first-child,
+.md ul > :first-child,
+.md ol > :first-child,
+.md .-lists > :first-child,
+.md pre > :first-child,
+.md blockquote > :first-child,
+.md table > :first-child,
+.md p > :first-child,
+.md ul > :first-child,
+.md ol > :first-child {
+  margin-top: 0;
+}
+.md > :last-child,
+.md .-cells > :last-child,
+.md .-lists > :last-child,
+.md .-blocks > :last-child,
+.md .-headers > :last-child,
+.md h1 > :last-child,
+.md h2 > :last-child,
+.md h3 > :last-child,
+.md h4 > :last-child,
+.md h5 > :last-child,
+.md h6 > :last-child,
+.md th > :last-child,
+.md td > :last-child,
+.md ul > :last-child,
+.md ol > :last-child,
+.md .-lists > :last-child,
+.md pre > :last-child,
+.md blockquote > :last-child,
+.md table > :last-child,
+.md p > :last-child,
+.md ul > :last-child,
+.md ol > :last-child {
+  margin-bottom: 0;
+}
+.md li > :first-child {
+  margin-top: 0;
+}
+.md li > :first-child:last-child {
+  margin-bottom: 0;
+}
+.mod-action-icon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-position: center;
+}
+.mod-action-icon-delete {
+  background-image: url(../mod-action-icon-delete.png);
+  background-repeat: no-repeat;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .mod-action-icon-delete {
+    background-image: url(../mod-action-icon-delete_2x.png);
+    background-size: 16px;
+  }
+}
+.mod-action-icon-delete:hover,
+.mod-action-deleting .mod-action-icon-delete {
+  background-image: url(../mod-action-icon-delete-active.png);
+  background-repeat: no-repeat;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .mod-action-icon-delete:hover,
+  .mod-action-deleting .mod-action-icon-delete {
+    background-image: url(../mod-action-icon-delete-active_2x.png);
+    background-size: 16px;
+  }
+}
+.mod-action-icon-edit {
+  background-image: url(../mod-action-icon-edit.png);
+  background-repeat: no-repeat;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .mod-action-icon-edit {
+    background-image: url(../mod-action-icon-edit_2x.png);
+    background-size: 16px;
+  }
+}
+.mod-action-icon-edit:hover {
+  background-image: url(../mod-action-icon-edit-active.png);
+  background-repeat: no-repeat;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .mod-action-icon-edit:hover {
+    background-image: url(../mod-action-icon-edit-active_2x.png);
+    background-size: 16px;
+  }
+}
+.mod-action-icon-add {
+  background-image: url(../mod-action-icon-add.png);
+  background-repeat: no-repeat;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .mod-action-icon-add {
+    background-image: url(../mod-action-icon-add_2x.png);
+    background-size: 16px;
+  }
+}
+.mod-action-icon-cancel {
+  background-image: url(../mod-action-icon-cancel.png);
+  background-repeat: no-repeat;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .mod-action-icon-cancel {
+    background-image: url(../mod-action-icon-cancel_2x.png);
+    background-size: 16px;
+  }
+}
+.mod-action-icon-confirm {
+  background-image: url(../mod-action-icon-confirm.png);
+  background-repeat: no-repeat;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .mod-action-icon-confirm {
+    background-image: url(../mod-action-icon-confirm_2x.png);
+    background-size: 16px;
+  }
+}
+.subreddit-rule-item {
+  margin-bottom: 10px;
+  margin-left: -10px;
+  margin-top: 10px;
+  padding: 10px;
+}
+.subreddit-rule-item:hover {
+  background: #F7F7F7;
+}
+.subreddit-rule-item .subreddit-rule-delete-confirmation {
+  text-align: right;
+}
+.subreddit-rule-item .editable .subreddit-rule-contents,
+.subreddit-rule-form {
+  display: -webkit-flex;
+  display: flex;
+}
+.subreddit-rule-item .editable .subreddit-rule-contents-display,
+.subreddit-rule-form .form-inputs {
+  -webkit-flex: 1 1;
+  flex: 1 1;
+}
+.subreddit-rule-item .editable .subreddit-rule-buttons,
+.subreddit-rule-form .form-buttons {
+  -webkit-flex: 0 0 41px;
+  flex: 0 0 41px;
+}
+.subreddit-rule-item .editable .subreddit-rule-buttons > button,
+.subreddit-rule-form .form-buttons > button {
+  margin-bottom: 5px;
+  margin-left: 5px;
+}
+.subreddit-rule-item .editable .subreddit-rule-buttons > button .mod-action-icon,
+.subreddit-rule-form .form-buttons > button .mod-action-icon {
+  padding: 5px 10px;
+}
+.subreddit-rule-form .form-buttons {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  -webkit-justify-content: flex-end;
+  justify-content: flex-end;
+}
+.subreddit-rule-form .c-form-group {
+  position: relative;
+  margin-bottom: 15px;
+}
+.subreddit-rule-form .c-form-group .label {
+  color: #B5B3AC;
+}
+.subreddit-rule-form .c-form-group .label.required:after {
+  color: #EA0027;
+  content: ' *';
+  display: inline;
+}
+.subreddit-rule-form .c-form-group .text-counter {
+  color: #B5B3AC;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.subreddit-rule-form .c-form-group .text-counter.has-error {
+  color: #EA0027;
+}
+.subreddit-rule-form .form-group-kind label {
+  margin-right: 20px;
+}
+.subreddit-rule-add-form-buttons .subreddit-rule-edit-button {
+  color: #24A0ED;
+  font-size: 12px;
+  font-weight: bold;
+  line-height: 15px;
+  text-transform: uppercase;
+}
+.subreddit-rule-add-form-buttons .subreddit-rule-edit-button[disabled] {
+  color: #B5B3AC;
+}
+.subreddit-rule-add-form-buttons .subreddit-rule-edit-button .mod-action-icon {
+  margin-right: 5px;
+  vertical-align: bottom;
+}
+.error-fields {
+  color: #EA0027;
+  margin-top: 5px;
+  text-align: right;
+}
+.error-fields > .error {
+  display: block;
+}
+.subreddit-rule-too-many-notice {
+  color: #008985;
+  margin-top: 5px;
+}
+.subreddit-rule-delete-confirmation {
+  color: #EA0027;
+}
+.subreddit-rule-delete-confirmation button {
+  background: transparent;
+  border: none;
+  padding: 0 3px;
+  color: #24A0ED;
+  font-size: 1em;
+}
+.subreddit-rule-delete-confirmation .separator {
+  color: #B5B3AC;
+}
+.subreddit-rules-page {
+  max-width: 700px;
+  padding-left: 72px;
+  padding-right: 20px;
+  padding-top: 10px;
+  position: relative;
+}
+.subreddit-rules-page:before {
+  background-image: url(../modtools-page-icon-rules.png);
+  background-repeat: no-repeat;
+  content: '';
+  display: block;
+  height: 52px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 52px;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .subreddit-rules-page:before {
+    background-image: url(../modtools-page-icon-rules_2x.png);
+    background-size: 100%;
+  }
+}
+.subreddit-rules-page .subreddit-rule-buttons button,
+.subreddit-rules-page .subreddit-rule-add-form-buttons button,
+.subreddit-rules-page .form-buttons button {
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+.subreddit-rules-page > header {
+  margin-bottom: 30px;
+}
+.subreddit-rules-page > header p {
+  font-weight: 500;
+}
+.subreddit-rules-page > footer {
+  margin-top: 30px;
+}
+.subreddit-rules-page .md p:first-child {
+  margin-top: 0;
+}
+.subreddit-rules-page .md p:last-child {
+  margin-bottom: 0;
+}
+.subreddit-rules-page .md-container .md h2 {
+  font-size: 1.71428571em;
+  line-height: 1.25em;
+  margin-top: 0em;
+  margin-bottom: 0em;
+  font-weight: 300;
+}
+.subreddit-rules-page .md-container .md .subreddit-rule-title {
+  font-size: 1.14285714em;
+  line-height: 1.25em;
+  margin-top: 0;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+.subreddit-rules-page .md-container .md .subreddit-rule-kind {
+  font-size: 0.85714286em;
+  line-height: 1.66666667em;
+  margin-bottom: 5px;
+  font-weight: 500;
+  color: #808080;
+}
+.subreddit-rules-page .md-container .md .subreddit-rule-description {
+  color: #4F4F4F;
+}
+#this_is_a_hack__please_ignore {
+  background-image: url(../reddit.com.header.png);
+  /* SPRITE */
+}
+.modtools-page > div.content {
+  font-family: "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+  margin: 0;
+  margin-right: 300px;
+  padding: 15px 20px;
+}

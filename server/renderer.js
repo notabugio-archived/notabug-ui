@@ -3,7 +3,7 @@ import React from "react";
 import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import { App, routes } from "App";
-import init from "notabug-peer";
+import init from "./notabug-peer";
 import serialize from "serialize-javascript";
 
 const serializeState = (data={}) => `

@@ -1,0 +1,570 @@
+/* 
+  do not use these colors directly! create local aliases with descriptive names
+  i.e.
+   
+  @my-background-color: @color-eggshell;
+ */
+.md-container-small,
+.md-container {
+  font-size: small;
+}
+.md {
+  color: #222222;
+  max-width: 60em;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+.md .-headers,
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6 {
+  border: 0;
+  color: inherit;
+  -webkit-font-smoothing: antialiased;
+}
+.md .-headers code,
+.md h1 code,
+.md h2 code,
+.md h3 code,
+.md h4 code,
+.md h5 code,
+.md h6 code {
+  font-size: inherit;
+}
+.md blockquote,
+.md del {
+  color: #4F4F4F;
+}
+.md a {
+  color: #0079D3;
+  text-decoration: none;
+}
+.md a del {
+  color: inherit;
+}
+.md h6 {
+  text-decoration: underline;
+}
+.md em {
+  font-style: italic;
+  font-weight: inherit;
+}
+.md th,
+.md strong,
+.md .-headers,
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6 {
+  font-weight: 600;
+  font-style: inherit;
+}
+.md h2,
+.md h4 {
+  font-weight: 500;
+}
+.md,
+.md h6 {
+  font-weight: 400;
+}
+.md * {
+  margin-left: 0;
+  margin-right: 0;
+}
+.md tr,
+.md code,
+.md .-cells,
+.md .-lists,
+.md .-blocks,
+.md .-headers,
+.md h1,
+.md h2,
+.md h3,
+.md h4,
+.md h5,
+.md h6,
+.md th,
+.md td,
+.md ul,
+.md ol,
+.md .-lists,
+.md pre,
+.md blockquote,
+.md table,
+.md p,
+.md ul,
+.md ol {
+  margin: 0;
+  padding: 0;
+}
+.md hr {
+  border: 0;
+  color: transparent;
+  background: #c5c1ad;
+  height: 2px;
+  padding: 0;
+}
+.md blockquote {
+  border-left: 2px solid #c5c1ad;
+}
+.md code,
+.md pre {
+  border: 1px solid #eeeed2;
+  background-color: #FCFCF7;
+  border-radius: 2px;
+}
+.md code {
+  margin: 0 2px;
+  white-space: nowrap;
+  word-break: normal;
+}
+.md p code {
+  line-height: 1em;
+}
+.md pre {
+  overflow: auto;
+}
+.md pre code {
+  white-space: pre;
+  background-color: transparent;
+  border: 0;
+  display: block;
+  padding: 0 !important;
+}
+.md td,
+.md th {
+  border: 1px solid #E5E3DA;
+  text-align: left;
+}
+.md td[align=center],
+.md th[align=center] {
+  text-align: center;
+}
+.md td[align=right],
+.md th[align=right] {
+  text-align: right;
+}
+.md img {
+  max-width: 100%;
+}
+.md ul {
+  list-style-type: disc;
+}
+.md ol {
+  list-style-type: decimal;
+}
+.md blockquote {
+  padding: 0 8px;
+  margin-left: 5px;
+}
+.md code {
+  padding: 0 4px;
+}
+.md pre,
+.md .-cells,
+.md th,
+.md td {
+  padding: 4px 9px;
+}
+.md .-lists,
+.md ul,
+.md ol {
+  padding-left: 40px;
+}
+.md sup {
+  font-size: 0.86em;
+  line-height: 0;
+}
+.md li li,
+.md li p {
+  font-size: 1em !important;
+}
+.link .usertext .md {
+  padding: 5px 10px;
+}
+.new-comment .md :not(pre) > code,
+.link .md :not(pre) > code,
+.usertext.border .md :not(pre) > code,
+.new-comment .md pre,
+.link .md pre,
+.usertext.border .md pre {
+  background-color: #FFFFFF;
+}
+.linklisting .md,
+.commentarea .md {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+textarea {
+  background-color: white;
+  color: black;
+}
+code {
+  font-family: monospace,monospace;
+}
+.md {
+  font-size: 1.07692308em;
+}
+.md h1,
+.md h2 {
+  font-size: 1.28571429em;
+  line-height: 1.38888889em;
+  margin-top: 0.83333333em;
+  margin-bottom: 0.83333333em;
+}
+.md h3,
+.md h4 {
+  font-size: 1.14285714em;
+  line-height: 1.25em;
+  margin-top: 0.625em;
+  margin-bottom: 0.625em;
+}
+.md h5,
+.md h6 {
+  font-size: 1em;
+  line-height: 1.42857143em;
+  margin-top: 0.71428571em;
+  margin-bottom: 0.35714286em;
+}
+.md .-blocks,
+.md .-lists,
+.md pre,
+.md blockquote,
+.md table,
+.md p,
+.md ul,
+.md ol {
+  margin-top: 0.35714286em;
+  margin-bottom: 0.35714286em;
+}
+.md textarea,
+.md .-text,
+.md p,
+.md pre > code,
+.md th,
+.md td,
+.md li {
+  font-size: 1em;
+  line-height: 1.42857143em;
+}
+.md-container-small .md,
+.side .md {
+  font-size: 0.92307692em;
+}
+.md-container-small .md h1,
+.side .md h1,
+.md-container-small .md h2,
+.side .md h2 {
+  font-size: 1.5em;
+  line-height: 1.38888889em;
+  margin-top: 0.55555556em;
+  margin-bottom: 0.55555556em;
+}
+.md-container-small .md h3,
+.side .md h3,
+.md-container-small .md h4,
+.side .md h4 {
+  font-size: 1.33333333em;
+  line-height: 1.25em;
+  margin-top: 0.625em;
+  margin-bottom: 0.625em;
+}
+.md-container-small .md h5,
+.side .md h5,
+.md-container-small .md h6,
+.side .md h6 {
+  font-size: 1.16666667em;
+  line-height: 1.42857143em;
+  margin-top: 0.71428571em;
+  margin-bottom: 0.35714286em;
+}
+.md-container-small .md .-blocks,
+.side .md .-blocks,
+.md-container-small .md .-lists,
+.side .md .-lists,
+.md-container-small .md pre,
+.side .md pre,
+.md-container-small .md blockquote,
+.side .md blockquote,
+.md-container-small .md table,
+.side .md table,
+.md-container-small .md p,
+.side .md p,
+.md-container-small .md ul,
+.side .md ul,
+.md-container-small .md ol,
+.side .md ol {
+  margin-top: 0.41666667em;
+  margin-bottom: 0.41666667em;
+}
+.md-container-small .md .-text,
+.side .md .-text,
+.md-container-small .md p,
+.side .md p,
+.md-container-small .md pre > code,
+.side .md pre > code,
+.md-container-small .md th,
+.side .md th,
+.md-container-small .md td,
+.side .md td,
+.md-container-small .md li,
+.side .md li {
+  font-size: 1em;
+  line-height: 1.25em;
+}
+.wiki-page-content .md h1 {
+  font-size: 2.28571429em;
+  line-height: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.78125em;
+}
+.wiki-page-content .md h2 {
+  font-size: 1.71428571em;
+  line-height: 1.25em;
+  margin-top: 1.25em;
+  margin-bottom: 0.625em;
+}
+.wiki-page-content .md h3 {
+  font-size: 1.42857143em;
+  line-height: 1.25em;
+  margin-top: 1em;
+  margin-bottom: 0.5em;
+}
+.wiki-page-content .md .-blocks,
+.wiki-page-content .md .-lists,
+.wiki-page-content .md pre,
+.wiki-page-content .md blockquote,
+.wiki-page-content .md table,
+.wiki-page-content .md p,
+.wiki-page-content .md ul,
+.wiki-page-content .md ol {
+  margin-top: 0.35714286em;
+  margin-bottom: 0.71428571em;
+}
+.wiki-page-content .md h1,
+.wiki-page-content .md h6 {
+  color: #4F4F4F;
+  font-weight: 300;
+}
+.wiki-page-content .md h2 {
+  color: #336699;
+}
+.wiki-page-content .md h2,
+.wiki-page-content .md h3 {
+  font-weight: 600;
+}
+.wiki-page-content .md h4 {
+  font-style: italic;
+}
+.wiki-page-content .md h5 {
+  text-decoration: underline;
+}
+.wiki-page-content .md h4,
+.wiki-page-content .md h5 {
+  font-weight: 400;
+}
+.wiki-page-content .md h6 {
+  font-size: 1em;
+  line-height: 1.42857143em;
+  margin-top: 1.07142857em;
+  margin-bottom: 0.35714286em;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.md > :first-child,
+.md .-cells > :first-child,
+.md .-lists > :first-child,
+.md .-blocks > :first-child,
+.md .-headers > :first-child,
+.md h1 > :first-child,
+.md h2 > :first-child,
+.md h3 > :first-child,
+.md h4 > :first-child,
+.md h5 > :first-child,
+.md h6 > :first-child,
+.md th > :first-child,
+.md td > :first-child,
+.md ul > :first-child,
+.md ol > :first-child,
+.md .-lists > :first-child,
+.md pre > :first-child,
+.md blockquote > :first-child,
+.md table > :first-child,
+.md p > :first-child,
+.md ul > :first-child,
+.md ol > :first-child {
+  margin-top: 0;
+}
+.md > :last-child,
+.md .-cells > :last-child,
+.md .-lists > :last-child,
+.md .-blocks > :last-child,
+.md .-headers > :last-child,
+.md h1 > :last-child,
+.md h2 > :last-child,
+.md h3 > :last-child,
+.md h4 > :last-child,
+.md h5 > :last-child,
+.md h6 > :last-child,
+.md th > :last-child,
+.md td > :last-child,
+.md ul > :last-child,
+.md ol > :last-child,
+.md .-lists > :last-child,
+.md pre > :last-child,
+.md blockquote > :last-child,
+.md table > :last-child,
+.md p > :last-child,
+.md ul > :last-child,
+.md ol > :last-child {
+  margin-bottom: 0;
+}
+.md li > :first-child {
+  margin-top: 0;
+}
+.md li > :first-child:last-child {
+  margin-bottom: 0;
+}
+* {
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+body {
+  font: normal 14px verdana, arial, helvetica, sans-serif;
+  margin: 0;
+}
+a {
+  color: #369;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+p {
+  margin: 0 0 .5em;
+}
+.reddit-embed {
+  background: #fff;
+}
+.reddit-embed-content {
+  border-bottom: 1px solid #f6f6f6;
+  padding: 20px;
+}
+.reddit-embed-footer {
+  background: #fafbfd;
+  display: table;
+  font-size: 12px;
+  height: 56px;
+  padding: 20px;
+  padding-right: 114px;
+  position: relative;
+  width: 100%;
+}
+.reddit-embed-footer p {
+  display: table-cell;
+  margin: 0;
+  padding: 0;
+  vertical-align: middle;
+}
+.reddit-embed-footer .reddit-embed-footer-img {
+  display: block;
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  width: 90px;
+  height: 32px;
+  background-image: url(../reddit-embed-logo.png);
+  background-repeat: no-repeat;
+  text-indent: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+@media only screen and (min-resolution: 2dppx), only screen and (-webkit-min-device-pixel-ratio: 2) {
+  .reddit-embed-footer .reddit-embed-footer-img {
+    background-image: url(../reddit-embed-logo_2x.png);
+    background-size: 100%;
+  }
+}
+.reddit-embed-list {
+  margin: 0;
+  padding: 0;
+}
+.reddit-embed-list .reddit-embed-list {
+  margin-left: 20px;
+}
+.reddit-embed-list-item {
+  list-style: none;
+  margin-top: 24px;
+}
+.reddit-embed-content > .reddit-embed-list > .reddit-embed-list-item:first-child {
+  margin-top: 0;
+}
+.reddit-embed-author {
+  color: #6f6f6f;
+  font-weight: bold;
+}
+.reddit-embed-comment-header {
+  position: relative;
+}
+.reddit-embed-comment-meta {
+  font-size: 12px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.reddit-embed-comment-meta-item {
+  color: #6f6f6f;
+}
+.reddit-embed-comment-meta-item:after {
+  content: '•';
+  display: inline-block;
+  margin: 0 5px;
+}
+.reddit-embed-comment-meta-item:last-child:after {
+  display: none;
+}
+.reddit-embed-comment-body {
+  margin: 10px 0 0;
+}
+.reddit-embed-comment-edited,
+.reddit-embed-comment-deleted {
+  background: #f7f7f7;
+  padding: 48px 18px;
+  text-align: center;
+}
+.reddit-embed-comment-more {
+  display: none;
+}
+.reddit-embed-comment-fade .reddit-embed-comment-body {
+  position: relative;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.reddit-embed-comment-fade .reddit-embed-comment-body:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  background: rgba(255, 255, 255, 0);
+  background: -moz-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, rgba(255, 255, 255, 0)), color-stop(100%, #ffffff));
+  background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+  background: -o-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+  background: -ms-linear-gradient(top, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0) 0%, #ffffff 100%);
+}
+.reddit-embed-comment-fade .reddit-embed-comment-more {
+  position: relative;
+  top: -20px;
+  display: block;
+  padding-top: 20px;
+}

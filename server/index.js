@@ -48,7 +48,7 @@ if (options.debug) require("gun/lib/debug");
 
 global.Gun = Gun;
 
-const init = require("notabug-peer").default;
+const init = require("./notabug-peer").default;
 const { initServer } = require("./http");
 let nab;
 
@@ -87,5 +87,5 @@ if (options.index) {
 
 if (options.listings) {
   const { username, password } = require("../server-config.json");
-  nab.login(username, password);
+  nab.login(username, password).then(() => console.log("logged in"));
 }

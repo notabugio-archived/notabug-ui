@@ -2,7 +2,7 @@ import path from "path";
 import express from "express";
 import expressStaticGzip from "express-static-gzip";
 import expires from "express-cache-headers";
-import init from "notabug-peer";
+import init from "./notabug-peer";
 
 const staticMedia = express.Router();
 staticMedia.use(
@@ -21,9 +21,9 @@ export const initServer = ({ port, host, render, ...options }) => {
 
   if (render) {
     app.use(staticMedia);
-    require("babel-register")({
+    require("@babel/register")({
       ignore: [ /(node_modules|server-build)/ ],
-      presets: ["es2015", "react-app"]
+      presets: ["@babel/preset-env", "@babel/preset-react"]
     });
     const renderer = require("./renderer").default;
     app.get("*", expires(60), (...args) => renderer(nab, ...args));

@@ -8,9 +8,9 @@ import { Comment } from "Comment";
 import { votingItemProvider } from "Voting";
 
 const ChatMsgEntry = votingItemProvider(injectState(({
-  ...props,
   state: { isVotingUp, isVotingDown },
-  effects
+  effects,
+  ...props
 }) => (
   <SnewThingCommentEntry
     {...props}

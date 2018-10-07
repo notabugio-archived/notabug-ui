@@ -6,8 +6,7 @@
       "--debug",
       "--listings",
       "--redis",
-      "--peer", "http://localhost:3001/gun",
-      "--evict"
+      "--peer", "https://notabug.io/gun"
     ]
   }
 ]
