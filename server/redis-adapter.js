@@ -37,7 +37,8 @@ Gun.on("create", function(db) {
     redisGetNode(soul)
       .then(result => db.on("in", {
         "@": dedupId,
-        put: { [soul]: result || null }
+        put: result ? { [soul]: result } : null,
+        err: null
       }))
       .catch(err => console.error("error", err.stack || err) || db.on("in", {
         "@": dedupId,
