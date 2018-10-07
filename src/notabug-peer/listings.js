@@ -19,7 +19,7 @@ const calculateThingScores = query((scope, thingid, tabulator) =>
 
 const scoreThing = meta => (
   parseInt(pathOr(0, ["votes", "up"], meta), 10) -
-  parseInt(pathOr(0, ["votes", "down"], meta), 20)
+  parseInt(pathOr(0, ["votes", "down"], meta), 10)
 );
 const thresholdFilter = threshold => filter(compose(x => x >= threshold, scoreThing));
 const metaSort = fn => (scope,  params) => multiThingMeta(scope, params)
