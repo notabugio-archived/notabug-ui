@@ -55,20 +55,19 @@ Gun.on("create", function(db) {
     const dedupId = delta["#"];
     Promise.all(Object.keys(delta).map(soul => new Promise((resolve, reject) => {
       const node = delta[soul];
-      const meta = pathOr({}, ["_", ">"], node); 
+      const meta = pathOr({}, ["_", ">"], node);
       const keys = Object.keys(meta);
-      console.log("put", soul);
       const writeNextBatch = () => {
         const batch = keys.splice(0, 1000);
         if (!batch.length) return resolve();
-        console.log("write", soul);
-        redis.hmset(soul, toRedis({
+        const updates = toRedis({
           "_": {
             "#": soul,
             ">": pick(batch, meta)
           },
-          ...pick(batch, data)
-        }), err => err ? reject(err) : writeNextBatch());
+          ...pick(batch, node)
+        });
+        redis.hmset(soul, toRedis(updates), err => err ? reject(err) : writeNextBatch());
       };
       return writeNextBatch();
     })))
