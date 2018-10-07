@@ -62,23 +62,28 @@ export class Topic extends PureComponent {
           />
         ) : null}
         <div className="sitetable" id="siteTable">
-          <Listing {...listing }/>
-          <div className="nav-buttons">
-            <span className="nextprev">
-              {"view more: "}
-              {(count - limit) >= 0 ? (
-                <Link
-                  href={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
-                >‹ prev</Link>
-              ) : null}
-              <JavaScriptRequired silent>
-                <a onClick={this.onToggleInfinite} href="">∞</a>
-              </JavaScriptRequired>
-              <Link
-                href={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
-              >next ›</Link>
-            </span>
-          </div>
+          <Listing {...listing }>
+            {({ ids }) =>
+              ((count - limit) >= 0 || ids.length >= limit) ? (
+                <div className="nav-buttons">
+                  <span className="nextprev">
+                    {"view more: "}
+                    {(count - limit) >= 0 ? (
+                      <Link
+                        href={`${pathname || "/"}?${qs.stringify({ ...query, count: count - limit })}`}
+                      >‹ prev</Link>
+                    ) : null}
+                    <JavaScriptRequired silent>
+                      <a onClick={this.onToggleInfinite} href="">∞</a>
+                    </JavaScriptRequired>
+                    <Link
+                      href={`${pathname || "/"}?${qs.stringify({ ...query, count: count + limit })}`}
+                    >next ›</Link>
+                  </span>
+                </div>
+              ) : null
+            }
+          </Listing>
         </div>
       </div>
     );
