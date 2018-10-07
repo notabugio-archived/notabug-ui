@@ -69,20 +69,30 @@ var get = function(redis, key, done) {
 };
 
 flint.Flint.register(new flint.DeltaAdapter({
-  get: function(key, done) {
+  get: function(key, done, done2) {
     var redis = this.redis;
-    if (done) {
-      return get(redis, key, done);
-    } else {
-      return new Promise(function (resolve, reject) {
-        get(redis, key, function(err, result) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(result);
-          }
-        });
+    const promise =  new Promise(function (resolve, reject) {
+      get(redis, key, function(err, result) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result);
+        }
       });
+    });
+
+    if (done) {
+      return promise.then(function (result) {
+        // TODO: done2 is subkey could optimize
+        console.log("subkey fetch", key, done);
+        if (done2) {
+          done2((result || {})[done]);
+        } else {
+          done(result);
+        }
+      });
+    } else {
+      return promise;
     }
   },
 
