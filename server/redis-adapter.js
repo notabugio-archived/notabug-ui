@@ -1,5 +1,6 @@
 /* globals Promise */
 import Gun from "gun/gun";
+import { pathOr, pick } from "ramda";
 import redisNode from "redis";
 import flatten from "flat";
 import unfuck from "./unfuck-redis";
@@ -54,8 +55,22 @@ Gun.on("create", function(db) {
     const dedupId = delta["#"];
     Promise.all(Object.keys(delta).map(soul => new Promise((resolve, reject) => {
       const node = delta[soul];
-      const data = toRedis(node);
-      redis.hmset(soul, data, err => err ? reject(err) : resolve());
+      const meta = pathOr({}, ["_", ">"], node); 
+      const keys = Object.keys(meta);
+      console.log("put", soul);
+      const writeNextBatch = () => {
+        const batch = keys.splice(0, 1000);
+        if (!batch.length) return resolve();
+        console.log("write", soul);
+        redis.hmset(soul, toRedis({
+          "_": {
+            "#": soul,
+            ">": pick(batch, meta)
+          },
+          ...pick(batch, data)
+        }), err => err ? reject(err) : writeNextBatch());
+      };
+      return writeNextBatch();
     })))
       .then(() => db.on("in", {
         "#": dedupId,
