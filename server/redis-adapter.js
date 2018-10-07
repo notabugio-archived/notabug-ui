@@ -6,14 +6,15 @@ import flatten from "flat";
 import unfuck from "./unfuck-redis";
 
 const FIELD_SIZE_LIMIT=100000;
+const GET_BATCH_SIZE=10000;
+const PUT_BATCH_SIZE=10000;
 
+const metaRe = /^_\..*/;
+const edgeRe = /(\.#$)/;
 
 Gun.on("create", function(db) {
   this.to.next(db);
-
   const redis = redisNode.createClient();
-
-
   const redisGetNode = soul => new Promise((resolve, reject) => {
     if (!soul) return resolve(null);
     redis.hgetall(soul, function(err, res) {
@@ -35,17 +36,59 @@ Gun.on("create", function(db) {
     const get = request.get;
     const soul = get["#"];
     // const field = get["."];
-    redisGetNode(soul)
-      .then(result => db.on("in", {
-        "@": dedupId,
-        put: result ? { [soul]: result } : null,
-        err: null
-      }))
-      .catch(err => console.error("error", err.stack || err) || db.on("in", {
+    redis.hkeys(soul, (err, keys) => {
+      if (err) {
+        console.error("error", err.stack || err);
+        db.on("in", {
+          "@": dedupId,
+          put: null,
+          err
+        });
+        return;
+      }
+      (new Promise((resolve, reject) => {
+        if (keys.length > GET_BATCH_SIZE) {
+          console.log("get big soul", soul, keys.length);
+          const attrKeys = keys.filter(key => !key.match(metaRe));
+          const readBatch = () => new Promise((ok, fail) => {
+            const batch = attrKeys.splice(0, GET_BATCH_SIZE);
+            if (!batch.length) return ok(true);
+            const batchMeta = batch.map(key => `_.>.${key}`.replace(edgeRe, ""));
+            redis.hmget(soul, batchMeta, (err, meta) => {
+              if (err) return console.error("hmget err", err.stack || err) || fail(err);
+              const obj = {
+                "_.#": soul
+              };
+              meta.forEach((val, idx) => obj[batchMeta[idx]] = val);
+              redis.hmget(soul, batch, (err, res) => {
+                if (err) return console.error("hmget err", err.stack || err) || fail(err);
+                res.forEach((val, idx) => obj[batch[idx]] = val);
+                const result = fromRedis(obj);
+                db.on("in", {
+                  "@": dedupId,
+                  put: { [soul]: result },
+                  err: null
+                });
+                ok();
+              });
+            });
+          });
+          const readNextBatch = () => readBatch().then(done => !done && readNextBatch);
+          return readNextBatch().then(resolve).catch(reject);
+        }
+        redisGetNode(soul)
+          .then(result => db.on("in", {
+            "@": dedupId,
+            put: result ? { [soul]: result } : null,
+            err: null
+          }))
+          .catch(reject);
+      })).catch(err => console.error("error", err.stack || err) || db.on("in", {
         "@": dedupId,
         put: null,
         err
       }));
+    });
   });
 
   db.on("put", function(request) {
@@ -58,7 +101,7 @@ Gun.on("create", function(db) {
       const meta = pathOr({}, ["_", ">"], node);
       const keys = Object.keys(meta);
       const writeNextBatch = () => {
-        const batch = keys.splice(0, 1000);
+        const batch = keys.splice(0, PUT_BATCH_SIZE);
         if (!batch.length) return resolve();
         const updates = toRedis({
           "_": {

@@ -2,11 +2,14 @@
   {
     "uid": "notabug",
     "script": "server.js",
+    "command": "node --max-old-space-size=4096",
     "args": [
       "--debug",
       "--listings",
       "--redis",
-      "--peer", "https://notabug.io/gun"
+      "--leech",
+      "--evict",
+      "--peer", "http://localhost:3333/gun"
     ]
   }
 ]

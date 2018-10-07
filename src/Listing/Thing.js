@@ -28,7 +28,7 @@ class ThingBase extends PureComponent {
     this.onRefresh = debounce(() => this.onUpdate(), 250);
   }
 
-  componentDidMount = () => { this.onFetchItem(); this.onSubscribe(); };
+  componentDidMount = () => { this.onFetchItem(); this.onUpdate(); this.onSubscribe(); };
   componentWillUnmount = () => this.onUnsubscribe();
   componentWillReceiveProps = (nextProps) =>
     (nextProps.realtime && !this.props.realtime)  && this.listing.scope.realtime();

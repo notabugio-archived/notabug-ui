@@ -71,9 +71,9 @@ const notabug = (config={}) => {
         }))
           .then(() => {
             if (msg && msg.put && !Object.keys(msg.put).length) return; // Rejected all writes
+            if (config.computed) peer.lookForWork(msg);
             if (config.leech && msg.mesh && msg.get) return; // ignore gets
             this.to.next(msg);
-            if (!config.leech && config.computed) peer.lookForWork(msg);
           })
           .catch(e => console.error("Message rejected", e.stack || e, msg)); // eslint-disable-line
       });

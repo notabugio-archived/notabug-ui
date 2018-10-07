@@ -15,6 +15,7 @@ const options = commandLineArgs([
   { name: "port", alias: "p", type: Number, defaultValue: null },
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
   { name: "peer", alias: "c", multiple: true, type: String },
+  { name: "leech", type: Boolean, defaultValue: false },
   { name: "until", alias: "u", multiple: true, type: Number, defaultValue: 1000 },
   { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "index", alias: "w", type: Boolean, defaultValue: false }
@@ -61,6 +62,7 @@ const peerOptions = {
   disableValidation: options.disableValidation,
   until: options.until,
   computed: options.listings,
+  leech: options.leech,
   super: true
 };
 

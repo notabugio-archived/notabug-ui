@@ -106,7 +106,7 @@ export const scope = ({
       if (!gun.redis && !noGun) {
         setTimeout(() => {
           if (!(soul in graph)) receive(null);
-        }, 10000);
+        }, 1000);
         gun.get(soul).once(result => receive(result));
       }
     }))

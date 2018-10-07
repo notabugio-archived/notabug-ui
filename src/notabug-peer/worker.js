@@ -56,12 +56,11 @@ export const worker = peer => (new Queue((action, done) => {
   const { id: soul, latest } = action || {};
   if (!soul) return console.warn("Invalid worker action", action) || done(); // eslint-disable-line
   peer.compute(soul, latest).then(done).catch(error => console.error(error) || done()); // eslint-disable-line
-}, { concurrent: 3000 }));
+}, { concurrent: 500 }));
 
 export const lookForWork = peer => msg => {
   peer.watched = peer.watched || {}; // eslint-disable-line no-param-reassign
   peer.computed = peer.computed || {}; // eslint-disable-line no-param-reassign
-  if (!msg.mesh) return;
   if (!peer.computedPub) {
     const me = peer.isLoggedIn();
     if (!me || !me.pub) return;
@@ -71,7 +70,7 @@ export const lookForWork = peer => msg => {
 
   for (const propName in msg.get || {}) { // eslint-disable-line guard-for-in
     const rawSoul = msg.get[propName];
-    if (peer.computed[rawSoul] || rawSoul.indexOf(peer.computedPub) === -1) return;
+    if (/*peer.computed[rawSoul] || */rawSoul.indexOf(peer.computedPub) === -1) return;
     peer.computed[rawSoul] = 1; // eslint-disable-line
     peer.worker.push({ id: rawSoul });
   }
