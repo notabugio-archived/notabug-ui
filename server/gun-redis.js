@@ -68,51 +68,38 @@ var get = function(redis, key, done) {
   });
 };
 
-flint.Flint.register(new flint.DeltaAdapter({
-  get: function(key, done, done2) {
+flint.Flint.register(new flint.NodeAdapter({
+  get: function(key, done) {
     var redis = this.redis;
-    const promise =  new Promise(function (resolve, reject) {
-      get(redis, key, function(err, result) {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result);
-        }
-      });
-    });
-
     if (done) {
-      return promise.then(function (result) {
-        // TODO: done2 is subkey could optimize
-        console.log("subkey fetch", key, done);
-        if (done2) {
-          done2((result || {})[done]);
-        } else {
-          done(result);
-        }
-      });
+      return get(redis, key, done);
     } else {
-      return promise;
+      return new Promise(function (resolve, reject) {
+        get(redis, key, function(err, result) {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        });
+      });
     }
   },
 
-  put: function(delta, done) {
-    if (!delta || !done) return done(this.errors.internal);
+  put: function(key, node, done, shouldLog=true) {
+    if (!key || !node) return done(this.errors.internal);
     var redis = this.redis;
-    Promise.all(Object.keys(delta).map(function(key) {
-      console.log("put", key);
-      const node = delta[key];
-      var data = toRedis(node);
-      return new Promise(function (resolve, reject) {
-        redis.hmset(key, data, function(err) {
-          if(err) return reject(err);
-          return resolve();
-        });
-      });
-    })).then(function () {
-      done && done(null);
-    }).catch(function (err) {
-      done && done(err);
+
+    shouldLog && console.log("put", key, node);
+
+    var data = toRedis(node);
+    redis.hmset(key, data, function(err) {
+      if(err) {
+        console.error("put error", err);
+        done && done(err);
+      } else {
+        done && done(null);
+      }
     });
   },
 
@@ -123,7 +110,6 @@ flint.Flint.register(new flint.DeltaAdapter({
       console.error("redis error", err.stack || err);
     });
 
-    /*
     var put = this.put.bind(this);
 
     context.on("put", function(node) {
@@ -131,6 +117,5 @@ flint.Flint.register(new flint.DeltaAdapter({
         node.put[soul] && put(soul, node.put[soul], null, false);
       });
     });
-    */
   }
 }));
