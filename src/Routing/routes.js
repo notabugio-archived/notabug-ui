@@ -39,8 +39,7 @@ export const getFirehoseListingParams = withParams(({ withSubmissions }) => ({
   count: 0,
   soul: withSubmissions
     ? `nab/t/chat:whatever+comments:all+all/new@${tabulator}.`
-    : `nab/t/chat:whatever/new@${tabulator}.`,
-  count: 0
+    : `nab/t/chat:whatever/new@${tabulator}.`
 }));
 
 const getProfileListingParams = withParams((

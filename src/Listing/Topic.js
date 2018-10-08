@@ -28,7 +28,7 @@ export class Topic extends PureComponent {
     const query = qs.parse(search.slice(1));
     const count = parseInt(query.count, 10) || 0;
     const listing = {
-      listingParams,
+      listingParams: { ...listingParams, count },
       limit,
       realtime: !!/^\/message\//.test(pathname) || isInfinite,
       Empty: () => <Loading name="ball-grid-beat" />,
