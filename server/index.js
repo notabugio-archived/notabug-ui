@@ -63,7 +63,7 @@ const peerOptions = {
   until: options.until,
   computed: options.listings,
   leech: options.leech,
-  super: true
+  super: !options.leech
 };
 
 if (options.port) {

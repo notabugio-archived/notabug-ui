@@ -1,7 +1,23 @@
 import "better-queue-memory";
 import { path, prop } from "ramda";
-import Queue from "better-queue";
+import isNode from "detect-node";
 import { ZalgoPromise as Promise } from "zalgo-promise";
+
+let Queue;
+
+if (isNode) {
+  Queue = require("better-queue");
+} else {
+  class QueueClass {
+    constructor(fn) {
+      this.fn = fn;
+    }
+
+    push = (action) => setTimeout(() => this.fn(action, () => null), 50);
+  }
+
+  Queue = QueueClass;
+}
 
 export const compute = peer => (soul, updatedAt) => {
   peer.watched = peer.watched || {}; // eslint-disable-line no-param-reassign
@@ -21,6 +37,13 @@ export const compute = peer => (soul, updatedAt) => {
       return Promise.resolve(existing);
     }
 
+    if (!updatedAt && !peer.computed[soul]) {
+      const now = (new Date()).getTime();
+      const interval = now - latest;
+      if (interval < (1000 * 60 * 5)) return console.log("fresh", soul) || Promise.resolve(existing);
+    }
+
+    peer.computed[soul] = peer.computed[soul] || 1; // eslint-disable-line
     console.log("query", soul);
     return route.query(scope).then(r => {
       // this is a workaround for a lame SEA bug
@@ -56,31 +79,44 @@ export const worker = peer => (new Queue((action, done) => {
   const { id: soul, latest } = action || {};
   if (!soul) return console.warn("Invalid worker action", action) || done(); // eslint-disable-line
   peer.compute(soul, latest).then(done).catch(error => console.error(error) || done()); // eslint-disable-line
-}, { concurrent: 500 }));
+}, { concurrent: 100 }));
 
 export const lookForWork = peer => msg => {
-  peer.watched = peer.watched || {}; // eslint-disable-line no-param-reassign
-  peer.computed = peer.computed || {}; // eslint-disable-line no-param-reassign
-  if (!peer.computedPub) {
-    const me = peer.isLoggedIn();
-    if (!me || !me.pub) return;
-    peer.computedPub = `${me.pub}.`; // eslint-disable-line
-  }
-  if (!peer.computedPub) return;
+  try {
+    peer.watched = peer.watched || {}; // eslint-disable-line no-param-reassign
+    peer.computed = peer.computed || {}; // eslint-disable-line no-param-reassign
+    if (!peer.computedPub) {
+      const me = peer.isLoggedIn();
+      if (!me || !me.pub) return;
+      peer.computedPub = `${me.pub}.`; // eslint-disable-line
+    }
+    if (!peer.computedPub) return;
 
-  for (const propName in msg.get || {}) { // eslint-disable-line guard-for-in
-    const rawSoul = msg.get[propName];
-    if (/*peer.computed[rawSoul] || */rawSoul.indexOf(peer.computedPub) === -1) return;
-    peer.computed[rawSoul] = 1; // eslint-disable-line
-    peer.worker.push({ id: rawSoul });
-  }
+    for (const propName in (msg.get || {})) { // eslint-disable-line guard-for-in
+      const rawSoul = msg.get[propName];
+      if (/*peer.computed[rawSoul] || */rawSoul.indexOf(peer.computedPub) === -1) return;
+      peer.worker.push({ id: rawSoul });
+    }
 
-  for (const propName in msg.put || {}) { // eslint-disable-line guard-for-in
-    if (propName in peer.watched) {
-      const latest = Math.max(...Object.values(path(["_", ">"], msg.put[propName]) || {}));
-      for (const soul in peer.watched[propName]) {
-        if (latest > peer.computed[soul]) peer.worker.push({ id: soul, latest }); // eslint-disable-line
+    if (msg.get && msg.get["#"]) {
+      const rawSoul = msg.get["#"];
+      console.log("rawSoul", rawSoul);
+      if (/*peer.computed[rawSoul] || */rawSoul.indexOf(peer.computedPub) === -1) return;
+      peer.worker.push({ id: rawSoul });
+    }
+
+    for (const propName in msg.put || {}) { // eslint-disable-line guard-for-in
+      if (propName in peer.watched) {
+        let latest = 0;
+        for (const ts in Object.values(path(["_", ">"], msg.put[propName] || {}))) {
+          if (ts > latest) latest = ts;
+        }
+        for (const soul in peer.watched[propName]) {
+          peer.worker.push({ id: soul, latest }); // eslint-disable-line
+        }
       }
     }
+  } catch(e) {
+    console.error("look for work error", e.stack || e);
   }
 };

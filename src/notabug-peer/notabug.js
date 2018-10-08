@@ -16,9 +16,9 @@ export { nowOr, now } from "./scope";
 const { listingThingIds, ...listing } = listings;
 
 let worker = {};
-if (isNode) {
-  worker = require("./worker");
-}
+// if (isNode) {
+worker = require("./worker");
+// }
 
 const DEFAULT_PEERS = [];
 
@@ -71,7 +71,11 @@ const notabug = (config={}) => {
         }))
           .then(() => {
             if (msg && msg.put && !Object.keys(msg.put).length) return; // Rejected all writes
-            if (config.computed) peer.lookForWork(msg);
+            try {
+              if (config.computed && msg.get) peer.lookForWork(msg);
+            } catch(e) {
+              console.error("wtf", e);
+            }
             if (config.leech && msg.mesh && msg.get) return; // ignore gets
             this.to.next(msg);
           })
@@ -86,6 +90,8 @@ const notabug = (config={}) => {
   if (!persist && localStorage) peer.gun.on("localStorage:error", ack => ack.retry({}));
   const fns = { ...listing, ...worker, ...computed, ...write, ...auth };
   Object.keys(fns).map(key => peer[key] = fns[key](peer));
+  // if (config.computed) peer.gun.on("get", peer.lookForWork);
+  if (config.computed) peer.gun.on("put", peer.lookForWork);
   if (peer.gun) blocked.forEach(soul => peer.gun.get(soul).put({ url: null, body: "[removed]" }));
   return peer;
 };

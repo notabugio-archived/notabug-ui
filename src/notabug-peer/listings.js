@@ -76,7 +76,7 @@ const listingParams = (params) => {
   return { sort, limit, count, threshold, days };
 };
 
-const sortThings = (scope, params) => (sorts[params.sort] || sorts.hot)(scope, params);
+const sortThings = (scope, params) => (sorts[params.sort] || sorts.new)(scope, params);
 const sortSpace = (scope, params) => singleSpace(scope, params)
   .then(thingSouls => sortThings(scope, { ...params, thingSouls }))
   .then(params.threshold || params.threshold === 0 ? thresholdFilter(params.threshold) : identity)

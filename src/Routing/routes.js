@@ -6,8 +6,12 @@ import { SubmissionForm } from "Submission/Form";
 import { toRoute } from "./toRoute";
 import { tabulator } from "../config.json";
 
+const sortNames = { "new": 1, old: 1, active: 1, top: 1, comments: 1, hot: 1, best: 1, controversial: 1 };
+
+const sanitizeSort = sortName => (sortNames[sortNames] && sortName) || "new";
+
 const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}) => ({
-  sort,
+  sort: sanitizeSort(sort),
   tabulator,
   count: parseInt(count, 10) || 0,
   limit: parseInt(limit, 10) || 25,
@@ -17,16 +21,16 @@ const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}
 const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
 
 const getTopicListingParams = withParams(({ params: { sort="hot", topic="all" } }) =>
-  ({ soul: `nab/t/${topic}/${sort}@${tabulator}.` }));
+  ({ soul: `nab/t/${topic}/${sanitizeSort(sort)}@${tabulator}.` }));
 
 const getDomainListingParams = withParams(({ params: { sort="hot", domain } }) =>
-  ({ soul: `nab/domain/${domain}/${sort}@${tabulator}.` }));
+  ({ soul: `nab/domain/${domain}/${sanitizeSort(sort)}@${tabulator}.` }));
 
 const getSubmissionListingParams = withParams((
   { params: { submission_id  }, query: { sort="best" } }
 ) => ({
-  soul: `nab/things/${submission_id}/comments/${sort}@${tabulator}.`,
-  sort,
+  soul: `nab/things/${submission_id}/comments/${sanitizeSort(sort)}@${tabulator}.`,
+  sort: sanitizeSort(sort),
   days: null,
   limit: null
 }));
@@ -35,12 +39,17 @@ export const getFirehoseListingParams = withParams(({ withSubmissions }) => ({
   count: 0,
   soul: withSubmissions
     ? `nab/t/chat:whatever+comments:all+all/new@${tabulator}.`
-    : `nab/t/chat:whatever/new@${tabulator}.`
+    : `nab/t/chat:whatever/new@${tabulator}.`,
+  count: 0
 }));
 
 const getProfileListingParams = withParams((
   { params: { userid, type="overview" }, query: { sort="new" } }
-) => ({ authorIds: userid.split("+"), soul: `nab/user/${userid}/${type}/${sort}@${tabulator}.`, sort }));
+) => ({
+  authorIds: userid.split("+"),
+  soul: `nab/user/${userid}/${type}/${sanitizeSort(sort)}@${tabulator}.`,
+  sort: sanitizeSort(sort)
+}));
 
 export const routes = [
   {
