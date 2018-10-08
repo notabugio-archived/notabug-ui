@@ -64,7 +64,7 @@ class ThingBase extends PureComponent {
   onUnsubscribe = () => this.listing.scope.off(this.onRefresh);
   onUpdate = () => {
     this.listing.thingScores(this.props.id, this.props.listingParams.tabulator)
-      .then(scores => this.setState({ scores }));
+      .then(scores => scores && this.setState({ scores }));
     if (!this.state.item) this.onFetchItem();
   }
   onUpdated = () => this.props.onDidUpdate && this.props.onDidUpdate();
