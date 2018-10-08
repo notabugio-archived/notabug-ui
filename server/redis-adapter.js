@@ -28,7 +28,7 @@ Gun.on("create", function(db) {
     });
   });
 
-  db.redis = { get: redisGetNode };
+  Gun.redis = db.redis = { get: redisGetNode };
 
   db.on("get", function(request) {
     this.to.next(request);

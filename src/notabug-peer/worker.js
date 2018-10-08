@@ -7,7 +7,7 @@ export const compute = peer => (soul, updatedAt) => {
   peer.watched = peer.watched || {}; // eslint-disable-line no-param-reassign
   const route = peer.getComputeRoute(soul);
   if (!route) return console.warn("Invalid compute path", soul) || Promise.resolve(null); // eslint-disable-line
-  const scope = peer.newScope();
+  const scope = peer.newScope({ noGun: true });
   return scope.get(soul).then(existing => {
     const latest = Math.max(
       peer.computed[soul],

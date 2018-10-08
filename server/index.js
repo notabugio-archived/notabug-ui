@@ -78,6 +78,10 @@ if (options.port) {
   nab = init(peerOptions);
 }
 
+if (options.redis) {
+  nab.gun.redis = Gun.redis;
+}
+
 if (options.index) {
   const indexed = {};
   nab.gun.get("nab/things").map().once(function ({ id }) {

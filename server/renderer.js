@@ -34,6 +34,7 @@ export default (nab, req, res) => require("fs").readFile(
     return dataQuery.then(() => {
       const props = { context: {}, location: url };
       const html = renderToString(<Router {...props}><App {...{ notabugApi }} /></Router>);
+      console.log("rendering", req.url);
       if (isJson) return res.send(notabugApi.scope.getCache());
       const parts = htmlData.split("!!!CONTENT!!!");
       const result = [parts[0], html, serializeState(scope.getCache()), parts[1]].join("");
