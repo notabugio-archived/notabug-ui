@@ -43,6 +43,7 @@ export class Chat extends PureComponent {
         limit={this.state.messagesShown}
         listingParams={{
           ...getFirehoseListingParams(this.props),
+          count: 0,
           sort: "new",
           threshold: -1
         }}

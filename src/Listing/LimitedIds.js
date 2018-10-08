@@ -4,9 +4,10 @@ import { ListingIds } from "./Ids";
 
 export class ListingLimitedIds extends React.PureComponent {
   static getDerivedStateFromProps(props) {
+    const { listingProps = {} } = props;
     const query = qs.parse(props.location.search, { ignoreQueryPrefix: true });
     const limit = parseInt(props.limit, 10) || parseInt(query.limit, 10) || 25;
-    const count = parseInt(query.count, 10) || 0;
+    const count = parseInt(listingProps.count, 10) || 0;
     return { limit, count };
   }
 
