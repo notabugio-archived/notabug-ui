@@ -8,7 +8,7 @@ import { tabulator } from "../config.json";
 
 const sortNames = { "new": 1, old: 1, active: 1, top: 1, comments: 1, hot: 1, best: 1, controversial: 1 };
 
-const sanitizeSort = sortName => (sortNames[sortNames] && sortName) || "new";
+const sanitizeSort = sortName => (sortNames[sortName] && sortName) || "new";
 
 const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}) => ({
   sort: sanitizeSort(sort),
