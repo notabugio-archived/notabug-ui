@@ -44,7 +44,7 @@ export const compute = peer => (soul, updatedAt) => {
     }
 
     peer.computed[soul] = peer.computed[soul] || 1; // eslint-disable-line
-    console.log("query", soul);
+    // console.log("query", soul);
     return route.query(scope).then(r => {
       // this is a workaround for a lame SEA bug
       Object.keys(r).forEach(key => {
@@ -79,7 +79,7 @@ export const worker = peer => (new Queue((action, done) => {
   const { id: soul, latest } = action || {};
   if (!soul) return console.warn("Invalid worker action", action) || done(); // eslint-disable-line
   peer.compute(soul, latest).then(done).catch(error => console.error(error) || done()); // eslint-disable-line
-}, { concurrent: 100 }));
+}, { concurrent: 1000 }));
 
 export const lookForWork = peer => msg => {
   try {
@@ -100,7 +100,6 @@ export const lookForWork = peer => msg => {
 
     if (msg.get && msg.get["#"]) {
       const rawSoul = msg.get["#"];
-      console.log("rawSoul", rawSoul);
       if (/*peer.computed[rawSoul] || */rawSoul.indexOf(peer.computedPub) === -1) return;
       peer.worker.push({ id: rawSoul });
     }

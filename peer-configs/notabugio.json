@@ -1,31 +1,24 @@
 [
   {
-    "uid": "gun",
-    "script": "server.js",
-    "args": [
-      "--port", "3333",
-      "--evict",
-      "--debug"
-    ]
-  }, {
-    "uid": "render",
+    "uid": "notabug",
     "script": "server.js",
     "args": [
       "--port", "4444",
+      "--debug",
       "--evict",
       "--redis",
-      "--peer", "http://localhost:3333/gun",
       "--render"
     ]
   }, {
     "uid": "tabulator",
     "script": "server.js",
+    "command": "node --max-old-space-size=16384",
     "args": [
       "--evict",
       "--listings",
       "--redis",
       "--leech",
-      "--peer", "http://localhost:3333/gun"
+      "--peer", "http://localhost:4444/gun"
     ]
   }
 ]

@@ -9,7 +9,7 @@ const baseParams = ({ params: { tab1, tab2, sort="hot" }={}, query: { count, lim
   tabulator: `~${tab1}.${tab2}`,
   count: parseInt(count, 10) || 0,
   limit: parseInt(limit, 10) || 1000,
-  days: parseInt(limit, 10) || 90,
+  days: parseInt(limit, 10) || 180,
 });
 
 const listingQuery = fn => query((scope, params) => listingThingIds(

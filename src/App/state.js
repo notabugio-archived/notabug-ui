@@ -19,7 +19,7 @@ let FORCE_REALTIME = false;
 
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
-  LOCAL_STORAGE = !!(/localStorage/.test(window.location.search));
+  LOCAL_STORAGE = !(/noLocalStorage/.test(window.location.search));
   FORCE_REALTIME = !!/realtime/.test(window.location.search);
 
   if (!(/nosea/.test(window.location.search))) {
@@ -34,7 +34,6 @@ const initialState = ({ history, notabugApi }) => {
     localStorage: LOCAL_STORAGE,
     countVotes: COUNT_VOTES,
     disableValidation: true,
-    super: false,
     leech: true,
     super: false,
     peers: isNode ? [] : [
