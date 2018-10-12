@@ -3,11 +3,12 @@
     "uid": "notabug-radisk",
     "script": "server.js",
     "args": [
+      "--port", "3001",
       "--persist",
       "--debug",
-      "--peer", "http://localhost:3333/gun",
-      "--evict",
-      "--index"
+      "--render",
+      "--peer", "https://notabug.io/gun",
+      "--evict"
     ]
   }
 ]
