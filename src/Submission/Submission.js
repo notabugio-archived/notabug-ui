@@ -11,7 +11,7 @@ import { submissionSummaryProvider } from "./state";
 import { AuthorLink } from "Auth";
 // import { SaveThingButton } from "SaveThing";
 
-const nsfwRe = /(nsfw|porn|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
+const nsfwRe = /(nsfw|porn|hentai|ecchi|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
 
 export const Submission = ({
   id,

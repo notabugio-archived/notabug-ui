@@ -1,6 +1,11 @@
 import commandLineArgs from "command-line-args";
 import blocked from "./blocked";
+import { combineOracles } from "./oracles/oracle";
+import indexerOracle from "./oracles/indexer";
+import tabulatorOracle from "./oracles/tabulator";
 const Gun = require("gun/gun");
+
+const listingsOracle = combineOracles([indexerOracle, tabulatorOracle]);
 
 const options = commandLineArgs([
   { name: "persist", alias: "P", type: Boolean, defaultValue: false },
@@ -62,6 +67,7 @@ const peerOptions = {
   disableValidation: options.disableValidation,
   until: options.until,
   computed: options.listings,
+  oracle: options.listings ? listingsOracle : null,
   leech: options.leech,
   super: !options.leech
 };

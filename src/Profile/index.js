@@ -6,21 +6,25 @@ import ProfileRender from "./Profile";
 export class ProfileComponent extends PureComponent {
   constructor(props) {
     super(props);
-    this.listing = props.listing || props.state.notabugApi.scopedListing();
+    const nab = props.state.notabugApi;
     const userId = this.props.match.params.userid;
+    this.scope = nab.scope;
     this.state = {
       userId, userAlias: null, createdAt: null,
-      ...(this.listing.userMeta.now(userId) || {})
+      ...(nab.queries.userMeta.now(this.scope, userId) || {})
     };
   }
 
   componentDidMount = () => {
     this.getMeta(this.props);
-    this.listing.scope.on(this.onUpdate);
+    this.scope.on(this.onUpdate);
   }
 
-  getMeta = ({ match: { params: { userid } } }) => this.listing.userMeta(userid)
-    .then(meta => this.setState(meta || {}))
+  componentWillUnmount = () => this.scope.off(this.onUpdate);
+
+  getMeta = ({ state: { notabugApi: nab }, match: { params: { userid } } }) =>
+    nab.queries.userMeta(this.scope, userid).then(meta => this.setState(meta || {}));
+
   onUpdate = () => this.getMeta(this.props);
 
   render = () => (

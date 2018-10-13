@@ -8,11 +8,9 @@ These are all the public peers known to exist on the notabug network.
 
  * https://blubit.space and https://redbit.space
  * https://communard.org/
- * https://dontsuemebro.com/
- * http://isafeature.com
- * http://liberated.site
  * https://notabug.io
  * https://redguardsaustin.com
+ * https://supportnikki.org
 
 This list does not represent an endorsement of these peers.
 

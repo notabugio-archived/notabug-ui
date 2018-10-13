@@ -1,9 +1,11 @@
 import Promise from "promise";
 import React from "react";
+import { propOr, keysIn } from "ramda";
 import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import { App, routes } from "App";
 import init from "./notabug-peer";
+import { query, all } from "./notabug-peer/scope";
 import serialize from "serialize-javascript";
 
 const serializeState = (data={}) => `
@@ -11,6 +13,28 @@ const serializeState = (data={}) => `
 window.initNabState = ${serialize(data, { isJSON: true })};
 </script>
 `;
+
+const preload = (nab, scope, params) => {
+  const getLimitedListingIds = query((scope, { soul, limit, count=0 }) =>
+    nab.queries.listingIds(scope, soul)
+      .then(allIds => (limit || count) ? allIds.slice(count, count+limit) : allIds));
+  const preloadPageData = query((scope, params) => getLimitedListingIds(scope, params)
+    .then((ids) => all(ids.map(id => nab.queries.thingData(scope, id)))
+      .then(data => {
+        const opIds = {};
+        for (const item in data) {
+          const opId = propOr(null, "opId", item);
+          if (opId && !data[opId]) opIds[opId] = true;
+        }
+        const opIdsKeys = keysIn(opIds);
+        return Promise.all(
+          [...ids, ...opIdsKeys].map(id => nab.queries.thingScores(scope, id, params.tabulator))
+        ).then(() => opIdsKeys.length ? all(opIdsKeys.map(id => nab.queries.thingData(scope, id))) : data);
+      }).then(data => params.authorIds
+        ? Promise.all(params.authorIds.map(id => nab.queries.userMeta(scope, `~${id}`))) : data)
+    ));
+  return preloadPageData.query(scope, params);
+};
 
 export default (nab, req, res) => require("fs").readFile(
   require("path").resolve(__dirname, "..", "htdocs", "index.html"), "utf8",
@@ -23,13 +47,12 @@ export default (nab, req, res) => require("fs").readFile(
     const url = isJson ? req.url.replace(req.path, urlpath) : req.url;
     const route = routes.find(route => routeMatch = matchPath(urlpath, route));
     if (!route) return res.status(404).end();
-
     const notabugApi = init({ noGun: true, localStorage: false, disableValidation: true });
     const scope = notabugApi.scope = nab.newScope({ isCacheing: true });
 
-    if (route.getListingParams)
-      dataQuery = nab.scopedListing({ scope }).withData
-        .query(route.getListingParams({ ...routeMatch, query: req.query }));
+    if (route.getListingParams) {
+      dataQuery = preload(nab, scope, route.getListingParams({ ...routeMatch, query: req.query }));
+    }
 
     return dataQuery.then(() => {
       const props = { context: {}, location: url };

@@ -4991,10 +4991,17 @@ gun-file@^1.0.123:
     gun "^0.9.96"
     json-6 "^0"
 
-gun@^0.9.96, gun@^0.9.99995:
+gun@^0.9.96:
   version "0.9.99996"
   resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99996.tgz#184c16800f08fed7913d15ddb832a9230ad6eb91"
   integrity sha512-2hUCZKl9f4yegmmkKvCPQuXC67VcozZl/GuQ2li7okYQ985dqip8YbOjEfSWI/OnJmq0z7wHyxJCxK2xYextug==
+  dependencies:
+    ws "~>5.2.0"
+
+gun@^0.9.99997:
+  version "0.9.99997"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99997.tgz#303f09e34ad57e2b65671841e2bcbf4791c3d0bc"
+  integrity sha512-WGRi5ETnEq3iX7/TP3qZgTc4D7nEhP+PDrwSYJ6yBOHg8XrjSkS/V+iC1SicWAjsKrnHf9a+MsgJW+EUPpI3ZA==
   dependencies:
     ws "~>5.2.0"
 

@@ -48,18 +48,18 @@ export const allowFields = (...validators) => (pKey, val, _parent, _pKey, msg, p
           }
         }
       })))
-      .then(() => val);
+    .then(() => val);
 
 export const and = (...fns) => (...args) => {
   let result;
   return !fns.find((fn, idx) => idx === 0 // eslint-disable-line
     ? !(result = fn(...args))
     : !fn(...args))
-      ? result
-      : false;
+    ? result
+    : false;
 };
 
-const count = x => (x && x.length || 0)
+const count = x => (x && x.length || 0);
 
 export const getRecord = (peer, soul) => (peer.gun.redis ? peer.gun.redis.get : peer.get)(soul);
 

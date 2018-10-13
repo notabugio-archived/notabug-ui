@@ -5,6 +5,7 @@ import { SubmissionDetail } from "Submission/Detail";
 import { SubmissionForm } from "Submission/Form";
 import { toRoute } from "./toRoute";
 import { tabulator } from "../config.json";
+import { PREFIX } from "notabug-peer";
 
 const sortNames = { "new": 1, old: 1, active: 1, top: 1, comments: 1, hot: 1, best: 1, controversial: 1 };
 
@@ -84,6 +85,10 @@ export const routes = [
     getListingParams: withParams(({ userId }) => ({
       soul: `nab/user/${userId}/replies/all/new@${tabulator}.`
     }))
+  }, {
+    path: "/listing/:soul(.+)",
+    component: Topic,
+    getListingParams: withParams(({ params: { soul } }) => ({ soul: `${PREFIX}/${soul}` }))
   }, {
     path: "/t/:topic/comments/:submission_id/:slug",
     component: cached(SubmissionDetail),

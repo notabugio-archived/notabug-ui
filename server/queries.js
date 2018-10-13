@@ -1,9 +1,11 @@
-import { compose, map, reduce, prop, propOr, difference, path, isNil } from "ramda";
+import {
+  compose, map, reduce, prop, propOr, pathOr, sortBy, difference, path, isNil, filter
+} from "ramda";
 import {
   emptyPromise, unionArrays, intersectArrays, mergeObjects, getDayStr, PREFIX,
-} from "./util";
-import { query, all, resolve } from "./scope";
-import * as SOULS from "./souls";
+} from "./notabug-peer/util";
+import { query, all, resolve } from "./notabug-peer/scope";
+import * as SOULS from "./notabug-peer/souls";
 
 export const getTopicSouls = params => {
   const { topics=["all"] } = (params || {});
@@ -67,7 +69,7 @@ export const multiThing = query((scope, params) => all(propOr([], "thingSouls", 
 
 export const singleThingData = query((scope, { thingId: thingid }) =>
   scope.get(SOULS.thingData.soul({ thingid })).then(data => {
-    const { _, ...actual } = data || {};
+    const { _, ...actual } = data || {}; // eslint-disable-line no-unused-vars
     return { [thingid]: data ? actual : data };
   }));
 
@@ -80,8 +82,7 @@ export const singleAuthor = query((scope, params) => all([
   (params.type && params.type !== "submitted" && params.type !== "overview")
     ? resolve([]) : scope.get(params.authorId).get("submissions").souls(),
   (params.type && params.type !== "comments" && params.type !== "overview")
-    ? resolve([]) : scope.get(params.authorId).get("comments").souls(),
-  userMeta(scope, params.authorId), // to preseed data for clients
+    ? resolve([]) : scope.get(params.authorId).get("comments").souls()
 ]).then(([submissions, comments]) => unionArrays([submissions, comments])));
 
 export const repliesToAuthor = query((scope, { repliesToAuthorId, ...params }) =>
@@ -164,3 +165,47 @@ export const multiTopic = multiQuery(singleTopic, "topics", "topic");
 export const multiSubmission = multiQuery(singleSubmission, "submissionIds", "submissionId");
 export const multiLens = multiQuery(singleLens, "lenses", "lens");
 export const multiSpace = multiQuery(singleSpace, "spaces", "space");
+
+const voteSort = fn => (scope,  params) => multiThingMeta(scope, params)
+  .then(compose(sortBy(fn), filter(x => !!x)));
+const timeSort = fn => (scope,  params) => multiThing(scope, params)
+  .then(compose(sortBy(fn), filter(x => !!x)));
+
+const sorts = {
+  new: timeSort(compose(x => -1 * x, prop("timestamp"))),
+  old: timeSort(prop("timestamp")),
+  active: voteSort(({ timestamp, lastActive }) => (-1 * (lastActive || timestamp))),
+  top: voteSort(compose(x => -1 * parseInt(x, 10), pathOr(0, ["votes", "score"]))),
+  comments: voteSort(compose(x => -1 * x, pathOr(0, ["votes", "comment"]))),
+  hot: voteSort(thing => {
+    const timestamp = prop("timestamp", thing);
+    const score = parseInt(pathOr(0, ["votes", "score"], thing), 10);
+    const seconds = (timestamp/1000) - 1134028003;
+    const order = Math.log10(Math.max(Math.abs(score), 1));
+    let sign = 0;
+    if (score > 0) { sign = 1; } else if (score < 0) { sign = -1; }
+    return -1 * (sign * order + seconds / 45000);
+  }),
+  best: voteSort(thing => {
+    const ups = parseInt(pathOr(0, ["votes", "up"], thing), 10);
+    const downs = parseInt(pathOr(0, ["votes", "down"], thing), 10);
+    const n = ups + downs;
+    if (n === 0) return 0;
+    const z = 1.281551565545; // 80% confidence
+    const p = ups / n;
+    const left = p + 1/(2*n)*z*z;
+    const right = z*Math.sqrt(p*(1-p)/n + z*z/(4*n*n));
+    const under = 1+1/n*z*z;
+    return -1 * ((left - right) / under);
+  }),
+  controversial: voteSort(thing => {
+    const ups = parseInt(pathOr(0, ["votes", "up"], thing), 10);
+    const downs = parseInt(pathOr(0, ["votes", "down"], thing), 10);
+    if (ups <= 0 || downs <= 0) return 0;
+    const magnitude = ups + downs;
+    const balance = (ups > downs) ? downs / ups : ups /downs;
+    return -1 * (magnitude ** balance);
+  }),
+};
+
+export const sortThings = (scope, params) => (sorts[params.sort] || sorts.new)(scope, params);

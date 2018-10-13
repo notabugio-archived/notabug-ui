@@ -11,7 +11,7 @@ if (!isNode) {
   require("gun/lib/rindexed");
 }
 */
-const { default: notabugPeer, PREFIX } = require("notabug-peer");
+import notabugPeer from "notabug-peer";
 
 let COUNT_VOTES = false;
 let LOCAL_STORAGE = false;
@@ -21,10 +21,7 @@ if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !(/noLocalStorage/.test(window.location.search));
   FORCE_REALTIME = !!/realtime/.test(window.location.search);
-
-  if (!(/nosea/.test(window.location.search))) {
-    require("utils/sea");
-  }
+  if (!(/nosea/.test(window.location.search))) require("utils/sea");
 }
 
 const initialState = ({ history, notabugApi }) => {
@@ -50,8 +47,6 @@ const initialState = ({ history, notabugApi }) => {
       isCached: !FORCE_REALTIME,
       isCacheing: !FORCE_REALTIME
     });
-    // window.initNabState = null;
-
   }
 
   if (!isNode && notabugApi.gun) {
@@ -69,15 +64,9 @@ const initialState = ({ history, notabugApi }) => {
 };
 
 const getState = always(identity);
+const onNotabugMarkMine = (effects, id) => effects.getState().then(() => assocPath(["myContent", id], true));
 
-const onNotabugMarkMine = (effects, id) => {
-  //effects.onListenForReplies(id); // TODO: this is currently broken
-  return effects.getState()
-    .then(() => assocPath(["myContent", id], true));
-};
-
-const onUpdateNotabugState = update(({ notabugApi }) => ({ notabugState: notabugApi.getState() }));
-
+/*
 const onListenForReplies = (effects, id) => effects.getState()
   .then(({ notabugApi }) => {
     notabugApi.gun.get(`${PREFIX}/things/${id}`).get("comments").map().once(({ id }) => {
@@ -102,6 +91,7 @@ const onListenForReplies = (effects, id) => effects.getState()
     });
     return state => state;
   });
+*/
 
 const onLogin = update((state, { alias, pub }) => ({ notabugUser: alias, notabugUserId: pub }));
 
@@ -127,13 +117,10 @@ const initialize = effects => effects.getState()
   .then(({ notabugApi }) => {
     notabugApi.onLogin(effects.onLogin);
     if (!isNode && notabugApi.gun.user) {
-      console.log("attempting auto-login");
       notabugApi.gun.user().recall({ sessionStorage: true });
       const check = () => {
         const auth = notabugApi.isLoggedIn();
-        if (notabugApi.isLoggedIn()) {
-          effects.onLogin(auth);
-        }
+        if (notabugApi.isLoggedIn()) effects.onLogin(auth);
         clearInterval(check);
       };
       setInterval(check, 100);
@@ -150,8 +137,6 @@ export const notabugProvider = compose(
       onFetchCache,
       onNotabugMarkMine,
       onNotabugToggleInfiniteScroll,
-      onUpdateNotabugState,
-      onListenForReplies,
       onLogin,
       onLogout
     }
