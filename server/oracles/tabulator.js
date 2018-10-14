@@ -8,6 +8,7 @@ export default oracle({
   routes: [
     basicQueryRoute({
       path: `${PREFIX}/things/:thingid/votecounts@~:tab1.:tab2.`,
+      checkMatch: ({ thingid }) => !!thingid,
       query: query((scope, route) => {
         const thingSoul = SOULS.thing.soul(route.match);
         return all([

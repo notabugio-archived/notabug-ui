@@ -22,8 +22,8 @@ export const NavTab = withRouter(({
       : props.children === "rising" ? (
         <SnewNavTab
           {...props}
-          className={sort==="comments" ? "selected" : ""}
-          href={props.href.replace("rising", "comments")}
+          className={sort==="discussed" ? "selected" : ""}
+          href={props.href.replace("rising", "discussed")}
         >discussed</SnewNavTab>
       ) : null;
 });

@@ -73,11 +73,6 @@ export const singleThingData = query((scope, { thingId: thingid }) =>
     return { [thingid]: data ? actual : data };
   }));
 
-export const userMeta = query((scope, id) => scope.get(id).then(meta => ({
-  userAlias: prop("alias", meta),
-  createdAt: path(["_", ">", "pub"], meta),
-})), "userMeta");
-
 export const singleAuthor = query((scope, params) => all([
   (params.type && params.type !== "submitted" && params.type !== "overview")
     ? resolve([]) : scope.get(params.authorId).get("submissions").souls(),
@@ -171,12 +166,20 @@ const voteSort = fn => (scope,  params) => multiThingMeta(scope, params)
 const timeSort = fn => (scope,  params) => multiThing(scope, params)
   .then(compose(sortBy(fn), filter(x => !!x)));
 
-const sorts = {
+export const sorts = {
   new: timeSort(compose(x => -1 * x, prop("timestamp"))),
   old: timeSort(prop("timestamp")),
   active: voteSort(({ timestamp, lastActive }) => (-1 * (lastActive || timestamp))),
   top: voteSort(compose(x => -1 * parseInt(x, 10), pathOr(0, ["votes", "score"]))),
   comments: voteSort(compose(x => -1 * x, pathOr(0, ["votes", "comment"]))),
+  discussed: voteSort(thing => {
+    const timestamp = prop("timestamp", thing);
+    const score = parseInt(pathOr(0, ["votes", "comment"], thing), 10);
+    const seconds = (timestamp/1000) - 1134028003;
+    const order = Math.log10(Math.max(Math.abs(score), 1));
+    if (!score) return 1000000000 - seconds;
+    return -1 * (order + seconds / 45000);
+  }),
   hot: voteSort(thing => {
     const timestamp = prop("timestamp", thing);
     const score = parseInt(pathOr(0, ["votes", "score"], thing), 10);

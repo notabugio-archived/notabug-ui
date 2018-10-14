@@ -7,7 +7,7 @@ import { toRoute } from "./toRoute";
 import { tabulator } from "../config.json";
 import { PREFIX } from "notabug-peer";
 
-const sortNames = { "new": 1, old: 1, active: 1, top: 1, comments: 1, hot: 1, best: 1, controversial: 1 };
+const sortNames = { "new": 1, old: 1, active: 1, top: 1, discussed: 1, comments: 1, hot: 1, best: 1, controversial: 1 };
 
 const sanitizeSort = sortName => (sortNames[sortName] && sortName) || "new";
 
@@ -22,10 +22,10 @@ const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}
 const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
 
 const getTopicListingParams = withParams(({ params: { sort="hot", topic="all" } }) =>
-  ({ soul: `nab/t/${topic}/${sanitizeSort(sort)}@${tabulator}.` }));
+  ({ soul: `nab/t/${topic.toLowerCase()}/${sanitizeSort(sort)}@${tabulator}.` }));
 
 const getDomainListingParams = withParams(({ params: { sort="hot", domain } }) =>
-  ({ soul: `nab/domain/${domain}/${sanitizeSort(sort)}@${tabulator}.` }));
+  ({ soul: `nab/domain/${domain.toLowerCase()}/${sanitizeSort(sort)}@${tabulator}.` }));
 
 const getSubmissionListingParams = withParams((
   { params: { submission_id  }, query: { sort="best" } }
@@ -83,7 +83,7 @@ export const routes = [
     path: "/message/inbox",
     component: Topic,
     getListingParams: withParams(({ userId }) => ({
-      soul: `nab/user/${userId}/replies/all/new@${tabulator}.`
+      soul: `nab/user/${userId}/replies/overview/new@${tabulator}.`
     }))
   }, {
     path: "/listing/:soul(.+)",

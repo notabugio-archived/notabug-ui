@@ -18,6 +18,7 @@ export const oracle = specs => {
   const findRouteForSoul = soul => {
     let match = null;
     const route = routes.find(rt => (match = rt.matcher.match(soul)));
+    if (route && route.checkMatch && !route.checkMatch(match)) return null;
     return route ? { ...route, soul, match, query: scope => route.query(scope, match) } : null;
   };
   let computedPub;
