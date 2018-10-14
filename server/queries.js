@@ -9,7 +9,7 @@ import * as SOULS from "./notabug-peer/souls";
 
 export const getTopicSouls = params => {
   const { topics=["all"] } = (params || {});
-  const days = propOr(90, "days", params) || 90;
+  const days = propOr(365, "days", params) || 90;
   const dayStrings = [];
   const oneDay = (1000*60*60*24);
   const start = (new Date()).getTime() - oneDay * parseInt(days, 10);

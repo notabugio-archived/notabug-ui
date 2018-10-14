@@ -38,6 +38,7 @@ export class Page extends React.PureComponent {
     const listing = {
       Loading, Empty, limit, realtime: !!isInfinite,
       listingParams: { ...listingParams, count },
+      fetchParent: true,
       disableChildren: true,
     };
 
