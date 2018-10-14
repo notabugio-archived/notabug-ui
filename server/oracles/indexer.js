@@ -67,7 +67,7 @@ export default oracle({
           { authorId: authorId ? `~${authorId}` : null, type }
         )
           .then(thingSouls => sortThings(scope, { sort, thingSouls, tabulator: `~${tab1}.${tab2}` }))
-          .then(things => serializeListing(things.slice(0, LISTING_SIZE))))
+          .then(things => serializeListing({ things: things.slice(0, LISTING_SIZE) })))
     })
   ]
 });
