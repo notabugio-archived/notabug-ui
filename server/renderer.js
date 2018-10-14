@@ -1,6 +1,6 @@
 import Promise from "promise";
 import React from "react";
-import { propOr, keysIn } from "ramda";
+import { compose, propOr, keysIn } from "ramda";
 import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import { App, routes } from "App";
@@ -16,7 +16,11 @@ window.initNabState = ${serialize(data, { isJSON: true })};
 
 const preload = (nab, scope, params) => {
   const getLimitedListingIds = query((scope, { soul, limit, count=0 }) =>
-    nab.queries.listingIds(scope, soul)
+    nab.queries.listing(scope, soul)
+      .then(compose(
+        idString => (idString || "").split("+").filter(x => !!x),
+        propOr("", "ids")
+      ))
       .then(allIds => (limit || count) ? allIds.slice(count, count+limit) : allIds));
   const preloadPageData = query((scope, params) => getLimitedListingIds(scope, params)
     .then((ids) => all(ids.map(id => nab.queries.thingData(scope, id)))

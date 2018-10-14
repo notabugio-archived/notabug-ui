@@ -1,13 +1,15 @@
 import React from "react";
 import { injectState } from "freactal";
+import { SOUL_DELIMETER } from "notabug-peer/util";
+import { debounce } from "lodash";
 
 export class ListingIdsBase extends React.PureComponent {
   constructor(props) {
     super(props);
     const api = props.state.notabugApi;
-    const ids = api.queries.listingIds.now(api.scope, props.listingParams.soul) || [];
-    // console.log("soul", props.listingParams.soul);
-    this.state = { ids };
+    const state = api.queries.listing.now(api.scope, props.listingParams.soul) || {};
+    this.state = { ...state };
+    this.onRefresh = debounce(() => this.onUpdate(), 50);
   }
 
   componentDidMount() {
@@ -16,24 +18,19 @@ export class ListingIdsBase extends React.PureComponent {
   }
 
   render() {
-    const { ids } = this.state;
+    const { ids: idString, tabs: tabString, ...state } = this.state;
     const { children } = this.props;
-    return children({ ids });
+    const ids = (idString || "").split("+").filter(x => !!x);
+    const tabs = (tabString || "").split(SOUL_DELIMETER).filter(x => !!x);
+    return children({ ...state, ids, tabs });
   }
 
-  onSubscribe = () => {
-    const api = this.props.state.notabugApi;
-    api.scope.on(this.onRefresh);
-  }
-
-  onRefresh = () => this.onUpdate();
+  onSubscribe = () => this.props.state.notabugApi.scope.on(this.onRefresh);
 
   onUpdate = (props) => {
     const api = (props || this.props).state.notabugApi;
     const soul = (props || this.props).listingParams.soul;
-    const ids = (api.queries.listingIds.now(api.scope, soul) || []);
-    if (JSON.stringify(ids) === JSON.stringify(this.state.ids)) return;
-    this.setState({ ids });
+    this.setState(api.queries.listing.now(api.scope, soul) || {});
   }
 }
 

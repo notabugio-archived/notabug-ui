@@ -20,7 +20,7 @@ let FORCE_REALTIME = false;
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !(/noLocalStorage/.test(window.location.search));
-  FORCE_REALTIME = !!/realtime/.test(window.location.search);
+  FORCE_REALTIME = !/cached/.test(window.location.search);
   if (!(/nosea/.test(window.location.search))) require("utils/sea");
 }
 

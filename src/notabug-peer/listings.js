@@ -1,12 +1,8 @@
-import { compose, prop, path } from "ramda";
+import { prop, path } from "ramda";
 import { scope as getScope, query } from "./scope";
 import * as SOULS from "./souls";
 
-const listingIds = query(
-  (scope, soul) =>
-    scope.get(soul).then(compose(ids => (ids || "").split("+").filter(x => !!x), prop("ids"))),
-  "listingIds"
-);
+const listing = query((scope, soul) => scope.get(soul), "listing");
 
 const getThingScores = query(
   (scope, thingid, tabulator) =>
@@ -33,7 +29,7 @@ const userMetaQuery = query(
 );
 
 export const queries = () => ({
-  listingIds,
+  listing,
   thingData: getThingData,
   thingScores: getThingScores,
   userMeta: userMetaQuery

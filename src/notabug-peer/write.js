@@ -35,6 +35,7 @@ export const submit = curry((peer, data) => {
   const user = peer.isLoggedIn();
 
   if (data.topic) data.topic = data.topic.toLowerCase().trim(); // eslint-disable-line
+  if (data.domain) data.domain = data.domain.toLowerCase().trim(); // eslint-disable-line
   if (user) {
     data.author = user.alias; // eslint-disable-line
     data.authorId = user.pub; // eslint-disable-line
@@ -47,7 +48,7 @@ export const submit = curry((peer, data) => {
     peer.gun.user().get("submissions").set(thing);
   }
 
-  return new Promise((resolve, reject) => {
+  return new Promise(resolve => {
     thing.on(result => {
       if (!result) return;
       thing.off();
@@ -108,7 +109,7 @@ export const indexThing = curry((peer, thingid, data) => {
     peer.souls.thingData.get({ thingid: data.opId })
       .on(function recv(td) {
         if (!td) return;
-        peer.indexThing(thingid, { ...data, topic: td.topic || "all" })
+        peer.indexThing(thingid, { ...data, topic: td.topic || "all" });
         this.off();
       });
     return;
@@ -132,7 +133,7 @@ export const indexThing = curry((peer, thingid, data) => {
 
   if (data.kind === "submission") {
     const urlInfo = data.url ? urllite(data.url) : {};
-    const domainName = data.url ? (urlInfo.host || "").replace(/^www\./, "") : `self.${data.topic}`;
+    const domainName = (data.url ? (urlInfo.host || "").replace(/^www\./, "") : `self.${data.topic}`).toLowerCase();
     const domain = peer.souls.domain.get({ domain: domainName });
     domain.set(thing);
 

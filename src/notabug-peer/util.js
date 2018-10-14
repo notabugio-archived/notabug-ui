@@ -4,12 +4,12 @@ import { isNil, prop, identity, compose, union, reduce, filter, intersection, ke
 const { resolve } = ZalgoPromise;
 
 export const PREFIX = "nab";
+export const SOUL_DELIMETER = "|~~|";
 export const DEFAULT_POW_COMPLEXITY=18;
 export const COMMENT_BODY_MAX = 10000;
 export const SUBMISSION_TITLE_MAX = 300;
 export const SUBMISSION_BODY_MAX = 40000;
 export const TOPIC_NAME_MAX = 42;
-
 
 export const getDayStr = timestamp => {
   const d = new Date(timestamp || (new Date()).getTime());

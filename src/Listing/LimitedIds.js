@@ -3,6 +3,8 @@ import qs from "qs";
 import { ListingIds } from "./Ids";
 
 export class ListingLimitedIds extends React.PureComponent {
+  state = { limit: 25, count: 0 };
+
   static getDerivedStateFromProps(props) {
     const { listingParams = {} } = props;
     const query = qs.parse(props.location.search, { ignoreQueryPrefix: true });

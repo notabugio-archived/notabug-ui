@@ -20,13 +20,13 @@ export class Listing extends React.PureComponent {
       children,
       ...props
     } = this.props;
-    const renderProps = ({ ids }) => {
+    const renderProps = ({ ids, ...props }) => {
       if (!ids.length && Empty) return <Empty />;
       const rendered = ids.map((id, idx) => this.renderThing(idx, id));
-      children && rendered.push(children({ ids }));
+      children && rendered.push(children({ ids, ...props }));
       return <Container {...{...containerProps, [childrenPropName]: rendered }} />;
     };
-    if (ids) return renderProps({ ids });
+    if (ids) return renderProps({ ids, ...props });
     return <ListingLimitedIds {...props}>{renderProps}</ListingLimitedIds>;
   }
 

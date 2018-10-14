@@ -47,6 +47,6 @@ export class NestedIdsProvider extends React.PureComponent {
 
 export const NestedIds = injectState((({ listingParams, ...props }) => (
   <ListingIds {...{ listingParams }} >
-    {({ ids }) => <NestedIdsProvider {...{ ...props, ids, listingParams }} />}
+    {state => <NestedIdsProvider {...{ ...state, ...props, listingParams }} />}
   </ListingIds>
 )));

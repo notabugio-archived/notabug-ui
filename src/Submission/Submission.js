@@ -42,7 +42,9 @@ export const Submission = ({
       ) : null}
       <ThingLink
         {...{ Markdown, Expando, Timestamp, Link, EmbedComponent, id, domain, permalink, expanded }}
-        {...{ rank, ups, downs, onVoteUp, onVoteDown, expandoType, image, video, iframe }}
+        {...{ rank, onVoteUp, onVoteDown, expandoType, image, video, iframe }}
+        ups={ups || 0}
+        downs={downs || 0}
         AuthorLink={AuthorLink}
         isDetail={isViewing}
         title={item.title}
@@ -58,7 +60,7 @@ export const Submission = ({
         brand_safe={true}
         siteprefix={"t"}
         is_self={!item.url}
-        score={ups-downs}
+        score={ups-downs || 0}
         num_comments={comments}
         isVoting={isVotingUp || isVotingDown}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}

@@ -38,6 +38,10 @@ const TopicRoute = injectState(({
   </Subreddit>
 ));
 
+const PageRoute = () => (
+  <Switch>{routes.map(route => <Route {...route} key={route.path} />)}</Switch>
+);
+
 const UserRoute = () => (
   <Profile>
     <Switch>{routes.map(route => <Route {...route} key={route.path} />)}</Switch>
@@ -55,16 +59,12 @@ export const App = () => (
         <Switch>
           <Route path="/t/:topic/chat" component={cached(ChatPage)} />
           <Route path="/t/:topic/comments/*/*" component={TopicRoute} />
-          <Route path="/t/:topic/:sort/" component={TopicRoute} />
-          <Route path="/t/:topic/*" component={TopicRoute} />
-          <Route path="/t/:topic" component={TopicRoute} />
-          <Route path="/domain/:domain/:sort" component={TopicRoute} />
-          <Route path="/login" component={LoginSignupPage} />
-          <Route path="/chat" component={cached(ChatPage)} />
           <Route path="/user/:userid/*" component={UserRoute} />
           <Route path="/user/:userid" component={UserRoute} />
-          <Route path="/:sort" component={TopicRoute} />
-          <Route path="/*" component={TopicRoute} />
+          <Route path="/login" component={LoginSignupPage} />
+          <Route path="/chat" component={cached(ChatPage)} />
+          <Route path="/*" component={PageRoute} />
+          <Route path="/" component={PageRoute} />
         </Switch>
       </ScrollToTop>
       <Switch>

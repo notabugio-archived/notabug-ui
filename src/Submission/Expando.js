@@ -36,9 +36,10 @@ export const Expando = ({
 );
 
 const matchesExt = (exts, url) => !!exts.find(ext => url.toLowerCase().indexOf("."+ext) !== -1);
+const imgExts = ["jpg", "jpeg", "png", "gif"];
 
-export const getExpando = (item, domain, urlInfo) => {
-  const imgExts = ["jpg", "jpeg", "png", "gif"];
+export const getExpando = (item, rawDomain, urlInfo) => {
+  const domain = domain ? rawDomain.toLowerCase() : rawDomain;
   const query = qs.parse(urlInfo.search, { ignoreQueryPrefix: true });
   let iframe;
   let EmbedComponent;
