@@ -59,10 +59,12 @@ export const App = () => (
         <Switch>
           <Route path="/t/:topic/chat" component={cached(ChatPage)} />
           <Route path="/t/:topic/comments/*/*" component={TopicRoute} />
+          <Route path="/t/:topic/submit" component={TopicRoute} />
           <Route path="/user/:userid/*" component={UserRoute} />
           <Route path="/user/:userid" component={UserRoute} />
           <Route path="/login" component={LoginSignupPage} />
           <Route path="/chat" component={cached(ChatPage)} />
+          <Route path="/submit" component={TopicRoute} />
           <Route path="/*" component={PageRoute} />
           <Route path="/" component={PageRoute} />
         </Switch>
