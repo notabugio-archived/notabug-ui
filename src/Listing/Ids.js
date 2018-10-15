@@ -1,7 +1,7 @@
 import React from "react";
 import { injectState } from "freactal";
 import { SOUL_DELIMETER } from "notabug-peer/util";
-import { debounce } from "lodash";
+import debounce from "lodash/debounce";
 
 export class ListingIdsBase extends React.PureComponent {
   constructor(props) {

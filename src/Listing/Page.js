@@ -90,7 +90,7 @@ export class Page extends React.PureComponent {
       match: { params: { identifier="all" } },
       listingParams
     } = this.props;
-    const prefix = listingParams.prefix;
+    const prefix = listingParams.prefix || "t";
 
     return (
       <ListingIds {...{ listingParams }}>
@@ -166,7 +166,7 @@ export class Page extends React.PureComponent {
                 </React.Fragment>
               )}
             </div>
-            <a name="content" key="anchor" />,
+            <a name="content" key="anchor" />
             {this.renderListing({ includeRanks })}
             <p className="bottommenu debuginfo" key="debuginfo">,
               <span className="icon">π</span> <span className="content" />
