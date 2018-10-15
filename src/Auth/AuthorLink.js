@@ -19,7 +19,7 @@ export const AuthorLink = ({
       </h1>
     )}
   >
-    <Link href={`/user/~${author_fullname}`} className={className}>
+    <Link href={`/user/${author_fullname}`} className={className}>
       <Identicon size={iconSize} {...{ author, author_fullname }} />
       {author.length > 20 ? `${author.slice(0, 20)}...` : author}
     </Link>

@@ -33,7 +33,7 @@ const onSignup = (effects) => effects.getLoginState()
 
 const onLogin = (effects) => effects.getLoginState()
   .then(state => effects.getState().then(baseState => ({ ...baseState,  ...state })))
-  .then(({ notabugApi, ...state }) =>
+  .then(({ notabugApi, ...state }) => console.log("state", state) ||
     (isLoginValid(state) && notabugApi
       .login(state.username, state.password)
       .catch(() => new Promise((resolve) => setTimeout(() => notabugApi.login(state.username, state.password).then(resolve)), 300))

@@ -1,35 +1,32 @@
 import { ContentPolicy, PrivacyPolicy, UserAgreement, KnownPeers, Reddit } from "static";
 import { cached } from "utils";
-import { Page, Topic } from "Listing";
+import { Page } from "Listing";
 import { SubmissionDetail } from "Submission/Detail";
 import { SubmissionForm } from "Submission/Form";
 import { toRoute } from "./toRoute";
 import { tabulator } from "../config.json";
 import { PREFIX } from "notabug-peer";
 
-const sortNames = { "new": 1, old: 1, active: 1, top: 1, discussed: 1, comments: 1, hot: 1, best: 1, controversial: 1 };
-
-const sanitizeSort = sortName => (sortNames[sortName] && sortName) || "new";
-
+const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
 const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}) => ({
-  sort: sanitizeSort(sort),
+  sort,
   tabulator,
   count: parseInt(count, 10) || 0,
-  limit: parseInt(limit, 10) || 25,
-  days: parseInt(limit, 10) || 90,
+  limit: parseInt(limit, 10) || 25
 });
 
-const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
-
 const getPageParams = withParams(({ params: { prefix="t", identifier="all", sort="hot" } }) =>
-  ({ soul: `${PREFIX}/${prefix}/${identifier}/${sort}@${tabulator}.` }));
+  ({ prefix, soul: `${PREFIX}/${prefix}/${identifier}/${sort}@${tabulator}.` }));
+
+const getUserPageParams = withParams(({
+  params: { prefix="user", identifier="all", sort="new", type="overview" }
+}) => ({ prefix, type, sort, soul: `${PREFIX}/${prefix}/${identifier}/${type}/${sort}@${tabulator}.` }));
 
 const getSubmissionListingParams = withParams((
   { params: { submission_id  }, query: { sort="best" } }
 ) => ({
-  soul: `nab/things/${submission_id}/comments/${sanitizeSort(sort)}@${tabulator}.`,
-  sort: sanitizeSort(sort),
-  days: null,
+  soul: `nab/things/${submission_id}/comments/${sort}@${tabulator}.`,
+  sort,
   limit: null
 }));
 
@@ -40,53 +37,19 @@ export const getFirehoseListingParams = withParams(({ withSubmissions }) => ({
     : `nab/t/chat:whatever/new@${tabulator}.`
 }));
 
-const getProfileListingParams = withParams((
-  { params: { userid, type="overview" }, query: { sort="new" } }
-) => ({
-  authorIds: userid.split("+"),
-  soul: `nab/user/${userid}/${type}/${sanitizeSort(sort)}@${tabulator}.`,
-  sort: sanitizeSort(sort)
-}));
-
 export const routes = [
+  { path: "/help/privacypolicy", component: PrivacyPolicy },
+  { path: "/help/useragreement", component: UserAgreement },
+  { path: "/help/contentpolicy", component: ContentPolicy },
+  { path: "/help/knownpeers", component: KnownPeers },
+  { path: "/rules", component: ContentPolicy },
+  { path: "/t/:topic/submit", component: SubmissionForm },
+  { path: "/t/:topic/chat", getListingParams: getUserPageParams },
+  { path: "/login", },
+  { path: "/submit", component: SubmissionForm },
+  { path: "/chat", getListingParams: getFirehoseListingParams },
+  { path: "/r/*", component: Reddit },
   {
-    path: "/help/privacypolicy",
-    component: PrivacyPolicy
-  }, {
-    path: "/help/useragreement",
-    component: UserAgreement
-  }, {
-    path: "/help/contentpolicy",
-    component: ContentPolicy
-  }, {
-    path: "/help/knownpeers",
-    component: KnownPeers
-  }, {
-    path: "/rules",
-    component: ContentPolicy
-  }, {
-    path: "/message/comments",
-    component: Topic,
-    getListingParams: withParams(({ userId }) => ({
-      soul: `nab/user/${userId}/replies/comments/new@${tabulator}.`
-    }))
-  }, {
-    path: "/message/selfreply",
-    component: Topic,
-    getListingParams: withParams(({ userId }) => ({
-      soul: `nab/user/${userId}/replies/submitted/new@${tabulator}.`
-    }))
-  }, {
-    path: "/message/inbox",
-    component: Topic,
-    getListingParams: withParams(({ userId }) => ({
-      soul: `nab/user/${userId}/replies/overview/new@${tabulator}.`
-    }))
-  }, {
-    path: "/listing/:soul(.+)",
-    component: Page,
-    getListingParams: withParams(({ params: { soul } }) => ({ soul: `${PREFIX}/${soul}` }))
-  }, {
     path: "/t/:topic/comments/:submission_id/:slug",
     component: cached(SubmissionDetail),
     getListingParams: getSubmissionListingParams
@@ -95,34 +58,51 @@ export const routes = [
     component: cached(SubmissionDetail),
     getListingParams: getSubmissionListingParams
   }, {
-    path: "/t/:topic/submit",
-    component: SubmissionForm
+    path: "/message/comments",
+    component: Page,
+    getListingParams: withParams(({ userId }) => ({
+      soul: `nab/user/${userId}/replies/comments/new@${tabulator}.`
+    }))
   }, {
-    path: "/t/:topic/chat",
-    getListingParams: getFirehoseListingParams
+    path: "/message/selfreply",
+    component: Page,
+    getListingParams: withParams(({ userId }) => ({
+      soul: `nab/user/${userId}/replies/submitted/new@${tabulator}.`
+    }))
   }, {
-    path: "/user/~:userid/:type/:sort",
-    component: cached(Topic),
-    getListingParams: getProfileListingParams
+    path: "/message/inbox",
+    component: Page,
+    getListingParams: withParams(({ userId }) => ({
+      soul: `nab/user/${userId}/replies/overview/new@${tabulator}.`
+    }))
   }, {
-    path: "/user/~:userid/:type",
-    component: cached(Topic),
-    getListingParams: getProfileListingParams
+    path: "/listing/:soul(.+)",
+    component: Page,
+    getListingParams: withParams(({ params: { soul } }) => ({ soul: `${PREFIX}/${soul}` }))
   }, {
-    path: "/user/~:userid",
-    component: cached(Topic),
-    getListingParams: getProfileListingParams
+    path: "/user/~:identifier/:type/:sort",
+    component: cached(Page),
+    getListingParams: getUserPageParams
   }, {
-    path: "/r/*",
-    component: Reddit
+    path: "/user/~identifier/:type",
+    component: cached(Page),
+    getListingParams: getUserPageParams
   }, {
-    path: "/submit",
-    component: SubmissionForm
+    path: "/user/~:identifier",
+    component: cached(Page),
+    getListingParams: getUserPageParams
   }, {
-    path: "/login",
+    path: "/user/:identifier/:type/:sort",
+    component: cached(Page),
+    getListingParams: getUserPageParams
   }, {
-    path: "/chat",
-    getListingParams: getFirehoseListingParams
+    path: "/user/:identifier/:type",
+    component: cached(Page),
+    getListingParams: getUserPageParams
+  }, {
+    path: "/user/:identifier",
+    component: cached(Page),
+    getListingParams: getUserPageParams
   }, {
     path: "/:prefix/:identifier/:sort",
     component: cached(Page),

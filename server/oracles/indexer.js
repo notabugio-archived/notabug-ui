@@ -1,6 +1,6 @@
-import { prop } from "ramda";
+import { prop, propOr } from "ramda";
 import * as SOULS from "../notabug-peer/souls";
-import { query } from "../notabug-peer/scope";
+import { query, all } from "../notabug-peer/scope";
 import { PREFIX, SOUL_DELIMETER } from "../notabug-peer/util";
 import { sorts, multiTopic, singleAuthor, repliesToAuthor, sortThings } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
@@ -31,6 +31,8 @@ export default oracle({
           .then(things => serializeListing({ name: domain, things: things.slice(0, LISTING_SIZE) }))
           .then(serialized => ({
             ...serialized,
+            includeRanks: true,
+            submitTopic: "whatever",
             tabs: ["hot", "new", "discussed", "controversial", "top"]
               .map(tab => `${PREFIX}/domain/${domain}/${tab}@~${id1}.${id2}.`)
               .join(SOUL_DELIMETER)
@@ -40,17 +42,22 @@ export default oracle({
     basicQueryRoute({
       path: `${PREFIX}/t/:topic/:sort@~:id1.:id2.`,
       checkMatch: ({ sort, topic }) => (sort in sorts) && topic && (topic.toLowerCase() === topic),
-      query: query((scope, { match: { topic, sort, id1, id2 } }) =>
-        multiTopic(scope, { topics: topic.split("+") })
+      query: query((scope, { match: { topic, sort, id1, id2 } }) => {
+        const topics = topic.split("+");
+        const submitTopic = topics.find(t => t && t.indexOf(":") === -1) || "whatever";
+        return multiTopic(scope, { topics })
           .then(thingSouls =>
             sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
           .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
           .then(serialized => ({
             ...serialized,
+            includeRanks: true,
+            submitTopic,
             tabs: ["hot", "new", "discussed", "controversial", "top"]
               .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
               .join(SOUL_DELIMETER)
-          })))
+          }));
+      })
     }),
 
     basicQueryRoute({
@@ -64,7 +71,11 @@ export default oracle({
           { repliesToAuthorId: authorId ? `~${authorId}` : null, type }
         )
           .then(thingSouls => sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ things: things.slice(0, LISTING_SIZE) })))
+          .then(things => serializeListing({ things: things.slice(0, LISTING_SIZE) }))
+          .then(serialized => ({
+            ...serialized,
+            name: "message"
+          })))
     }),
 
     basicQueryRoute({
@@ -73,12 +84,22 @@ export default oracle({
         (sort in sorts) && authorId && type  && type.toLowerCase() == type &&
         (type === "overview" || type === "submitted" || type === "comments"),
       query: query((scope, { match: { authorId, type, sort, id1, id2 } }) =>
-        singleAuthor(
-          scope,
-          { authorId: authorId ? `~${authorId}` : null, type }
-        )
-          .then(thingSouls => sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ things: things.slice(0, LISTING_SIZE) })))
+        all([
+          singleAuthor(
+            scope,
+            { authorId: authorId ? `~${authorId}` : null, type }
+          )
+            .then(thingSouls => sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
+            .then(things => serializeListing({ things: things.slice(0, LISTING_SIZE) })),
+          scope.get(`~${authorId}`).then()
+        ]).then(([serialized, meta]) => ({
+          ...serialized,
+          name: propOr("", "alias", meta),
+          userId: authorId,
+          tabs: ["overview", "comments", "submitted"]
+            .map(tab => `${PREFIX}/user/${authorId}/${tab}/${sort}@~${id1}.${id2}.`)
+            .join(SOUL_DELIMETER)
+        })))
     })
   ]
 });

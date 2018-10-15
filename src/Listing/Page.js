@@ -4,11 +4,10 @@ import { ZalgoPromise as Promise } from "zalgo-promise";
 import { withRouter } from "react-router-dom";
 import { injectState } from "freactal";
 import ChatView from "react-chatview";
-import { Subreddit } from "snew-classic-ui";
-import { NavTab as SnewNavTab } from "snew-classic-ui";
-import { Link, JavaScriptRequired } from "utils";
+import { NavTab as SnewNavTab, SubmitLinkSidebox, SubmitTextSidebox } from "snew-classic-ui";
+import { Link, Timestamp, JavaScriptRequired } from "utils";
 import { Submission } from "Submission";
-import { UserInfo, LoginFormSide } from "Auth";
+import { AuthorLink, UserInfo, LoginFormSide } from "Auth";
 import { SidebarTitlebox } from "App/SidebarTitlebox";
 import { ListingIds } from "./Ids";
 import Listing from "./Listing";
@@ -24,7 +23,7 @@ export class Page extends React.PureComponent {
     this.state = { limit };
   }
 
-  renderListing() {
+  renderListing({ includeRanks }) {
     const {
       Loading = Submission,
       Empty = () => <Loading name="ball-grid-beat" />,
@@ -38,6 +37,7 @@ export class Page extends React.PureComponent {
     const listing = {
       Loading, Empty, limit, realtime: !!isInfinite,
       listingParams: { ...listingParams, count },
+      noRank: !includeRanks,
       fetchParent: true,
       disableChildren: true,
     };
@@ -87,28 +87,91 @@ export class Page extends React.PureComponent {
 
   render() {
     const {
-      match: { params: { prefix="t", identifier="all" } },
-      listingParams, state: { notabugUser }
+      match: { params: { identifier="all" } },
+      listingParams
     } = this.props;
+    const prefix = listingParams.prefix;
+
     return (
       <ListingIds {...{ listingParams }}>
-        {({ name, tabs }) => (
-          <Subreddit
-            {...{ Link, LoginFormSide, SidebarTitlebox, UserInfo, NavTab }}
-            nabHeader={{ name, tabs, identifier, prefix, listingParams }}
-            FooterParent={() => null}
-            SidebarSearch={() => null}
-            RecentlyViewedLinks={() => null}
-            AccountActivityBox={() => null}
-            Timestamp={() => null}
-            SrHeaderArea={() => null}
-            HeaderBottomLeft={HeaderBottomLeft}
-            siteprefix={"t"}
-            username={notabugUser}
-            isShowingCustomStyleOption={false}
-          >
-            {this.renderListing()}
-          </Subreddit>
+        {({ name, userId, tabs, submitTopic, includeRanks, createdAt }) => (
+          <React.Fragment>
+            <div id="header" role="banner">
+              <a href="#content" id="jumpToContent" tabIndex={1}>
+                jump to content
+              </a>
+              <div id="header-bottom-left">
+                <Link
+                  className="default-header"
+                  href="/"
+                  id="header-img"
+                >
+                  notabug
+                </Link>
+                {name ? (
+                  <span className="hover pagename redditname">
+                    <Link href={`/${prefix}/${identifier}/`}>{name}</Link>
+                  </span>
+                ) : null}
+                {tabs.length ? (
+                  <ul className="tabmenu">
+                    {tabs.map(tab => (
+                      <NavTab
+                        key={tab}
+                        soul={tab}
+                        prefix={prefix}
+                        identifier={identifier}
+                        listingParams={listingParams}
+                      />
+                    ))}
+                    {userId ? null : <SnewNavTab {...{ Link, href: "/chat" }}>firehose</SnewNavTab>}
+                  </ul>
+                ) : null}
+              </div>
+              <UserInfo />
+            </div>
+            <div className="side">
+              {userId ? (
+                <React.Fragment>
+                  <div className="spacer">
+                    <div className="titlebox">
+                      <h1>
+                        <AuthorLink
+                          className=""
+                          author={name}
+                          author_fullname={userId}
+                        />
+                      </h1>
+                      <div className="bottom">
+                        {createdAt ? (
+                          <span className="age">
+                            created <Timestamp {...{ created_utc:createdAt }} />
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                  <LoginFormSide />
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <LoginFormSide />
+                  {submitTopic ? (
+                    <React.Fragment>
+                      <SubmitLinkSidebox siteprefix="t" subreddit={submitTopic} />
+                      <SubmitTextSidebox siteprefix="t" subreddit={submitTopic} />
+                      <SidebarTitlebox siteprefix="t" subreddit={name} />
+                    </React.Fragment>
+                  ) : null}
+                </React.Fragment>
+              )}
+            </div>
+            <a name="content" key="anchor" />,
+            {this.renderListing({ includeRanks })}
+            <p className="bottommenu debuginfo" key="debuginfo">,
+              <span className="icon">π</span> <span className="content" />
+            </p>
+          </React.Fragment>
         )}
       </ListingIds>
     );
@@ -121,49 +184,17 @@ export class Page extends React.PureComponent {
   };
 }
 
-const HeaderBottomLeft = ({
-  nabHeader: {
-    name,
-    prefix,
-    identifier,
-    listingParams,
-    tabs
-  }
-}) => (
-  <div id="header-bottom-left">
-    <Link
-      className="default-header"
-      href="/"
-      id="header-img"
-    >
-      notabug
-    </Link>
-    {name ? (
-      <span className="hover pagename redditname">
-        <Link href={`/${prefix}/${identifier}/`}>{name}</Link>
-      </span>
-    ) : null}
-    {tabs.length ? (
-      <ul className="tabmenu">
-        {tabs.map(tab => (
-          <NavTab
-            key={tab}
-            soul={tab}
-            prefix={prefix}
-            identifier={identifier}
-            listingParams={listingParams}
-          />
-        ))}
-        <SnewNavTab {...{ Link, href: `/${prefix}/${identifier}/chat` }}>firehose</SnewNavTab>
-      </ul>
-    ) : null}
-  </div>
-);
-
 const NavTab = ({ soul, listingParams }) => {
   const parts = soul.split("@~");
-  const href = (parts[0] || "").replace(PREFIX_RE, "");
-  const name = (parts[0] || "").split("/").pop();
+  const pathParts = (parts[0] || "").split("/");
+  let href = (parts[0] || "").replace(PREFIX_RE, "");
+  let name = pathParts.pop();
+  if (listingParams.type) {
+    name = pathParts.pop();
+  }
+  if (listingParams.type) {
+    href = href.replace(new RegExp(`/${listingParams.sort}$`), "");
+  }
   return (
     <SnewNavTab
       {...{ Link, href }}

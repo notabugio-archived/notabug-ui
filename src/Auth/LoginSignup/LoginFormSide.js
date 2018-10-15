@@ -4,10 +4,10 @@ import { injectState } from "freactal";
 import { loginSignupProvider } from "./state";
 
 export const LoginFormSide = ({
-  state: { notabugApi, username, password, loginError },
+  state: { notabugApi, notabugUser, username, password, loginError },
   effects: { onChangeUsername, onChangePassword, onLogin },
   ...props
-}) => notabugApi.gun && notabugApi.gun.user ? (
+}) => !notabugUser && notabugApi.gun && notabugApi.gun.user ? (
   <SnewLoginFormSide
     {...props}
     formAction={null}

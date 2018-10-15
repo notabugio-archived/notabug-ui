@@ -18,11 +18,13 @@ export class ListingIdsBase extends React.PureComponent {
   }
 
   render() {
-    const { ids: idString, tabs: tabString, ...state } = this.state;
+    const {ids: idString, tabs: tabString, includeRanks: includeRanksString, ...state } = this.state;
     const { children } = this.props;
+    const includeRanks = includeRanksString && includeRanksString !== "false" && includeRanksString !== "0";
     const ids = (idString || "").split("+").filter(x => !!x);
     const tabs = (tabString || "").split(SOUL_DELIMETER).filter(x => !!x);
-    return children({ ...state, ids, tabs });
+    const createdAt = parseInt(state.createdAt, 10);
+    return children({ ...state, ids, tabs, includeRanks, createdAt });
   }
 
   onSubscribe = () => this.props.state.notabugApi.scope.on(this.onRefresh);
