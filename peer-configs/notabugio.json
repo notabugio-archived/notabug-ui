@@ -1,24 +1,39 @@
 [
   {
-    "uid": "notabug",
+    "uid": "gun",
+    "script": "server.js",
+    "args": [
+      "--port", "3333",
+      "--debug",
+      "--evict"
+    ]
+  }, {
+    "uid": "http",
     "script": "server.js",
     "args": [
       "--port", "4444",
-      "--debug",
+      "--peer", "http://localhost:3333/gun",
       "--evict",
       "--redis",
       "--render"
     ]
   }, {
-    "uid": "tabulator",
+    "uid": "oracles",
     "script": "server.js",
-    "command": "node --max-old-space-size=16384",
     "args": [
-      "--evict",
       "--listings",
       "--redis",
       "--leech",
-      "--peer", "http://localhost:4444/gun"
+      "--peer", "http://localhost:3333/gun"
+    ]
+  }, {
+    "uid": "relay",
+    "script": "server.js",
+    "args": [
+      "--peer", "http://localhost:3333/gun",
+      "--peer", "https://supportnikki.org/gun",
+      "--peer", "https://bluebit.space/gun",
+      "--evict"
     ]
   }
 ]
