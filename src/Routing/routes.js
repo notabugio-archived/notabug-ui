@@ -1,7 +1,6 @@
 import { ContentPolicy, PrivacyPolicy, UserAgreement, KnownPeers, Reddit } from "static";
 import { cached } from "utils";
-import { Page } from "Listing";
-import { SubmissionDetail } from "Submission/Detail";
+import { Page } from "Page";
 import { SubmissionForm } from "Submission/Form";
 import { toRoute } from "./toRoute";
 import { tabulator } from "../config.json";
@@ -50,12 +49,12 @@ export const routes = [
   { path: "/chat", getListingParams: getFirehoseListingParams },
   { path: "/r/*", component: Reddit },
   {
-    path: "/t/:topic/comments/:submission_id/:slug",
-    component: cached(SubmissionDetail),
+    path: "/:prefix/:identifier/comments/:submission_id/:slug",
+    component: cached(Page),
     getListingParams: getSubmissionListingParams
   }, {
-    path: "/t/:topic/comments/:submission_id",
-    component: cached(SubmissionDetail),
+    path: "/:prefix/:identifier/comments/:submission_id",
+    component: cached(Page),
     getListingParams: getSubmissionListingParams
   }, {
     path: "/message/comments",

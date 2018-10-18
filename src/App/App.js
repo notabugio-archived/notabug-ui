@@ -52,7 +52,6 @@ export const App = () => (
         <Switch>
           <Redirect from="/user/~:user(.+)" to="/user/:user" />
           <Route path="/t/:topic/chat" component={cached(ChatPage)} />
-          <Route path="/t/:topic/comments/*/*" component={TopicRoute} />
           <Route path="/t/:topic/submit" component={TopicRoute} />
           <Route path="/login" component={LoginSignupPage} />
           <Route path="/chat" component={cached(ChatPage)} />

@@ -12,12 +12,21 @@ export default oracle({
     basicQueryRoute({
       path: `${PREFIX}/things/:thingid/comments/:sort@~:id1.:id2.`,
       checkMatch: ({ sort }) => (sort in sorts),
-      query: query((scope, { match: { thingid: thingid, id1, id2, sort } }) =>
+      query: query((scope, { match: { thingid, id1, id2, sort } }) =>
         scope.get(SOULS.thingAllComments.soul({ thingid })).souls()
           .then(souls => [SOULS.thing.soul({ thingid }), ...souls])
           .then(thingSouls =>
             sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ things })))
+          .then(things => serializeListing({ things }))
+          .then(serialized => scope.get(SOULS.thingData.soul({ thingid }))
+            .then(data => ({
+              ...serialized,
+              name: propOr("", "topic", data),
+              opId: thingid,
+              submitTopic: propOr("whatever", "topic", data),
+              includeRanks: false,
+              tabs: [`${PREFIX}/things/${thingid}/comments/${sort}@~${id1}.${id2}.`]
+            }))))
     }),
 
     basicQueryRoute({
