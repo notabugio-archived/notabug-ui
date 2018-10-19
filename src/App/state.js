@@ -17,6 +17,20 @@ let COUNT_VOTES = false;
 let LOCAL_STORAGE = false;
 let FORCE_REALTIME = false;
 
+
+// https://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
+function isLocalStorageNameSupported() {
+  var testKey = "test", storage = window.localStorage;
+  try {
+    storage.setItem(testKey, "1");
+    storage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    console.warn("disabling local storage", error);
+    return false;
+  }
+}
+
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !(/noLocalStorage/.test(window.location.search));
@@ -28,7 +42,7 @@ const initialState = ({ history, notabugApi }) => {
   notabugApi = notabugApi || notabugPeer({
     noGun: isNode ? true : false,
     // store: isNode ? null : RindexedDB({}),
-    localStorage: LOCAL_STORAGE,
+    localStorage: LOCAL_STORAGE && isLocalStorageNameSupported(),
     countVotes: COUNT_VOTES,
     disableValidation: true,
     leech: true,

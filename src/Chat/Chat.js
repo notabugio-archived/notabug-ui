@@ -19,9 +19,8 @@ export class Chat extends PureComponent {
 
     this.scrollToBottom = debounce(
       () => {
-        if (this.scrollable && !this.state.isScrollingUp) {
+        if (this.scrollable && !this.state.isScrollingUp)
           this.scrollable.scrollTop = this.scrollable.scrollHeight;
-        }
       },
       100
     );

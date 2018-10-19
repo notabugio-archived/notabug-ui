@@ -89,10 +89,12 @@ class ThingBase extends PureComponent {
       .then(parentItem => this.setState({ parentItem }))
       .then(() => this.onUpdated());
   };
+  
   onShowReply = (e) => {
     e && e.preventDefault();
     this.setState({ isShowingReply: true });
   };
+  
   onHideReply = (e) => {
     e && e.preventDefault();
     this.setState({ isShowingReply: false });

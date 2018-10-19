@@ -17,6 +17,9 @@ const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}
 const getPageParams = withParams(({ params: { prefix="t", identifier="all", sort="hot" } }) =>
   ({ prefix, soul: `${PREFIX}/${prefix}/${identifier}/${sort}@${tabulator}.` }));
 
+const getFrontPageParams = withParams(({ params: { prefix="t", identifier="front", sort="hot" } }) =>
+  ({ prefix, soul: `${PREFIX}/${prefix}/${identifier}/${sort}@${tabulator}.` }));
+
 const getUserPageParams = withParams(({
   params: { prefix="user", identifier="all", sort="new", type="overview" }
 }) => ({ prefix, type, sort, soul: `${PREFIX}/${prefix}/${identifier}/${type}/${sort}@${tabulator}.` }));
@@ -113,11 +116,11 @@ export const routes = [
   }, {
     path: "/:sort",
     component: cached(Page),
-    getListingParams: getPageParams
+    getListingParams: getFrontPageParams
   }, {
     path: "/",
     exact: true,
     component: cached(Page),
-    getListingParams: getPageParams
+    getListingParams: getFrontPageParams
   }
 ].map(toRoute);

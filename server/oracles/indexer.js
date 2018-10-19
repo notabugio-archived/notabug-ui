@@ -6,9 +6,53 @@ import { sorts, multiTopic, singleAuthor, repliesToAuthor, sortThings } from "..
 import { oracle, basicQueryRoute } from "./oracle";
 
 const LISTING_SIZE = 1000;
+
+const FRONTPAGE_TOPICS = [
+  "ask",
+  "aww",
+  "books",
+  "facebook",
+  "funny",
+  "gaming",
+  "gifs",
+  "google",
+  "mildlyinteresting",
+  "music",
+  "news",
+  "notabug",
+  "politics",
+  "reddit",
+  "quotes",
+  "science",
+  "space",
+  "technology",
+  "twitter",
+  "whatever"
+];
+
 export default oracle({
   name: "indexer",
   routes: [
+    basicQueryRoute({
+      path: `${PREFIX}/t/front/:sort@~:id1.:id2.`,
+      checkMatch: ({ sort }) => (sort in sorts),
+      query: query((scope, { match: { sort, id1, id2 } }) => {
+        console.log("frontpage");
+        return multiTopic(scope, { topics: FRONTPAGE_TOPICS })
+          .then(thingSouls =>
+            sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
+          .then(things => serializeListing({ name: "front", things: things.slice(0, LISTING_SIZE) }))
+          .then(serialized => ({
+            ...serialized,
+            includeRanks: true,
+            submitTopic: "whatever",
+            tabs: ["hot", "new", "discussed", "controversial", "top"]
+              .map(tab => `${PREFIX}/t/front/${tab}@~${id1}.${id2}.`)
+              .join(SOUL_DELIMETER)
+          }));
+      })
+    }),
+
     basicQueryRoute({
       path: `${PREFIX}/things/:thingid/comments/:sort@~:id1.:id2.`,
       checkMatch: ({ sort }) => (sort in sorts),
