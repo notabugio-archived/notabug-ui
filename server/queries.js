@@ -93,7 +93,7 @@ export const singleUrl = query((scope, { url }) => scope.get(SOULS.url.soul({ ur
 export const singleTopic = query((scope, params) => all(map(
   soul => scope.get(soul).souls(),
   getTopicSouls({ ...params, topics: [params.topic] })
-)).then(reduce((souls, more) => (souls.length < 1000) ? [...souls, ...more] : souls, [])));
+)).then(reduce((souls, more) => (souls.length < (params.topic === "all" ? 50000 : 1000)) ? [...souls, ...more] : souls, [])));
 
 export const singleSubmission = query((scope, params) =>
   scope.get(SOULS.thingAllComments.soul({ thingid: params.submissionId }))
