@@ -42,7 +42,7 @@ export default oracle({
       checkMatch: ({ topic }) => topic && (topic.toLowerCase() === topic) && topic.indexOf(":") === -1,
       query: query((scope, { match: { topic, id1, id2 } }) => {
         const normalTopics = topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
-        const submitTopic = topic === "front" ? "whatever" : normalTopics[0] || "whatever";
+        const submitTopic = (topic === "front" || topic === "all") ? "whatever" : normalTopics[0] || "whatever";
         const topics = normalTopics.reduce((res, topic) =>
           [ ...res, topic, `chat:${topic}`, `comments:${topic}`], []);
         return multiTopic(scope, { topics })
@@ -67,7 +67,7 @@ export default oracle({
       checkMatch: ({ topic }) => topic && (topic.toLowerCase() === topic) && topic.indexOf(":") === -1,
       query: query((scope, { match: { topic, id1, id2 } }) => {
         const normalTopics = topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
-        const submitTopic = topic === "front" ? "whatever" : normalTopics[0] || "whatever";
+        const submitTopic = (topic === "front" || topic === "all") ? "whatever" : normalTopics[0] || "whatever";
         const topics = normalTopics.reduce((res, topic) =>
           [ ...res, `chat:${topic}`], []);
         return multiTopic(scope, { topics })
