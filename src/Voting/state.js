@@ -4,7 +4,7 @@ import { PREFIX } from "notabug-peer";
 import { doWork } from "./pow";
 
 const initialState = always({
-  notabugVoteWorker: null,
+  notabugWorkPromise: null,
   notabugVoteQueue: {}
 });
 
@@ -15,7 +15,7 @@ const getNotabugVoteQueueState = always(identity);
 const onNotabugAddVoteToQueue = update((state, id, type) =>
   ({ notabugVoteQueue: { ...state.notabugVoteQueue, [id]: type } }));
 
-const setNotabugVoteWorker = update((state, notabugVoteWorker) => ({ notabugVoteWorker }));
+const setNotabugWorkPromise = update((state, notabugWorkPromise) => ({ notabugWorkPromise }));
 
 const onNotabugDequeueVote = update((state, id) => {
   const notabugVoteQueue = { ...state.notabugVoteQueue };
@@ -25,7 +25,7 @@ const onNotabugDequeueVote = update((state, id) => {
 
 const onNotabugQueueVote = (effects, id, type) => effects
   .onNotabugAddVoteToQueue(id, type)
-  .then(({ notabugVoteWorker }) => !notabugVoteWorker && effects.onNotabugStartNextVote())
+  .then(({ notabugWorkPromise }) => !notabugWorkPromise && effects.onNotabugStartNextVote())
   .then(always(identity));
 
 const onNotabugVoteCalculated = (effects, id, kind, nonce) => effects.getState()
@@ -34,26 +34,24 @@ const onNotabugVoteCalculated = (effects, id, kind, nonce) => effects.getState()
   .then(({ notabugApi }) => notabugApi.vote(id, kind, nonce))
   .then(always(identity));
 
-const onNotabugVoteQueueTerminateWorker = effects => effects.getNotabugVoteQueueState()
-  .then(({ notabugVoteWorker }) => notabugVoteWorker && notabugVoteWorker.terminate())
-  .then(() => state => ({ ...state, notabugVoteWorker: null }));
+const onNotabugVoteQueueFinishedWork = update(always({ notabugWorkPromise: null }));
 
 const onNotabugStartNextVote = (effects) => effects.getNotabugVoteQueueState()
-  .then(({ notabugVoteQueue, notabugVoteWorker }) => {
+  .then(({ notabugVoteQueue, notabugWorkPromise }) => {
     const nextId = Object.keys(notabugVoteQueue).pop();
 
-    if (notabugVoteWorker || !nextId) return always(identity);
+    if (notabugWorkPromise || !nextId) return always(identity);
 
     const type = notabugVoteQueue[nextId];
-    const worker = doWork(`${PREFIX}/things/${nextId}/votes${type}`);
+    const workPromise = doWork(`${PREFIX}/things/${nextId}/votes${type}`);
 
     if (!type) return always(identity);
 
-    return effects.setNotabugVoteWorker(worker)
-      .then(() => worker.then())
+    return effects.setNotabugWorkPromise(workPromise)
+      .then(() => workPromise.then())
       .then(nonce => effects.onNotabugVoteCalculated(nextId, type, nonce))
       .then(() => effects.onNotabugDequeueVote(nextId))
-      .then(() => effects.onNotabugVoteQueueTerminateWorker())
+      .then(() => effects.onNotabugVoteQueueFinishedWork())
       .then(() => effects.onNotabugStartNextVote())
       .then(() => state => ({
         ...state,
@@ -66,12 +64,12 @@ export const votingProvider = provideState({
   effects: {
     initialize,
     getNotabugVoteQueueState,
-    setNotabugVoteWorker,
+    setNotabugWorkPromise,
     onNotabugAddVoteToQueue,
     onNotabugQueueVote,
     onNotabugDequeueVote,
     onNotabugStartNextVote,
     onNotabugVoteCalculated,
-    onNotabugVoteQueueTerminateWorker
+    onNotabugVoteQueueFinishedWork
   }
 });

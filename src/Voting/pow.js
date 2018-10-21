@@ -2,17 +2,16 @@
 import WorkProofer from "./pow.worker.js";
 import { pow, DEFAULT_POW_COMPLEXITY } from "notabug-peer";
 
+let worker;
+
 export const doWork = (prefix, complexity=DEFAULT_POW_COMPLEXITY) => {
   let terminate;
   const promise = new Promise((resolve, reject) => {
-    const worker = new WorkProofer();
+    worker = worker || new WorkProofer();
     terminate = () => {
       reject(worker.terminate());
     };
-    worker.onmessage = (m) => {
-      resolve(m.data);
-      worker.terminate();
-    };
+    worker.onmessage = (m) => resolve(m.data);
     worker.postMessage([prefix, complexity]);
   });
   promise.terminate = terminate;
