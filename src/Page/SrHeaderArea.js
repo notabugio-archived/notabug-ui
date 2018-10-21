@@ -53,9 +53,9 @@ export const SrHeaderArea = () => (
         <ul className="flat-list sr-bar hover">
           <li>Topics:</li>
           {HEADER_TOPICS.sort().map(topic => (
-            <li>
+            <li key={topic}>
               <span className="separator">-</span>
-              <Link key={topic} className="choice" href={`/t/${topic}`}>{topic}</Link>
+              <Link className="choice" href={`/t/${topic}`}>{topic}</Link>
             </li>
           ))}
         </ul>

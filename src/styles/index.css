@@ -66,7 +66,7 @@ body > .content .chat-listing .link .midcol, .midcol-spacer { width: auto; }
   margin: 10px;
 }
 
-.sitetable .chat-input {
+.content .chat-input {
   background-color: white;
   position: fixed;
   left: 0;

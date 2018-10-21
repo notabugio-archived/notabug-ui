@@ -62,9 +62,8 @@ export class Content extends React.PureComponent {
               flipped: isChat,
               returnScrollable: scrollable => this.scrollable = scrollable,
             }}
-          >
-            {() => isChat ? <ChatInput topic={submitTopic || "whatever"} /> : null}
-          </Listing>
+          />
+          {isChat ? <ChatInput topic={submitTopic || "whatever"} /> : null}
         </div>
       </React.Fragment>
     ) : (
