@@ -2,6 +2,8 @@
 #header-img.default-header, .thumbnail.nsfw, .thumbnail.self { background-image: url(/media/img/notabug-logo.png); }
 body > .content .link .rank, .rank-spacer { width: 3.3ex; }
 body > .content .link .midcol, .midcol-spacer { width: 6ex; }
+body > .content .chat-listing .link .rank, .rank-spacer { width: auto; }
+body > .content .chat-listing .link .midcol, .midcol-spacer { width: auto; }
 
 .identicon svg {
   background-color: white;
@@ -29,19 +31,6 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   display: none;
 }
 
-.fullscreen-chat {
-  background-color: white;
-  right: 310px;
-  left: 0;
-  width: auto;
-  height: auto;
-  top: 45px;
-}
-
-.fullscreen-chat .arrow {
-  display: block;
-}
-
 .chat-message-display {
   -webkit-overflow-scrolling: touch;
 }
@@ -56,11 +45,7 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   padding-top: 0.5em;
 }
 
-.chat-modal .chat-message-display .tagline {
-  font-size: small;
-}
-
-.chat-modal:not(.fullscreen-chat) {
+.chat-modal {
   bottom: 10px;
   right: 10px;
 }
@@ -69,7 +54,7 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   bottom: 50px;
 }
 
-.chat-modal:not(.fullscreen-chat) .chat-message-display .midcol {
+.chat-modal .chat-message-display .midcol {
   float: none;
 }
 
@@ -81,7 +66,17 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   margin: 10px;
 }
 
-.chat-modal .chat-input input {
+.sitetable .chat-input {
+  background-color: white;
+  position: fixed;
+  left: 0;
+  right: 310px;
+  bottom: 0;
+  margin: 10px;
+  z-index: 10000;
+}
+
+.chat-input input {
   width: 89%;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
@@ -89,7 +84,7 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   margin: 0 0 0 0;
   border: 1px solid #5f99cf;
 }
-.chat-modal .chat-input .send-btn {
+.chat-input .send-btn {
   position: absolute;
   bottom: 0;
   top: 0;
@@ -98,9 +93,6 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   padding-top: 0.5em;
   padding-bottom: 0.5em;
   border: 1px solid #5f99cf;
-}
-
-.fullscreen-chat .chat-input input {
 }
 
 .chat-modal .chat-modal-controls {
@@ -129,6 +121,9 @@ body > .content .link .midcol, .midcol-spacer { width: 6ex; }
   bottom: 0px;
   overflow-y: scroll !important;
   -webkit-overflow-scrolling: touch;
+}
+.chat-listing {
+  bottom: 46px;
 }
 
 .score.likes   { color: #FF8B60; }

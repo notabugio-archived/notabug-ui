@@ -14,6 +14,11 @@ const ChatMsgEntry = votingItemProvider(injectState(({
 }) => (
   <SnewThingCommentEntry
     {...props}
+    postTagline={(
+      <React.Fragment>
+        in <Link href={`/t/${props.topic}/chat`}>{props.topic}</Link>
+      </React.Fragment>
+    )}
     body={props.body ?  props.body.slice(0, COMMENT_BODY_MAX) : props.body}
     score={(props.ups || props.downs) ? props.score : null}
     Link={Link}

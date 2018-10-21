@@ -1,5 +1,6 @@
 import { Markdown } from "utils";
 import React from "react";
+import { Page } from "Page";
 
 const CONTENT_POLICY= `
 # Content Policy
@@ -28,7 +29,7 @@ The terms of this agreement may change from time to time.  If changes are made, 
 `;
 
 export const ContentPolicy = () => (
-  <div className="content" role="main">
+  <Page>
     <Markdown body={CONTENT_POLICY} />
-  </div>
+  </Page>
 );

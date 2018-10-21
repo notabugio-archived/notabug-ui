@@ -66,4 +66,4 @@ class FooterParentBase extends Component {
   );
 }
 
-export const FooterParent = withRouter(FooterParentBase);
+export const PageFooter = withRouter(FooterParentBase);

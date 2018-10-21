@@ -8,37 +8,90 @@ import { oracle, basicQueryRoute } from "./oracle";
 const LISTING_SIZE = 1000;
 
 const FRONTPAGE_TOPICS = [
+  "art",
   "ask",
-  "aww",
   "books",
-  "facebook",
+  "food",
   "funny",
   "gaming",
   "gifs",
-  "google",
-  "mildlyinteresting",
+  "movies",
   "music",
   "news",
   "notabug",
+  "pics",
   "politics",
-  "reddit",
+  "programming",
   "quotes",
   "science",
   "space",
   "technology",
-  "twitter",
+  "travel",
+  "tv",
+  "videos",
   "whatever"
 ];
 
 export default oracle({
   name: "indexer",
+  concurrent: 1,
   routes: [
     basicQueryRoute({
+      path: `${PREFIX}/t/:topic/firehose@~:id1.:id2.`,
+      priority: 75,
+      checkMatch: ({ topic }) => topic && (topic.toLowerCase() === topic) && topic.indexOf(":") === -1,
+      query: query((scope, { match: { topic, id1, id2 } }) => {
+        const normalTopics = topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
+        const submitTopic = topic === "front" ? "whatever" : normalTopics[0] || "whatever";
+        const topics = normalTopics.reduce((res, topic) =>
+          [ ...res, topic, `chat:${topic}`, `comments:${topic}`], []);
+        return multiTopic(scope, { topics })
+          .then(thingSouls =>
+            sortThings(scope, { sort: "new", thingSouls, tabulator: `~${id1}.${id2}` }))
+          .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
+          .then(serialized => ({
+            ...serialized,
+            includeRanks: false,
+            submitTopic,
+            isChat: true,
+            tabs: ["hot", "new", "discussed", "controversial", "top", "firehose"]
+              .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
+              .join(SOUL_DELIMETER)
+          }));
+      })
+    }),
+
+    basicQueryRoute({
+      path: `${PREFIX}/t/:topic/chat@~:id1.:id2.`,
+      priority: 80,
+      checkMatch: ({ topic }) => topic && (topic.toLowerCase() === topic) && topic.indexOf(":") === -1,
+      query: query((scope, { match: { topic, id1, id2 } }) => {
+        const normalTopics = topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
+        const submitTopic = topic === "front" ? "whatever" : normalTopics[0] || "whatever";
+        const topics = normalTopics.reduce((res, topic) =>
+          [ ...res, `chat:${topic}`], []);
+        return multiTopic(scope, { topics })
+          .then(thingSouls =>
+            sortThings(scope, { sort: "new", thingSouls, tabulator: `~${id1}.${id2}` }))
+          .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
+          .then(serialized => ({
+            ...serialized,
+            includeRanks: false,
+            submitTopic,
+            isChat: true,
+            tabs: ["hot", "new", "discussed", "controversial", "top", "firehose", "chat"]
+              .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
+              .join(SOUL_DELIMETER)
+          }));
+      })
+    }),
+
+    basicQueryRoute({
       path: `${PREFIX}/t/front/:sort@~:id1.:id2.`,
+      priority: 25,
       checkMatch: ({ sort }) => (sort in sorts),
-      query: query((scope, { match: { sort, id1, id2 } }) => {
-        console.log("frontpage");
-        return multiTopic(scope, { topics: FRONTPAGE_TOPICS })
+      query: query((scope, { match: { sort, id1, id2 } }) =>
+        multiTopic(scope, { topics: FRONTPAGE_TOPICS })
           .then(thingSouls =>
             sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
           .then(things => serializeListing({ name: "front", things: things.slice(0, LISTING_SIZE) }))
@@ -46,16 +99,16 @@ export default oracle({
             ...serialized,
             includeRanks: true,
             submitTopic: "whatever",
-            tabs: ["hot", "new", "discussed", "controversial", "top"]
+            tabs: ["hot", "new", "discussed", "controversial", "top", "firehose"]
               .map(tab => `${PREFIX}/t/front/${tab}@~${id1}.${id2}.`)
               .join(SOUL_DELIMETER)
-          }));
-      })
+          })))
     }),
 
     basicQueryRoute({
       path: `${PREFIX}/things/:thingid/comments/:sort@~:id1.:id2.`,
       checkMatch: ({ sort }) => (sort in sorts),
+      priority: 85,
       query: query((scope, { match: { thingid, id1, id2, sort } }) =>
         scope.get(SOULS.thingAllComments.soul({ thingid })).souls()
           .then(souls => [SOULS.thing.soul({ thingid }), ...souls])
@@ -75,6 +128,7 @@ export default oracle({
 
     basicQueryRoute({
       path: `${PREFIX}/domain/:domain/:sort@~:id1.:id2.`,
+      priority: 25,
       checkMatch: ({ sort, domain }) =>
         (sort in sorts) && domain && (domain.toLowerCase() === domain),
       query: query((scope, { match: { domain, id1, id2, sort } }) =>
@@ -94,10 +148,13 @@ export default oracle({
 
     basicQueryRoute({
       path: `${PREFIX}/t/:topic/:sort@~:id1.:id2.`,
+      priority: 60,
       checkMatch: ({ sort, topic }) => (sort in sorts) && topic && (topic.toLowerCase() === topic),
       query: query((scope, { match: { topic, sort, id1, id2 } }) => {
+        const isAbnormal = topic.indexOf(":") !== -1;
         const topics = topic.split("+");
-        const submitTopic = topics.find(t => t && t.indexOf(":") === -1) || "whatever";
+        const normalTopics = topics.filter(t => t && t.indexOf(":") === -1);
+        const submitTopic = normalTopics[0] || "whatever";
         return multiTopic(scope, { topics })
           .then(thingSouls =>
             sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
@@ -106,7 +163,7 @@ export default oracle({
             ...serialized,
             includeRanks: true,
             submitTopic,
-            tabs: ["hot", "new", "discussed", "controversial", "top"]
+            tabs: ["hot", "new", "discussed", "controversial", "top", ...(isAbnormal ? [] : ["firehose"])]
               .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
               .join(SOUL_DELIMETER)
           }));
@@ -115,6 +172,7 @@ export default oracle({
 
     basicQueryRoute({
       path: `${PREFIX}/user/:authorId/replies/:type/:sort@~:id1.:id2.`,
+      priority: 20,
       checkMatch: ({ sort, type, authorId }) =>
         (sort in sorts) && authorId && type  && type.toLowerCase() == type &&
         (type === "overview" || type === "submitted" || type === "comments"),
@@ -133,6 +191,7 @@ export default oracle({
 
     basicQueryRoute({
       path: `${PREFIX}/user/:authorId/:type/:sort@~:id1.:id2.`,
+      priority: 30,
       checkMatch: ({ sort, type, authorId }) =>
         (sort in sorts) && authorId && type  && type.toLowerCase() == type &&
         (type === "overview" || type === "submitted" || type === "comments"),

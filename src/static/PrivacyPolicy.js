@@ -1,5 +1,6 @@
 import React from "react";
 import { Markdown } from "utils";
+import { Page } from "Page";
 
 const PRIVACY_POLICY=`
 # Privacy Policy
@@ -16,7 +17,7 @@ The terms of this agreement may change from time to time.  If changes are made, 
 `;
 
 export const PrivacyPolicy = () => (
-  <div className="content" role="main">
+  <Page>
     <Markdown body={PRIVACY_POLICY} />
-  </div>
+  </Page>
 );

@@ -1,7 +1,7 @@
 /* globals Promise */
 import Route from "route-parser";
 import Queue from "better-queue";
-import { prop, path } from "ramda";
+import { prop, propOr, path } from "ramda";
 
 export const combineOracles = oracles => ({
   onGet: (...args) => oracles.forEach(orc => orc.onGet && orc.onGet(...args)),
@@ -36,13 +36,13 @@ export const oracle = specs => {
       const soul = msg.get[propName];
       if (soul.indexOf(computedPub) === -1) return;
       const route = findRouteForSoul(soul);
-      if (route) worker.push({ id: `get:${soul}`, soul, method: "onGet" });
+      if (route) worker.push({ id: `get:${soul}`, soul, method: "onGet", priority: route.priority || 50 });
     }
     if (msg.get && msg.get["#"]) {
       const soul = msg.get["#"];
       if (soul.indexOf(computedPub) === -1) return;
       const route = findRouteForSoul(soul);
-      if (route) worker.push({ id: `get:${soul}`, soul, method: "onGet" });
+      if (route) worker.push({ id: `get:${soul}`, soul, method: "onGet", priority: route.priority || 50 });
     }
   };
 
@@ -55,17 +55,21 @@ export const oracle = specs => {
         if (ts > latest) latest = ts;
       }
       for (const updateSoul in listeners[soul]) {
+        const route = findRouteForSoul(updateSoul);
+        if (!route) continue;
         worker.push({
           id: `put:${updateSoul}`,
           soul: updateSoul,
           method: "onPut",
           updatedSoul: soul,
+          priority: route.priority || 50,
           latest
         });
       }
     }
   };
 
+  const priority = (action, cb) => cb(null, propOr(50, "priority", action));
   const worker = (new Queue((action, done) => {
     const { soul, method } = action || {};
     if (!soul) return console.warn("Invalid worker action", action) || done(); // eslint-disable-line
@@ -78,7 +82,7 @@ export const oracle = specs => {
       console.error("oracle worker error", e.stack || e);
     }
     done();
-  }, { concurrent: specs.concurrent || 100 }));
+  }, { concurrent: specs.concurrent || 100, priority }));
 
   const thisOracle = { registerListener, findRouteForSoul, onGet, onPut };
   return thisOracle;

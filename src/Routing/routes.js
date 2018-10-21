@@ -1,6 +1,7 @@
 import { ContentPolicy, PrivacyPolicy, UserAgreement, KnownPeers, Reddit } from "static";
 import { cached } from "utils";
 import { Page } from "Page";
+import { LoginSignupPage } from "Auth";
 import { SubmissionForm } from "Submission/Form";
 import { toRoute } from "./toRoute";
 import { tabulator } from "../config.json";
@@ -46,10 +47,8 @@ export const routes = [
   { path: "/help/knownpeers", component: KnownPeers },
   { path: "/rules", component: ContentPolicy },
   { path: "/t/:topic/submit", component: SubmissionForm },
-  { path: "/t/:topic/chat", getListingParams: getUserPageParams },
-  { path: "/login", },
+  { path: "/login", component: LoginSignupPage },
   { path: "/submit", component: SubmissionForm },
-  { path: "/chat", getListingParams: getFirehoseListingParams },
   { path: "/r/*", component: Reddit },
   {
     path: "/:prefix/:identifier/comments/:submission_id/:slug",

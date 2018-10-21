@@ -1,46 +1,33 @@
-import React, { Fragment } from "react";
-import { LoginSignupPage as SnewLoginSignupPage, Header as SnewHeader } from "snew-classic-ui";
-import { Link, JavaScriptRequired } from "utils";
+import React from "react";
+import { Page } from "Page";
+import { JavaScriptRequired } from "utils";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
 
-export const LoginSignupPage = props => (
-  <Fragment>
-    <Header />
+export const LoginSignupPage = () => (
+  <Page hideLogin>
     <JavaScriptRequired>
       <center><AlphaWarning /></center>
-      <SnewLoginSignupPage
-        {...props}
-        LoginForm={LoginForm}
-        RegisterForm={RegisterForm}
-      />
-      <center><AlphaWarning /></center>
+      <div id="login">
+        <div className="split-panel">
+          <div className="split-panel-section split-panel-divider">
+            <h4 className="modal-title">create a new account</h4>
+            <RegisterForm />
+          </div>
+          <div className="split-panel-section">
+            <h4 className="modal-title">log in</h4>
+            <LoginForm />
+          </div>
+        </div>
+      </div>
     </JavaScriptRequired>
-  </Fragment>
+  </Page>
 );
 
 const AlphaWarning = () => (
   <div className="reddit-infobar with-icon locked-infobar">
     <h3>auth is <strong>alpha</strong>, may take multiple tries</h3>
     <p>password changes are not yet possible</p>
-  </div>
-);
-
-const Header = (props) => (
-  <SnewHeader
-    UserInfo={() => null}
-    SrHeaderArea={() => null}
-    HeaderBottomLeft={HeaderBottomLeft}
-    {...props}
-  />
-);
-
-const HeaderBottomLeft = () => (
-  <div id="header-bottom-left">
-    <Link href="/" className="default-header" id="header-img">
-      notabug
-    </Link>
-    <span className="pagename selected">sign up or log in</span>
   </div>
 );
 

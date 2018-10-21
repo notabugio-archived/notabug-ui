@@ -72,7 +72,6 @@ const initialState = ({ history, notabugApi }) => {
     notabugApi,
     notabugUser: null,
     notabugUserId: null,
-    notabugInfiniteScroll: false,
     myContent: {}
   };
 };
@@ -124,9 +123,6 @@ const onFetchCache = (effects, pathname, search) => effects.getState()
     .then(notabugApi.scope.loadCachedResults))
   .then(always(identity));
 
-const onNotabugToggleInfiniteScroll = update(({ notabugInfiniteScroll }) =>
-  ({ notabugInfiniteScroll: !notabugInfiniteScroll }));
-
 const initialize = effects => effects.getState()
   .then(({ notabugApi }) => {
     notabugApi.onLogin(effects.onLogin);
@@ -150,7 +146,6 @@ export const notabugProvider = compose(
       getState,
       onFetchCache,
       onNotabugMarkMine,
-      onNotabugToggleInfiniteScroll,
       onLogin,
       onLogout
     }

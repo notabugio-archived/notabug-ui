@@ -46,7 +46,6 @@ export class Chat extends PureComponent {
           sort: "new",
           threshold: -1
         }}
-        fetchParent
         hideReply
         collapseThreshold={0}
         Container={ChatView}
@@ -62,25 +61,23 @@ export class Chat extends PureComponent {
           returnScrollable: scrollable => this.scrollable = scrollable,
         }}
       />
-      {this.props.isOpen ? null : (
-        <div className="chat-modal-controls">
-          <Link href="/chat">
-            <button
-              className="chat-dialogue-fullpage-link"
-              title="fullpage chat with live submissions and comments"
-            >firehose</button>
-          </Link>
-          <Link href="/t/chat:all/new">
-            <button
-              className="chat-dialogue-history-link"
-            >history</button>
-          </Link>
+      <div className="chat-modal-controls">
+        <Link href="/firehose">
           <button
-            className="close-chat"
-            onClick={() => this.setState({ isOpen: false })}
-          >close</button>
-        </div>
-      )}
+            className="chat-dialogue-fullpage-link"
+            title="fullpage chat with live submissions and comments"
+          >firehose</button>
+        </Link>
+        <Link href="/t/chat:all/new">
+          <button
+            className="chat-dialogue-history-link"
+          >history</button>
+        </Link>
+        <button
+          className="close-chat"
+          onClick={() => this.setState({ isOpen: false })}
+        >close</button>
+      </div>
       <ChatInput topic={this.state.topic} />
     </div>
   ) : (

@@ -2,5 +2,5 @@ import React from "react";
 import { withRouter } from "react-router-dom";
 
 export const locationKey = Comp => withRouter(
-  ({ location: { pathname, search } , ...props }) =>
-    <Comp {...props} key={`${pathname}${search}`} />);
+  ({ location, ...props }) =>
+    <Comp {...{ ...props, location}} key={`${location.pathname}${location.search}`} />);

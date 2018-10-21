@@ -1,5 +1,6 @@
 import React from "react";
 import { Markdown } from "utils";
+import { Page } from "Page";
 
 const USER_AGREEMENT=`
 # User Agreement
@@ -24,7 +25,7 @@ The terms of this agreement may change from time to time.  If changes are made, 
 `;
 
 export const UserAgreement = () => (
-  <div className="content" role="main">
+  <Page>
     <Markdown body={USER_AGREEMENT} />
-  </div>
+  </Page>
 );

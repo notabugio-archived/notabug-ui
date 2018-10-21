@@ -1,5 +1,6 @@
 import React from "react";
 import { Markdown } from "utils";
+import { Page } from "Page";
 
 const KNOWN_PEERS=`
 # Known Notabug Peers
@@ -35,7 +36,7 @@ See https://github.com/notabugio/notabug/tree/master/peer-configs for more confi
 `;
 
 export const KnownPeers = () => (
-  <div className="content" role="main">
+  <Page>
     <Markdown body={KNOWN_PEERS} />
-  </div>
+  </Page>
 );
