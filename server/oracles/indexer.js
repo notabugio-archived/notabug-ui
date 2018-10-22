@@ -22,6 +22,7 @@ const FRONTPAGE_TOPICS = [
   "pics",
   "politics",
   "programming",
+  "religion",
   "quotes",
   "science",
   "space",

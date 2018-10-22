@@ -1,7 +1,18 @@
 /* globals Promise */
 import Route from "route-parser";
 import Queue from "better-queue";
-import { prop, propOr, path } from "ramda";
+import { prop, propOr, pathOr } from "ramda";
+
+const getLatestTimestamp = node => {
+  let latest = 0;
+  const timestamps = pathOr({}, ["_", ">"], node);
+
+  for (const key in timestamps) {
+    const ts = timestamps[key];
+    if (ts > latest) latest = ts;
+  }
+  return latest;
+};
 
 export const combineOracles = oracles => ({
   onGet: (...args) => oracles.forEach(orc => orc.onGet && orc.onGet(...args)),
@@ -10,7 +21,9 @@ export const combineOracles = oracles => ({
 
 export const oracle = specs => {
   const listeners = {};
+  const timestamps = {};
   const registerListener = (listenForSoul, updateSoul) => {
+    if (listenForSoul === updateSoul) return;
     const recomputes = listeners[listenForSoul] = listeners[listenForSoul] || {}; // eslint-disable-line
     recomputes[updateSoul] = true;
   };
@@ -22,6 +35,13 @@ export const oracle = specs => {
     return route ? { ...route, soul, match, query: scope => route.query(scope, match) } : null;
   };
   let computedPub;
+
+  const cacheTimestamp = (soul, ts) => {
+    if (!timestamps[soul] || ts > timestamps[soul]) {
+      timestamps[soul] = ts;
+    }
+  };
+  const getTimestamp = soul => timestamps[soul];
 
   const onGet = (nab, msg) => {
     if (!thisOracle.nab) thisOracle.nab = nab;
@@ -50,10 +70,7 @@ export const oracle = specs => {
     if (!thisOracle.nab) thisOracle.nab = nab;
     for (const soul in msg.put || {}) {
       if (!(soul in listeners)) continue;
-      let latest = 0;
-      for (const ts in Object.values(path(["_", ">"], msg.put[soul] || {}))) {
-        if (ts > latest) latest = ts;
-      }
+      const latest = getLatestTimestamp(msg.put[soul]);
       for (const updateSoul in listeners[soul]) {
         const route = findRouteForSoul(updateSoul);
         if (!route) continue;
@@ -84,15 +101,14 @@ export const oracle = specs => {
     done();
   }, { concurrent: specs.concurrent || 100, priority }));
 
-  const thisOracle = { registerListener, findRouteForSoul, onGet, onPut };
+  const thisOracle = { registerListener, cacheTimestamp, getTimestamp, findRouteForSoul, onGet, onPut };
   return thisOracle;
 };
 
 export const basicQueryRoute = spec => ({
   ...spec,
-  onUpdate: (orc, route, existing) => {
+  doUpdate: (orc, route, existing, timestamp) => {
     const scope = orc.nab.newScope({ noGun: true });
-    console.log("onUpdate", route.soul);
     return spec.query(scope, route).then(r => {
       // this is a workaround for a lame SEA bug
       Object.keys(r).forEach(key => {
@@ -107,27 +123,41 @@ export const basicQueryRoute = spec => ({
       ) {
         console.log("updating", route.soul);
         orc.nab.gun.get(route.soul).put(r);
+        timestamp && orc.cacheTimestamp(route.soul);
       }
 
       return scope;
     });
   },
+
   onGet: (orc, route) => {
     const scope = orc.nab.newScope({ noGun: true });
+    if (orc.getTimestamp(route.soul)) return Promise.resolve();
+    console.log("onGet", route.soul);
     return scope.get(route.soul).then(existing => {
+      orc.cacheTimestamp(route.soul, getLatestTimestamp(existing));
+
       if (parseInt(prop("locked", existing), 10)) {
         console.log("Locked", route.soul, existing);
         return Promise.resolve(existing);
       }
-      return route.onUpdate(orc, route, existing).then(queryScope => {
+      return route.doUpdate(orc, route, existing).then(queryScope => {
         for (const key in queryScope.getAccesses()) {
           key !== route.soul && orc.registerListener(key, route.soul);
         }
       });
     });
   },
-  onPut: (orc, route) => {
+
+  onPut: (orc, route, { soul, updatedSoul, latest=0 } = {}) => {
     const scope = orc.nab.newScope({ noGun: true });
-    return scope.get(route.soul).then(existing => route.onUpdate(orc, route, existing));
+    console.log("onPut", { updating: soul, from: updatedSoul });
+    const knownTimestamp = orc.getTimestamp(soul);
+    if (latest && knownTimestamp && knownTimestamp > latest) return Promise.resolve();
+    return scope.get(route.soul).then(existing => {
+      const current = getLatestTimestamp(existing);
+      if (latest && latest < current) return;
+      return route.doUpdate(orc, route, existing, current);
+    });
   }
 });

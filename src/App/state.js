@@ -16,6 +16,7 @@ import notabugPeer from "notabug-peer";
 let COUNT_VOTES = false;
 let LOCAL_STORAGE = false;
 let FORCE_REALTIME = false;
+let RECALL_LOGIN = false;
 
 
 // https://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
@@ -35,6 +36,7 @@ if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !(/noLocalStorage/.test(window.location.search));
   FORCE_REALTIME = !/cached/.test(window.location.search);
+  RECALL_LOGIN = !/norecall/.test(window.location.search);
   if (!(/nosea/.test(window.location.search))) require("utils/sea");
 }
 
@@ -126,7 +128,7 @@ const onFetchCache = (effects, pathname, search) => effects.getState()
 const initialize = effects => effects.getState()
   .then(({ notabugApi }) => {
     notabugApi.onLogin(effects.onLogin);
-    if (!isNode && notabugApi.gun.user) {
+    if (RECALL_LOGIN && notabugApi.gun.user) {
       notabugApi.gun.user().recall({ sessionStorage: true });
       const check = () => {
         const auth = notabugApi.isLoggedIn();

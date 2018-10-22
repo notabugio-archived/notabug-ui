@@ -15,6 +15,7 @@ const HEADER_TOPICS = [
   "pics",
   "politics",
   "programming",
+  "religion",
   "quotes",
   "science",
   "space",
