@@ -50,7 +50,7 @@ const CENSOR_IDS = [
   "~Wca7b2b7PnXacwBALo28ICWt9Czgy28LOuHES-Avd8c.BgmQH_1XTPqel7H16TJ64poUsh0Cg1tIxHbKN2tf1as"
 ];
 
-const crList = query((scope, authorIds, submissionOnly = false) =>
+const curate = query((scope, authorIds, submissionOnly = false) =>
   all([
     multiAuthor(
       scope,
@@ -80,7 +80,7 @@ const crList = query((scope, authorIds, submissionOnly = false) =>
 );
 
 const censor = (scope, things) =>
-  crList(scope, CENSOR_IDS)
+  curate(scope, CENSOR_IDS)
     .then(ids => {
       const bad = {};
       ids.forEach(id => bad[id] = true);
@@ -156,7 +156,7 @@ export default oracle({
       priority: 25,
       checkMatch: ({ sort }) => (sort in sorts),
       query: query((scope, { match: { sort, id1, id2 } }) =>
-        crList(scope, CURATOR_IDS, true)
+        curate(scope, CURATOR_IDS, true)
           .then(ids => ids.map(thingid => SOULS.thing.soul({ thingid })))
           .then(thingSouls =>
             sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
