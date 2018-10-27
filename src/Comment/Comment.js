@@ -10,8 +10,10 @@ import { ThingCommentEntry } from "./Entry";
 export class Comment extends PureComponent {
   constructor(props) {
     super(props);
+    const body = props.item && props.item.body || "";
+    const defaultCollapsed = ((body.length > 300) && props.collapseLarge) ? true : false;
     const { collapsed=false } = props;
-    this.state = { collapsed };
+    this.state = { collapsed: collapsed || defaultCollapsed };
     this.onToggleExpand = this.onToggleExpand.bind(this);
   }
 

@@ -1,8 +1,8 @@
-import { prop, propOr } from "ramda";
+import { prop, propOr, uniq, map, filter, compose } from "ramda";
 import * as SOULS from "../notabug-peer/souls";
 import { query, all } from "../notabug-peer/scope";
 import { PREFIX, SOUL_DELIMETER } from "../notabug-peer/util";
-import { sorts, multiTopic, singleAuthor, repliesToAuthor, sortThings } from "../queries";
+import { filterThings, sorts, multiTopic, multiAuthor, singleAuthor, repliesToAuthor, sortThings } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
 
 const LISTING_SIZE = 1000;
@@ -33,6 +33,68 @@ const FRONTPAGE_TOPICS = [
   "whatever"
 ];
 
+
+const CURATOR_IDS = uniq([
+  "~5vvQz9CTQgpk4alXuJIiHeTBRt4itoueqrHs-Fi0X7A.1iY7DRla-NvhahUszYZCgxXUnMcoLPGlLTU1ldBqINE",
+  "~LesDWK7BcLGNLAtzyAWVwuELI8NKLudyX2E-68OLek4.A8owpiqmANc6yN5fD7UfwSz9kWsRVgBx4obwuCBo6H8",
+  "~7MMrduZa7qNfw2IrmPH01_AVFwruIOs1lP84syULyuA.qXSQ4LJq-MneJL-NY55urDPOucT3p5IxtL2Hr2cZtt8",
+  "~GnKvWZEoLdXqQKIGMSKJeQQmV57QK85SOLa9DP3rvm4.icZFh-IVnGpRSfoCk_GjBE3mjmHtwCdWgN974DR3_AA",
+  "~Yr3T3rFJacNpTwRCue6tEvmajAjuvNkRCTcHz6HsLlU.THENQfgvkmTKSmOGsVSsS63qaIL8eGFWFfzgNh6zv5o",
+  "~YOfauvxM4twU4ODt8Nglmtf6OuF4HFM0Jb7qEnqYPy8.5v2LSnhFHzUHGC8OQ237Zkm2I669k4_Gy5kE9lKVLmw",
+  "~6CGHfCjVF-PLjEkFTDazpVkdD7-qi2lA59grir4Ws64.wOsmeMAp7-Gcq_yTButNeKtinqy-ovNIRBSTUK03WVI",
+  "~0R5jFQNX4ff0gYPQwqg67qV8rmNLjp2gqyc7lkmvpSY.5lupP8_MAS3rIkdcPv9AiWZ93KcGD4zTSoPKn4nNI4k",
+  "~7Cm8-PUuhI2Wr5csnZxBVTMyE9z93LEIBcL8cW606Qg.bO915baqt4Mkx4N7bLeY-QnKIVTTOTUPdbQTbbo9TFA",
+]);
+
+const CENSOR_IDS = [
+  "~Wca7b2b7PnXacwBALo28ICWt9Czgy28LOuHES-Avd8c.BgmQH_1XTPqel7H16TJ64poUsh0Cg1tIxHbKN2tf1as"
+];
+
+const crList = query((scope, authorIds, submissionOnly = false) =>
+  all([
+    multiAuthor(
+      scope,
+      {
+        type: "comments",
+        authorIds: authorIds
+      }
+    )
+      .then(souls => all(souls.filter(x => !!x).map(soul => scope.get(`${soul}/data`).then(x => x))))
+      .then(compose(
+        map(prop("replyToId")),
+        filter(itemData => {
+          if (!itemData) return;
+          if (submissionOnly && itemData.opId !== itemData.replyToId) return;
+          return !!itemData.replyToId;
+        })
+      )),
+    multiAuthor(
+      scope,
+      {
+        type: "submissions",
+        authorIds: authorIds
+      }
+    )
+      .then(map(soul => SOULS.thing.isMatch(soul).thingid))
+  ]).then(([ids1, ids2]) => uniq([...ids1, ...ids2]))
+);
+
+const censor = (scope, things) =>
+  crList(scope, CENSOR_IDS)
+    .then(ids => {
+      const bad = {};
+      ids.forEach(id => bad[id] = true);
+      return bad;
+    })
+    .then(badIds => {
+      return filterThings(scope, things, thing => {
+        if (!thing.data) return false;
+        if (badIds[thing.id]) return false;
+        if (badIds[thing.data.opId]) return false;
+        return true;
+      });
+    });
+
 export default oracle({
   name: "indexer",
   concurrent: 1,
@@ -49,6 +111,7 @@ export default oracle({
         return multiTopic(scope, { topics })
           .then(thingSouls =>
             sortThings(scope, { sort: "new", thingSouls, tabulator: `~${id1}.${id2}` }))
+          .then(things => topic === "front" ? censor(scope, things) : things)
           .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
           .then(serialized => ({
             ...serialized,
@@ -74,6 +137,7 @@ export default oracle({
         return multiTopic(scope, { topics })
           .then(thingSouls =>
             sortThings(scope, { sort: "new", thingSouls, tabulator: `~${id1}.${id2}` }))
+          .then(things => topic === "front" ? censor(scope, things) : things)
           .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
           .then(serialized => ({
             ...serialized,
@@ -92,9 +156,11 @@ export default oracle({
       priority: 25,
       checkMatch: ({ sort }) => (sort in sorts),
       query: query((scope, { match: { sort, id1, id2 } }) =>
-        multiTopic(scope, { topics: FRONTPAGE_TOPICS })
+        crList(scope, CURATOR_IDS, true)
+          .then(ids => ids.map(thingid => SOULS.thing.soul({ thingid })))
           .then(thingSouls =>
             sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
+          .then(things => censor(scope, things))
           .then(things => serializeListing({ name: "front", things: things.slice(0, LISTING_SIZE) }))
           .then(serialized => ({
             ...serialized,

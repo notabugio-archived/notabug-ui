@@ -21,6 +21,7 @@ export const Submission = ({
   expanded,
   rank,
   isViewing,
+  isDetail,
   onToggleExpando,
   item,
   state: { isVotingUp, isVotingDown /*, notabugUser*/ },
@@ -41,8 +42,9 @@ export const Submission = ({
         </Helmet>
       ) : null}
       <ThingLink
-        {...{ Markdown, Expando, Timestamp, Link, EmbedComponent, id, domain, permalink, expanded }}
+        {...{ Markdown, Expando, Timestamp, Link, EmbedComponent, id, domain, permalink }}
         {...{ rank, onVoteUp, onVoteDown, expandoType, image, video, iframe }}
+        expanded={expanded || (isDetail && !item.url)}
         ups={ups || 0}
         downs={downs || 0}
         AuthorLink={AuthorLink}

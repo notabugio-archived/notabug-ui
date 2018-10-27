@@ -42,6 +42,7 @@ export class Listing extends React.PureComponent {
         listingParams={this.props.listingParams}
         replyTree={this.props.replyTree}
         fetchParent={this.props.fetchParent}
+        collapseLarge={this.props.collapseLarge}
         hideReply={this.props.hideReply}
         disableChildren={this.props.disableChildren}
         id={id}

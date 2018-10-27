@@ -25,7 +25,7 @@ export const NestedContent = ({
                 Loading={Submission}
                 isVisible
                 isViewing
-                expanded
+                isDetail
               />
             </div>
             <div className="commentarea">

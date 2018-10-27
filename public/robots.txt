@@ -1,0 +1,13 @@
+User-Agent: *
+Disallow: /*.json
+Disallow: /*.json-compact
+Disallow: /*.json-html
+Disallow: /*.xml
+Disallow: /*.rss
+Disallow: /*.embed
+Disallow: /*/comments/*?*sort=
+Disallow: /api
+Disallow: /submit
+Disallow: /*after=
+Disallow: /*before=
+Disallow: /*count=

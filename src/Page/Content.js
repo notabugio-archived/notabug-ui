@@ -54,6 +54,7 @@ export class Content extends React.PureComponent {
           <Listing
             {...listing}
             Container={ChatView}
+            collapseLarge={isChat ? true : false}
             containerProps={{
               id: "siteTable",
               className: `sitetable infinite-listing ${isChat ? "chat-listing" : ""}`,

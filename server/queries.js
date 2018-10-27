@@ -212,3 +212,18 @@ export const sorts = {
 };
 
 export const sortThings = (scope, params) => (sorts[params.sort] || sorts.new)(scope, params);
+
+export const filterThings = (scope, things, fn) => all(things
+  .filter(thing => thing && thing.id)
+  .map(thing => scope.get(SOULS.thingData.soul({ thingid: thing.id })).then(data => ({
+    ...thing,
+    data
+  })).then(thingWithData => {
+    if (!thingWithData.data) return thingWithData;
+    if (!thingWithData.data.opId) return thingWithData;
+    return scope.get(SOULS.thingData.soul({ thingid: thingWithData.data.opId })).then(opData => ({
+      ...thingWithData,
+      opData
+    }));
+  }))
+).then(filter(fn));

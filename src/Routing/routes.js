@@ -35,9 +35,10 @@ const getSubmissionListingParams = withParams((
 
 export const getFirehoseListingParams = withParams(({ withSubmissions }) => ({
   count: 0,
+  limit: 50,
   soul: withSubmissions
-    ? `nab/t/chat:whatever+comments:all+all/new@${tabulator}.`
-    : `nab/t/chat:whatever/new@${tabulator}.`
+    ? `nab/t/front/firehose@${tabulator}.`
+    : `nab/t/front/chat@${tabulator}.`
 }));
 
 export const routes = [
