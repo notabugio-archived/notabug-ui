@@ -122,6 +122,8 @@ export const thingData = (key, val, parent, pKey, msg, peer) =>
       if (peer.isBlocked(key)) {
         val["url"] = null; // eslint-disable-line
         val["body"] = "[removed]"; // eslint-disable-line
+        val["title"] = "[removed]"; // eslint-disable-line
+        val["author"] = "[removed]"; // eslint-disable-line
         Object.keys(val).forEach(vk => {
           if (vk !== "url" && vk !== "body" && vk !== "_" && vk !== "#") {
             delete val[vk]; // eslint-disable-line

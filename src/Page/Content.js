@@ -40,7 +40,7 @@ export class Content extends React.PureComponent {
     const query = qs.parse(search, { ignoreQueryPrefix: true });
     const count = parseInt(query.count, 10) || 0;
     const listing = {
-      Loading, Empty, limit, realtime: !!infinite,
+      Loading, Empty, limit, realtime: !!(infinite || isChat),
       listingParams: { ...listingParams, count },
       onDidUpdate: isChat ? this.scrollToBottom : null,
       noRank: !includeRanks,

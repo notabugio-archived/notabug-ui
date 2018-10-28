@@ -35,14 +35,20 @@ class ThingBase extends PureComponent {
   componentWillReceiveProps = (nextProps) =>
     (nextProps.realtime && !this.props.realtime) && this.scope.realtime();
 
+  getCollapseThreshold = () => {
+    const body = this.state.item && this.state.item.body || "";
+    const lines = (body.length / 80) + (body.split("\n").length - 1);
+    return lines - 4;
+  };
+
   render() {
     const {
-      id, isMine, rank, collapseThreshold=null, hideReply=false,
-      Loading: LoadingComponent = Loading, ...props
+      id, isMine, rank, hideReply=false, Loading: LoadingComponent = Loading, ...props
     } = this.props;
     const { item, parentItem, scores, expanded, isShowingReply } = this.state;
     const score = scores.score || 0;
     const ThingComponent = (item ? components[item.kind] : null);
+    const collapseThreshold = this.getCollapseThreshold();
     const collapsed = !isMine && !!((collapseThreshold!==null && (score < collapseThreshold)));
     if (item && !ThingComponent) return null;
     const thingProps = {
@@ -89,12 +95,12 @@ class ThingBase extends PureComponent {
       .then(parentItem => this.setState({ parentItem }))
       .then(() => this.onUpdated());
   };
-  
+
   onShowReply = (e) => {
     e && e.preventDefault();
     this.setState({ isShowingReply: true });
   };
-  
+
   onHideReply = (e) => {
     e && e.preventDefault();
     this.setState({ isShowingReply: false });

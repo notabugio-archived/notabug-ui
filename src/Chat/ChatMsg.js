@@ -33,7 +33,6 @@ const ChatMsgEntry = votingItemProvider(injectState(({
 export const ChatMsg = (props) => (
   <Comment
     {...props}
-    collapsed={props.item && props.item.body && props.item.body.length > 300}
     ThingCommentEntry={ChatMsgEntry}
   />
 );
