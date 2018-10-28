@@ -72,7 +72,7 @@ const curate = query((scope, authorIds, submissionOnly = false) =>
     multiAuthor(
       scope,
       {
-        type: "submissions",
+        type: "submitted",
         authorIds: authorIds
       }
     )
