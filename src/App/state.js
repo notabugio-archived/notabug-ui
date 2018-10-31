@@ -35,7 +35,7 @@ function isLocalStorageNameSupported() {
 if (!isNode) {
   COUNT_VOTES = !!(/countVotes/.test(window.location.search));
   LOCAL_STORAGE = !(/noLocalStorage/.test(window.location.search));
-  FORCE_REALTIME = !!/realtime/.test(window.location.search);
+  FORCE_REALTIME = !/norealtime/.test(window.location.search);
   RECALL_LOGIN = !/norecall/.test(window.location.search);
   if (!(/nosea/.test(window.location.search))) require("utils/sea");
 }

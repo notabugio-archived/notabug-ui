@@ -37,7 +37,7 @@ class ThingBase extends PureComponent {
 
   getCollapseThreshold = () => {
     const body = this.state.item && this.state.item.body || "";
-    const lines = (body.length / 80) + (body.split("\n").length - 1);
+    const lines = (body.length / 100) + (body.split("\n").length - 1);
     return lines - 4;
   };
 

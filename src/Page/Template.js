@@ -1,7 +1,7 @@
 import React from "react";
 import { SubmitLinkSidebox, SubmitTextSidebox } from "snew-classic-ui";
 import { Link, Timestamp } from "utils";
-import { AuthorLink, UserInfo, LoginFormSide } from "Auth";
+import { UserIdLink, AuthorLink, UserInfo, LoginFormSide } from "Auth";
 import { SidebarTitlebox } from "Page/SidebarTitlebox";
 import { SrHeaderArea } from "Page/SrHeaderArea";
 import { NavTab } from "Page/NavTab";
@@ -16,6 +16,8 @@ export const PageTemplate = ({
   submitTopic,
   createdAt,
   hideLogin=false,
+  curators=[],
+  censors=[],
   children
 }) => (
   <React.Fragment>
@@ -84,6 +86,26 @@ export const PageTemplate = ({
               <SubmitTextSidebox {...{ Link }} siteprefix="t" subreddit={submitTopic} />
               <SidebarTitlebox {...{ Link }} siteprefix="t" subreddit={name} />
             </React.Fragment>
+          ) : null}
+          {censors && censors.length ? (
+            <div className="spacer">
+              <div className="sidecontentbox">
+                <div className="title"><h1>CENSORS</h1></div>
+                <ul className="content">
+                  {censors.map(userId => <li><UserIdLink {...{ userId }} /></li>)}
+                </ul>
+              </div>
+            </div>
+          ) : null}
+          {curators && curators.length ? (
+            <div className="spacer">
+              <div className="sidecontentbox">
+                <div className="title"><h1>CURATORS</h1></div>
+                <ul className="content">
+                  {curators.map(userId => <li><UserIdLink {...{ userId }} /></li>)}
+                </ul>
+              </div>
+            </div>
           ) : null}
         </React.Fragment>
       )}

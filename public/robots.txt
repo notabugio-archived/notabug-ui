@@ -6,8 +6,10 @@ Disallow: /*.xml
 Disallow: /*.rss
 Disallow: /*.embed
 Disallow: /*/comments/*?*sort=
+Disallow: /t/all/*
 Disallow: /api
-Disallow: /submit
+Disallow: /chat
+Disallow: /firehose
 Disallow: /*after=
 Disallow: /*before=
 Disallow: /*count=

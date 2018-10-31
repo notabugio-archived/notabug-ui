@@ -21,6 +21,8 @@ export class ListingIdsBase extends React.PureComponent {
     const {
       ids: idString,
       tabs: tabString,
+      curators: curatorsString,
+      censors: censorsString,
       includeRanks: includeRanksString,
       isChat: isChatString,
       ...state
@@ -30,8 +32,10 @@ export class ListingIdsBase extends React.PureComponent {
     const isChat = isChatString && isChatString !== "false" && isChatString !== "0";
     const ids = (idString || "").split("+").filter(x => !!x);
     const tabs = (tabString || "").split(SOUL_DELIMETER).filter(x => !!x);
+    const curators = (curatorsString || "").split(SOUL_DELIMETER).filter(x => !!x);
+    const censors = (censorsString || "").split(SOUL_DELIMETER).filter(x => !!x);
     const createdAt = parseInt(state.createdAt, 10);
-    return children({ ...state, ids, tabs, includeRanks, isChat, createdAt });
+    return children({ ...state, ids, tabs, curators, censors, includeRanks, isChat, createdAt });
   }
 
   onSubscribe = () => this.props.state.notabugApi.scope.on(this.onRefresh);
