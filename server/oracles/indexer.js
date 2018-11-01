@@ -58,6 +58,8 @@ const CURATOR_IDS = uniq([
   "~VPJPmDnVzi70la1dtvN9YNHIUyPWIkbH-iR8qDotHfY.6KXh-Kg2-l8ZEH65OsMS6yBSip8HuJvb9rhfR9c_eK4",
   "~qCS827OtiqrnCYuhDDscIaUH-b1Zf4ARqC75TQdveno.mtUOCBbbkrExAec0K5Bmb4d5SJ14ruGPaJBETtYucv0",
   "~OpiwW6J7dHN0yrqXKK0hISsM4nJgrcXOPdW7Vwwr0uU.8raor7BxnatrzwISF7xSmCTb9Cgd0IgkQCL--BpWZG0",
+  "~6xze5qBkwMey6_5K99bttcFb9ylII1UN2mdSeb55elk.7zqXfUVf75CVJuqEUQ_NSN-qTqu1wQ53svNWvFg5gJ4",
+  "~VqbAno4if8ucqBGK2CRHXzAEDPXlWYmBW709CsRUn4U.sorgqKUe-92XX1gXcznqaGuNtv1V05Zy1R2EN3vqW0I",
 ]);
 
 const CENSOR_IDS = [

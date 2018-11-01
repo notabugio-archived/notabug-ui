@@ -36,7 +36,9 @@ export const PageTemplate = ({
         </Link>
         {name ? (
           <span className="hover pagename redditname">
-            <Link href={`/${listingParams.prefix || "t"}/${identifier}/`}>{name}</Link>
+            <Link
+              href={`/${listingParams.prefix || "t"}/${identifier}/`}
+            >{name}</Link>
           </span>
         ) : null}
         {tabs && tabs.length ? (
@@ -84,7 +86,16 @@ export const PageTemplate = ({
             <React.Fragment>
               <SubmitLinkSidebox {...{ Link }} siteprefix="t" subreddit={submitTopic} />
               <SubmitTextSidebox {...{ Link }} siteprefix="t" subreddit={submitTopic} />
-              <SidebarTitlebox {...{ Link }} siteprefix="t" subreddit={name} />
+              <SidebarTitlebox
+                {...{ Link }}
+                siteprefix="t"
+                subreddit={name}
+                bottom={listingParams && listingParams.indexer ? (
+                  <React.Fragment>
+                    indexed by <UserIdLink userId={listingParams.indexer} />
+                  </React.Fragment>
+                ) : null}
+              />
             </React.Fragment>
           ) : null}
           {censors && censors.length ? (

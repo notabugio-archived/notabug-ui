@@ -8,37 +8,41 @@ import { tabulator } from "../config.json";
 import { PREFIX } from "notabug-peer";
 
 const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
-const baseParams = ({ params: { sort="hot" }={}, query: { count, limit }={} }={}) => ({
+const baseParams = ({ params: { sort="hot" }={}, query: { indexer=tabulator, count, limit }={} }={}) => ({
   sort,
-  tabulator,
+  indexer,
   count: parseInt(count, 10) || 0,
   limit: parseInt(limit, 10) || 25
 });
 
-const getPageParams = withParams(({ params: { prefix="t", identifier="all", sort="hot" } }) =>
-  ({ prefix, soul: `${PREFIX}/${prefix}/${identifier}/${sort}@${tabulator}.` }));
+const getPageParams = withParams(({
+  params: { prefix="t", identifier="all", sort="hot" }, query: { indexer=tabulator }
+}) =>
+  ({ prefix, soul: `${PREFIX}/${prefix}/${identifier}/${sort}@~${indexer}.` }));
 
-const getFrontPageParams = withParams(({ params: { prefix="t", identifier="front", sort="hot" } }) =>
-  ({ prefix, soul: `${PREFIX}/${prefix}/${identifier}/${sort}@${tabulator}.` }));
+const getFrontPageParams = withParams(({
+  params: { prefix="t", identifier="front", sort="hot" }, query: { indexer=tabulator }
+}) =>
+  ({ prefix, soul: `${PREFIX}/${prefix}/${identifier}/${sort}@~${indexer}.` }));
 
 const getUserPageParams = withParams(({
-  params: { prefix="user", identifier="all", sort="new", type="overview" }
-}) => ({ prefix, type, sort, soul: `${PREFIX}/${prefix}/${identifier}/${type}/${sort}@${tabulator}.` }));
+  params: { prefix="user", identifier="all", sort="new", type="overview" }, query: { indexer=tabulator }
+}) => ({ prefix, type, sort, soul: `${PREFIX}/${prefix}/${identifier}/${type}/${sort}@~${indexer}.` }));
 
 const getSubmissionListingParams = withParams((
-  { params: { submission_id  }, query: { sort="best" } }
+  { params: { submission_id  }, query: { sort="best" }, query: { indexer=tabulator } }
 ) => ({
-  soul: `nab/things/${submission_id}/comments/${sort}@${tabulator}.`,
+  soul: `nab/things/${submission_id}/comments/${sort}@~${indexer}.`,
   sort,
   limit: null
 }));
 
-export const getFirehoseListingParams = withParams(({ withSubmissions }) => ({
+export const getFirehoseListingParams = withParams(({ withSubmissions, query: { indexer=tabulator }={} }) => ({
   count: 0,
   limit: 50,
   soul: withSubmissions
-    ? `nab/t/front/firehose@${tabulator}.`
-    : `nab/t/front/chat@${tabulator}.`
+    ? `nab/t/front/firehose@~${indexer}.`
+    : `nab/t/front/chat@~${indexer}.`
 }));
 
 export const routes = [
@@ -62,20 +66,20 @@ export const routes = [
   }, {
     path: "/message/comments",
     component: Page,
-    getListingParams: withParams(({ userId }) => ({
-      soul: `nab/user/${userId}/replies/comments/new@${tabulator}.`
+    getListingParams: withParams(({ userId, query: { indexer=tabulator } }) => ({
+      soul: `nab/user/${userId}/replies/comments/new@~${indexer}.`
     }))
   }, {
     path: "/message/selfreply",
     component: Page,
-    getListingParams: withParams(({ userId }) => ({
-      soul: `nab/user/${userId}/replies/submitted/new@${tabulator}.`
+    getListingParams: withParams(({ userId, query: { indexer=tabulator } }) => ({
+      soul: `nab/user/${userId}/replies/submitted/new@~${indexer}.`
     }))
   }, {
     path: "/message/inbox",
     component: Page,
-    getListingParams: withParams(({ userId }) => ({
-      soul: `nab/user/${userId}/replies/overview/new@${tabulator}.`
+    getListingParams: withParams(({ userId, query: { indexer=tabulator } }) => ({
+      soul: `nab/user/${userId}/replies/overview/new@~${indexer}.`
     }))
   }, {
     path: "/listing/:soul(.+)",

@@ -36,9 +36,6 @@ export const SidebarTitlebox = (props) => (
   <SnewSidebarTitlebox
     {...props}
     Markdown={Markdown}
-    Timestamp={Timestamp}
     description={README}
-    created={1526267327.437}
-    created_utc={1526267327.437}
   />
 );

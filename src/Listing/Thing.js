@@ -19,7 +19,7 @@ class ThingBase extends PureComponent {
     const { data, expanded = false } = props;
     const nab = props.state.notabugApi;
     const scope = nab.scope;
-    const scores = nab.queries.thingScores.now(scope, props.id, props.listingParams.tabulator) ||
+    const scores = nab.queries.thingScores.now(scope, props.id, `~${props.listingParams.indexer}`) ||
       { up: 0, down: 0, score: 0, comment: 0 };
     const item = data || nab.queries.thingData.now(scope, props.id);
     const parentItem = props.fetchParent && item && item.opId
@@ -76,7 +76,7 @@ class ThingBase extends PureComponent {
   onUpdated = () => this.props.onDidUpdate && this.props.onDidUpdate();
   onUpdate = () => {
     const nab = this.props.state.notabugApi;
-    nab.queries.thingScores(this.scope, this.props.id, this.props.listingParams.tabulator)
+    nab.queries.thingScores(this.scope, this.props.id, `~${this.props.listingParams.indexer}`)
       .then(scores => scores && this.setState({ scores }));
     if (!this.state.item) this.onFetchItem();
   }

@@ -9,7 +9,7 @@ class UserIdLinkBase extends React.Component {
     super(props);
     const nab = props.state.notabugApi;
     const { userId } = props;
-    nab.gun.get(`~${userId}`).then(user => {
+    nab.gun && nab.gun.get(`~${userId}`).then(user => {
       if (!user) return;
       this.setState({ alias: user.alias });
     });

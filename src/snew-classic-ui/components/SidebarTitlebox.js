@@ -6,7 +6,7 @@ import { optional } from "../util";
 const SidebarTitlebox = ({
   Link = LinkComponent,
   Markdown = MarkdownComponent,
-  Timestamp = ({ created_utc }) => created_utc,
+  Timestamp = ({ created_utc }) => created_utc || null,
   siteprefix="r",
   subreddit,
   description,
@@ -17,7 +17,7 @@ const SidebarTitlebox = ({
   accounts_active,
   created_by,
   created_utc,
-  subredditData: data,
+  bottom=null,
   isShowingCustomStyleOption,
   setStyleEnabled,
   setStyleDisabled,
@@ -100,6 +100,7 @@ const SidebarTitlebox = ({
         })}
       </form>
       <div className="bottom">
+        {bottom}
         {created_by ? `created by ${created_by}` : null} <span className="age">
           <Timestamp created_utc={created_utc} />
         </span>

@@ -143,6 +143,7 @@ function toRedis(obj) {
       obj[key] = obj[key].slice(0, FIELD_SIZE_LIMIT);
       console.log("truncated input", key);
     }
+    if (key[0] === ".") delete obj[key];
   });
 
   return obj;
@@ -152,6 +153,8 @@ function fromRedis(obj) {
   if (!obj) return obj;
 
   Object.keys(obj).forEach(function(key) {
+    if (key[0] === ".") delete obj[key];
+
     if (obj[key] === "|NULL|") {
       obj[key] = null;
     }
