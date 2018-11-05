@@ -1,0 +1,47 @@
+chown 
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ @tethistlethwaite Sign out
+Your account has been flagged.
+Because of that, your profile is hidden from the public. If you believe this is a mistake, contact support to have your account status reviewed.
+0
+0 1 tethistlethwaite/iotat
+forked from 15508060795/iotat
+ Code  Pull requests 0  Projects 0  Wiki  Insights  Settings
+iotat/cubebits
+5b53a1d  17 hours ago
+@tethistlethwaite tethistlethwaite t
+     
+29 lines (27 sloc)  526 Bytes
+chown, 2  tools/test.pl
+@@ -10319,7 +10319,7 @@ sub rnd
+  elsif ($mode == 18200)
+  {
+    $salt_buf = get_random_kerberos5_as_rep_salt ();
+  }  
+  }
+  else
+  {
+    my @salt_arr;
+#winternitz 322  tools/test.pl
+@@ -10319,7 +10,<319,7 @@ sub rnd
+  elsif ($mode == 18200)
+  {
+    $salt_buf = get_random_kerberos5_as_rep_salt ();
+  }  d ds2  tools/test.pl
+@@ -10319,7 +10319,7 @@ sub rnd
+  elsif ($mode == 18200)
+  {
+    $salt_buf = get_random_kerberos5_as_rep_salt ();
+  }  
+  }
+  else
+  {
+    my @salt_arr;
+
+  {
+    my @salt_arr;
