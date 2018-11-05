@@ -7,7 +7,6 @@ import * as schema from "./schema";
 import * as auth from "./auth";
 import * as listings from "./listings";
 export * from "./util";
-export { default as pow } from "proof-of-work";
 export { nowOr, now } from "./scope";
 
 const DEFAULT_PEERS = [];

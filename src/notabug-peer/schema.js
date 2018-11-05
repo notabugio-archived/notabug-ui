@@ -1,9 +1,10 @@
 import { prop } from "ramda";
-import {
-  allowFields, keyIs, valFromSoul, isSoul, soulMatchesKey, and, DEFAULT_POW_COMPLEXITY,
-} from "./util";
+import { ZalgoPromise as Promise } from "zalgo-promise";
+import { allowFields, keyIs, valFromSoul, isSoul, soulMatchesKey, and } from "./util";
 import objHash from "object-hash";
-import pow from "proof-of-work";
+import { verifyWork } from "./work";
+
+const { all } = Promise;
 
 export const types = allowFields(
   isSoul("topicDay"),
@@ -71,28 +72,24 @@ export const thing = allowFields(
 );
 
 export const thingVotes = (key, val, parent, pKey, msg, peer) => {
-  const complexity = DEFAULT_POW_COMPLEXITY;
   const match = peer.souls.thingVotes.isMatch(val["#"] || key);
-  Object.keys(val).map(voteKey => {
+  if (!match) return false;
+  return all(Object.keys(val).map(voteKey => {
     if (voteKey === "#" || voteKey === "_") return;
-    const vote = val[voteKey];
-    const verifier = new pow.Verifier({
-      size: 1024,
-      n: 16,
-      complexity,
-      prefix: key,
-      validity: Infinity,
-    });
-
+    const vote = voteKey;
+    if ((val[voteKey] && val[voteKey].length > 64) || vote.length > 64) {
+      console.warn("vote too large", key, vote); // eslint-disable-line
+      delete val[voteKey];
+      return Promise.resolve();
+    }
     const nonce = Buffer.hasOwnProperty("from") ?
       Buffer.from(vote, "hex") : new Buffer(vote, "hex");
-
-    if (!verifier.check(nonce, complexity)) {
+    return verifyWork(key, nonce).then(isValid => {
+      if (isValid) return;
       console.warn("invalid vote", key, vote); // eslint-disable-line
       delete val[voteKey]; // eslint-disable-line
-    }
-  });
-  return !!match;
+    });
+  })).then(() => true);
 };
 
 export const things = allowFields(
@@ -116,7 +113,7 @@ const sanitizeThingData = allowFields(
 export const thingData = (key, val, parent, pKey, msg, peer) =>
   sanitizeThingData(key, val, parent, pKey, msg, peer)
     .then(() => {
-      const { _, ...record } = val;
+      const { _, ...record } = val; // eslint-disable-line no-unused-vars
       delete record["#"];
 
       if (peer.isBlocked(key)) {

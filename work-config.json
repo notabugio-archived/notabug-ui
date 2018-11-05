@@ -1,0 +1,7 @@
+{
+  "complexity": 6,
+  "hashLength": 32,
+  "timeCost": 1,
+  "memoryCost": 10240,
+  "parallelism": 1
+}

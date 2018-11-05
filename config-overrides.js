@@ -50,6 +50,12 @@ module.exports = function override(config) {
   babelLoader.exclude = (babelLoader.exclude || []).concat([workerExtension]);
 
   config.module.rules.push(workerLoader);
+  config.resolve = {
+    ...config.resolve,
+    alias: {
+      "argon2": require("path").join(__dirname, "./src/argon2.stub.js")
+    }
+  };
 
   // Optionally output the final config to check it.
   //console.dir(config, { depth: 10, colors: true });
