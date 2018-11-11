@@ -3,7 +3,7 @@ import LinkComponent from "./Link";
 
 const LoginForm = ({
   Link = LinkComponent,
-  formAction="/post/login",
+  formAction = "/post/login",
   username,
   usernameError,
   passwd,
@@ -24,11 +24,7 @@ const LoginForm = ({
     onSubmit={onLogin}
   >
     <input name="op" type="hidden" defaultValue="login" />
-    <input
-      name="dest"
-      type="hidden"
-      defaultValue="/"
-    />
+    <input name="dest" type="hidden" defaultValue="/" />
     <div className="c-form-group">
       <label className="screenreader-only" htmlFor="user_login">
         username:
@@ -43,12 +39,16 @@ const LoginForm = ({
         tabIndex={3}
         type="text"
         defaultValue={username}
-        onChange={e => onChangeUsername(e.target.value)}
+        onChange={onChangeUsername}
       />
       <div className="c-form-control-feedback-wrapper">
-        {usernameError
-          ? <span className="c-form-control-feedback c-form-control-feedback-error" title={usernameError} style={{ display: "block" }} />
-          : null}
+        {usernameError ? (
+          <span
+            className="c-form-control-feedback c-form-control-feedback-error"
+            title={usernameError}
+            style={{ display: "block" }}
+          />
+        ) : null}
       </div>
     </div>
     <div className="c-form-group">
@@ -63,15 +63,19 @@ const LoginForm = ({
         tabIndex={3}
         type="password"
         defaultValue={passwd}
-        onChange={e => onChangePasswd(e.target.value)}
+        onChange={onChangePasswd}
       />
       <div className="c-form-control-feedback-wrapper">
-        {passwdError
-          ? <span className="c-form-control-feedback c-form-control-feedback-error" title={passwdError} style={{ display: "block" }} />
-          : null}
+        {passwdError ? (
+          <span
+            className="c-form-control-feedback c-form-control-feedback-error"
+            title={passwdError}
+            style={{ display: "block" }}
+          />
+        ) : null}
       </div>
     </div>
-    {(onChangeRememberMe || resetPasswordUrl) ? (
+    {onChangeRememberMe || resetPasswordUrl ? (
       <div className="c-checkbox">
         {onChangeRememberMe ? (
           <Fragment>

@@ -1,58 +1,54 @@
-import React, { PureComponent, Fragment } from "react";
-import { injectState } from "freactal";
+import React, { Fragment, useContext, useState, useCallback } from "react";
+import { propOr } from "ramda";
 import isNode from "detect-node";
 import { COMMENT_BODY_MAX } from "notabug-peer";
+import { NabContext } from "NabContext";
 
-export class ChatInput extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = { msg: "" };
-  }
+export const ChatInput = ({ topic }) => {
+  const { me, api } = useContext(NabContext);
+  const [body, setBody] = useState("");
+  const alias = propOr("anon", "alias", me);
+  const chatName = `t/${topic} public`;
 
-  render() {
-    const user = this.props.state.notabugUser;
-    const chatName = `t/${this.props.topic} public`;
+  const onSend = useCallback(
+    evt => {
+      evt && evt.preventDefault();
+      if (!body || !body.trim() || body.length > COMMENT_BODY_MAX) return;
+      api.chat({ topic, body });
+      setBody("");
+    },
+    [api, body, topic]
+  );
 
-    return (
-      <form
-        className="chat-input"
-        onSubmit={this.onSend.bind(this)}
-      >
-        {isNode ? (
-          <noscript>
-            <input
-              type="text"
-              placeholder="chatting requires javascript"
-              disabled
-              readOnly
-            />
-            <button disabled className="send-btn" type="submit">send</button>
-          </noscript>
-        ) : (
-          <Fragment>
-            <input
-              type="text"
-              placeholder={`speaking as ${user ? user : "anon"} in ${chatName}`}
-              value={this.state.msg}
-              onChange={e => this.setState({ msg: e.target.value })}
-            />
-            <button className="send-btn" type="submit">send</button>
-          </Fragment>
-        )}
-      </form>
-    );
-  }
+  const onChangeBody = useCallback(evt => setBody(evt.target.value), []);
 
-  onSend(e) {
-    e.preventDefault();
-    if (!this.state.msg || !this.state.msg.trim() || this.state.msg.length > COMMENT_BODY_MAX) return;
-    const body = this.state.msg;
-    this.setState({ msg: "" });
-    this.props.state.notabugApi.chat({
-      topic: this.props.topic,
-      body
-    });
-  }
-}
-
-export default injectState(ChatInput);
+  return (
+    <form className="chat-input" onSubmit={onSend}>
+      {isNode ? (
+        <noscript>
+          <input
+            type="text"
+            placeholder="chatting requires javascript"
+            disabled
+            readOnly
+          />
+          <button disabled className="send-btn" type="submit">
+            send
+          </button>
+        </noscript>
+      ) : (
+        <Fragment>
+          <input
+            type="text"
+            placeholder={`speaking as ${alias ? alias : "anon"} in ${chatName}`}
+            value={body}
+            onChange={onChangeBody}
+          />
+          <button className="send-btn" type="submit">
+            send
+          </button>
+        </Fragment>
+      )}
+    </form>
+  );
+};

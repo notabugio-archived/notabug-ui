@@ -5,6 +5,7 @@ import { UserIdLink, AuthorLink, UserInfo, LoginFormSide } from "Auth";
 import { SidebarTitlebox } from "Page/SidebarTitlebox";
 import { SrHeaderArea } from "Page/SrHeaderArea";
 import { NavTab } from "Page/NavTab";
+import { SidebarUserList } from "Auth/SidebarUserList";
 
 export const PageTemplate = ({
   match: { params: { identifier="all" }={} }={},
@@ -98,26 +99,8 @@ export const PageTemplate = ({
               />
             </React.Fragment>
           ) : null}
-          {censors && censors.length ? (
-            <div className="spacer">
-              <div className="sidecontentbox">
-                <div className="title"><h1>CENSORS</h1></div>
-                <ul className="content">
-                  {censors.map(userId => <li><UserIdLink {...{ userId }} /></li>)}
-                </ul>
-              </div>
-            </div>
-          ) : null}
-          {curators && curators.length ? (
-            <div className="spacer">
-              <div className="sidecontentbox">
-                <div className="title"><h1>CURATORS</h1></div>
-                <ul className="content">
-                  {curators.map(userId => <li><UserIdLink {...{ userId }} /></li>)}
-                </ul>
-              </div>
-            </div>
-          ) : null}
+          {curators.length ? <SidebarUserList title="CURATORS" ids={curators} /> : null}
+          {censors.length ? <SidebarUserList title="CENSORS" ids={censors} /> : null}
         </React.Fragment>
       )}
     </div>

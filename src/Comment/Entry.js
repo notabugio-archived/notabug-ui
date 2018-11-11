@@ -1,15 +1,15 @@
 import React, { Fragment } from "react";
-import { injectState } from "freactal";
 import { ThingCommentEntry as SnewThingCommentEntry } from "snew-classic-ui";
 import { Link } from "utils";
 import { AuthorLink } from "Auth";
-import { votingItemProvider } from "Voting";
 
-export const ThingCommentEntryBase = ({
-  state: { isVotingUp, isVotingDown },
-  effects,
+export const ThingCommentEntry = ({
   ups,
   downs,
+  isVotingUp,
+  isVotingDown,
+  onVoteUp,
+  onVoteDown,
   ...props
 }) => (
   <SnewThingCommentEntry
@@ -31,9 +31,7 @@ export const ThingCommentEntryBase = ({
       </Fragment>
     )}
     isVoting={isVotingUp || isVotingDown}
-    onVoteUp={effects.onVoteUp}
-    onVoteDown={effects.onVoteDown}
+    onVoteUp={onVoteUp}
+    onVoteDown={onVoteDown}
   />
 );
-
-export const ThingCommentEntry = votingItemProvider(injectState(ThingCommentEntryBase));

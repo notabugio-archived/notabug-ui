@@ -1,95 +1,106 @@
-import React, { PureComponent } from "react";
-import { pathOr, compose } from "ramda";
+import React, { useState, useEffect, useCallback } from "react";
+import { propOr, compose } from "ramda";
 import Spinner from "react-spinkit";
 import { COMMENT_BODY_MAX } from "notabug-peer";
 import { ThingComment } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify } from "utils";
-import { NestedListing } from "Listing/Nested";
-import { ThingCommentEntry } from "./Entry";
+import { NestedListing } from "Comment/NestedListing";
+import { ThingCommentEntry as Entry } from "./Entry";
 
-export class Comment extends PureComponent {
-  constructor(props) {
-    super(props);
-    const body = props.item && props.item.body || "";
-    const defaultCollapsed = ((body.length > 300) && props.collapseLarge) ? true : false;
-    const { collapsed=false } = props;
-    this.state = { collapsed: collapsed || defaultCollapsed };
-    this.onToggleExpand = this.onToggleExpand.bind(this);
-  }
+const MarkdownLoading = () => (
+  <div className="usertext-body may-blank-within md-container">
+    <div className="md">
+      <Spinner name="ball-beat" color="#cee3f8" />
+      <div className="clearleft" />
+    </div>
+  </div>
+);
 
-  componentWillReceiveProps(nextProps) {
-    if (nextProps.collapsed !== this.props.collapsed) {
-      this.setState({ collapsed: nextProps.collapsed });
-    }
-  }
+export const Comment = ({
+  id,
+  topic,
+  ups = 0,
+  downs = 0,
+  disableChildren,
+  fetchParent,
+  item: propItem,
+  parentItem: propParentItem,
+  isShowingReply,
+  collapsed: collapsedProp = false,
+  ThingCommentEntry = Entry,
+  listingParams,
+  replyTree,
+  isVotingUp,
+  isVotingDown,
+  onVoteUp,
+  onVoteDown,
+  onShowReply,
+  onHideReply
+}) => {
+  const [collapsed, setCollapsed] = useState(collapsedProp);
+  const item = propItem || { body: "..." };
+  const parentItem = propParentItem || (fetchParent ? { title: "..." } : null);
+  let parentParams = {};
 
-  render() {
-    const { id, ups=0, downs=0, disableChildren, fetchParent } = this.props;
-    const item = this.props.item || {
-      body: "loading...",
-      timestamp: this.props.state.notabugApi.getTimestamp(this.props.id)
-    };
-
-    const parentParams = fetchParent ? {
+  if (fetchParent) {
+    parentParams = {
       fetchParent: true,
       showLink: true,
-      link_title: pathOr("", ["parentItem", "title"], this.props),
-      link_permalink: compose(
-        ({ topic, title }) => {
-          if (!item.opId || !topic || !title) return;
-          return `/t/${topic}/comments/${item.opId}/${slugify(title.toLowerCase())}`;
-        },
-        pathOr({}, ["parentItem"])
-      )(this.props),
-      link_author: pathOr(null, ["parentItem", "author"], this.props),
-      link_author_fullname: pathOr(null, ["parentItem", "authorId"], this.props),
-      subreddit: pathOr(null, ["parentItem", "topic"], this.props),
-    } : {};
-
-    return (
-      <ThingComment
-        ThingCommentEntry={ThingCommentEntry}
-        Markdown={this.props.item ? Markdown : () => (
-          <div className="usertext-body may-blank-within md-container">
-            <div className="md">
-              <Spinner
-                name="ball-beat"
-                color="#cee3f8"
-              />
-              <div className="clearleft" />
-            </div>
-          </div>
-        )}
-        Timestamp={Timestamp}
-        Link={Link}
-        NestedListing={disableChildren ? () => null : NestedListing}
-        {...this.props}
-        id={id}
-        opId={item.opId}
-        body={item.body ? item.body.slice(0, COMMENT_BODY_MAX) : item.body}
-        author={item.author}
-        author_fullname={item.authorId}
-        siteprefix="t"
-        name={id}
-        parent_id={item.replyToId}
-        topic={this.props.topic || item.topic}
-        created={item.timestamp / 1000}
-        created_utc={item.timestamp / 1000}
-        ups={ups}
-        downs={downs}
-        votableId={id}
-        showLink
-        {...parentParams}
-        scoreTooltip={`+${ups} / -${downs}`}
-        collapsed={this.state.collapsed}
-        showReplyForm={this.props.isShowingReply}
-        onToggleExpand={this.onToggleExpand}
-      />
-    );
+      link_title: propOr("", "title", parentItem),
+      link_permalink: compose(({ topic, title }) => {
+        if (!item.opId || !topic || !title) return;
+        return `/t/${topic}/comments/${item.opId}/${slugify(
+          title.toLowerCase()
+        )}`;
+      })(parentItem),
+      link_author: propOr(null, "author", parentItem),
+      link_author_fullname: propOr(null, "authorId", parentItem),
+      subreddit: propOr(null, "topic", parentItem)
+    };
   }
 
-  onToggleExpand = (e) => {
-    e && e.preventDefault();
-    this.setState(({ collapsed }) => ({ collapsed: !collapsed }));
-  };
-}
+  const onToggleExpand = useCallback(() => setCollapsed(!collapsed), [
+    collapsed
+  ]);
+
+  useEffect(() => setCollapsed(collapsedProp), [collapsedProp]);
+
+  return (
+    <ThingComment
+      {...{
+        ...parentParams,
+        ThingCommentEntry,
+        Timestamp,
+        Link,
+        id,
+        listingParams,
+        replyTree,
+        ups,
+        downs,
+        collapsed,
+        isVotingUp,
+        isVotingDown,
+        onToggleExpand,
+        onVoteUp,
+        onVoteDown,
+        onShowReply,
+        onHideReply
+      }}
+      Markdown={propItem ? Markdown : MarkdownLoading}
+      NestedListing={disableChildren ? () => null : NestedListing}
+      opId={item.opId}
+      body={item.body ? item.body.slice(0, COMMENT_BODY_MAX) : item.body}
+      author={item.author}
+      author_fullname={item.authorId}
+      siteprefix="t"
+      name={id}
+      parent_id={item.replyToId}
+      topic={topic || item.topic}
+      created={item.timestamp / 1000}
+      created_utc={item.timestamp / 1000}
+      showLink
+      scoreTooltip={`+${ups} / -${downs}`}
+      showReplyForm={isShowingReply}
+    />
+  );
+};

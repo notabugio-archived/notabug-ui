@@ -1,11 +1,18 @@
-import React, { PureComponent } from "react";
-import debounce from "lodash/debounce";
-import { injectState } from "freactal";
-import { withRouter } from "react-router-dom";
+import React, {
+  useState,
+  useContext,
+  useMemo,
+  useCallback,
+  useEffect
+} from "react";
+import { ZalgoPromise as Promise } from "zalgo-promise";
+import { propOr } from "ramda";
 import { Loading } from "utils";
+import { NabContext, useScope } from "NabContext";
 import { Submission } from "Submission";
 import { Comment } from "Comment";
 import { ChatMsg } from "Chat/ChatMsg";
+import { useVotable } from "Voting";
 
 const components = {
   submission: Submission,
@@ -13,98 +20,157 @@ const components = {
   chatmsg: ChatMsg
 };
 
-class ThingBase extends PureComponent {
-  constructor(props) {
-    super(props);
-    const { data, expanded = false } = props;
-    const nab = props.state.notabugApi;
-    const scope = nab.scope;
-    const scores = nab.queries.thingScores.now(scope, props.id, `~${props.listingParams.indexer}`) ||
-      { up: 0, down: 0, score: 0, comment: 0 };
-    const item = data || nab.queries.thingData.now(scope, props.id);
-    const parentItem = props.fetchParent && item && item.opId
-      ? nab.queries.thingData.now(scope, item.opId) : null;
-    this.scope = scope;
-    if (props.realtime) scope.realtime();
-    this.state = {item, parentItem, scores, expanded, isShowingReply: false };
-    this.onRefresh = debounce(() => this.onUpdate(), 250);
-  }
+export const Thing = React.memo(
+  ({
+    id,
+    data,
+    topic,
+    listingParams,
+    fetchParent,
+    rank,
+    disableChildren,
+    replyTree,
+    hideReply = false,
+    expanded: expandedProp = false,
+    Loading: LoadingComponent = Loading,
+    onDidUpdate
+  }) => {
+    const { api, myContent } = useContext(NabContext);
+    const scope = useScope();
+    const { indexer } = listingParams;
+    const isMine = !!myContent[id];
+    const { initialScores, initialItem, initialParentItem } = useMemo(() => {
+      const initialScores = api.queries.thingScores.now(scope, indexer, id) || {
+        up: 0,
+        down: 0,
+        score: 0,
+        comment: 0
+      };
+      const initialItem = data || api.queries.thingData.now(scope, id);
+      const initialParentItem =
+        fetchParent && initialItem && initialItem.opId
+          ? api.queries.thingData.now(scope, initialItem.opId)
+          : null;
+      return { initialScores, initialItem, initialParentItem };
+    }, []);
+    const [scores, setScores] = useState(initialScores);
+    const [item, setItem] = useState(initialItem);
+    const [parentItem, setParentItem] = useState(initialParentItem);
+    const [isShowingReply, setIsShowingReply] = useState(false);
+    const [expanded, setExpanded] = useState(expandedProp);
+    const { isVotingUp, isVotingDown, onVoteUp, onVoteDown } = useVotable({
+      id
+    });
 
-  componentDidMount = () => { this.onFetchItem(); this.onUpdate(); this.onSubscribe(); };
-  componentWillUnmount = () => this.onUnsubscribe();
-  componentWillReceiveProps = (nextProps) =>
-    (nextProps.realtime && !this.props.realtime) && this.scope.realtime();
+    const body = propOr("", "body", item) || "";
+    const lineCount = body.length / 100 + body.split("\n").length - 1;
+    const collapseThreshold = (lineCount - 4) / 2.0;
 
-  getCollapseThreshold = () => {
-    const body = this.state.item && this.state.item.body || "";
-    const lines = (body.length / 100) + (body.split("\n").length - 1);
-    return lines - 4;
-  };
+    const onToggleExpando = useCallback(
+      evt => {
+        evt && evt.preventDefault();
+        expanded ? setExpanded(false) : setExpanded(true);
+      },
+      [expanded]
+    );
 
-  render() {
-    const {
-      id, isMine, rank, hideReply=false, Loading: LoadingComponent = Loading, ...props
-    } = this.props;
-    const { item, parentItem, scores, expanded, isShowingReply } = this.state;
+    const onShowReply = useCallback(evt => {
+      evt && evt.preventDefault();
+      setIsShowingReply(true);
+    }, []);
+
+    const onHideReply = useCallback(evt => {
+      evt && evt.preventDefault();
+      setIsShowingReply(false);
+    }, []);
+
+    const doFetchParentItem = useCallback(
+      opId => {
+        if (parentItem) return Promise.resolve(parentItem);
+        return api.queries.thingData(scope, opId).then(updatedItem => {
+          if (!updatedItem) return;
+          setParentItem(updatedItem);
+        });
+      },
+      [parentItem]
+    );
+
+    const doFetchItem = useCallback(
+      () =>
+        (item ? Promise.resolve(item) : api.queries.thingData(scope, id)).then(
+          updatedItem => {
+            if (!updatedItem) return;
+            const opId = propOr(null, "opId", updatedItem);
+            setItem(updatedItem);
+            return opId && doFetchParentItem(opId);
+          }
+        ),
+      [item, id, fetchParent]
+    );
+
+    const doUpdateScores = useCallback(
+      () => {
+        api.queries
+          .thingScores(scope, indexer, id)
+          .then(scores => scores && setScores(scores));
+      },
+      [scope, id, indexer]
+    );
+
+    useEffect(
+      () => {
+        doUpdateScores();
+        doFetchItem();
+        scope.on(doUpdateScores);
+        return scope.off(doUpdateScores);
+      },
+      [id, scope, doUpdateScores]
+    );
+
+    useEffect(() => {
+      onDidUpdate && onDidUpdate();
+    }, [item, parentItem]);
+
     const score = scores.score || 0;
-    const ThingComponent = (item ? components[item.kind] : null);
-    const collapseThreshold = this.getCollapseThreshold();
-    const collapsed = !isMine && !!((collapseThreshold!==null && (score < collapseThreshold)));
+    const ThingComponent = item ? components[item.kind] : null;
+    const collapsed =
+      !isMine && !!(collapseThreshold !== null && score < collapseThreshold);
     if (item && !ThingComponent) return null;
+
     const thingProps = {
-      ...props,
+      listingParams,
       ups: scores.up,
       downs: scores.down,
+      score: scores.score,
       comments: scores.comment,
-      rank, id, item, parentItem,
-      expanded, collapsed, collapseThreshold,
-      isShowingReply, hideReply, isMine,
-      scope: this.scope,
-      onShowReply: !props.disableChildren && this.onShowReply,
-      onHideReply: this.onHideReply,
-      onToggleExpando: this.onToggleExpando
+      rank,
+      id,
+      item,
+      topic,
+      fetchParent,
+      parentItem,
+      replyTree,
+      expanded,
+      collapsed,
+      collapseThreshold,
+      isShowingReply,
+      hideReply,
+      isMine,
+      isVotingUp,
+      isVotingDown,
+      onVoteUp,
+      onVoteDown,
+      onShowReply: disableChildren ? null : onShowReply,
+      onHideReply,
+      onToggleExpando
     };
-    const renderComponent = ({ isVisible }) => !item
-      ? <LoadingComponent {...thingProps} isVisible={isVisible} />
-      : <ThingComponent {...thingProps} isVisible={isVisible} />;
+
+    const renderComponent = ({ isVisible }) =>
+      !item ? (
+        <LoadingComponent {...thingProps} isVisible={isVisible} />
+      ) : (
+        <ThingComponent {...thingProps} isVisible={isVisible} />
+      );
     return renderComponent({ isVisible: true });
   }
-
-  onToggleExpando = () => this.setState(({ expanded }) => ({ expanded: !expanded }));
-  onSubscribe = () => this.scope.on(this.onRefresh);
-  onUnsubscribe = () => this.scope.off(this.onRefresh);
-  onUpdated = () => this.props.onDidUpdate && this.props.onDidUpdate();
-  onUpdate = () => {
-    const nab = this.props.state.notabugApi;
-    nab.queries.thingScores(this.scope, this.props.id, `~${this.props.listingParams.indexer}`)
-      .then(scores => scores && this.setState({ scores }));
-    if (!this.state.item) this.onFetchItem();
-  }
-
-  onFetchItem = () => {
-    const nab = this.props.state.notabugApi;
-    return nab.queries.thingData(this.scope, this.props.id).then(item =>
-      this.setState({ item }, () =>
-        (item && item.opId && this.props.fetchParent) && this.onFetchOpItem()))
-      .then(() => this.onUpdated());
-  };
-
-  onFetchOpItem = () => {
-    const nab = this.props.state.notabugApi;
-    return nab.queries.thingData(this.scope, this.state.item.opId)
-      .then(parentItem => this.setState({ parentItem }))
-      .then(() => this.onUpdated());
-  };
-
-  onShowReply = (e) => {
-    e && e.preventDefault();
-    this.setState({ isShowingReply: true });
-  };
-
-  onHideReply = (e) => {
-    e && e.preventDefault();
-    this.setState({ isShowingReply: false });
-  };
-}
-
-export const Thing = withRouter(injectState(ThingBase));
+);

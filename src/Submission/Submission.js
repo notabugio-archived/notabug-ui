@@ -1,13 +1,9 @@
 import React, { Fragment } from "react";
-import { Helmet } from "react-helmet";
+// import { Helmet } from "react-helmet";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify } from "utils";
 import { Expando, getExpando } from "./Expando";
-import { compose } from "ramda";
-import { injectState } from "freactal";
-import { withRouter } from "react-router-dom";
-import { submissionSummaryProvider } from "./state";
 import { AuthorLink } from "Auth";
 // import { SaveThingButton } from "SaveThing";
 
@@ -17,6 +13,7 @@ export const Submission = ({
   id,
   ups,
   downs,
+  score,
   comments,
   expanded,
   rank,
@@ -24,25 +21,47 @@ export const Submission = ({
   isDetail,
   onToggleExpando,
   item,
-  state: { isVotingUp, isVotingDown /*, notabugUser*/ },
-  effects: { onVoteUp, onVoteDown }
+  isVotingUp,
+  isVotingDown,
+  onVoteUp,
+  onVoteDown
 }) => {
+  let scoreDisp = null;
+  if (score || score === 0) scoreDisp = (ups - downs) || 0;
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
   const urlInfo = item.url ? urllite(item.url) : {};
-  const permalink = `/t/${item.topic || "all"}/comments/${id}/` + slugify(item.title.toLowerCase());
-  const domain = item.url ? (urlInfo.host || "").replace(/^www\./, "")
-    : item.topic ? `self.${item.topic}` : null;
-  const { expandoType, image, video, iframe, EmbedComponent } = getExpando(item, domain, urlInfo);
+  const permalink =
+    `/t/${item.topic || "all"}/comments/${id}/` +
+    slugify(item.title.toLowerCase());
+  const domain = item.url
+    ? (urlInfo.host || "").replace(/^www\./, "")
+    : item.topic
+    ? `self.${item.topic}`
+    : null;
+  const { expandoType, image, video, iframe, EmbedComponent } = getExpando(
+    item,
+    domain,
+    urlInfo
+  );
 
   return (
     <Fragment>
-      {isViewing ? (
+      {/*isViewing ? (
         <Helmet>
           <title>{item.title}</title>
         </Helmet>
-      ) : null}
+      ) : null*/}
       <ThingLink
-        {...{ Markdown, Expando, Timestamp, Link, EmbedComponent, id, domain, permalink }}
+        {...{
+          Markdown,
+          Expando,
+          Timestamp,
+          Link,
+          EmbedComponent,
+          id,
+          domain,
+          permalink
+        }}
         {...{ rank, onVoteUp, onVoteDown, expandoType, image, video, iframe }}
         expanded={expanded || (isDetail && !item.url)}
         ups={ups || 0}
@@ -62,20 +81,22 @@ export const Submission = ({
         brand_safe={true}
         siteprefix={"t"}
         is_self={!item.url}
-        score={ups-downs || 0}
+        score={scoreDisp}
         num_comments={comments}
         isVoting={isVotingUp || isVotingDown}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
         linkTarget="_blank"
         scoreTooltip={`+${ups} / -${downs}`}
-        preTagline={(
+        preTagline={
           <span className="individual-vote-counts">
-            <span className="score likes" title="upvotes">+{ups}</span>
-            {" "}
-            <span className="score dislikes" title="downvotes">-{downs}</span>
-            {" "}
+            <span className="score likes" title="upvotes">
+              +{ups}
+            </span>{" "}
+            <span className="score dislikes" title="downvotes">
+              -{downs}
+            </span>{" "}
           </span>
-        )}
+        }
         /*
         postButtons={notabugUser ? (
           <Fragment>
@@ -91,4 +112,4 @@ export const Submission = ({
   );
 };
 
-export default compose(withRouter, submissionSummaryProvider, injectState)(Submission);
+export default Submission;

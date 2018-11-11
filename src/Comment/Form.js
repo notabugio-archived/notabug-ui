@@ -1,58 +1,54 @@
-import React, { PureComponent } from "react";
-import { injectState } from "freactal";
+import React, { useContext, useState, useCallback } from "react";
+import { NabContext } from "NabContext";
 import { COMMENT_BODY_MAX } from "notabug-peer";
 import { CommentForm as SnewCommentForm } from "snew-classic-ui";
 import { JavaScriptRequired } from "utils";
 
-export class CommentForm extends PureComponent {
-  constructor(props) {
-    super(props);
-    this.state = { body: "", isSaving: false };
-  }
+export const CommentForm = ({
+  id,
+  replyToId: replyToIdProp,
+  opId,
+  topic,
+  onHideReply
+}) => {
+  const { api, onMarkMine } = useContext(NabContext);
+  const [body, setBody] = useState("");
+  const [isSaving, setIsSaving] = useState(false);
+  const replyToId = replyToIdProp || opId;
+  let commentError = null;
 
-  render() {
-    const { id, opId, ...props } = this.props;
-    const { isSaving, body } = this.state;
-    return isSaving ? null : (
-      <JavaScriptRequired>
-        <SnewCommentForm
-          {...props}
-          body={body}
-          autoFocus={id !== opId}
-          commentError={body && this.getCommentError()}
-          onChangeBody={this.onChangeBody}
-          onSubmit={this.onSave}
-          onCancel={this.props.onHideReply}
-        />
-      </JavaScriptRequired>
-    );
-  }
+  if (body.length > COMMENT_BODY_MAX)
+    commentError = `this is too long (max: ${COMMENT_BODY_MAX})`;
+  if (!body.trim().length) commentError = "a body is required";
 
-  getCommentError = () => {
-    const { body } = this.state;
-    if (body.length > COMMENT_BODY_MAX) return `this is too long (max: ${COMMENT_BODY_MAX})`;
-    if (!body.trim().length) return "a body is required";
-    return null;
-  };
-  onChangeBody = e => this.setState({ body: e.target.value });
-  onSave = (e) => {
-    const {
-      props: { id: replyToId, opId, topic, effects, state: { notabugApi } },
-      state: { body, isSaving }
-    } = this;
-    e && e.preventDefault();
-    if (isSaving || this.getCommentError()) return;
+  const onChangeBody = useCallback(evt => setBody(evt.target.value), []);
 
-    this.setState({ isSaving: true });
-    return notabugApi.comment({ body, opId, topic, replyToId })
-      .then(({ id }) => {
-        effects.onNotabugMarkMine(id);
-        notabugApi.scope.realtime();
-      }).then(() => {
-        this.setState({ body: "", isSaving: false });
-        this.props.onHideReply && this.props.onHideReply();
+  const onSave = useCallback(
+    evt => {
+      evt && evt.preventDefault();
+      if (isSaving || commentError) return;
+      setIsSaving(true);
+      return api.comment({ body, opId, topic, replyToId }).then(({ id }) => {
+        onMarkMine(id);
+        setBody("");
+        setIsSaving(false);
+        onHideReply && onHideReply();
       });
-  };
-}
+    },
+    [body, opId, topic, replyToId, isSaving, commentError]
+  );
 
-export default injectState(CommentForm);
+  if (isSaving) return null;
+  return (
+    <JavaScriptRequired>
+      <SnewCommentForm
+        body={body}
+        autoFocus={id !== opId}
+        commentError={body && commentError}
+        onChangeBody={onChangeBody}
+        onSubmit={onSave}
+        onCancel={onHideReply}
+      />
+    </JavaScriptRequired>
+  );
+};

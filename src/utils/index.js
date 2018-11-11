@@ -5,6 +5,7 @@ export { default as Dropdown } from "./Dropdown";
 export { Link } from "./Link";
 export { Loading } from "./Loading";
 export { Markdown } from "./Markdown";
-export { default as ScrollToTop } from "./ScrollToTop";
+export { ScrollToTop } from "./ScrollToTop";
 export { Timestamp } from "./Timestamp";
+export { injectHook } from "./injectHook";
 export { default as slugify } from "./slugify";

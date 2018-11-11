@@ -1,14 +1,13 @@
-/* globals Gun */
 import { curry } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 
-export const signup = curry((peer, username, password, opts) => new Promise((ok, fail) => {
+export const signup = curry((peer, username, password, opts={}) => new Promise((ok, fail) => {
   if (peer && peer.gun && peer.gun.user) {
     const user = peer.user();
-    user.create(username, password,
+    Promise.resolve(user.create(username, password,
       (ack) => {
         if (ack.err) {
-          fail(ack.err)
+          fail(ack.err);
           user.leave();
           peer.gun.user().leave();
         } else {
@@ -16,7 +15,7 @@ export const signup = curry((peer, username, password, opts) => new Promise((ok,
         }
       },
       opts
-    );
+    ));
   } else {
     fail("SEA is not loaded");
   }

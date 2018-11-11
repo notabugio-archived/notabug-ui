@@ -1,3 +1,66 @@
-export { default as Listing } from "./Listing";
-export { NestedListing } from "./Nested";
+import { useState, useMemo, useContext, useEffect, useCallback } from "react";
+import { assoc, propOr } from "ramda";
+import qs from "query-string";
+import { ZalgoPromise as Promise } from "zalgo-promise";
+import { NabContext, useScope } from "NabContext";
+import { SOUL_DELIMETER } from "notabug-peer/util";
 export { Thing } from "./Thing";
+
+const { all } = Promise;
+
+export const useListing = ({ listingParams }) => {
+  const { api } = useContext(NabContext);
+  const { soul } = listingParams;
+  const scope = useScope();
+  const [state, setState] = useState(useMemo(() => api.queries.listing.now(scope, soul), [soul]));
+  const update = useCallback(() => setState(api.queries.listing.now(scope, soul)), [soul]);
+  const createdAt = parseInt(propOr("", "createdAt", state));
+  const includeRanksString = propOr("", "includeRanks", state);
+  const isChatString = propOr("", "isChat", state);
+  const includeRanks = includeRanksString && includeRanksString !== "false" && includeRanksString !== "0";
+  const isChat = !!(isChatString && isChatString !== "false" && isChatString !== "0");
+  const { ids, tabs, curators, censors } = useMemo(() => ({
+    ids: propOr("", "ids", state).split("+").filter(x => !!x),
+    tabs: propOr("", "tabs", state).split(SOUL_DELIMETER).filter(x => !!x),
+    curators: propOr("", "curators", state).split(SOUL_DELIMETER).filter(x => !!x),
+    censors: propOr("", "censors", state).split(SOUL_DELIMETER).filter(x => !!x)
+  }), [state]);
+
+  useEffect(() => {
+    update();
+    scope.on(update);
+    return () => scope.off(update);
+  }, [update]);
+
+  return { ...(state || {}), ids, tabs, curators, censors, includeRanks, isChat, createdAt };
+};
+
+export const useLimitedListing = ({ ids: allIds, limit: limitProp, listingParams, location: { search } }) => {
+  const query = qs.parse(search, { ignoreQueryPrefix: true });
+  const limit = parseInt(limitProp, 10) || parseInt(query.limit, 10) || 25;
+  const count = parseInt(listingParams.count, 10) || 0;
+  const ids = allIds.slice(count, count+limit);
+  return { ids, limit, count };
+};
+
+export const useListingContent = ({ ids }) => {
+  const { api } = useContext(NabContext);
+  const scope = useScope();
+  const [content, setContent] = useState({});
+
+  const replyTree = useMemo(() => ids.reduce((r, id) => {
+    const data = content[id];
+    const { replyToId, opId } = data || {};
+    const parentId = replyToId || opId;
+    if (!parentId) return r;
+    const replies = r[parentId] = r[parentId] || {};
+    replies[id] = data;
+    return r;
+  }, {}), [content]);
+
+  useEffect(() => {
+    all(ids.map(id => api.queries.thingData(scope, id).then(data => setContent(assoc(id, data)))));
+  }, [ids]);
+
+  return { replyTree, content };
+};

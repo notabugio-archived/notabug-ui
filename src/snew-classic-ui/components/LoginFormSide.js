@@ -30,7 +30,7 @@ const LoginFormSide = ({
         tabIndex={1}
         type="text"
         defaultValue={username}
-        onChange={e => onChangeUsername(e.target.value)}
+        onChange={onChangeUsername}
       />
       <input
         name="passwd"
@@ -38,7 +38,7 @@ const LoginFormSide = ({
         tabIndex={1}
         type="password"
         defaultValue={passwd}
-        onChange={e => onChangePasswd(e.target.value)}
+        onChange={onChangePasswd}
       />
       {passwdError ? (
         <div className="status error" style={{ display: "block" }} >

@@ -1,22 +1,23 @@
-import React from "react";
+import React, { useContext } from "react";
 import qs from "qs";
-import { injectState } from "freactal";
+import { NabContext } from "NabContext";
 
-const listingComponent = (Component, getParams) => injectState(props => {
+const listingComponent = (Component, getParams) => props => {
+  const { me } = useContext(NabContext);
+  const userId = me && me.pub;
+
   if (!getParams) return <Component {...props} />;
   const {
-    state: { notabugUserId: userId },
     match: { params },
-    location: { search },
+    location: { search }
   } = props;
   const query = qs.parse(search, { ignoreQueryPrefix: true });
   const listingParams = getParams({ params, query, userId });
-  return <Component {...{ ...props, listingParams }} key={userId || "anon"}/>;
-});
+  return <Component {...{ ...props, listingParams }} key={userId || "anon"} />;
+};
 
 export const toRoute = ({ component, getListingParams, ...other }) => ({
   ...other,
   getListingParams,
   component: listingComponent(component, getListingParams)
 });
-

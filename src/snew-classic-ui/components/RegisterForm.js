@@ -1,7 +1,7 @@
 import React from "react";
 
 const RegisterForm = ({
-  formAction="/post/reg",
+  formAction = "/post/reg",
   username,
   usernameError,
   passwd,
@@ -9,7 +9,7 @@ const RegisterForm = ({
   passwd2,
   passwd2Error,
   email,
-  rememberMe=false,
+  rememberMe = false,
   onChangeUsername,
   onChangePasswd,
   onChangePasswd2,
@@ -26,11 +26,7 @@ const RegisterForm = ({
     onSubmit={onSignUp}
   >
     <input name="op" type="hidden" defaultValue="reg" />
-    <input
-      name="dest"
-      type="hidden"
-      defaultValue="/"
-    />
+    <input name="dest" type="hidden" defaultValue="/" />
     <div className="c-form-group">
       <label className="screenreader-only" htmlFor="user_reg">
         username:
@@ -47,12 +43,16 @@ const RegisterForm = ({
         tabIndex={2}
         type="text"
         defaultValue={username}
-        onChange={e => onChangeUsername(e.target.value)}
+        onChange={onChangeUsername}
       />
       <div className="c-form-control-feedback-wrapper">
-        {usernameError
-          ? <span className="c-form-control-feedback c-form-control-feedback-error" title={usernameError}  style={{ display: "block" }} />
-          : null}
+        {usernameError ? (
+          <span
+            className="c-form-control-feedback c-form-control-feedback-error"
+            title={usernameError}
+            style={{ display: "block" }}
+          />
+        ) : null}
       </div>
     </div>
     <div className="c-form-group">
@@ -68,12 +68,16 @@ const RegisterForm = ({
         tabIndex={2}
         type="password"
         defaultValue={passwd}
-        onChange={e => onChangePasswd(e.target.value)}
+        onChange={onChangePasswd}
       />
       <div className="c-form-control-feedback-wrapper">
-        {passwdError
-          ? <span className="c-form-control-feedback c-form-control-feedback-error" title={passwdError} style={{ display: "block" }} />
-          : null}
+        {passwdError ? (
+          <span
+            className="c-form-control-feedback c-form-control-feedback-error"
+            title={passwdError}
+            style={{ display: "block" }}
+          />
+        ) : null}
       </div>
     </div>
     <div className="c-form-group">
@@ -88,12 +92,16 @@ const RegisterForm = ({
         tabIndex={2}
         type="password"
         defaultValue={passwd2}
-        onChange={e => onChangePasswd2(e.target.value)}
+        onChange={onChangePasswd2}
       />
       <div className="c-form-control-feedback-wrapper">
-        {passwd2Error
-          ? <span className="c-form-control-feedback c-form-control-feedback-error" title={passwd2Error} style={{ display: "block" }} />
-          : null}
+        {passwd2Error ? (
+          <span
+            className="c-form-control-feedback c-form-control-feedback-error"
+            title={passwd2Error}
+            style={{ display: "block" }}
+          />
+        ) : null}
       </div>
     </div>
     {onChangeEmail ? (
@@ -110,7 +118,7 @@ const RegisterForm = ({
           placeholder="email (optional)"
           tabIndex={2}
           defaultValue={email}
-          onChange={e => onChangeEmail(e.target.value)}
+          onChange={onChangeEmail}
           type="text"
         />
         <div className="c-form-control-feedback-wrapper" />
@@ -124,7 +132,7 @@ const RegisterForm = ({
           tabIndex={2}
           type="checkbox"
           checked={rememberMe}
-          onChange={e => onChangeRememberMe(e.target.checked)}
+          onChange={onChangeRememberMe}
         />
         <label htmlFor="rem_reg">remember me</label>
       </div>

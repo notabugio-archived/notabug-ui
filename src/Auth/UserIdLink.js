@@ -1,28 +1,20 @@
-import React from "react";
-import { injectState } from "freactal";
+import React, { useState, useContext, useEffect } from "react";
+import { NabContext } from "NabContext";
 import { AuthorLink } from "./AuthorLink";
 
-class UserIdLinkBase extends React.Component {
-  state = { alias: null };
+export const UserIdLink = ({ userId, alias: aliasProp }) => {
+  const { api } = useContext(NabContext);
+  const [alias, setAlias] = useState(aliasProp);
 
-  constructor(props) {
-    super(props);
-    const nab = props.state.notabugApi;
-    const { userId } = props;
-    nab.gun && nab.gun.get(`~${userId}`).then(user => {
+  useEffect(() => {
+    api.gun && api.gun.get(`~${userId}`).then(user => {
       if (!user) return;
-      this.setState({ alias: user.alias });
+      setAlias(user.alias);
     });
-  }
+  }, [api, userId]);
 
-  render() {
-    const { userId } = this.props;
-    const { alias } = this.state;
-    if (!userId || !alias) return null;
-    return (
-      <AuthorLink author={alias} author_fullname={userId} />
-    );
-  }
-}
-
-export const UserIdLink = injectState(UserIdLinkBase);
+  if (!userId || !alias) return null;
+  return (
+    <AuthorLink author={alias} author_fullname={userId} />
+  );
+};

@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.19.0",
+  "version": "0.20.0",
   "dependencies": {
     "@babel/cli": "^7.1.2",
     "@babel/core": "^7.1.2",
@@ -33,7 +33,6 @@
     "flat": "^4.1.0",
     "forever": "^0.15.3",
     "formidable": "^1.2.1",
-    "freactal": "^2.0.3",
     "gun": "^0.9.99997",
     "gun-file": "^1.0.123",
     "ignore-styles": "^5.0.1",
@@ -43,10 +42,10 @@
     "qs": "^6.5.2",
     "ramda": "^0.25.0",
     "raw-loader": "^0.5.1",
-    "react": "^16.3.2",
+    "react": "^16.7.0-alpha.0",
     "react-chatview": "^0.2.5",
     "react-click-outside": "^3.0.1",
-    "react-dom": "^16.3.2",
+    "react-dom": "^16.7.0-alpha.0",
     "react-helmet": "^5.2.0",
     "react-instagram-embed": "^1.4.0",
     "react-player": "^1.6.4",
@@ -89,6 +88,7 @@
     "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom"
   },
   "devDependencies": {
+    "prettier": "^1.15.2",
     "react-app-rewired": "^1.5.2"
   },
   "browserslist": [

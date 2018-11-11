@@ -5,8 +5,10 @@ import * as SOULS from "./souls";
 const listing = query((scope, soul) => scope.get(soul), "listing");
 
 const getThingScores = query(
-  (scope, thingid, tabulator) =>
-    scope.get(`${SOULS.thing.soul({ thingid })}/votecounts@${tabulator}.`).then(),
+  (scope, tabulator, thingid) =>
+    scope
+      .get(`${SOULS.thing.soul({ thingid })}/votecounts@~${tabulator}.`)
+      .then(),
   "thingScores"
 );
 
@@ -21,10 +23,11 @@ const getThingData = query(
 );
 
 const userMetaQuery = query(
-  (scope, id) => scope.get(id).then(meta => ({
-    userAlias: prop("alias", meta),
-    createdAt: path(["_", ">", "pub"], meta),
-  })),
+  (scope, id) =>
+    scope.get(id).then(meta => ({
+      userAlias: prop("alias", meta),
+      createdAt: path(["_", ">", "pub"], meta)
+    })),
   "userMeta"
 );
 
@@ -34,4 +37,5 @@ export const queries = () => ({
   thingScores: getThingScores,
   userMeta: userMetaQuery
 });
-export const newScope = nab => (opts={}) => getScope({ ...opts, gun: nab.gun });
+export const newScope = nab => (opts = {}) =>
+  getScope({ ...opts, gun: nab.gun });
