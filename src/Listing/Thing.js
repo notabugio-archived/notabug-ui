@@ -109,9 +109,10 @@ export const Thing = React.memo(
     );
 
     const doUpdateScores = useCallback(
-      () => api.queries
-        .thingScores(scope, indexer, id)
-        .then(updatedScores => updatedScores && setScores(updatedScores)),
+      () =>
+        api.queries
+          .thingScores(scope, indexer, id)
+          .then(updatedScores => updatedScores && setScores(updatedScores)),
       [scope, id, indexer]
     );
 
@@ -125,9 +126,12 @@ export const Thing = React.memo(
       [doUpdateScores]
     );
 
-    useEffect(() => {
-      onDidUpdate && onDidUpdate();
-    }, [item, parentItem]);
+    useEffect(
+      () => {
+        onDidUpdate && onDidUpdate();
+      },
+      [item, parentItem]
+    );
 
     const score = scores.score || 0;
     const ThingComponent = item ? components[item.kind] : null;

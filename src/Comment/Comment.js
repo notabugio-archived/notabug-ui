@@ -18,7 +18,7 @@ const MarkdownLoading = () => (
 
 export const Comment = ({
   id,
-  topic,
+  topic: topicProp,
   ups = 0,
   downs = 0,
   disableChildren,
@@ -38,7 +38,8 @@ export const Comment = ({
   onHideReply
 }) => {
   const [collapsed, setCollapsed] = useState(collapsedProp);
-  const item = propItem || { body: "..." };
+  const item = propItem || { body: "...", topic: "whatever" };
+  const { topic } = item || topicProp;
   const parentItem = propParentItem || (fetchParent ? { title: "..." } : null);
   let parentParams = {};
 

@@ -16,7 +16,6 @@ const ThingCommentEntry = ({
   author_flair_css_class,
   subreddit,
   siteprefix="r",
-  authorHref,
   score=null,
   downs,
   score_hidden,
@@ -30,12 +29,10 @@ const ThingCommentEntry = ({
   meta_thing,
   stickied,
   distinguished,
-  controversiality,
   created,
   created_utc,
   link_author,
   link_author_fullname,
-  link_author_href,
   link_title,
   link_permalink,
   showLink=false,
@@ -120,7 +117,7 @@ const ThingCommentEntry = ({
         ) : null}
         {distinguished && (
           <span className="userattrs">
-            [<a className={distinguished} title={distinguished} href={`/r/{subreddit}/about/moderators`}>M</a>]
+            [<a className={distinguished} title={distinguished} href={`/r/${subreddit}/about/moderators`}>M</a>]
             {" "}
           </span>
         )}
@@ -134,7 +131,7 @@ const ThingCommentEntry = ({
           <span className="score unvoted" key="unvoted" title={scoreTooltip}>{score} points</span>,
           <span className="score likes" key="likes" title={scoreTooltip}>{ups} points</span>
         ] : null}{" "}
-        <Timestamp {...{ created, created_utc }} /> 
+        <Timestamp {...{ created, created_utc }} />
         {stickied && (<span className="stickied-tagline" title="stickied">stickied comment</span>)}
         {replyCount !== null ? (
           <a className="numchildren" >
