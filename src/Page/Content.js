@@ -49,7 +49,7 @@ export const Content = React.memo(
     const hasPrev = count - limit >= 0;
     const hasNext = limitedIds.length >= limit;
 
-    const scrollToBottom = useEffect(
+    const scrollToBottom = useCallback(
       () => {
         if (scrollable && scrollable.current && !preventAutoScroll)
           scrollable.current.scrollTop = scrollable.current.scrollHeight;

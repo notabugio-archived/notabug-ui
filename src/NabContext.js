@@ -76,8 +76,8 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       if (!isNode && api.gun) window.notabug = api;
       api.onLogin(didLogin);
 
-      if (RECALL_LOGIN && api.gun.me) {
-        api.gun.me().recall({ sessionStorage: true });
+      if (RECALL_LOGIN && api.gun.user) {
+        api.gun.user().recall({ sessionStorage: true });
         const check = () => {
           const auth = api.isLoggedIn();
           if (api.isLoggedIn()) didLogin(auth);
