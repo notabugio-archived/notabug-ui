@@ -1,3 +1,4 @@
+/* globals RindexedDB */
 import {
   createContext,
   useContext,
@@ -11,14 +12,24 @@ import isNode from "detect-node";
 import "gun/gun";
 import notabugPeer from "notabug-peer";
 
+let INDEXEDDB = false;
 let LOCAL_STORAGE = false;
 let RECALL_LOGIN = false;
 let FORCE_REALTIME = false;
 
 if (!isNode) {
-  LOCAL_STORAGE = !/noLocalStorage/.test(window.location.search);
+  INDEXEDDB = !!window.indexedDB && !/noidb/.test(window.location.search);
+  LOCAL_STORAGE = !!/localStorage/.test(window.location.search);
   FORCE_REALTIME = !/norealtime/.test(window.location.search);
   RECALL_LOGIN = !/norecall/.test(window.location.search);
+  if (LOCAL_STORAGE) INDEXEDDB = false;
+  if (INDEXEDDB) console.log("using indexeddb");
+  if (LOCAL_STORAGE) console.log("using localstorage");
+  require("gun/lib/les.js");
+  require("gun/lib/radix.js");
+  require("gun/lib/radisk.js");
+  require("gun/lib/store.js");
+  require("gun/lib/rindexed.js");
   if (!/nosea/.test(window.location.search)) require("utils/sea");
 }
 
@@ -27,16 +38,17 @@ export const NabContext = createContext();
 export const useNabGlobals = ({ notabugApi, history }) => {
   const api = useMemo(
     () => {
-      const nab =
-        notabugApi ||
-        notabugPeer({
-          noGun: isNode ? true : false,
-          localStorage: LOCAL_STORAGE && isLocalStorageNameSupported(),
-          disableValidation: true,
-          leech: true,
-          super: false,
-          peers: isNode ? [] : [window.location.origin + "/gun"]
-        });
+      if (notabugApi) return notabugApi;
+      const nab = notabugPeer({
+        noGun: isNode ? true : false,
+        localStorage: LOCAL_STORAGE && isLocalStorageNameSupported(),
+        persist: INDEXEDDB,
+        disableValidation: true,
+        storeFn: INDEXEDDB ? RindexedDB : null,
+        leech: true,
+        super: false,
+        peers: isNode ? [] : [window.location.origin + "/gun"]
+      });
       if (!isNode && !nab.scope) {
         nab.scope = nab.newScope({
           cache: window.initNabState,

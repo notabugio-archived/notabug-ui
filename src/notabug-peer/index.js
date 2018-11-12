@@ -70,6 +70,10 @@ export default function notabug(config={}) {
           .catch(e => console.error("Message rejected", e.stack || e, msg)); // eslint-disable-line
       });
     });
+
+    // for indexeddb
+    if (gunConfig.storeFn) gunConfig.store = gunConfig.storeFn(gunConfig);
+
     peer.gun = Gun(gunConfig);
     // Nuke gun's localStorage if it fills up, kinda lame but less lame than total failure
     if (!persist && localStorage) peer.gun.on("localStorage:error", ack => ack.retry({}));

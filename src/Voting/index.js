@@ -1,5 +1,5 @@
 import React, { createContext, useState, useCallback, useEffect, useContext, useMemo } from "react";
-import { assoc, dissoc } from "ramda";
+import { identity, assoc, dissoc } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import { PREFIX } from "notabug-peer";
 import { NabContext } from "NabContext";
@@ -57,11 +57,11 @@ export const useVotable = ({ id }) => {
 
   const onVoteUp = useCallback(() => {
     onQueueVote(id, "up");
-  }, [id]);
+  }, [id]) || identity; // useCallback returns falsey in node
 
   const onVoteDown = useCallback(() => {
     onQueueVote(id, "down");
-  }, [id]);
+  }, [id]) || identity; // useCallback returns falsey in node
 
   return { isVotingUp, isVotingDown, onVoteUp, onVoteDown };
 };
