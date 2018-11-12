@@ -109,11 +109,9 @@ export const Thing = React.memo(
     );
 
     const doUpdateScores = useCallback(
-      () => {
-        api.queries
-          .thingScores(scope, indexer, id)
-          .then(scores => scores && setScores(scores));
-      },
+      () => api.queries
+        .thingScores(scope, indexer, id)
+        .then(updatedScores => updatedScores && setScores(updatedScores)),
       [scope, id, indexer]
     );
 
@@ -122,9 +120,9 @@ export const Thing = React.memo(
         doUpdateScores();
         doFetchItem();
         scope.on(doUpdateScores);
-        return scope.off(doUpdateScores);
+        return () => scope.off(doUpdateScores);
       },
-      [id, scope, doUpdateScores]
+      [doUpdateScores]
     );
 
     useEffect(() => {

@@ -36,15 +36,14 @@ const FRONTPAGE_TOPICS = [
 
 const CURATOR_IDS = uniq([
   "~5vvQz9CTQgpk4alXuJIiHeTBRt4itoueqrHs-Fi0X7A.1iY7DRla-NvhahUszYZCgxXUnMcoLPGlLTU1ldBqINE",
-  "~LesDWK7BcLGNLAtzyAWVwuELI8NKLudyX2E-68OLek4.A8owpiqmANc6yN5fD7UfwSz9kWsRVgBx4obwuCBo6H8",
+  "~EhXn9ob_AgV1w4499yRvEfUrMwwKIw-d3cHWuYAU5Lg.X45TijFVuMrdCN4NYtIiv7Pg_q2V8mvyhVzKlbT72cs",
   "~7MMrduZa7qNfw2IrmPH01_AVFwruIOs1lP84syULyuA.qXSQ4LJq-MneJL-NY55urDPOucT3p5IxtL2Hr2cZtt8",
-  "~GnKvWZEoLdXqQKIGMSKJeQQmV57QK85SOLa9DP3rvm4.icZFh-IVnGpRSfoCk_GjBE3mjmHtwCdWgN974DR3_AA",
+  "~LesDWK7BcLGNLAtzyAWVwuELI8NKLudyX2E-68OLek4.A8owpiqmANc6yN5fD7UfwSz9kWsRVgBx4obwuCBo6H8",
   "~Yr3T3rFJacNpTwRCue6tEvmajAjuvNkRCTcHz6HsLlU.THENQfgvkmTKSmOGsVSsS63qaIL8eGFWFfzgNh6zv5o",
   "~YOfauvxM4twU4ODt8Nglmtf6OuF4HFM0Jb7qEnqYPy8.5v2LSnhFHzUHGC8OQ237Zkm2I669k4_Gy5kE9lKVLmw",
   "~6CGHfCjVF-PLjEkFTDazpVkdD7-qi2lA59grir4Ws64.wOsmeMAp7-Gcq_yTButNeKtinqy-ovNIRBSTUK03WVI",
   "~0R5jFQNX4ff0gYPQwqg67qV8rmNLjp2gqyc7lkmvpSY.5lupP8_MAS3rIkdcPv9AiWZ93KcGD4zTSoPKn4nNI4k",
   "~7Cm8-PUuhI2Wr5csnZxBVTMyE9z93LEIBcL8cW606Qg.bO915baqt4Mkx4N7bLeY-QnKIVTTOTUPdbQTbbo9TFA",
-  "~EhXn9ob_AgV1w4499yRvEfUrMwwKIw-d3cHWuYAU5Lg.X45TijFVuMrdCN4NYtIiv7Pg_q2V8mvyhVzKlbT72cs",
   "~Buttb_yRAGNze8rVzo3m8eIhHYjXBgnxLq5JoIfZvhg.v6BEyy-l7zoMS88lkgR4EA5Hf4UTS3tmV_VE2cSdxKs",
   "~nXqxE4xmS2kww5mMQyrmJS_JSXn6Gur7VpscFIIf7hs.bpYbA-2wiQ6MENssj8YDKlAP_hQEZ0LFF4mO6DyMQbM",
   "~IqcjVSC34GtFs5w59N9kASBbdZKCgHKiQwFFRym9Pr4.8n1bLKu2IXPe3aziyfkDNNo0gsi3reOk1DHSx6DHATs",
@@ -56,10 +55,22 @@ const CURATOR_IDS = uniq([
   "~mqsUTvuTU43E3vdKWqWb0bL4ulETedy2kdkPjQr5Zpk.KKNTLAMcfSGXO5Xq7K7XpwDWwiXahkNxKbhkab2-o04",
   "~r7k5HvzU8EzXcN_5NUcBecO3ZltdBEYZ9r6CX-UwbRk.4H4IjbanOiRImfyzWU5Zn4-asLd5SSO_PJmv_VPt4tU",
   "~VPJPmDnVzi70la1dtvN9YNHIUyPWIkbH-iR8qDotHfY.6KXh-Kg2-l8ZEH65OsMS6yBSip8HuJvb9rhfR9c_eK4",
+  "~GnKvWZEoLdXqQKIGMSKJeQQmV57QK85SOLa9DP3rvm4.icZFh-IVnGpRSfoCk_GjBE3mjmHtwCdWgN974DR3_AA",
   "~qCS827OtiqrnCYuhDDscIaUH-b1Zf4ARqC75TQdveno.mtUOCBbbkrExAec0K5Bmb4d5SJ14ruGPaJBETtYucv0",
   "~OpiwW6J7dHN0yrqXKK0hISsM4nJgrcXOPdW7Vwwr0uU.8raor7BxnatrzwISF7xSmCTb9Cgd0IgkQCL--BpWZG0",
   "~6xze5qBkwMey6_5K99bttcFb9ylII1UN2mdSeb55elk.7zqXfUVf75CVJuqEUQ_NSN-qTqu1wQ53svNWvFg5gJ4",
   "~VqbAno4if8ucqBGK2CRHXzAEDPXlWYmBW709CsRUn4U.sorgqKUe-92XX1gXcznqaGuNtv1V05Zy1R2EN3vqW0I",
+  "~ihZ67JuKLAA5Npe3fn1QSIuVH6O_DPSHruOlouo8cAo.jxXTSowSMN7VNWMZ67SZzjGAGdROysjsqQHBnZahwGo",
+  "~PqlI_kDSAqr0QNKaIVLJPVjy8YJ1x_mcYm9KjoKNw3s.n0O6fS07K-vv3u5HyQVhkHWWvx778V77xxjANYrvL_4",
+  "~3QJDsizzsQVpY6gQzOaqaYfNXUidfbYLyTjRZ0zAINc.Ct09v_DdMEBIpp0OVCnsSHQwCh9E0PreqdFgkhFiWyI",
+  "~VaYavYjjSEmzj4Ya0iz4d-KMFn4lHPagjtX_psku5Pk.FTWvqAr22bpX9vyF8AzhxPmsxWnOOFNW_DVkZSz7hRU",
+  "~_QNFTvI18LFSjW2qb5DBP6-sNONfrNKqMwl-mOF8vfw.TVzEaPjefsW1tWNTtswksMUgqTOOVFld-ty2Pz0mOZc",
+  "~tuBsbzbhO6rQcuC8ffhKnOzIROfkI5kWyk01eGoVY18.o6IeoswbH3TlcGgIjueDsPChvhgVVIX1yHGLZp6VLBA",
+  "~kf_w4c-urnYNr-9RZk1eAonMqVlTkKNCHi-2xgws6X0.oDBtm6zp20ld3EjiTYK8TI7BzcQ3fl9T8p7CEdgexxs",
+  "~kTZ3OuDFCCGLKgzy32Q_Oodh0FOrjAeyY5-KHyZMwIA.FvdbFd1zsbG61zIT0SD_S1O0S2qrIBNb6yaZXA7qS3w",
+  "~f6RbIATo7-nJ6mjvDBZWcg7vU-asmDamY9qq9GxKUfw.u98Ri4vl6pjIir4a0tvCHmg1j7iez0W_jUztCdIodTo",
+  "~HoT8wl6e5UbHesNzkGeVDa2zUIS6ZWHc-yx2NunKNes.Q2BZxj3MsVDArVPESSjZ_PrD_YM81iPeTKcfdVXP2XI",
+  "~wxMa_-I6AhvXt9VOxONnv1LByYOBhFAZc8c78STAo5c.vE8K0f0bopBpwr5gy0CUXFVf21HuIjJbxeahIdQOCtY",
 ]);
 
 const CENSOR_IDS = [
@@ -77,10 +88,10 @@ const curate = query((scope, authorIds, submissionOnly = false) =>
     )
       .then(souls => all(souls.filter(x => !!x).map(soul => scope.get(`${soul}/data`).then(x => x))))
       .then(compose(
-        map(prop("replyToId")),
+        map(submissionOnly ? prop("opId") : prop("replyToId")),
         filter(itemData => {
           if (!itemData) return;
-          if (submissionOnly && itemData.opId !== itemData.replyToId) return;
+          // if (submissionOnly && itemData.opId !== itemData.replyToId) return;
           return !!itemData.replyToId;
         })
       )),
