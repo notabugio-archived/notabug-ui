@@ -1,10 +1,11 @@
 import React from "react";
-import { NavLink, withRouter } from "react-router-dom";
+import { Link as RegLink, NavLink, withRouter } from "react-router-dom";
 import qs from "qs";
 
 export const Link = withRouter((
+  // eslint-disable-next-line no-unused-vars
   { href, staticContext, children, location: { search }, ...props}
-) => { // eslint-disable-line
+) => {
   const query = qs.parse(search, { ignoreQueryPrefix: true });
   props = Object.keys(props)
     .filter(key => key[0] === key[0].toLowerCase())
@@ -25,5 +26,7 @@ export const Link = withRouter((
     href = href + "?" + qs.stringify(destQuery);
   }
 
-  return <NavLink to={href} {...props } >{children}</NavLink>;
+  const LinkComponent = props.activeClass ? NavLink : RegLink;
+
+  return <LinkComponent to={href} {...props } >{children}</LinkComponent>;
 });

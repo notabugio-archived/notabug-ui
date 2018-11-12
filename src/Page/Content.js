@@ -96,8 +96,6 @@ export const Content = React.memo(
 
     if (isChat) listing.Loading = ChatMsg;
 
-    console.log("scrollable", scrollable);
-
     return infinite || isChat ? (
       <React.Fragment>
         <div className="content" role="main">
