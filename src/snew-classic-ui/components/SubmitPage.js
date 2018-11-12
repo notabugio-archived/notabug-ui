@@ -227,7 +227,7 @@ const SubmitPage = ({
                   name="sr"
                   required
                   type="text"
-                  defaultValue={subreddit}
+                  value={subreddit}
                   onChange={onChangeSubreddit}
                 />
                 <ul id="sr-drop-down">

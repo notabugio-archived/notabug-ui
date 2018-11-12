@@ -89,7 +89,6 @@ export const SubmissionForm = ({
       <JavaScriptRequired>
         <SubmitPage
           Link={Link}
-          key={topic}
           sitename="notabug"
           siteprefix="t"
           subname="topic"

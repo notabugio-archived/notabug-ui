@@ -82,9 +82,7 @@ export const thingVotes = (key, val, parent, pKey, msg, peer) => {
       delete val[voteKey];
       return Promise.resolve();
     }
-    const nonce = Buffer.hasOwnProperty("from") ?
-      Buffer.from(vote, "hex") : new Buffer(vote, "hex");
-    return verifyWork(key, nonce).then(isValid => {
+    return verifyWork(key, vote).then(isValid => {
       if (isValid) return;
       console.warn("invalid vote", key, vote); // eslint-disable-line
       delete val[voteKey]; // eslint-disable-line
