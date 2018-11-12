@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { propOr, compose } from "ramda";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import { propOr } from "ramda";
 import Spinner from "react-spinkit";
 import { COMMENT_BODY_MAX } from "notabug-peer";
 import { ThingComment } from "snew-classic-ui";
@@ -42,17 +42,20 @@ export const Comment = ({
   const parentItem = propParentItem || (fetchParent ? { title: "..." } : null);
   let parentParams = {};
 
+  const parentPermalink = useMemo(
+    () => {
+      if (!item.opId || !topic || !parentItem || !parentItem.title) return;
+      return `/t/${topic}/comments/${item.opId}/${slugify(parentItem.title)}`;
+    },
+    [topic, item.opId, parentItem]
+  );
+
   if (fetchParent) {
     parentParams = {
       fetchParent: true,
       showLink: true,
       link_title: propOr("", "title", parentItem),
-      link_permalink: compose(({ topic, title }) => {
-        if (!item.opId || !topic || !title) return;
-        return `/t/${topic}/comments/${item.opId}/${slugify(
-          title.toLowerCase()
-        )}`;
-      })(parentItem),
+      link_permalink: parentPermalink,
       link_author: propOr(null, "author", parentItem),
       link_author_fullname: propOr(null, "authorId", parentItem),
       subreddit: propOr(null, "topic", parentItem)

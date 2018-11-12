@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useMemo } from "react";
 // import { Helmet } from "react-helmet";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
@@ -27,12 +27,15 @@ export const Submission = ({
   onVoteDown
 }) => {
   let scoreDisp = null;
-  if (score || score === 0) scoreDisp = (ups - downs) || 0;
+  if (score || score === 0) scoreDisp = ups - downs || 0;
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
   const urlInfo = item.url ? urllite(item.url) : {};
-  const permalink =
-    `/t/${item.topic || "all"}/comments/${id}/` +
-    slugify(item.title.toLowerCase());
+  const permalink = useMemo(
+    () =>
+      `/t/${item.topic || "all"}/comments/${id}/` +
+      slugify(item.title.toLowerCase()),
+    [item.topic, id, item.title]
+  );
   const domain = item.url
     ? (urlInfo.host || "").replace(/^www\./, "")
     : item.topic

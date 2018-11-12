@@ -1,4 +1,11 @@
-import { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+  useMemo
+} from "react";
 import { assoc } from "ramda";
 import isNode from "detect-node";
 import "gun/gun";
@@ -49,10 +56,11 @@ export const useNabGlobals = ({ notabugApi, history }) => {
   const didLogin = useCallback(meData => setUser(meData), []);
 
   const onLogout = useCallback(
-    () => {
-      api.gun.me().leave();
-      sessionStorage && sessionStorage.clear();
+    evt => {
+      evt && evt.preventDefault();
+      api.gun.user().leave();
       setUser(null);
+      sessionStorage && sessionStorage.clear();
     },
     [api]
   );

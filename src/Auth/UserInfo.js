@@ -11,10 +11,7 @@ export const UserInfo = props => {
       {...{ ...props, Link, AuthorLink }}
       username={me.alias}
       fullname={me.pub}
-      onLogout={e => {
-        e.preventDefault();
-        onLogout();
-      }}
+      onLogout={onLogout}
       loginUrl="/login"
       messagesUrl="/message/inbox"
     />
