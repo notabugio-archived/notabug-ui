@@ -1,6 +1,5 @@
 /* eslint import/no-webpack-loader-syntax: off */
-import "core-js";
-import "babel-polyfill";
+import "@babel/polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
