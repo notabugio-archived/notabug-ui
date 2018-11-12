@@ -26,10 +26,12 @@ if (!isNode) {
   if (INDEXEDDB) console.log("using indexeddb");
   if (LOCAL_STORAGE) console.log("using localstorage");
   require("gun/lib/les.js");
-  require("gun/lib/radix.js");
-  require("gun/lib/radisk.js");
-  require("gun/lib/store.js");
-  require("gun/lib/rindexed.js");
+  if (INDEXEDDB) {
+    require("gun/lib/radix.js");
+    require("gun/lib/radisk.js");
+    require("gun/lib/store.js");
+    require("gun/lib/rindexed.js");
+  }
   if (!/nosea/.test(window.location.search)) require("utils/sea");
 }
 
