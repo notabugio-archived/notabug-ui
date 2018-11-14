@@ -71,6 +71,7 @@ const CURATOR_IDS = uniq([
   "~f6RbIATo7-nJ6mjvDBZWcg7vU-asmDamY9qq9GxKUfw.u98Ri4vl6pjIir4a0tvCHmg1j7iez0W_jUztCdIodTo",
   "~HoT8wl6e5UbHesNzkGeVDa2zUIS6ZWHc-yx2NunKNes.Q2BZxj3MsVDArVPESSjZ_PrD_YM81iPeTKcfdVXP2XI",
   "~wxMa_-I6AhvXt9VOxONnv1LByYOBhFAZc8c78STAo5c.vE8K0f0bopBpwr5gy0CUXFVf21HuIjJbxeahIdQOCtY",
+  "~rzXflBj8oChH5-Fs1IYDeeMNgNz7a3pcrdB8DqXaaLs.ogPJbmDZc-T51woR7Aggbp77-krW-TtRcySp3uG2-Cw",
 ]);
 
 const CENSOR_IDS = [

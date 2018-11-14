@@ -17,7 +17,7 @@ const ChatMsgEntry = ({
     postTagline={
       props.topic ? (
         <React.Fragment>
-          in <Link href={`/t/${props.topic}/chat`}>{props.topic}</Link>
+          {" "}in <Link href={`/t/${props.topic}/chat`}>{props.topic}</Link>
         </React.Fragment>
       ) : null
     }

@@ -18,8 +18,8 @@ let RECALL_LOGIN = false;
 let FORCE_REALTIME = false;
 
 if (!isNode) {
-  INDEXEDDB = !!window.indexedDB && !/noidb/.test(window.location.search);
-  LOCAL_STORAGE = !!/localStorage/.test(window.location.search);
+  INDEXEDDB = !!window.indexedDB && !!/indexeddb/.test(window.location.search);
+  LOCAL_STORAGE = !INDEXEDDB && !/noLocalStorage/.test(window.location.search);
   FORCE_REALTIME = !/norealtime/.test(window.location.search);
   RECALL_LOGIN = !/norecall/.test(window.location.search);
   if (LOCAL_STORAGE) INDEXEDDB = false;

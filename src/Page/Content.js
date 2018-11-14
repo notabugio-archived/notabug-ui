@@ -51,8 +51,13 @@ export const Content = React.memo(
 
     const scrollToBottom = useCallback(
       () => {
-        if (scrollable && scrollable.current && !preventAutoScroll)
-          scrollable.current.scrollTop = scrollable.current.scrollHeight;
+        setTimeout(
+          () => {
+            if (scrollable && scrollable.current && !preventAutoScroll)
+              scrollable.current.scrollTop = scrollable.current.scrollHeight;
+          },
+          10
+        );
       },
       [scrollable.current, preventAutoScroll]
     );
