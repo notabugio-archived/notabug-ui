@@ -33,6 +33,7 @@ export const Thing = React.memo(
     hideReply = false,
     expanded: expandedProp = false,
     Loading: LoadingComponent = Loading,
+    isDetail,
     onDidUpdate
   }) => {
     const { api, myContent } = useContext(NabContext);
@@ -157,6 +158,7 @@ export const Thing = React.memo(
       collapseThreshold,
       isShowingReply,
       hideReply,
+      isDetail,
       isMine,
       isVotingUp,
       isVotingDown,
