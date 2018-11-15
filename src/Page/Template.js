@@ -38,7 +38,7 @@ export const PageTemplate = ({
         {name ? (
           <span className="hover pagename redditname">
             <Link
-              href={`/${listingParams.prefix || "t"}/${identifier}/`}
+              href={`/${listingParams && listingParams.prefix || "t"}/${identifier}/`}
             >{name}</Link>
           </span>
         ) : null}

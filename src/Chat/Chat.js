@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from "react";
+import React, { createContext, useState, useCallback, useMemo } from "react";
 import { withRouter } from "react-router-dom";
 import { Content } from "Page";
 import { Link, JavaScriptRequired } from "utils";
@@ -16,7 +16,9 @@ export const Chat = withRouter(({
   const openChat = useCallback(() => setIsOpen(true), []);
   const closeChat = useCallback(() => setIsOpen(false), []);
   const listingParams = useMemo(() => getFirehoseListingParams(props), [topic]);
+  const ListingContext = useMemo(() => createContext(), []);
   const listingProps = useListing({ listingParams });
+  const listingValue = useMemo(() => listingProps, Object.values(listingProps));
 
   if (!isOpen)
     return (
@@ -38,29 +40,30 @@ export const Chat = withRouter(({
     );
 
   return (
-    <div className={`chat-modal ${className}`}>
-      <Content
-        isChat
-        submitTopic={topic}
-        location={location}
-        {...listingProps}
-      />
-      <div className="chat-modal-controls">
-        <Link href="/firehose">
-          <button
-            className="chat-dialogue-fullpage-link"
-            title="fullpage chat with live submissions and comments"
-          >
-            firehose
+    <ListingContext.Provider value={listingValue}>
+      <div className={`chat-modal ${className}`}>
+        <Content
+          isChat
+          location={location}
+          {...{ ListingContext }}
+        />
+        <div className="chat-modal-controls">
+          <Link href="/firehose">
+            <button
+              className="chat-dialogue-fullpage-link"
+              title="fullpage chat with live submissions and comments"
+            >
+              firehose
+            </button>
+          </Link>
+          <Link href="/t/chat:all/new">
+            <button className="chat-dialogue-history-link">history</button>
+          </Link>
+          <button className="close-chat" onClick={closeChat}>
+            close
           </button>
-        </Link>
-        <Link href="/t/chat:all/new">
-          <button className="chat-dialogue-history-link">history</button>
-        </Link>
-        <button className="close-chat" onClick={closeChat}>
-          close
-        </button>
+        </div>
       </div>
-    </div>
+    </ListingContext.Provider>
   );
 });
