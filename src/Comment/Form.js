@@ -5,13 +5,13 @@ import { CommentForm as SnewCommentForm } from "snew-classic-ui";
 import { JavaScriptRequired } from "utils";
 
 export const CommentForm = ({
-  id,
+  ListingContext,
   replyToId: replyToIdProp,
-  opId,
-  topic,
-  addSpeculativeId,
   onHideReply
 }) => {
+  const { opId, submitTopic: topic, addSpeculativeId } = useContext(
+    ListingContext
+  );
   const { api, onMarkMine } = useContext(NabContext);
   const [body, setBody] = useState("");
   const [isSaving, setIsSaving] = useState(false);
@@ -31,7 +31,7 @@ export const CommentForm = ({
       setIsSaving(true);
       return api.comment({ body, opId, topic, replyToId }).then(({ id }) => {
         onMarkMine(id);
-        addSpeculativeId(id);
+        addSpeculativeId && addSpeculativeId(id);
         setBody("");
         setIsSaving(false);
         onHideReply && onHideReply();
@@ -45,7 +45,7 @@ export const CommentForm = ({
     <JavaScriptRequired>
       <SnewCommentForm
         body={body}
-        autoFocus={id !== opId}
+        autoFocus={replyToId !== opId}
         commentError={body && commentError}
         onChangeBody={onChangeBody}
         onSubmit={onSave}

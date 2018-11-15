@@ -94,6 +94,7 @@ export const useListing = ({ listingParams }) => {
     isChat,
     createdAt,
     speculativeIds: speculativeIdsMap,
+    listingParams,
     addSpeculativeId
   };
 };

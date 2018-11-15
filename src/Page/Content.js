@@ -1,6 +1,6 @@
 import React, {
+  useContext,
   useState,
-  useMemo,
   useCallback,
   useEffect,
   useRef
@@ -22,13 +22,7 @@ export const Content = React.memo(
     location,
     Loading = Submission,
     Empty = () => <Loading name="ball-grid-beat" />,
-    listingParams: params = {},
-    isChat,
-    submitTopic,
-    includeRanks,
-    ids: allIds,
-    addSpeculativeId,
-    speculativeIds
+    ListingContext
   }) => {
     const { pathname, search } = location;
     const query = qs.parse(search, { ignoreQueryPrefix: true });
@@ -37,10 +31,15 @@ export const Content = React.memo(
     const [limit, setLimit] = useState(parseInt(query.limit, 10) || 25);
     const [preventAutoScroll, setPreventAutoScroll] = useState(false);
     const scrollable = useRef(null);
-    const listingParams = useMemo(() => ({ ...params, count }), [
-      params,
-      count
-    ]);
+
+    const {
+      ids: allIds,
+      isChat,
+      submitTopic,
+      listingParams, addSpeculativeId,
+      speculativeIds
+    } = useContext(ListingContext);
+
     const { ids: limitedIds } = useLimitedListing({
       ids: allIds,
       location,
@@ -48,6 +47,7 @@ export const Content = React.memo(
       count,
       listingParams
     });
+
     const hasPrev = count - limit >= 0;
     const hasNext = limitedIds.length >= limit;
 
@@ -91,6 +91,7 @@ export const Content = React.memo(
     const listing = {
       Loading,
       Empty,
+      ListingContext,
       limit,
       realtime: !!(infinite || isChat),
       ids: limitedIds,
@@ -98,7 +99,6 @@ export const Content = React.memo(
       speculativeIds,
       addSpeculativeId,
       onDidUpdate: isChat ? scrollToBottom : null,
-      noRank: !includeRanks,
       fetchParent: true,
       disableChildren: true
     };

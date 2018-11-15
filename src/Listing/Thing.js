@@ -22,26 +22,25 @@ const components = {
 
 export const Thing = React.memo(
   ({
+    Loading: LoadingComponent = Loading,
+    ListingContext,
     id,
-    data,
-    topic,
-    listingParams,
-    fetchParent,
     rank,
     disableChildren,
-    replyTree,
-    isSpeculative,
-    speculativeIds,
-    addSpeculativeId,
+    fetchParent,
     hideReply = false,
     expanded: expandedProp = false,
-    Loading: LoadingComponent = Loading,
     isDetail,
     onDidUpdate
   }) => {
     const { api, myContent } = useContext(NabContext);
+    const {
+      listingParams: { indexer },
+      speculativeIds,
+    } = useContext(ListingContext);
+    const isSpeculative = speculativeIds[id];
+
     const scope = useScope();
-    const { indexer } = listingParams;
     const isMine = !!myContent[id];
     const { initialScores, initialItem, initialParentItem } = useMemo(() => {
       const initialScores = api.queries.thingScores.now(scope, indexer, id) || {
@@ -50,7 +49,7 @@ export const Thing = React.memo(
         score: 0,
         comment: 0
       };
-      const initialItem = data || api.queries.thingData.now(scope, id);
+      const initialItem = api.queries.thingData.now(scope, id);
       const initialParentItem =
         fetchParent && initialItem && initialItem.opId
           ? api.queries.thingData.now(scope, initialItem.opId)
@@ -144,7 +143,7 @@ export const Thing = React.memo(
     if (item && !ThingComponent) return null;
 
     const thingProps = {
-      listingParams,
+      ListingContext,
       ups: scores.up,
       downs: scores.down,
       score: scores.score,
@@ -152,13 +151,9 @@ export const Thing = React.memo(
       rank,
       id,
       item,
-      topic,
       fetchParent,
       parentItem,
-      replyTree,
       isSpeculative,
-      speculativeIds,
-      addSpeculativeId,
       expanded,
       collapsed,
       collapseThreshold,
@@ -177,9 +172,9 @@ export const Thing = React.memo(
 
     const renderComponent = ({ isVisible }) =>
       !item ? (
-        <LoadingComponent {...thingProps} isVisible={isVisible} />
+        <LoadingComponent {...{ ...thingProps, isVisible }} />
       ) : (
-        <ThingComponent {...thingProps} isVisible={isVisible} />
+        <ThingComponent {...{ ...thingProps, isVisible }} />
       );
     return renderComponent({ isVisible: true });
   }
