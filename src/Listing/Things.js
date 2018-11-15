@@ -11,15 +11,17 @@ export const Things = React.memo(({
   ids,
   noRank,
   myContent = {},
+  speculativeIds = {},
   ...props
 }) => {
   const renderThing = (idx, id) => {
     const count = parseInt(path(["listingParams", "count"], props) || 0);
     return (
       <Thing
-        {...{ ...props, id }}
+        {...{ ...props, id, speculativeIds }}
         key={id}
         isMine={!!myContent[id]}
+        isSpeculative={speculativeIds[id]}
         rank={noRank ? null : count + idx + 1}
       />
     );

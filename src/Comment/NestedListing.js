@@ -11,17 +11,23 @@ export const NestedListing = ({
   topic,
   listingParams,
   onHideReply,
-  replyTree = {}
+  replyTree = {},
+  speculativeIds = {},
+  addSpeculativeId
 }) => (
   <Fragment>
     {showReplyForm ? (
-      <CommentForm {...{ id, opId, topic, onHideReply }} replyToId={id} autoFocus={false} />
+      <CommentForm
+        replyToId={id}
+        autoFocus={false}
+        {...{ id, opId, topic, onHideReply, addSpeculativeId }}
+      />
     ) : null}
     <div className={"sitetable nestedlisting"}>
       <Things
-        {...{ opId, topic, listingParams, realtime, replyTree }}
         ids={keysIn(replyTree[id] || {})}
         collapseThreshold={0}
+        {...{ opId, topic, listingParams, realtime, replyTree, speculativeIds, addSpeculativeId }}
       />
     </div>
   </Fragment>

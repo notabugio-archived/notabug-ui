@@ -4,8 +4,8 @@ import isNode from "detect-node";
 import { COMMENT_BODY_MAX } from "notabug-peer";
 import { NabContext } from "NabContext";
 
-export const ChatInput = ({ topic }) => {
-  const { me, api } = useContext(NabContext);
+export const ChatInput = ({ topic, addSpeculativeId }) => {
+  const { me, api, onMarkMine } = useContext(NabContext);
   const [body, setBody] = useState("");
   const alias = propOr("anon", "alias", me);
   const chatName = `t/${topic} public`;
@@ -14,7 +14,10 @@ export const ChatInput = ({ topic }) => {
     evt => {
       evt && evt.preventDefault();
       if (!body || !body.trim() || body.length > COMMENT_BODY_MAX) return;
-      api.chat({ topic, body });
+      api.chat({ topic, body }).then(({ id }) => {
+        onMarkMine(id);
+        addSpeculativeId && addSpeculativeId(id);
+      });
       setBody("");
     },
     [api, body, topic]

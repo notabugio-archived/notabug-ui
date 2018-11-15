@@ -10,6 +10,7 @@ export const ThingCommentEntry = ({
   isVotingDown,
   onVoteUp,
   onVoteDown,
+  isSpeculative,
   ...props
 }) => (
   <SnewThingCommentEntry
@@ -30,7 +31,7 @@ export const ThingCommentEntry = ({
         </span>
       </Fragment>
     )}
-    isVoting={isVotingUp || isVotingDown}
+    isVoting={isSpeculative || isVotingUp || isVotingDown}
     onVoteUp={onVoteUp}
     onVoteDown={onVoteDown}
   />

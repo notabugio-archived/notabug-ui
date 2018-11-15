@@ -16,6 +16,8 @@ const MarkdownLoading = () => (
   </div>
 );
 
+const TimestampSaving = () => "...saving...";
+
 export const Comment = ({
   id,
   topic: topicProp,
@@ -30,6 +32,9 @@ export const Comment = ({
   ThingCommentEntry = Entry,
   listingParams,
   replyTree,
+  isSpeculative,
+  speculativeIds,
+  addSpeculativeId,
   isVotingUp,
   isVotingDown,
   onVoteUp,
@@ -74,11 +79,14 @@ export const Comment = ({
       {...{
         ...parentParams,
         ThingCommentEntry,
-        Timestamp,
+        Timestamp: isSpeculative ? TimestampSaving : Timestamp,
         Link,
         id,
         listingParams,
         replyTree,
+        isSpeculative,
+        speculativeIds,
+        addSpeculativeId,
         ups,
         downs,
         collapsed,

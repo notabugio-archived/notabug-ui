@@ -9,6 +9,7 @@ export const CommentForm = ({
   replyToId: replyToIdProp,
   opId,
   topic,
+  addSpeculativeId,
   onHideReply
 }) => {
   const { api, onMarkMine } = useContext(NabContext);
@@ -30,6 +31,7 @@ export const CommentForm = ({
       setIsSaving(true);
       return api.comment({ body, opId, topic, replyToId }).then(({ id }) => {
         onMarkMine(id);
+        addSpeculativeId(id);
         setBody("");
         setIsSaving(false);
         onHideReply && onHideReply();

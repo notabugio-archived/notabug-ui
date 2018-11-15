@@ -12,6 +12,8 @@ export const NestedContent = React.memo(({
   opId,
   submitTopic: topic,
   ids,
+  addSpeculativeId,
+  speculativeIds,
   listingParams
 }) => {
   const { replyTree } = useListingContent({ ids, listingParams });
@@ -37,7 +39,11 @@ export const NestedContent = React.memo(({
               permalink={pathname}
               sortOptions={["best", "hot", "new", "top", "controversial"]}
             />
-            <NestedListing showReplyForm id={opId} {...{ opId, topic, listingParams, replyTree }} />
+            <NestedListing
+              showReplyForm
+              id={opId}
+              {...{ opId, topic, listingParams, replyTree, addSpeculativeId, speculativeIds }}
+            />
           </div>
         </div>
       </div>

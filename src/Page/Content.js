@@ -26,7 +26,9 @@ export const Content = React.memo(
     isChat,
     submitTopic,
     includeRanks,
-    ids: allIds
+    ids: allIds,
+    addSpeculativeId,
+    speculativeIds
   }) => {
     const { pathname, search } = location;
     const query = qs.parse(search, { ignoreQueryPrefix: true });
@@ -93,6 +95,8 @@ export const Content = React.memo(
       realtime: !!(infinite || isChat),
       ids: limitedIds,
       listingParams,
+      speculativeIds,
+      addSpeculativeId,
       onDidUpdate: isChat ? scrollToBottom : null,
       noRank: !includeRanks,
       fetchParent: true,
@@ -119,7 +123,12 @@ export const Content = React.memo(
               returnScrollable: el => scrollable.current = el
             }}
           />
-          {isChat ? <ChatInput topic={submitTopic || "whatever"} /> : null}
+          {isChat ? (
+            <ChatInput
+              {...{ addSpeculativeId }}
+              topic={submitTopic || "whatever"}
+            />
+          ) : null}
         </div>
       </React.Fragment>
     ) : (
