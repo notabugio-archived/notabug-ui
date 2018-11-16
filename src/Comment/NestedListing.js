@@ -11,7 +11,7 @@ export const NestedListing = ({
   ListingContext
 }) => {
   const { ContentContext } = useContext(ListingContext);
-  const { replyTree = {} } = useContext(ContentContext);
+  const { replyTree = {} } = useContext(ContentContext) || {};
 
   return (
     <Fragment>
