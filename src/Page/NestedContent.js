@@ -1,26 +1,21 @@
-import React, { useContext, useMemo, createContext } from "react";
+import React from "react";
 import { Dropdown, Link } from "utils";
 import { NestedListing } from "Comment";
 import { Thing } from "Listing/Thing";
 import { default as Submission } from "Submission/Submission";
 import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
 import { PageFooter } from "Page/Footer";
-import { useListingContent } from "Listing";
+import { useNestedListingContext } from "Listing";
 
 export const NestedContent = React.memo(({
   location: { pathname },
-  ListingContext: BaseListingContext
+  ListingContext
 }) => {
-  const ListingContext = useMemo(() => createContext(), []);
-  const listingProps = useContext(BaseListingContext);
-  const { ids, opId, listingParams } = listingProps;
-  const nestedListingProps = useListingContent({ ids, listingParams });
-  const combinedProps = { ...listingProps, ...nestedListingProps };
-  const listingValue = useMemo(() => combinedProps, Object.values(combinedProps));
-  const { replyTree } = nestedListingProps;
+  const { ContentContext, contentData, listingData } = useNestedListingContext(ListingContext);
+  const { opId, listingParams } = listingData;
 
   return (
-    <ListingContext.Provider value={listingValue}>
+    <ContentContext.Provider value={contentData}>
       <React.Fragment>
         <div className="content" role="main">
           <div className="spacer">
@@ -45,7 +40,7 @@ export const NestedContent = React.memo(({
               <NestedListing
                 showReplyForm
                 id={opId}
-                {...{ ListingContext, replyTree }}
+                {...{ ListingContext }}
               />
             </div>
           </div>
@@ -55,6 +50,6 @@ export const NestedContent = React.memo(({
           <span className="icon">π</span> <span className="content" />
         </p>
       </React.Fragment>
-    </ListingContext.Provider>
+    </ContentContext.Provider>
   );
 });

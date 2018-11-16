@@ -1,17 +1,15 @@
-import React, { useMemo, createContext } from "react";
+import React from "react";
 import { PageTemplate } from "Page/Template";
 import { Content } from "Page/Content";
 import { NestedContent } from "Page/NestedContent";
-import { useListing } from "Listing";
+import { useListingContext } from "Listing";
 
 export const ListingPage = React.memo(({ listingParams, ...props }) => {
-  const ListingContext = useMemo(() => createContext(), []);
-  const listingProps = useListing({ listingParams });
-  const listingValue = useMemo(() => listingProps, Object.values(listingProps));
-  const { opId } = listingProps;
+  const { ListingContext, listingData } = useListingContext({ listingParams });
+  const { opId } = listingData;
   return (
-    <ListingContext.Provider value={listingValue}>
-      <PageTemplate {...{ ...props, ...listingProps, listingParams }} >
+    <ListingContext.Provider value={listingData}>
+      <PageTemplate {...{ ...props, ...listingData, listingParams }} >
         {opId ? (
           <NestedContent { ...{ ...props, opId, ListingContext }} />
         ) : (

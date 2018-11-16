@@ -10,7 +10,8 @@ export const NestedListing = ({
   onHideReply,
   ListingContext
 }) => {
-  const { replyTree={} } = useContext(ListingContext);
+  const { ContentContext } = useContext(ListingContext);
+  const { replyTree = {} } = useContext(ContentContext);
 
   return (
     <Fragment>

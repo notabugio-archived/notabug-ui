@@ -1,4 +1,11 @@
-import { useState, useMemo, useContext, useEffect, useCallback } from "react";
+import {
+  createContext,
+  useState,
+  useMemo,
+  useContext,
+  useEffect,
+  useCallback
+} from "react";
 import { assoc, propOr, uniq, difference } from "ramda";
 import qs from "query-string";
 import { ZalgoPromise as Promise } from "zalgo-promise";
@@ -115,7 +122,16 @@ export const useLimitedListing = ({
 export const useListingContent = ({ ids }) => {
   const { api } = useContext(NabContext);
   const scope = useScope();
-  const [content, setContent] = useState({});
+  const initialContent = useMemo(
+    () =>
+      ids.reduce((res, id) => ({
+        ...res,
+        [id]: api.queries.thingData.now(scope, id)
+      })),
+    []
+  );
+  const [content, setContent] = useState(initialContent);
+
   const replyTree = useMemo(
     () =>
       ids.reduce((r, id) => {
@@ -144,4 +160,21 @@ export const useListingContent = ({ ids }) => {
   );
 
   return { replyTree, content };
+};
+
+export const useListingContext = ({ listingParams }) => {
+  const ListingContext = useMemo(() => createContext(), []);
+  const ContentContext = useMemo(() => createContext(), []);
+
+  const listingProps = { ...useListing({ listingParams }), ContentContext };
+  const listingData = useMemo(() => listingProps, Object.values(listingProps));
+  return { ListingContext, ContentContext, listingData };
+};
+
+export const useNestedListingContext = ListingContext => {
+  const listingData = useContext(ListingContext);
+  const { ContentContext, ids, listingParams } = listingData;
+  const contentProps = useListingContent({ ids, listingParams });
+  const contentData = useMemo(() => contentProps, Object.values(contentProps));
+  return { ContentContext, listingData, contentData };
 };

@@ -1,9 +1,9 @@
-import React, { createContext, useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { withRouter } from "react-router-dom";
 import { Content } from "Page";
 import { Link, JavaScriptRequired } from "utils";
 import { getFirehoseListingParams } from "Routing/routes";
-import { useListing } from "Listing";
+import { useListingContext } from "Listing";
 
 export const Chat = withRouter(({
   isOpen: startOpen,
@@ -16,9 +16,7 @@ export const Chat = withRouter(({
   const openChat = useCallback(() => setIsOpen(true), []);
   const closeChat = useCallback(() => setIsOpen(false), []);
   const listingParams = useMemo(() => getFirehoseListingParams(props), [topic]);
-  const ListingContext = useMemo(() => createContext(), []);
-  const listingProps = useListing({ listingParams });
-  const listingValue = useMemo(() => listingProps, Object.values(listingProps));
+  const { ListingContext, listingData } = useListingContext({ listingParams });
 
   if (!isOpen)
     return (
@@ -40,7 +38,7 @@ export const Chat = withRouter(({
     );
 
   return (
-    <ListingContext.Provider value={listingValue}>
+    <ListingContext.Provider value={listingData}>
       <div className={`chat-modal ${className}`}>
         <Content
           isChat
