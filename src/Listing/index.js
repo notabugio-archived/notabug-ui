@@ -127,7 +127,7 @@ export const useListingContent = ({ ids }) => {
       ids.reduce((res, id) => ({
         ...res,
         [id]: api.queries.thingData.now(scope, id)
-      })),
+      }), {}),
     []
   );
   const [content, setContent] = useState(initialContent);
