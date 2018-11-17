@@ -4,8 +4,9 @@ import isNode from "detect-node";
 import { COMMENT_BODY_MAX } from "notabug-peer";
 import { NabContext } from "NabContext";
 
-export const ChatInput = ({ topic, addSpeculativeId }) => {
+export const ChatInput = ({ ListingContext }) => {
   const { me, api, onMarkMine } = useContext(NabContext);
+  const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext);
   const [body, setBody] = useState("");
   const alias = propOr("anon", "alias", me);
   const chatName = `t/${topic} public`;

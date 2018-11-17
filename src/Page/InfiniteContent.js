@@ -27,13 +27,7 @@ export const InfiniteContent = React.memo(
     const [limit, setLimit] = useState(parseInt(query.limit, 10) || 25);
     const [preventAutoScroll, setPreventAutoScroll] = useState(false);
     const scrollable = useRef(null);
-
-    const {
-      ids: allIds,
-      isChat,
-      submitTopic,
-      listingParams
-    } = useContext(ListingContext);
+    const { ids: allIds, isChat, listingParams } = useContext(ListingContext);
 
     const { ids: limitedIds } = useLimitedListing({
       ids: allIds,
@@ -94,9 +88,7 @@ export const InfiniteContent = React.memo(
             returnScrollable: el => scrollable.current = el
           }}
         />
-        {isChat ? (
-          <ChatInput topic={submitTopic || "whatever"} />
-        ) : null}
+        {isChat ? <ChatInput {...{ ListingContext }} /> : null}
       </div>
     );
   }
