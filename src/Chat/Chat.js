@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from "react";
 import { withRouter } from "react-router-dom";
-import { Content } from "Page";
+import { InfiniteContent } from "Page/InfiniteContent";
 import { Link, JavaScriptRequired } from "utils";
 import { getFirehoseListingParams } from "Routing/routes";
 import { useListingContext } from "Listing";
@@ -40,7 +40,7 @@ export const Chat = withRouter(({
   return (
     <ListingContext.Provider value={listingData}>
       <div className={`chat-modal ${className}`}>
-        <Content
+        <InfiniteContent
           isChat
           location={location}
           {...{ ListingContext }}
