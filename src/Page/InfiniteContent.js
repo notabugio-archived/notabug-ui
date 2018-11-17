@@ -12,12 +12,13 @@ import ChatView from "react-chatview";
 import { ChatMsg, ChatInput } from "Chat";
 import { useLimitedListing } from "Listing";
 import { Things } from "Listing/Things";
+import { Loading as LoadingComponent } from "utils";
 
 export const InfiniteContent = React.memo(
   ({
     location,
-    Loading,
-    Empty = () => <Loading name="ball-grid-beat" />,
+    Loading=LoadingComponent,
+    Empty = () => <LoadingComponent name="ball-grid-beat" />,
     ListingContext
   }) => {
     const { search } = location;

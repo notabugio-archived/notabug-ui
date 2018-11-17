@@ -3,12 +3,13 @@ import qs from "qs";
 import { Link, JavaScriptRequired } from "utils";
 import { useLimitedListing } from "Listing";
 import { Things } from "Listing/Things";
+import { Loading as LoadingComponent } from "utils";
 
 export const PagedContent = React.memo(
   ({
     location,
-    Loading,
-    Empty = () => <Loading name="ball-grid-beat" />,
+    Loading=LoadingComponent,
+    Empty = () => <LoadingComponent name="ball-grid-beat" />,
     onToggleInfinite,
     ListingContext
   }) => {

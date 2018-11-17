@@ -20,6 +20,8 @@ const components = {
   chatmsg: ChatMsg
 };
 
+console.log("components", components);
+
 export const Thing = React.memo(
   ({
     Loading: LoadingComponent = Loading,
@@ -36,7 +38,7 @@ export const Thing = React.memo(
     const { api, myContent } = useContext(NabContext);
     const {
       listingParams: { indexer },
-      speculativeIds,
+      speculativeIds
     } = useContext(ListingContext);
     const isSpeculative = speculativeIds[id];
 

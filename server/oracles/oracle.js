@@ -24,15 +24,22 @@ export const oracle = specs => {
   const timestamps = {};
   const registerListener = (listenForSoul, updateSoul) => {
     if (listenForSoul === updateSoul) return;
-    const recomputes = listeners[listenForSoul] = listeners[listenForSoul] || {}; // eslint-disable-line
+    const recomputes = (listeners[listenForSoul] =
+      listeners[listenForSoul] || {}); // eslint-disable-line
     recomputes[updateSoul] = true;
   };
-  const routes = specs.routes.map(({ path, ...rest }) => ({ matcher: new Route(path), path, ...rest }));
+  const routes = specs.routes.map(({ path, ...rest }) => ({
+    matcher: new Route(path),
+    path,
+    ...rest
+  }));
   const findRouteForSoul = soul => {
     let match = null;
     const route = routes.find(rt => (match = rt.matcher.match(soul)));
     if (route && route.checkMatch && !route.checkMatch(match)) return null;
-    return route ? { ...route, soul, match, query: scope => route.query(scope, match) } : null;
+    return route
+      ? { ...route, soul, match, query: scope => route.query(scope, match) }
+      : null;
   };
   let computedPub;
 
@@ -52,17 +59,29 @@ export const oracle = specs => {
     }
     if (!computedPub) return;
 
-    for (const propName in (msg.get || {})) {
+    for (const propName in msg.get || {}) {
       const soul = msg.get[propName];
       if (soul.indexOf(computedPub) === -1) return;
       const route = findRouteForSoul(soul);
-      if (route) worker.push({ id: `get:${soul}`, soul, method: "onGet", priority: route.priority || 50 });
+      if (route)
+        worker.push({
+          id: `get:${soul}`,
+          soul,
+          method: "onGet",
+          priority: route.priority || 50
+        });
     }
     if (msg.get && msg.get["#"]) {
       const soul = msg.get["#"];
       if (soul.indexOf(computedPub) === -1) return;
       const route = findRouteForSoul(soul);
-      if (route) worker.push({ id: `get:${soul}`, soul, method: "onGet", priority: route.priority || 50 });
+      if (route)
+        worker.push({
+          id: `get:${soul}`,
+          soul,
+          method: "onGet",
+          priority: route.priority || 50
+        });
     }
   };
 
@@ -87,21 +106,33 @@ export const oracle = specs => {
   };
 
   const priority = (action, cb) => cb(null, propOr(50, "priority", action));
-  const worker = (new Queue((action, done) => {
-    const { soul, method } = action || {};
-    if (!soul) return console.warn("Invalid worker action", action) || done(); // eslint-disable-line
-    const route = findRouteForSoul(soul);
-    if (!route) return console.warn("Invalid worker soul", action) || done(); // eslint-disable-line
-    try {
-      if (method === "onGet") return route.onGet(thisOracle, route, action).then(() => done());
-      if (method === "onPut") return route.onPut(thisOracle, route, action).then(() => done());
-    } catch (e) {
-      console.error("oracle worker error", e.stack || e);
-    }
-    done();
-  }, { concurrent: specs.concurrent || 100, priority }));
+  const worker = new Queue(
+    (action, done) => {
+      const { soul, method } = action || {};
+      if (!soul) return console.warn("Invalid worker action", action) || done(); // eslint-disable-line
+      const route = findRouteForSoul(soul);
+      if (!route) return console.warn("Invalid worker soul", action) || done(); // eslint-disable-line
+      try {
+        if (method === "onGet")
+          return route.onGet(thisOracle, route, action).then(() => done());
+        if (method === "onPut")
+          return route.onPut(thisOracle, route, action).then(() => done());
+      } catch (e) {
+        console.error("oracle worker error", e.stack || e);
+      }
+      done();
+    },
+    { concurrent: specs.concurrent || 100, priority }
+  );
 
-  const thisOracle = { registerListener, cacheTimestamp, getTimestamp, findRouteForSoul, onGet, onPut };
+  const thisOracle = {
+    registerListener,
+    cacheTimestamp,
+    getTimestamp,
+    findRouteForSoul,
+    onGet,
+    onPut
+  };
   return thisOracle;
 };
 
@@ -132,9 +163,9 @@ export const basicQueryRoute = spec => ({
 
   onGet: (orc, route) => {
     const scope = orc.nab.newScope({ noGun: true });
-    const now = (new Date()).getTime();
+    const now = new Date().getTime();
     const updated = orc.getTimestamp(route.soul);
-    if ((now - updated) < (1000 * 60 * 2)) return Promise.resolve();
+    if (now - updated < 1000 * 60 * 2) return Promise.resolve();
     console.log("onGet", route.soul);
     return scope.get(route.soul).then(existing => {
       orc.cacheTimestamp(route.soul, getLatestTimestamp(existing));
@@ -151,15 +182,20 @@ export const basicQueryRoute = spec => ({
     });
   },
 
-  onPut: (orc, route, { soul, updatedSoul, latest=0 } = {}) => {
+  onPut: (orc, route, { soul, updatedSoul, latest = 0 } = {}) => {
     const scope = orc.nab.newScope({ noGun: true });
     console.log("onPut", { updating: soul, from: updatedSoul });
     const knownTimestamp = orc.getTimestamp(soul);
-    if (latest && knownTimestamp && knownTimestamp > latest) return Promise.resolve();
+    if (latest && knownTimestamp && knownTimestamp > latest)
+      return Promise.resolve();
     return scope.get(route.soul).then(existing => {
       const current = getLatestTimestamp(existing);
       if (latest && latest < current) return;
-      return route.doUpdate(orc, route, existing, current);
+      return route.doUpdate(orc, route, existing, current).then(queryScope => {
+        for (const key in queryScope.getAccesses()) {
+          key !== route.soul && orc.registerListener(key, route.soul);
+        }
+      });
     });
   }
 });
