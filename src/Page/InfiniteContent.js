@@ -2,7 +2,6 @@ import React, {
   useContext,
   useState,
   useCallback,
-  useEffect,
   useRef
 } from "react";
 import { add } from "ramda";
@@ -67,13 +66,6 @@ export const InfiniteContent = React.memo(
       stoppedScrolling();
       return Promise.resolve();
     }, []);
-
-    useEffect(
-      () => {
-        setLimit(parseInt(query.limit, 10) || 25);
-      },
-      [query.limit]
-    );
 
     return  (
       <div className="content" role="main">

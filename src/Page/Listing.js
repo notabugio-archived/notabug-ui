@@ -3,6 +3,7 @@ import { PageTemplate } from "Page/Template";
 import { NestedContent } from "Page/NestedContent";
 import { InfiniteContent } from "Page/InfiniteContent";
 import { PagedContent } from "Page/PagedContent";
+import { PageFooter } from "Page/Footer";
 import { useListingContext } from "Listing";
 
 export const ListingPage = React.memo(({ listingParams, ...props }) => {
@@ -31,6 +32,15 @@ export const ListingPage = React.memo(({ listingParams, ...props }) => {
     <ListingContext.Provider value={listingData}>
       <PageTemplate {...{ ...props, ...listingData, listingParams }}>
         {content}
+        {infinite || isChat ? null : (
+          <React.Fragment>
+            <PageFooter />
+            <p className="bottommenu debuginfo" key="debuginfo">
+              <span className="icon">π</span>
+              <span className="content" />
+            </p>
+          </React.Fragment>
+        )}
       </PageTemplate>
     </ListingContext.Provider>
   );
