@@ -1,9 +1,13 @@
-import { prop, propOr, uniq, map, filter, compose } from "ramda";
-import * as SOULS from "../notabug-peer/souls";
-import { query, all } from "../notabug-peer/scope";
+import { prop, uniq } from "ramda";
+import { query } from "../notabug-peer/scope";
 import { PREFIX, SOUL_DELIMETER } from "../notabug-peer/util";
-import { filterThings, sorts, multiTopic, multiAuthor, singleAuthor, repliesToAuthor, sortThings } from "../queries";
+import { sorts, multiTopic, sortThings } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
+import { topicListing } from "../listings/topic";
+import { domainListing } from "../listings/domain";
+import { commentsListing } from "../listings/comments";
+import { curatedListing } from "../listings/curated";
+import { authorListing, authorReplies } from "../listings/author";
 
 const LISTING_SIZE = 1000;
 
@@ -32,7 +36,6 @@ const FRONTPAGE_TOPICS = [
   "videos",
   "whatever"
 ];
-
 
 const CURATOR_IDS = uniq([
   "~5vvQz9CTQgpk4alXuJIiHeTBRt4itoueqrHs-Fi0X7A.1iY7DRla-NvhahUszYZCgxXUnMcoLPGlLTU1ldBqINE",
@@ -71,55 +74,12 @@ const CURATOR_IDS = uniq([
   "~f6RbIATo7-nJ6mjvDBZWcg7vU-asmDamY9qq9GxKUfw.u98Ri4vl6pjIir4a0tvCHmg1j7iez0W_jUztCdIodTo",
   "~HoT8wl6e5UbHesNzkGeVDa2zUIS6ZWHc-yx2NunKNes.Q2BZxj3MsVDArVPESSjZ_PrD_YM81iPeTKcfdVXP2XI",
   "~wxMa_-I6AhvXt9VOxONnv1LByYOBhFAZc8c78STAo5c.vE8K0f0bopBpwr5gy0CUXFVf21HuIjJbxeahIdQOCtY",
-  "~rzXflBj8oChH5-Fs1IYDeeMNgNz7a3pcrdB8DqXaaLs.ogPJbmDZc-T51woR7Aggbp77-krW-TtRcySp3uG2-Cw",
+  "~rzXflBj8oChH5-Fs1IYDeeMNgNz7a3pcrdB8DqXaaLs.ogPJbmDZc-T51woR7Aggbp77-krW-TtRcySp3uG2-Cw"
 ]);
 
 const CENSOR_IDS = [
   "~Wca7b2b7PnXacwBALo28ICWt9Czgy28LOuHES-Avd8c.BgmQH_1XTPqel7H16TJ64poUsh0Cg1tIxHbKN2tf1as"
 ];
-
-const curate = query((scope, authorIds, submissionOnly = false) =>
-  all([
-    multiAuthor(
-      scope,
-      {
-        type: "comments",
-        authorIds: authorIds
-      }
-    )
-      .then(souls => all(souls.filter(x => !!x).map(soul => scope.get(`${soul}/data`).then(x => x))))
-      .then(compose(
-        map(submissionOnly ? prop("opId") : prop("replyToId")),
-        filter(itemData => {
-          if (!itemData) return;
-          // if (submissionOnly && itemData.opId !== itemData.replyToId) return;
-          return !!itemData.replyToId;
-        })
-      )),
-    multiAuthor(
-      scope,
-      {
-        type: "submitted",
-        authorIds: authorIds
-      }
-    )
-      .then(map(soul => SOULS.thing.isMatch(soul).thingid))
-  ]).then(([ids1, ids2]) => uniq([...ids1, ...ids2]))
-);
-
-const censor = (scope, things) =>
-  curate(scope, CENSOR_IDS)
-    .then(ids => {
-      const bad = {};
-      ids.forEach(id => bad[id] = true);
-      return bad;
-    })
-    .then(badIds => filterThings(scope, things, thing => {
-      if (!thing.data) return false;
-      if (badIds[thing.id]) return false;
-      if (badIds[thing.data.opId]) return false;
-      return true;
-    }));
 
 export default oracle({
   name: "indexer",
@@ -128,23 +88,47 @@ export default oracle({
     basicQueryRoute({
       path: `${PREFIX}/t/:topic/firehose@~:id1.:id2.`,
       priority: 75,
-      checkMatch: ({ topic }) => topic && (topic.toLowerCase() === topic) && topic.indexOf(":") === -1,
+      checkMatch: ({ topic }) =>
+        topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
       query: query((scope, { match: { topic, id1, id2 } }) => {
-        const normalTopics = topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
-        const submitTopic = (topic === "front" || topic === "all") ? "whatever" : normalTopics[0] || "whatever";
-        const topics = normalTopics.reduce((res, topic) =>
-          [ ...res, topic, `chat:${topic}`, `comments:${topic}`], []);
+        const normalTopics =
+          topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
+        const submitTopic =
+          topic === "front" || topic === "all"
+            ? "whatever"
+            : normalTopics[0] || "whatever";
+        const topics = normalTopics.reduce(
+          (res, topic) => [...res, topic, `chat:${topic}`, `comments:${topic}`],
+          []
+        );
         return multiTopic(scope, { topics })
           .then(thingSouls =>
-            sortThings(scope, { sort: "new", thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
+            sortThings(scope, {
+              sort: "new",
+              thingSouls,
+              tabulator: `~${id1}.${id2}`
+            })
+          )
+          .then(things =>
+            serializeListing({
+              name: topic,
+              things: things.slice(0, LISTING_SIZE)
+            })
+          )
           .then(serialized => ({
             ...serialized,
             includeRanks: false,
             submitTopic,
             isChat: true,
             censors: "",
-            tabs: ["hot", "new", "discussed", "controversial", "top", "firehose"]
+            tabs: [
+              "hot",
+              "new",
+              "discussed",
+              "controversial",
+              "top",
+              "firehose"
+            ]
               .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
               .join(SOUL_DELIMETER)
           }));
@@ -154,23 +138,48 @@ export default oracle({
     basicQueryRoute({
       path: `${PREFIX}/t/:topic/chat@~:id1.:id2.`,
       priority: 80,
-      checkMatch: ({ topic }) => topic && (topic.toLowerCase() === topic) && topic.indexOf(":") === -1,
+      checkMatch: ({ topic }) =>
+        topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
       query: query((scope, { match: { topic, id1, id2 } }) => {
-        const normalTopics = topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
-        const submitTopic = (topic === "front" || topic === "all") ? "whatever" : normalTopics[0] || "whatever";
-        const topics = normalTopics.reduce((res, topic) =>
-          [ ...res, `chat:${topic}`], []);
+        const normalTopics =
+          topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
+        const submitTopic =
+          topic === "front" || topic === "all"
+            ? "whatever"
+            : normalTopics[0] || "whatever";
+        const topics = normalTopics.reduce(
+          (res, topic) => [...res, `chat:${topic}`],
+          []
+        );
         return multiTopic(scope, { topics })
           .then(thingSouls =>
-            sortThings(scope, { sort: "new", thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
+            sortThings(scope, {
+              sort: "new",
+              thingSouls,
+              tabulator: `~${id1}.${id2}`
+            })
+          )
+          .then(things =>
+            serializeListing({
+              name: topic,
+              things: things.slice(0, LISTING_SIZE)
+            })
+          )
           .then(serialized => ({
             ...serialized,
             includeRanks: false,
             submitTopic,
             isChat: true,
             censors: "",
-            tabs: ["hot", "new", "discussed", "controversial", "top", "firehose", "chat"]
+            tabs: [
+              "hot",
+              "new",
+              "discussed",
+              "controversial",
+              "top",
+              "firehose",
+              "chat"
+            ]
               .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
               .join(SOUL_DELIMETER)
           }));
@@ -180,138 +189,81 @@ export default oracle({
     basicQueryRoute({
       path: `${PREFIX}/t/front/:sort@~:id1.:id2.`,
       priority: 25,
-      checkMatch: ({ sort }) => (sort in sorts),
+      checkMatch: ({ sort }) => sort in sorts,
       query: query((scope, { match: { sort, id1, id2 } }) =>
-        curate(scope, CURATOR_IDS, true)
-          .then(ids => ids.map(thingid => SOULS.thing.soul({ thingid })))
-          .then(thingSouls =>
-            sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => censor(scope, things))
-          .then(things => serializeListing({ name: "front", things: things.slice(0, LISTING_SIZE) }))
-          .then(serialized => ({
-            ...serialized,
-            includeRanks: true,
-            submitTopic: "whatever",
-            curators: CURATOR_IDS.map(id => id.replace(/^~/, "")).join(SOUL_DELIMETER),
-            censors: CENSOR_IDS.map(id => id.replace(/^~/, "")).join(SOUL_DELIMETER),
-            tabs: ["hot", "new", "discussed", "controversial", "top", "firehose"]
-              .map(tab => `${PREFIX}/t/front/${tab}@~${id1}.${id2}.`)
-              .join(SOUL_DELIMETER)
-          })))
+        curatedListing(scope, {
+          name: "front",
+          sort,
+          curators: CURATOR_IDS,
+          censors: CENSOR_IDS,
+          indexer: `${id1}.${id2}`
+        })
+      )
     }),
 
     basicQueryRoute({
       path: `${PREFIX}/things/:thingid/comments/:sort@~:id1.:id2.`,
-      checkMatch: ({ sort }) => (sort in sorts),
+      checkMatch: ({ sort }) => sort in sorts,
       priority: 85,
-      query: query((scope, { match: { thingid, id1, id2, sort } }) =>
-        scope.get(SOULS.thingAllComments.soul({ thingid })).souls()
-          .then(souls => [SOULS.thing.soul({ thingid }), ...souls])
-          .then(thingSouls =>
-            sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ things }))
-          .then(serialized => scope.get(SOULS.thingData.soul({ thingid }))
-            .then(data => ({
-              ...serialized,
-              name: propOr("", "topic", data),
-              opId: thingid,
-              submitTopic: propOr("whatever", "topic", data),
-              includeRanks: false,
-              tabs: [`${PREFIX}/things/${thingid}/comments/${sort}@~${id1}.${id2}.`]
-            }))))
+      query: query((scope, { match: { thingid, sort, id1, id2 } }) =>
+        commentsListing(scope, { thingid, sort, indexer: `${id1}.${id2}` })
+      )
     }),
 
     basicQueryRoute({
       path: `${PREFIX}/domain/:domain/:sort@~:id1.:id2.`,
       priority: 25,
       checkMatch: ({ sort, domain }) =>
-        (sort in sorts) && domain && (domain.toLowerCase() === domain),
-      query: query((scope, { match: { domain, id1, id2, sort } }) =>
-        scope.get(SOULS.domain.soul({ domain })).souls()
-          .then(thingSouls =>
-            sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ name: domain, things: things.slice(0, LISTING_SIZE) }))
-          .then(serialized => ({
-            ...serialized,
-            includeRanks: true,
-            submitTopic: "whatever",
-            tabs: ["hot", "new", "discussed", "controversial", "top"]
-              .map(tab => `${PREFIX}/domain/${domain}/${tab}@~${id1}.${id2}.`)
-              .join(SOUL_DELIMETER)
-          })))
+        sort in sorts && domain && domain.toLowerCase() === domain,
+      query: query((scope, { match: { domain, sort, id1, id2 } }) =>
+        domainListing(scope, { domain, sort, indexer: `${id1}.${id2}` })
+      )
     }),
 
     basicQueryRoute({
       path: `${PREFIX}/t/:topic/:sort@~:id1.:id2.`,
       priority: 60,
-      checkMatch: ({ sort, topic }) => (sort in sorts) && topic && (topic.toLowerCase() === topic),
-      query: query((scope, { match: { topic, sort, id1, id2 } }) => {
-        const isAbnormal = topic.indexOf(":") !== -1;
-        const topics = topic.split("+");
-        const normalTopics = topics.filter(t => t && t.indexOf(":") === -1);
-        const submitTopic = normalTopics[0] || "whatever";
-        return multiTopic(scope, { topics })
-          .then(thingSouls =>
-            sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ name: topic, things: things.slice(0, LISTING_SIZE) }))
-          .then(serialized => ({
-            ...serialized,
-            includeRanks: true,
-            submitTopic,
-            tabs: ["hot", "new", "discussed", "controversial", "top", ...(isAbnormal ? [] : ["firehose"])]
-              .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
-              .join(SOUL_DELIMETER)
-          }));
-      })
+      checkMatch: ({ sort, topic }) =>
+        sort in sorts && topic && topic.toLowerCase() === topic,
+      query: query((scope, { match: { topic, sort, id1, id2 } }) =>
+        topicListing(scope, { topic, sort, indexer: `${id1}.${id2}` })
+      )
     }),
 
     basicQueryRoute({
       path: `${PREFIX}/user/:authorId/replies/:type/:sort@~:id1.:id2.`,
       priority: 20,
       checkMatch: ({ sort, type, authorId }) =>
-        (sort in sorts) && authorId && type  && type.toLowerCase() == type &&
+        sort in sorts &&
+        authorId &&
+        type &&
+        type.toLowerCase() == type &&
         (type === "overview" || type === "submitted" || type === "comments"),
       query: query((scope, { match: { authorId, type, sort, id1, id2 } }) =>
-        repliesToAuthor(
-          scope,
-          { repliesToAuthorId: authorId ? `~${authorId}` : null, type }
-        )
-          .then(thingSouls => sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-          .then(things => serializeListing({ things: things.slice(0, LISTING_SIZE) }))
-          .then(serialized => ({
-            ...serialized,
-            name: "message"
-          })))
+        authorReplies(scope, { authorId, type, sort, indexer: `${id1}.${id2}` })
+      )
     }),
 
     basicQueryRoute({
       path: `${PREFIX}/user/:authorId/:type/:sort@~:id1.:id2.`,
       priority: 30,
       checkMatch: ({ sort, type, authorId }) =>
-        (sort in sorts) && authorId && type  && type.toLowerCase() == type &&
+        sort in sorts &&
+        authorId &&
+        type &&
+        type.toLowerCase() == type &&
         (type === "overview" || type === "submitted" || type === "comments"),
       query: query((scope, { match: { authorId, type, sort, id1, id2 } }) =>
-        all([
-          singleAuthor(
-            scope,
-            { authorId: authorId ? `~${authorId}` : null, type }
-          )
-            .then(thingSouls => sortThings(scope, { sort, thingSouls, tabulator: `~${id1}.${id2}` }))
-            .then(things => serializeListing({ things: things.slice(0, LISTING_SIZE) })),
-          scope.get(`~${authorId}`).then()
-        ]).then(([serialized, meta]) => ({
-          ...serialized,
-          name: propOr("", "alias", meta),
-          userId: authorId,
-          tabs: ["overview", "comments", "submitted"]
-            .map(tab => `${PREFIX}/user/${authorId}/${tab}/${sort}@~${id1}.${id2}.`)
-            .join(SOUL_DELIMETER)
-        })))
+        authorListing(scope, { authorId, type, sort, indexer: `${id1}.${id2}` })
+      )
     })
   ]
 });
 
-const serializeListing = ({ name="", things }) => ({
+const serializeListing = ({ name = "", things }) => ({
   name,
-  ids: things.map(prop("id")).filter(id => !!id).join("+")
+  ids: things
+    .map(prop("id"))
+    .filter(id => !!id)
+    .join("+")
 });

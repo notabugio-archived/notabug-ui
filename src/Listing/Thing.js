@@ -20,8 +20,6 @@ const components = {
   chatmsg: ChatMsg
 };
 
-console.log("components", components);
-
 export const Thing = React.memo(
   ({
     Loading: LoadingComponent = Loading,
