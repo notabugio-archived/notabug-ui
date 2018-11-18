@@ -14,14 +14,12 @@ import notabugPeer from "notabug-peer";
 
 let INDEXEDDB = false;
 let LOCAL_STORAGE = false;
-let RECALL_LOGIN = false;
 let FORCE_REALTIME = false;
 
 if (!isNode) {
   INDEXEDDB = !!window.indexedDB && !!/indexeddb/.test(window.location.search);
   LOCAL_STORAGE = !INDEXEDDB && !/noLocalStorage/.test(window.location.search);
   FORCE_REALTIME = !/norealtime/.test(window.location.search);
-  RECALL_LOGIN = !/norecall/.test(window.location.search);
   if (LOCAL_STORAGE) INDEXEDDB = false;
   if (INDEXEDDB) console.log("using indexeddb");
   if (LOCAL_STORAGE) console.log("using localstorage");
@@ -38,12 +36,14 @@ if (!isNode) {
 export const NabContext = createContext();
 
 export const useNabGlobals = ({ notabugApi, history }) => {
+  let hasLocalStorage = false;
   const api = useMemo(
     () => {
       if (notabugApi) return notabugApi;
+      hasLocalStorage = isLocalStorageNameSupported();
       const nab = notabugPeer({
         noGun: isNode ? true : false,
-        localStorage: LOCAL_STORAGE && isLocalStorageNameSupported(),
+        localStorage: LOCAL_STORAGE && hasLocalStorage,
         persist: INDEXEDDB,
         disableValidation: true,
         storeFn: INDEXEDDB ? RindexedDB : null,
@@ -75,6 +75,10 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       api.gun.user().leave();
       setUser(null);
       sessionStorage && sessionStorage.clear();
+      if (hasLocalStorage) {
+        localStorage.setItem("nabAlias", "");
+        localStorage.setItem("nabPassword", "");
+      }
     },
     [api]
   );
@@ -97,16 +101,12 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     () => {
       if (!isNode && api.gun) window.notabug = api;
       api.onLogin(didLogin);
-
-      if (RECALL_LOGIN && api.gun.user) {
-        api.gun.user().recall({ sessionStorage: true });
-        const check = () => {
-          const auth = api.isLoggedIn();
-          if (api.isLoggedIn()) didLogin(auth);
-          clearInterval(check);
-        };
-        setInterval(check, 100);
-      }
+      const alias = localStorage.getItem("nabAlias") || "";
+      const password = localStorage.getItem("nabPassword") || "";
+      if (alias && password)
+        api.login(alias, password).catch(err => {
+          console.error("autologin failed", err);
+        });
     },
     [api]
   );
@@ -120,6 +120,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       onFetchCache,
       onMarkMine,
       onLogout,
+      hasLocalStorage,
       hasAttributedReddit,
       setHasAttributedReddit
     }),
@@ -131,6 +132,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       onFetchCache,
       onMarkMine,
       onLogout,
+      hasLocalStorage,
       hasAttributedReddit,
       setHasAttributedReddit
     ]

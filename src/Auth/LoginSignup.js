@@ -10,13 +10,14 @@ import { JavaScriptRequired } from "utils";
 import { injectHook } from "utils";
 
 export const useLoginSignup = () => {
-  const { me, api, history } = useContext(NabContext);
+  const { me, api, history, hasLocalStorage } = useContext(NabContext);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isWorking, setIsWorking] = useState(false);
   const [passwordConfirm, setPasswordConfirm] = useState("");
   const [loginError, setLoginError] = useState(null);
   const [signupError, setSignupError] = useState(null);
+  const [rememberMe, onSetRememberMe] = useState(true);
   const passwordsMatch = password === passwordConfirm;
   const isSignupValid = password && passwordsMatch;
   const isLoginValid = username && password;
@@ -31,6 +32,9 @@ export const useLoginSignup = () => {
   const onChangePasswordConfirm = useCallback(evt => {
     setPasswordConfirm(evt.target.value);
   }, []);
+  const onChangeRememberMe = useCallback(() => {
+    onSetRememberMe(r => !r);
+  }, []);
 
   const onLogin = useCallback(
     evt => {
@@ -40,7 +44,18 @@ export const useLoginSignup = () => {
       setIsWorking(true);
       return api
         .login(username, password)
-        .then(() => setIsWorking(false))
+        .then(() => {
+          setIsWorking(false);
+          if (hasLocalStorage) {
+            if (rememberMe) {
+              localStorage.setItem("nabAlias", username);
+              localStorage.setItem("nabPassword", password);
+            } else {
+              localStorage.setItem("nabAlias", "");
+              localStorage.setItem("nabPassword", "");
+            }
+          }
+        })
         .catch(loginError => {
           console.error("loginError", loginError.stack || loginError);
           setLoginError(loginError);
@@ -60,6 +75,15 @@ export const useLoginSignup = () => {
       return Promise.resolve(api.signup(username, password))
         .then(() => {
           setIsWorking(false);
+          if (hasLocalStorage) {
+            if (rememberMe) {
+              localStorage.setItem("nabAlias", username);
+              localStorage.setItem("nabPassword", password);
+            } else {
+              localStorage.setItem("nabAlias", "");
+              localStorage.setItem("nabPassword", "");
+            }
+          }
           history.replace("/");
         })
         .catch(signupError => {
@@ -82,6 +106,7 @@ export const useLoginSignup = () => {
     username,
     password,
     passwordConfirm,
+    rememberMe,
     loginError,
     signupError,
     canLogin,
@@ -91,6 +116,7 @@ export const useLoginSignup = () => {
     onChangeUsername,
     onChangePassword,
     onChangePasswordConfirm,
+    onChangeRememberMe,
     onLogin,
     onLoginAndRedirect,
     onSignup

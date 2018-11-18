@@ -10,11 +10,21 @@ import { App } from "App";
 import { unregister } from "utils/registerServiceWorker";
 
 try {
-  ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
+  ReactDOM.render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>,
+    document.body
+  );
 } catch (e) {
   console.error(e.stack || e);
-  localStorage.clear();
-  ReactDOM.render(<BrowserRouter><App /></BrowserRouter>, document.body);
+  localStorage.removeItem("gun/");
+  ReactDOM.render(
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>,
+    document.body
+  );
 }
 
 unregister();
