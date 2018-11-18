@@ -73,7 +73,7 @@ const CURATOR_IDS = uniq([
   "rzXflBj8oChH5-Fs1IYDeeMNgNz7a3pcrdB8DqXaaLs.ogPJbmDZc-T51woR7Aggbp77-krW-TtRcySp3uG2-Cw",
   "xvtDefKQT_bEJSImPlfgfr-EPXO7SUxFztRdwiT1Tak.TgC0zXaDPY9Enoe2g81-pWCbqRpopzDcoUxn8uC8QJc",
   "uvXPrAAu7Rmkytav-KSiY93yXGM6HQ2-oGDRQRfAkLw.EKOIQnJT1cPTwGJqcqDzZ_lGmsyR9LEgbaJyZsRY4d0",
-  "tVv_GHTi8QJQgtw4U4X4linIT6RU0CvQPnPmNMAI6ns.hES2aS082-8hOvAS8Tf5Q6B3tK3mW0cdykebwvPv6dg",
+  "tVv_GHTi8QJQgtw4U4X4linIT6RU0CvQPnPmNMAI6ns.hES2aS082-8hOvAS8Tf5Q6B3tK3mW0cdykebwvPv6dg"
 ]);
 
 const CENSOR_IDS = [
@@ -293,6 +293,7 @@ export default oracle({
           scope,
           [
             `tabulator ${id1}.${id2}`,
+            "name message",
             `replies to author ${authorId}`,
             `type ${type}`,
             `sort ${sort}`
@@ -300,11 +301,7 @@ export default oracle({
         ).then(serialized => ({
           ...serialized,
           userId: authorId,
-          tabs: ["overview", "comments", "submitted"]
-            .map(
-              tab => `${PREFIX}/user/${authorId}/${tab}/${sort}@~${id1}.${id2}.`
-            )
-            .join(SOUL_DELIMETER)
+          tabs: ""
         }))
       )
     }),
