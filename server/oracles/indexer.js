@@ -300,7 +300,7 @@ export default oracle({
           ].join("\n")
         ).then(serialized => ({
           ...serialized,
-          userId: authorId,
+          userid: "",
           tabs: ""
         }))
       )

@@ -49,7 +49,7 @@ Gun.on("opt", function(root){
   root.opt.super = true;
 });
 
-if (options.evict) require("gun/lib/evict");
+if (options.evict) require("gun/lib/les");
 if (options.debug) require("gun/lib/debug");
 
 global.Gun = Gun;
