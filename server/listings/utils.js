@@ -10,32 +10,31 @@ export const serializeListing = ({ name="", things }) => ({
   ids: things.map(prop("id")).filter(id => !!id).join("+")
 });
 
+const fetchThingSoulsData = scope => souls => all(
+  souls
+    .filter(x => !!x)
+    .map(soul => scope.get(`${soul}/data`).then(x => x))
+);
+
 export const curate = query((scope, authorIds, submissionOnly = false) =>
   all([
     multiAuthor(scope, {
       type: "comments",
-      authorIds: authorIds
+      authorIds
     })
-      .then(souls =>
-        all(
-          souls
-            .filter(x => !!x)
-            .map(soul => scope.get(`${soul}/data`).then(x => x))
-        )
-      )
+      .then(fetchThingSoulsData(scope))
       .then(
         compose(
           map(submissionOnly ? prop("opId") : prop("replyToId")),
           filter(itemData => {
             if (!itemData) return;
-            // if (submissionOnly && itemData.opId !== itemData.replyToId) return;
-            return !!itemData.replyToId;
+            return itemData && !!itemData.replyToId;
           })
         )
       ),
     multiAuthor(scope, {
       type: "submitted",
-      authorIds: authorIds
+      authorIds
     }).then(map(soul => SOULS.thing.isMatch(soul).thingid))
   ]).then(([ids1, ids2]) => uniq([...ids1, ...ids2]))
 );

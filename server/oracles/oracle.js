@@ -166,7 +166,6 @@ export const basicQueryRoute = spec => ({
     const now = new Date().getTime();
     const updated = orc.getTimestamp(route.soul);
     if (now - updated < 1000 * 60 * 2) return Promise.resolve();
-    console.log("onGet", route.soul);
     return scope.get(route.soul).then(existing => {
       orc.cacheTimestamp(route.soul, getLatestTimestamp(existing));
 
@@ -182,9 +181,8 @@ export const basicQueryRoute = spec => ({
     });
   },
 
-  onPut: (orc, route, { soul, updatedSoul, latest = 0 } = {}) => {
+  onPut: (orc, route, { soul, /*updatedSoul,*/ latest = 0 } = {}) => {
     const scope = orc.nab.newScope({ noGun: true });
-    console.log("onPut", { updating: soul, from: updatedSoul });
     const knownTimestamp = orc.getTimestamp(soul);
     if (latest && knownTimestamp && knownTimestamp > latest)
       return Promise.resolve();

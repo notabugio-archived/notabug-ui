@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Thing } from "Listing/Thing";
-import { path } from "ramda";
+import { prop } from "ramda";
 
 export const Things = React.memo(
   ({
@@ -13,9 +13,9 @@ export const Things = React.memo(
     ids,
     ...props
   }) => {
-    const { includeRanks } = useContext(ListingContext);
+    const { includeRanks, listingParams } = useContext(ListingContext);
     const renderThing = (id, idx) => {
-      const count = parseInt(path(["listingParams", "count"], props) || 0);
+      const count = parseInt(prop("count", listingParams) || 0);
       return (
         <Thing
           {...{ ...props, ListingContext, id }}
