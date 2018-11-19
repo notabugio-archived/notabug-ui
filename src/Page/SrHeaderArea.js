@@ -45,6 +45,12 @@ export const SrHeaderArea = () => (
           </li>
           <li>
             <span className="separator">-</span>
+            <Link className="choice" href="/t/curated">
+              curated
+            </Link>
+          </li>
+          <li>
+            <span className="separator">-</span>
             <Link className="choice" href="/t/notabug">
               notabug
             </Link>
@@ -56,7 +62,9 @@ export const SrHeaderArea = () => (
           {HEADER_TOPICS.sort().map(topic => (
             <li key={topic}>
               <span className="separator">-</span>
-              <Link className="choice" href={`/t/${topic}`}>{topic}</Link>
+              <Link className="choice" href={`/t/${topic}`}>
+                {topic}
+              </Link>
             </li>
           ))}
         </ul>

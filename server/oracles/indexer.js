@@ -186,6 +186,31 @@ export default oracle({
     }),
 
     basicQueryRoute({
+      path: `${PREFIX}/t/curated/:sort@~:id1.:id2.`,
+      priority: 25,
+      checkMatch: ({ sort }) => sort in sorts,
+      query: query((scope, { match: { sort, id1, id2 } }) =>
+        declarativeListing(
+          scope,
+          [
+            "name curated",
+            `tabulator ${id1}.${id2}`,
+            "show ranks",
+            "submit to whatever",
+            `sort ${sort}`,
+            ...CURATOR_IDS.map(id => `curator ${id}`),
+            ...CENSOR_IDS.map(id => `censor ${id}`)
+          ].join("\n")
+        ).then(serialized => ({
+          ...serialized,
+          tabs: ["hot", "new", "discussed", "controversial", "top", "firehose"]
+            .map(tab => `${PREFIX}/t/front/${tab}@~${id1}.${id2}.`)
+            .join(SOUL_DELIMETER)
+        }))
+      )
+    }),
+
+    basicQueryRoute({
       path: `${PREFIX}/t/front/:sort@~:id1.:id2.`,
       priority: 25,
       checkMatch: ({ sort }) => sort in sorts,
@@ -196,9 +221,10 @@ export default oracle({
             "name front",
             `tabulator ${id1}.${id2}`,
             "show ranks",
+            "ups above 1",
             "submit to whatever",
             `sort ${sort}`,
-            ...CURATOR_IDS.map(id => `curator ${id}`),
+            ...FRONTPAGE_TOPICS.map(topic => `topic ${topic}`),
             ...CENSOR_IDS.map(id => `censor ${id}`)
           ].join("\n")
         ).then(serialized => ({

@@ -1,4 +1,4 @@
-import { prop, propOr, path, assocPath, keysIn, trim } from "ramda";
+import { compose, lte, gte, prop, propOr, path, assocPath, keysIn, trim } from "ramda";
 import {
   multiAuthor,
   multiTopic,
@@ -67,7 +67,12 @@ export const declarativeListing = query((scope, description) => {
   const isPresent = p => {
     let check = p;
     if (typeof p === "string") check = p.split(" ");
-    return !!(check && path(check, definition));
+    return (check && path(check, definition));
+  };
+  const getValue = p => {
+    const keys = keysIn(isPresent(p));
+    if (!keys.length) return null;
+    return keys[0];
   };
   const source = keysIn(sources).find(isPresent) || "topic";
   const sort = keysIn(definition.sort)[0] || "new";
@@ -78,8 +83,6 @@ export const declarativeListing = query((scope, description) => {
   const censors = keysIn(definition.censor);
   const opId = keysIn(definition.op)[0];
 
-  // these bits are not yet implemented
-  // eslint-disable-next-line
   const needsData = !![
     source !== "topic" ? ["topic"] : null,
     source !== "domain" ? ["domain"] : null,
@@ -90,7 +93,6 @@ export const declarativeListing = query((scope, description) => {
     ["ban", "alias"]
   ].find(isPresent);
 
-  // eslint-disable-next-line
   const needsScores = !![
     ["sort", "hot"],
     ["sort", "top"],
@@ -119,7 +121,30 @@ export const declarativeListing = query((scope, description) => {
       }
       return thingSouls;
     })
-    .then(thingSouls => sortThings(scope, { sort, thingSouls, tabulator }))
+    .then(thingSouls => sortThings(
+      scope,
+      { sort, thingSouls, tabulator, scores: needsScores, data: needsData }
+    ))
+    .then(things => {
+      const filters = [];
+      const upsMin = getValue("ups above");
+      const upsMax = getValue("ups below");
+      const downsMin = getValue("downs above");
+      const downsMax = getValue("downs below");
+      const scoreMin = getValue("score above");
+      const scoreMax = getValue("score below");
+      const topics = keysIn(isPresent("topic"));
+      if (upsMin !== null) filters.push(compose(lte(upsMin), parseInt, path(["votes", "up"])));
+      if (upsMax !== null) filters.push(compose(gte(upsMax), parseInt, path(["votes", "up"])));
+      if (downsMin !== null) filters.push(compose(lte(downsMin), parseInt, path(["votes", "down"])));
+      if (downsMax !== null) filters.push(compose(gte(downsMax), parseInt, path(["votes", "down"])));
+      if (scoreMin !== null) filters.push(compose(lte(scoreMin), parseInt, path(["votes", "score"])));
+      if (scoreMax !== null) filters.push(compose(gte(scoreMax), parseInt, path(["votes", "score"])));
+      if (topics.length && source !== "topic")
+        filters.push(compose(topic => isPresent(["topic", topic], definition), prop("topic")));
+      if (filters.length) return things.filter(thing => !filters.find(fn => !fn(thing)));
+      return things;
+    })
     .then(things => censor(scope, censors.map(id => `~${id}`), things))
     .then(things => things.slice(0, LISTING_SIZE))
     .then(things => serializeListing({ name, things }))
