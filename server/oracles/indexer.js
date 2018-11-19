@@ -203,8 +203,8 @@ export default oracle({
           ].join("\n")
         ).then(serialized => ({
           ...serialized,
-          tabs: ["hot", "new", "discussed", "controversial", "top", "firehose"]
-            .map(tab => `${PREFIX}/t/front/${tab}@~${id1}.${id2}.`)
+          tabs: ["hot", "new", "discussed", "controversial", "top"]
+            .map(tab => `${PREFIX}/t/curated/${tab}@~${id1}.${id2}.`)
             .join(SOUL_DELIMETER)
         }))
       )
