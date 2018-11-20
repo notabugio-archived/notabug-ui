@@ -1,6 +1,18 @@
-import { prop, path } from "ramda";
+import { prop, path, trim, assocPath } from "ramda";
 import { scope as getScope, query } from "./scope";
 import * as SOULS from "./souls";
+
+export const parseListingSource = source =>
+  source.split("\n").reduce((def, line) => {
+    const tokens = line
+      .trim()
+      .split(" ")
+      .map(trim)
+      .filter(x => x);
+    if (!tokens.length) return def;
+    return assocPath(tokens, {}, def);
+  }, {});
+
 
 const listing = query((scope, soul) => scope.get(soul), "listing");
 

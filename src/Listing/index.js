@@ -39,18 +39,12 @@ export const useListing = ({ listingParams }) => {
     isChatString !== "false" &&
     isChatString !== "0"
   );
-  const { ids: canonicalIds, tabs, curators, censors } = useMemo(
+  const { ids: canonicalIds, tabs } = useMemo(
     () => ({
       ids: propOr("", "ids", state)
         .split("+")
         .filter(x => !!x),
       tabs: propOr("", "tabs", state)
-        .split(SOUL_DELIMETER)
-        .filter(x => !!x),
-      curators: propOr("", "curators", state)
-        .split(SOUL_DELIMETER)
-        .filter(x => !!x),
-      censors: propOr("", "censors", state)
         .split(SOUL_DELIMETER)
         .filter(x => !!x)
     }),
@@ -95,8 +89,6 @@ export const useListing = ({ listingParams }) => {
     ...(state || {}),
     ids,
     tabs,
-    curators,
-    censors,
     includeRanks,
     isChat,
     createdAt,
@@ -124,10 +116,13 @@ export const useListingContent = ({ ids }) => {
   const scope = useScope();
   const initialContent = useMemo(
     () =>
-      ids.reduce((res, id) => ({
-        ...res,
-        [id]: api.queries.thingData.now(scope, id)
-      }), {}),
+      ids.reduce(
+        (res, id) => ({
+          ...res,
+          [id]: api.queries.thingData.now(scope, id)
+        }),
+        {}
+      ),
     []
   );
   const [content, setContent] = useState(initialContent);

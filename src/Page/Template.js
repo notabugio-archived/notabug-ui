@@ -4,12 +4,13 @@ import { Link, Timestamp } from "utils";
 import { UserIdLink, AuthorLink, UserInfo, LoginFormSide } from "Auth";
 import { SidebarTitlebox } from "Page/SidebarTitlebox";
 import { SrHeaderArea } from "Page/SrHeaderArea";
+import { ListingInfo } from "Page/ListingInfo";
 import { NavTab } from "Page/NavTab";
-import { SidebarUserList } from "Auth/SidebarUserList";
 
 export const PageTemplate = ({
   match: { params: { identifier="all" }={} }={},
   listingParams,
+  source,
   name,
   opId,
   userId,
@@ -17,8 +18,6 @@ export const PageTemplate = ({
   submitTopic,
   createdAt,
   hideLogin=false,
-  curators=[],
-  censors=[],
   children
 }) => (
   <React.Fragment>
@@ -99,10 +98,9 @@ export const PageTemplate = ({
               />
             </React.Fragment>
           ) : null}
-          {curators.length ? <SidebarUserList title="CURATORS" ids={curators} /> : null}
-          {censors.length ? <SidebarUserList title="CENSORS" ids={censors} /> : null}
         </React.Fragment>
       )}
+      <ListingInfo {...{ source }} />
     </div>
     <a name="content" key="anchor" />
     {children}

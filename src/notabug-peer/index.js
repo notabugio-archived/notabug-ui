@@ -5,7 +5,7 @@ import * as write from "./write";
 import * as souls from "./souls";
 import * as schema from "./schema";
 import * as auth from "./auth";
-import * as listings from "./listings";
+import { queries, newScope } from "./listings";
 export * from "./util";
 export { nowOr, now } from "./scope";
 
@@ -81,7 +81,7 @@ export default function notabug(config={}) {
     if (config.oracle) peer.gun.on("put", msg => config.oracle.onPut(peer, msg));
   }
 
-  const fns = { ...listings, ...write, ...auth };
+  const fns = { queries, newScope, ...write, ...auth };
   Object.keys(fns).map(key => peer[key] = fns[key](peer));
   return peer;
 }
