@@ -3,7 +3,7 @@ import { UserIdLink } from "Auth";
 
 export const SidebarUserList = ({ title = "users", ids, foldSize = 5 }) => {
   const [visibleCount, setVisibleCount] = useState(foldSize);
-  const moreCount = ids.length - visibleCount;
+  const moreCount = (ids && ids.length || 0) - visibleCount;
   const hasMore = moreCount > 0;
 
   const onShowMore = useCallback(
@@ -13,6 +13,8 @@ export const SidebarUserList = ({ title = "users", ids, foldSize = 5 }) => {
     },
     [ids.length]
   );
+
+  if (!ids || !ids.length) return null;
 
   return (
     <div className="spacer">

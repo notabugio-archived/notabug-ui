@@ -2,17 +2,26 @@ import React, { useState, useMemo, useCallback } from "react";
 import { compose, trim, keysIn, prop } from "ramda";
 import { Markdown } from "utils";
 import { SidebarUserList } from "Auth/SidebarUserList";
+import { TopicList } from "Page/TopicList";
 import { parseListingSource } from "notabug-peer/listings";
 
 export const ListingInfo = React.memo(({ source }) => {
   console.log({ source });
-  const { lines, curators, censors } = useMemo(
+  const { lines, curators, censors, topics } = useMemo(
     () => {
-      const lines = source ? source.split("\n").map(compose(s => `    ${s}`, trim)) : [];
+      const lines = source
+        ? source.split("\n").map(
+            compose(
+              s => `    ${s}`,
+              trim
+            )
+          )
+        : [];
       const parsed = parseListingSource(source || "");
       const curators = keysIn(prop("curator", parsed));
       const censors = keysIn(prop("censor", parsed));
-      return { lines, parsed, curators, censors };
+      const topics = keysIn(prop("topic", parsed));
+      return { lines, parsed, curators, censors, topics };
     },
     [source]
   );
@@ -25,8 +34,9 @@ export const ListingInfo = React.memo(({ source }) => {
   if (!source) return null;
   return (
     <React.Fragment>
-      {curators.length ? <SidebarUserList title="CURATORS" ids={curators} /> : null}
-      {censors.length ? <SidebarUserList title="CENSORS" ids={censors} /> : null}
+      <TopicList {...{ topics }} />
+      <SidebarUserList title="CURATORS" ids={curators} />
+      <SidebarUserList title="CENSORS" ids={censors} />
       <div className="spacer">
         <div className="sidecontentbox">
           {isExpanded ? (
@@ -34,11 +44,13 @@ export const ListingInfo = React.memo(({ source }) => {
               <h1>listing source</h1>
             </div>
           ) : null}
-          <div className="content">
+          <div className={isExpanded ? "content" : ""}>
             {isExpanded ? <Markdown body={lines.join("\n")} /> : null}
             <div className="more">
               <a href="" onClick={onToggle}>
-                {isExpanded ? "...hide listing source..." : `...show listing source (${lines.length} lines)...`}
+                {isExpanded
+                  ? "...hide listing source..."
+                  : `...show listing source (${lines.length} lines)...`}
               </a>
             </div>
           </div>
