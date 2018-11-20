@@ -141,7 +141,7 @@ export const declarativeListing = query((scope, description) => {
       if (scoreMin !== null) filters.push(compose(lte(scoreMin), parseInt, path(["votes", "score"])));
       if (scoreMax !== null) filters.push(compose(gte(scoreMax), parseInt, path(["votes", "score"])));
       if (topics.length && source !== "topic")
-        filters.push(compose(topic => isPresent(["topic", topic], definition), prop("topic")));
+        filters.push(compose(topic => !!isPresent(["topic", topic]), path(["data", "topic"])));
       if (filters.length) return things.filter(thing => !filters.find(fn => !fn(thing)));
       return things;
     })
@@ -151,7 +151,7 @@ export const declarativeListing = query((scope, description) => {
     .then(serialized => ({
       ...serialized,
       submitTopic,
-      includeRanks: isPresent(["show", "ranks"]),
+      includeRanks: !!isPresent(["show", "ranks"]),
       curators: curators.join(SOUL_DELIMETER),
       censors: censors.join(SOUL_DELIMETER)
     }));

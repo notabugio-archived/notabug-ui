@@ -198,6 +198,7 @@ export default oracle({
             "show ranks",
             "submit to whatever",
             `sort ${sort}`,
+            ...FRONTPAGE_TOPICS.map(topic => `topic ${topic}`),
             ...CURATOR_IDS.map(id => `curator ${id}`),
             ...CENSOR_IDS.map(id => `censor ${id}`)
           ].join("\n")

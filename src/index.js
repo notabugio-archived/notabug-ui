@@ -19,6 +19,7 @@ try {
 } catch (e) {
   console.error(e.stack || e);
   localStorage.removeItem("gun/");
+  localStorage.removeItem("gap/gun/");
   ReactDOM.render(
     <BrowserRouter>
       <App />
