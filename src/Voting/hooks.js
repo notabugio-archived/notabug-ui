@@ -48,8 +48,8 @@ export const useVotingQueue = () => {
     return workPromise
       .then(nonce => api.vote(nextId, type, nonce))
       .then(() => {
-        onDequeueVote(nextId);
         setCurrentVote(null);
+        onDequeueVote(nextId);
       })
       .catch(error => error && console.error(error.stack || error));
   }, [currentVote, voteQueue]);
