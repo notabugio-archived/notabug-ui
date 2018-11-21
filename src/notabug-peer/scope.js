@@ -130,7 +130,7 @@ export const scope = ({
             if (!(soul in graph)) receive(null);
           }, 10000);
         }
-        if (!gun.redis && !noGun) gun.get(soul).on(receive);
+        if (!noGun) gun.get(soul).on(receive);
       }));
   const cachedQuery = (name, queryFn, ...args) => {
     if (parentScope) return parentScope.cachedQuery(name, queryFn, ...args);

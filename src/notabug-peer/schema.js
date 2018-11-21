@@ -129,7 +129,7 @@ export const thingData = (key, val, parent, pKey, msg, peer) =>
         const match = peer.souls.thingData.isMatch(prop("#", val) || key);
 
         if (id !== match.thingid) {
-          console.warn("thing data mismatch", id, match.thingid, msg, record); // eslint-disable-line
+          console.warn("thing data mismatch", id, match.thingid); // eslint-disable-line
           Object.keys(val).forEach(vk => {
             if (vk !== "_" && vk !== "#") {
               delete val[vk]; // eslint-disable-line

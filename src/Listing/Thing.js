@@ -136,7 +136,7 @@ export const Thing = React.memo(
       [item, parentItem]
     );
 
-    const score = scores.score || 0;
+    const score = parseInt(scores.score) || 0;
     const ThingComponent = item ? components[item.kind] : null;
     const collapsed =
       !isMine && !!(collapseThreshold !== null && score < collapseThreshold);
