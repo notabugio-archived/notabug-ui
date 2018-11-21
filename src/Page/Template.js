@@ -1,12 +1,13 @@
 import React from "react";
 import { SubmitLinkSidebox, SubmitTextSidebox } from "snew-classic-ui";
-import { Link, Timestamp } from "utils";
+import { Link, Timestamp, JavaScriptRequired } from "utils";
 import { UserIdLink, AuthorLink, UserInfo, LoginFormSide } from "Auth";
 import { SidebarTitlebox } from "Page/SidebarTitlebox";
 import { SrHeaderArea } from "Page/SrHeaderArea";
 import { ListingInfo } from "Page/ListingInfo";
 import { NavTab } from "Page/NavTab";
 import { SidebarVotingStatus } from "Voting";
+import { SidebarChat } from "Chat/SidebarChat";
 
 export const PageTemplate = ({
   match: { params: { identifier = "all" } = {} } = {},
@@ -16,6 +17,7 @@ export const PageTemplate = ({
   opId,
   userId,
   tabs,
+  isChat,
   submitTopic,
   createdAt,
   hideLogin = false,
@@ -112,7 +114,10 @@ export const PageTemplate = ({
           ) : null}
         </React.Fragment>
       )}
-      <ListingInfo {...{ source }} />
+      <JavaScriptRequired silent>
+        <ListingInfo {...{ source }} />
+        {!isChat && submitTopic ? <SidebarChat topic={submitTopic} /> : null}
+      </JavaScriptRequired>
     </div>
     <a name="content" key="anchor" />
     {children}
