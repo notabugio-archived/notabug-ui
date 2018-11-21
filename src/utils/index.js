@@ -4,6 +4,7 @@ export { JavaScriptRequired } from "./JavaScriptRequired";
 export { default as Dropdown } from "./Dropdown";
 export { Link } from "./Link";
 export { Loading } from "./Loading";
+export { ErrorBoundary } from "./ErrorBoundary";
 export { Markdown } from "./Markdown";
 export { ScrollToTop } from "./ScrollToTop";
 export { Timestamp } from "./Timestamp";

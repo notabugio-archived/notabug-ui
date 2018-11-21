@@ -1,5 +1,5 @@
 import React from "react";
-import { Dropdown, Link } from "utils";
+import { Dropdown, Link, ErrorBoundary } from "utils";
 import { NestedListing } from "Comment";
 import { Thing } from "Listing/Thing";
 import { default as Submission } from "Submission/Submission";
@@ -16,32 +16,34 @@ export const NestedContent = React.memo(
     const { opId, listingParams } = listingData;
 
     return (
-      <ContentContext.Provider value={contentData}>
-        <div className="content" role="main">
-          <div className="spacer">
-            <div className="sitetable linklisting" id="siteTable">
-              <Thing
-                {...{ ListingContext }}
-                id={opId}
-                Loading={Submission}
-                isVisible
-                isViewing
-                isDetail
-              />
-            </div>
-            <div className="commentarea">
-              <CommentAreaTitle />
-              <SortSelector
-                {...{ Dropdown, Link }}
-                currentSort={listingParams.sort || "best"}
-                permalink={pathname}
-                sortOptions={["best", "hot", "new", "top", "controversial"]}
-              />
-              <NestedListing showReplyForm id={opId} {...{ ListingContext }} />
+      <ErrorBoundary>
+        <ContentContext.Provider value={contentData}>
+          <div className="content" role="main">
+            <div className="spacer">
+              <div className="sitetable linklisting" id="siteTable">
+                <Thing
+                  {...{ ListingContext }}
+                  id={opId}
+                  Loading={Submission}
+                  isVisible
+                  isViewing
+                  isDetail
+                />
+              </div>
+              <div className="commentarea">
+                <CommentAreaTitle />
+                <SortSelector
+                  {...{ Dropdown, Link }}
+                  currentSort={listingParams.sort || "best"}
+                  permalink={pathname}
+                  sortOptions={["best", "hot", "new", "top", "controversial"]}
+                />
+                <NestedListing showReplyForm id={opId} {...{ ListingContext }} />
+              </div>
             </div>
           </div>
-        </div>
-      </ContentContext.Provider>
+        </ContentContext.Provider>
+      </ErrorBoundary>
     );
   }
 );

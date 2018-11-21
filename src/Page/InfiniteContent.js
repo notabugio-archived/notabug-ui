@@ -12,7 +12,7 @@ import ChatView from "react-chatview";
 import { ChatMsg, ChatInput } from "Chat";
 import { useLimitedListing } from "Listing";
 import { Things } from "Listing/Things";
-import { Loading as LoadingComponent } from "utils";
+import { ErrorBoundary, Loading as LoadingComponent } from "utils";
 
 export const InfiniteContent = React.memo(
   ({
@@ -63,33 +63,35 @@ export const InfiniteContent = React.memo(
     }, []);
 
     return  (
-      <div className="content" role="main">
-        <Things
-          {...{
-            Empty,
-            ListingContext,
-            limit,
-            ids: limitedIds,
-            onDidUpdate: isChat ? scrollToBottom : null,
-            fetchParent: true,
-            disableChildren: true
-          }}
-          Loading={isChat ? ChatMsg : Loading}
-          Container={ChatView}
-          collapseLarge={isChat ? true : false}
-          containerProps={{
-            id: "siteTable",
-            className: `sitetable infinite-listing ${
-              isChat ? "chat-listing" : ""
-            }`,
-            scrollLoadThreshold: 800,
-            onInfiniteLoad: onLoadMore,
-            flipped: isChat,
-            returnScrollable: el => scrollable.current = el
-          }}
-        />
-        {isChat ? <ChatInput {...{ ListingContext }} /> : null}
-      </div>
+      <ErrorBoundary>
+        <div className="content" role="main">
+          <Things
+            {...{
+              Empty,
+              ListingContext,
+              limit,
+              ids: limitedIds,
+              onDidUpdate: isChat ? scrollToBottom : null,
+              fetchParent: true,
+              disableChildren: true
+            }}
+            Loading={isChat ? ChatMsg : Loading}
+            Container={ChatView}
+            collapseLarge={isChat ? true : false}
+            containerProps={{
+              id: "siteTable",
+              className: `sitetable infinite-listing ${
+                isChat ? "chat-listing" : ""
+              }`,
+              scrollLoadThreshold: 800,
+              onInfiniteLoad: onLoadMore,
+              flipped: isChat,
+              returnScrollable: el => scrollable.current = el
+            }}
+          />
+          {isChat ? <ChatInput {...{ ListingContext }} /> : null}
+        </div>
+      </ErrorBoundary>
     );
   }
 );

@@ -3,7 +3,7 @@ import qs from "qs";
 import { Link, JavaScriptRequired } from "utils";
 import { useLimitedListing } from "Listing";
 import { Things } from "Listing/Things";
-import { Loading as LoadingComponent } from "utils";
+import { ErrorBoundary, Loading as LoadingComponent } from "utils";
 
 export const PagedContent = React.memo(
   ({
@@ -29,47 +29,49 @@ export const PagedContent = React.memo(
     const hasNext = limitedIds.length >= limit;
 
     return (
-      <div className="content" role="main">
-        <div className="sitetable" id="siteTable">
-          <Things
-            {...{ Loading, Empty, ListingContext, limit }}
-            ids={limitedIds}
-            fetchParent
-            disableChildren
-          >
-            {hasPrev || hasNext ? (
-              <div className="nav-buttons" key="navigation">
-                <span className="nextprev">
-                  {"view more: "}
-                  {hasPrev ? (
+      <ErrorBoundary>
+        <div className="content" role="main">
+          <div className="sitetable" id="siteTable">
+            <Things
+              {...{ Loading, Empty, ListingContext, limit }}
+              ids={limitedIds}
+              fetchParent
+              disableChildren
+            >
+              {hasPrev || hasNext ? (
+                <div className="nav-buttons" key="navigation">
+                  <span className="nextprev">
+                    {"view more: "}
+                    {hasPrev ? (
+                      <Link
+                        href={`${pathname || "/"}?${qs.stringify({
+                          ...query,
+                          count: count - limit
+                        })}`}
+                      >
+                        ‹ prev
+                      </Link>
+                    ) : null}
+                    <JavaScriptRequired silent>
+                      <a onClick={onToggleInfinite} href="">
+                        ∞
+                      </a>
+                    </JavaScriptRequired>
                     <Link
                       href={`${pathname || "/"}?${qs.stringify({
                         ...query,
-                        count: count - limit
+                        count: count + limit
                       })}`}
                     >
-                      ‹ prev
+                      next ›
                     </Link>
-                  ) : null}
-                  <JavaScriptRequired silent>
-                    <a onClick={onToggleInfinite} href="">
-                      ∞
-                    </a>
-                  </JavaScriptRequired>
-                  <Link
-                    href={`${pathname || "/"}?${qs.stringify({
-                      ...query,
-                      count: count + limit
-                    })}`}
-                  >
-                    next ›
-                  </Link>
-                </span>
-              </div>
-            ) : null}
-          </Things>
+                  </span>
+                </div>
+              ) : null}
+            </Things>
+          </div>
         </div>
-      </div>
+      </ErrorBoundary>
     );
   }
 );

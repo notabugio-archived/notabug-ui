@@ -5,6 +5,7 @@ import { InfiniteContent } from "Page/InfiniteContent";
 import { PagedContent } from "Page/PagedContent";
 import { PageFooter } from "Page/Footer";
 import { useListingContext } from "Listing";
+import { ErrorBoundary } from "utils";
 
 export const ListingPage = React.memo(({ listingParams, ...props }) => {
   const { ListingContext, listingData } = useListingContext({ listingParams });
@@ -31,16 +32,18 @@ export const ListingPage = React.memo(({ listingParams, ...props }) => {
   return (
     <ListingContext.Provider value={listingData}>
       <PageTemplate {...{ ...props, ...listingData, listingParams }}>
-        {content}
-        {infinite || isChat ? null : (
-          <React.Fragment>
-            <PageFooter />
-            <p className="bottommenu debuginfo" key="debuginfo">
-              <span className="icon">π</span>
-              <span className="content" />
-            </p>
-          </React.Fragment>
-        )}
+        <ErrorBoundary>
+          {content}
+          {infinite || isChat ? null : (
+            <React.Fragment>
+              <PageFooter />
+              <p className="bottommenu debuginfo" key="debuginfo">
+                <span className="icon">π</span>
+                <span className="content" />
+              </p>
+            </React.Fragment>
+          )}
+        </ErrorBoundary>
       </PageTemplate>
     </ListingContext.Provider>
   );

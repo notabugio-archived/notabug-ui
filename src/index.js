@@ -7,6 +7,7 @@ import "snew-classic-ui/static/css/minimal.css";
 import "react-tippy/dist/tippy.css";
 import "styles/index.css";
 import { App } from "App";
+import { ErrorBoundary } from "utils";
 import { unregister } from "utils/registerServiceWorker";
 
 try {
@@ -22,7 +23,9 @@ try {
   localStorage.removeItem("gap/gun/");
   ReactDOM.render(
     <BrowserRouter>
-      <App />
+      <ErrorBoundary>
+        <App />
+      </ErrorBoundary>
     </BrowserRouter>,
     document.body
   );
