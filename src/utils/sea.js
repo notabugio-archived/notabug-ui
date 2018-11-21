@@ -68,7 +68,7 @@
 
     if (SEA.window) {
       if (location.protocol.indexOf('s') < 0 && location.host.indexOf('localhost') < 0 && location.protocol.indexOf('file:') < 0) {
-        location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
+        // location.protocol = 'https:'; // WebCrypto does NOT work without HTTPS!
       }
     }
   })(USE, './https');
@@ -838,7 +838,7 @@
   USE(function (module) {
     var SEA = USE('./root');
     var shim = USE('./shim');
-    var S = USE('./settings'); // Derive shared secret from other's pub and my epub/epriv 
+    var S = USE('./settings'); // Derive shared secret from other's pub and my epub/epriv
 
     SEA.secret = SEA.secret || (async (key, pair, cb, opt) => {
       try {

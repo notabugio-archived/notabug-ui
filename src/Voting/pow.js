@@ -10,6 +10,7 @@ export const doWork = (prefix, complexity=DEFAULT_POW_COMPLEXITY) => {
     worker = worker || new WorkProofer();
     terminate = () => {
       reject(worker.terminate());
+      worker = null;
     };
     worker.onmessage = (m) => resolve(m.data);
     worker.postMessage([prefix, complexity]);

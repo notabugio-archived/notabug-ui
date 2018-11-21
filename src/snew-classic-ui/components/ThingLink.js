@@ -16,7 +16,6 @@ const ThingLink = ({
   onReport,
   onVoteUp,
   onVoteDown,
-  isVoting,
   isDetail,
   id,
   expanded = false,
@@ -28,8 +27,6 @@ const ThingLink = ({
   rank,
   stickied,
   score,
-  downs,
-  ups,
   likes,
   num_comments,
   subreddit,
@@ -51,8 +48,6 @@ const ThingLink = ({
   thumbnail,
   locked,
   brand_safe,
-  preview,
-  secure_media_embed,
   banned_by,
   meta_thing,
   siteprefix,
@@ -99,19 +94,11 @@ const ThingLink = ({
           onClick={onVoteUp}
         />
       ) : null}
-      {isVoting ? (
-        <Fragment>
-          <div className="score dislikes"><div className="loading working"><div className="throbber" /></div></div>
-          <div className="score unvoted"><div className="loading working"><div className="throbber" /></div></div>
-          <div className="score likes"><div className="loading working"><div className="throbber" /></div></div>
-        </Fragment>
-      ) : (
-        <Fragment>
-          <div className="score dislikes" title={scoreTooltip}>{score > 10000 ? (score/1000.0).toFixed(1)+"k" : score}</div>
-          <div className="score unvoted" title={scoreTooltip}>{score  > 10000 ? (score/1000.0).toFixed(1)+"k" : score}</div>
-          <div className="score likes" title={scoreTooltip}>{score > 10000 ? (score/1000.0).toFixed(1)+"k" : score}</div>
-        </Fragment>
-      )}
+      <Fragment>
+        <div className="score dislikes" title={scoreTooltip}>{score > 10000 ? (score/1000.0).toFixed(1)+"k" : score}</div>
+        <div className="score unvoted" title={scoreTooltip}>{score  > 10000 ? (score/1000.0).toFixed(1)+"k" : score}</div>
+        <div className="score likes" title={scoreTooltip}>{score > 10000 ? (score/1000.0).toFixed(1)+"k" : score}</div>
+      </Fragment>
       {onVoteDown ? (
         <div
           aria-label="downvote"

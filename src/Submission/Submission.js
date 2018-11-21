@@ -86,7 +86,6 @@ export const Submission = ({
         is_self={!item.url}
         score={scoreDisp}
         num_comments={comments}
-        isVoting={isVotingUp || isVotingDown}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
         linkTarget="_blank"
         scoreTooltip={`+${ups} / -${downs}`}

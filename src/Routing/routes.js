@@ -7,8 +7,6 @@ import { toRoute } from "./toRoute";
 import { tabulator } from "../config.json";
 import { PREFIX } from "notabug-peer";
 
-console.log({ tabulator });
-
 const withParams = fn => (props) => ({ ...baseParams(props), ...fn(props) });
 const baseParams = ({ params: { sort="hot" }={}, query: { indexer=tabulator, count, limit }={} }={}) => ({
   sort,

@@ -6,7 +6,6 @@ import { TopicList } from "Page/TopicList";
 import { parseListingSource } from "notabug-peer/listings";
 
 export const ListingInfo = React.memo(({ source }) => {
-  console.log({ source });
   const { lines, curators, censors, topics } = useMemo(
     () => {
       const lines = source

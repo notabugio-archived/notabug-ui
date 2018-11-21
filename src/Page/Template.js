@@ -6,9 +6,10 @@ import { SidebarTitlebox } from "Page/SidebarTitlebox";
 import { SrHeaderArea } from "Page/SrHeaderArea";
 import { ListingInfo } from "Page/ListingInfo";
 import { NavTab } from "Page/NavTab";
+import { SidebarVotingStatus } from "Voting";
 
 export const PageTemplate = ({
-  match: { params: { identifier="all" }={} }={},
+  match: { params: { identifier = "all" } = {} } = {},
   listingParams,
   source,
   name,
@@ -17,7 +18,7 @@ export const PageTemplate = ({
   tabs,
   submitTopic,
   createdAt,
-  hideLogin=false,
+  hideLogin = false,
   children
 }) => (
   <React.Fragment>
@@ -27,18 +28,17 @@ export const PageTemplate = ({
       </a>
       <SrHeaderArea />
       <div id="header-bottom-left">
-        <Link
-          className="default-header"
-          href="/"
-          id="header-img"
-        >
+        <Link className="default-header" href="/" id="header-img">
           notabug
         </Link>
         {name ? (
           <span className="hover pagename redditname">
             <Link
-              href={`/${listingParams && listingParams.prefix || "t"}/${identifier}/`}
-            >{name}</Link>
+              href={`/${(listingParams && listingParams.prefix) ||
+                "t"}/${identifier}/`}
+            >
+              {name}
+            </Link>
           </span>
         ) : null}
         {tabs && tabs.length ? (
@@ -71,30 +71,42 @@ export const PageTemplate = ({
               <div className="bottom">
                 {createdAt ? (
                   <span className="age">
-                    created <Timestamp {...{ created_utc:createdAt }} />
+                    created <Timestamp {...{ created_utc: createdAt }} />
                   </span>
                 ) : null}
               </div>
             </div>
           </div>
           {hideLogin ? null : <LoginFormSide />}
+          <SidebarVotingStatus />
         </React.Fragment>
       ) : (
         <React.Fragment>
           {hideLogin ? null : <LoginFormSide />}
           {submitTopic ? (
             <React.Fragment>
-              <SubmitLinkSidebox {...{ Link }} siteprefix="t" subreddit={submitTopic} />
-              <SubmitTextSidebox {...{ Link }} siteprefix="t" subreddit={submitTopic} />
+              <SubmitLinkSidebox
+                {...{ Link }}
+                siteprefix="t"
+                subreddit={submitTopic}
+              />
+              <SubmitTextSidebox
+                {...{ Link }}
+                siteprefix="t"
+                subreddit={submitTopic}
+              />
+              <SidebarVotingStatus />
               <SidebarTitlebox
                 {...{ Link }}
                 siteprefix="t"
                 subreddit={name}
-                bottom={listingParams && listingParams.indexer ? (
-                  <React.Fragment>
-                    indexed by <UserIdLink userId={listingParams.indexer} />
-                  </React.Fragment>
-                ) : null}
+                bottom={
+                  listingParams && listingParams.indexer ? (
+                    <React.Fragment>
+                      indexed by <UserIdLink userId={listingParams.indexer} />
+                    </React.Fragment>
+                  ) : null
+                }
               />
             </React.Fragment>
           ) : null}
@@ -106,4 +118,3 @@ export const PageTemplate = ({
     {children}
   </React.Fragment>
 );
-

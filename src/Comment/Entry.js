@@ -18,19 +18,19 @@ export const ThingCommentEntry = ({
     AuthorLink={AuthorLink}
     likes={isVotingUp ? true : isVotingDown ? false : undefined}
     score={null}
-    afterAuthor={(
+    afterAuthor={
       <Fragment>
-        {isVotingUp || isVotingDown ? <span className="loading working"><span className="throbber" /></span> : null}
         <span className="score individual-vote-counts">
-          <span className="score likes" title="upvotes">+{ups}</span>
-          {" "}
-          <span className="score dislikes" title="downvotes">-{downs}</span>
-          {" "}
+          <span className="score likes" title="upvotes">
+            +{ups}
+          </span>{" "}
+          <span className="score dislikes" title="downvotes">
+            -{downs}
+          </span>{" "}
           points
         </span>
       </Fragment>
-    )}
-    isVoting={isVotingUp || isVotingDown}
+    }
     onVoteUp={onVoteUp}
     onVoteDown={onVoteDown}
   />
