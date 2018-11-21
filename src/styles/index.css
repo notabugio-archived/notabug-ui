@@ -120,6 +120,15 @@ body > .content .chat-listing .link .midcol,
   border: 1px solid #5f99cf;
 }
 
+.sidebar-chat .chat-input .send-btn {
+  display: none;
+}
+.sidebar-chat .chat-input input {
+  width: 100%;
+  border-width: 0 0 0 0;
+  border-top: 1px solid gray;
+}
+
 .chat-modal .chat-modal-controls {
   position: absolute;
   top: 0px;
