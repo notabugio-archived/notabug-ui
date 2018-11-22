@@ -80,7 +80,6 @@ export const PageTemplate = ({
             </div>
           </div>
           {hideLogin ? null : <LoginFormSide />}
-          <SidebarVotingStatus />
         </React.Fragment>
       ) : (
         <React.Fragment>
@@ -97,7 +96,6 @@ export const PageTemplate = ({
                 siteprefix="t"
                 subreddit={submitTopic}
               />
-              <SidebarVotingStatus />
               <SidebarTitlebox
                 {...{ Link }}
                 siteprefix="t"
@@ -118,6 +116,7 @@ export const PageTemplate = ({
         <ListingInfo {...{ source }} />
         {!isChat && submitTopic ? <SidebarChat topic={submitTopic} /> : null}
       </JavaScriptRequired>
+      <SidebarVotingStatus />
     </div>
     <a name="content" key="anchor" />
     {children}

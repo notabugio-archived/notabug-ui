@@ -194,11 +194,11 @@ export default oracle({
           scope,
           [
             "name curated",
-            `tabulator ${id1}.${id2}`,
             "show ranks",
             "submit to whatever",
-            `sort ${sort}`,
             ...FRONTPAGE_TOPICS.map(topic => `topic ${topic}`),
+            `sort ${sort}`,
+            `tabulator ${id1}.${id2}`,
             ...CURATOR_IDS.map(id => `curator ${id}`),
             ...CENSOR_IDS.map(id => `censor ${id}`)
           ].join("\n")
@@ -220,12 +220,11 @@ export default oracle({
           scope,
           [
             "name front",
-            `tabulator ${id1}.${id2}`,
-            "show ranks",
             "ups above 1",
             "submit to whatever",
-            `sort ${sort}`,
             ...FRONTPAGE_TOPICS.map(topic => `topic ${topic}`),
+            `sort ${sort}`,
+            `tabulator ${id1}.${id2}`,
             ...CENSOR_IDS.map(id => `censor ${id}`)
           ].join("\n")
         ).then(serialized => ({
@@ -244,7 +243,7 @@ export default oracle({
       query: query((scope, { match: { thingid, sort, id1, id2 } }) =>
         declarativeListing(
           scope,
-          [`tabulator ${id1}.${id2}`, `op ${thingid}`, `sort ${sort}`].join(
+          [ `op ${thingid}`, `sort ${sort}`, `tabulator ${id1}.${id2}` ].join(
             "\n"
           )
         ).then(serialized => ({
@@ -265,10 +264,9 @@ export default oracle({
           scope,
           [
             `name ${domain}`,
-            `tabulator ${id1}.${id2}`,
             ...domain.split("+").map(dm => `domain ${dm}`),
-            "show ranks",
-            `sort ${sort}`
+            `sort ${sort}`,
+            `tabulator ${id1}.${id2}`
           ].join("\n")
         ).then(serialized => ({
           ...serialized,
@@ -291,11 +289,11 @@ export default oracle({
           scope,
           [
             `name ${topic}`,
-            `tabulator ${id1}.${id2}`,
             ...topics.map(tp => `topic ${tp}`),
             "show ranks",
             `submit to ${submitTo}`,
-            `sort ${sort}`
+            `sort ${sort}`,
+            `tabulator ${id1}.${id2}`
           ].join("\n")
         ).then(serialized => ({
           ...serialized,
@@ -319,11 +317,11 @@ export default oracle({
         declarativeListing(
           scope,
           [
-            `tabulator ${id1}.${id2}`,
             "name message",
             `replies to author ${authorId}`,
             `type ${type}`,
-            `sort ${sort}`
+            `sort ${sort}`,
+            `tabulator ${id1}.${id2}`
           ].join("\n")
         ).then(serialized => ({
           ...serialized,
@@ -346,10 +344,10 @@ export default oracle({
         declarativeListing(
           scope,
           [
-            `tabulator ${id1}.${id2}`,
-            `author ${authorId}`,
             `type ${type}`,
-            `sort ${sort}`
+            `sort ${sort}`,
+            `author ${authorId}`,
+            `tabulator ${id1}.${id2}`,
           ].join("\n")
         ).then(serialized => ({
           ...serialized,

@@ -16,7 +16,7 @@ const MarkdownBase = ({ body, html, onClick, className = "usertext-body may-blan
       />
     ) : (
       <div className={className} onClick={onClick}>
-        <div className="md" dangerouslySetInnerHTML={{__html: parser.render(body)}} />
+        <div className="md" dangerouslySetInnerHTML={{__html: parser.render(body || "")}} />
       </div>
     );
 

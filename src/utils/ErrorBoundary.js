@@ -4,6 +4,7 @@ import { Markdown } from "./Markdown";
 export class ErrorBoundary extends React.PureComponent {
   state = { error: null, info: null };
   componentDidCatch(error, info) {
+    console.error(error, info);
     this.setState({ error, info });
   }
   onReload = () => location.reload(); // eslint-disable-line
