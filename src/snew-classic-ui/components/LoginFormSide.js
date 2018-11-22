@@ -9,6 +9,7 @@ const LoginFormSide = ({
   passwdError,
   rememberMe,
   resetPasswordUrl,
+  usernamePlaceholder="username",
   onChangeRememberMe,
   onChangeUsername,
   onChangePasswd,
@@ -26,7 +27,7 @@ const LoginFormSide = ({
       <input
         maxLength={20}
         name="user"
-        placeholder="username"
+        placeholder={usernamePlaceholder}
         tabIndex={1}
         type="text"
         defaultValue={username}

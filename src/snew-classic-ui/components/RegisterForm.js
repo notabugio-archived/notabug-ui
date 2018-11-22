@@ -9,7 +9,10 @@ const RegisterForm = ({
   passwd2,
   passwd2Error,
   email,
+  usernamePlaceholder="choose a username",
   rememberMe = false,
+  buttonText = "sign up",
+  rememberMeText = "remember me",
   onChangeUsername,
   onChangePasswd,
   onChangePasswd2,
@@ -39,7 +42,7 @@ const RegisterForm = ({
         id="user_reg"
         maxLength={20}
         name="user"
-        placeholder="choose a username"
+        placeholder={usernamePlaceholder}
         tabIndex={2}
         type="text"
         defaultValue={username}
@@ -134,7 +137,7 @@ const RegisterForm = ({
           checked={rememberMe}
           onChange={onChangeRememberMe}
         />
-        <label htmlFor="rem_reg">remember me</label>
+        <label htmlFor="rem_reg">{rememberMeText}</label>
       </div>
     ) : null}
     <div className="c-clearfix c-submit-group">
@@ -143,7 +146,7 @@ const RegisterForm = ({
         tabIndex={2}
         onClick={onSignUp}
       >
-        sign up
+        {buttonText}
       </button>
     </div>
     <div>

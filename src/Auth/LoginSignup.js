@@ -7,7 +7,7 @@ import { LoginForm as SnewLoginForm } from "snew-classic-ui";
 import { LoginFormSide as SnewLoginFormSide } from "snew-classic-ui";
 import { Page } from "Page";
 import { JavaScriptRequired } from "utils";
-import { injectHook } from "utils";
+import { Markdown, injectHook } from "utils";
 
 export const useLoginSignup = () => {
   const { me, api, history, hasLocalStorage } = useContext(NabContext);
@@ -154,6 +154,9 @@ export const RegisterForm = injectHook(useLoginSignup)(
         passwd2Error={
           !passwordsMatch || !password ? null : "Passwords don't match"
         }
+        buttonText="create a new identity"
+        rememberMeText="remember me (stores password in browser localStorage)"
+        usernamePlaceholder="choose an alias"
         onChangeUsername={onChangeUsername}
         onChangePasswd={onChangePassword}
         onChangePasswd2={onChangePasswordConfirm}
@@ -185,6 +188,7 @@ export const LoginForm = injectHook(useLoginSignup)(
         username={username}
         passwd={password}
         passwdError={loginError}
+        usernamePlaceholder="alias"
         onChangeUsername={onChangeUsername}
         onChangePasswd={onChangePassword}
         onLogin={onLoginAndRedirect}
@@ -215,6 +219,7 @@ export const LoginFormSide = injectHook(useLoginSignup)(
         username={username}
         passwd={password}
         passwdError={loginError}
+        usernamePlaceholder="alias"
         onChangeUsername={onChangeUsername}
         onChangePasswd={onChangePassword}
         onLogin={e => {
@@ -229,27 +234,44 @@ export const LoginFormSide = injectHook(useLoginSignup)(
 export const LoginSignupPage = () => (
   <Page hideLogin>
     <JavaScriptRequired>
-      <center>
-        <div className="reddit-infobar with-icon locked-infobar">
-          <h3>
-            auth is <strong>alpha</strong>, may take multiple tries
-          </h3>
-          <p>Password manager with random password highly recommended</p>
-          <p>DO NOT REUSE EXISING PASSWORDS FROM OTHER SITES</p>
-        </div>
-      </center>
       <div id="login">
         <div className="split-panel">
           <div className="split-panel-section split-panel-divider">
-            <h4 className="modal-title">create a new account</h4>
-            <RegisterForm />
+            <Markdown
+              body={`
+# Welcome to Notabug
+
+Identities on nab are cryptographic keys owned by you.
+
+They provide additional features, but you can participate without one.
+
+These features include an inbox and profile to showcase your content.
+
+More customization and community features coming soon
+
+
+              `}
+            />
           </div>
           <div className="split-panel-section">
-            <h4 className="modal-title">log in</h4>
-            <LoginForm />
+            <RegisterForm />
           </div>
         </div>
       </div>
+      <center>
+        <Markdown
+          body={`
+
+---
+
+Give me your tired, your poor,
+Your huddled masses yearning to breathe free,
+The wretched refuse of your teeming shore.
+Send these, the homeless, tempest-tossed to me,
+I lift my lamp beside the golden door!
+          `}
+        />
+      </center>
     </JavaScriptRequired>
   </Page>
 );

@@ -9,6 +9,7 @@ const LoginForm = ({
   passwd,
   passwdError,
   rememberMe,
+  usernamePlaceholder="username",
   resetPasswordUrl,
   onChangeRememberMe,
   onChangeUsername,
@@ -27,7 +28,7 @@ const LoginForm = ({
     <input name="dest" type="hidden" defaultValue="/" />
     <div className="c-form-group">
       <label className="screenreader-only" htmlFor="user_login">
-        username:
+        {usernamePlaceholder}:
       </label>
       <input
         autoFocus
@@ -35,7 +36,7 @@ const LoginForm = ({
         id="user_login"
         maxLength={20}
         name="user"
-        placeholder="username"
+        placeholder={usernamePlaceholder}
         tabIndex={3}
         type="text"
         defaultValue={username}

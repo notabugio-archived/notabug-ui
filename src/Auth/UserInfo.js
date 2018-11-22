@@ -17,9 +17,9 @@ export const UserInfo = props => {
     />
   ) : (
     <div id="header-bottom-right">
-      <a href="/login?sea" className="login-required">
-        no account needed to participate. sign up (ALPHA)
-      </a>
+      <Link href="/login" className="login-required">
+        create a new identity
+      </Link>
     </div>
   );
 };
