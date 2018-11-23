@@ -16,9 +16,9 @@ const ChatMsgEntry = ({
     {...props}
     postTagline={
       props.topic ? (
-        <React.Fragment>
+        <span className="chat-topic-name">
           {" "}in <Link href={`/t/${props.topic}/chat`}>{props.topic}</Link>
-        </React.Fragment>
+        </span>
       ) : null
     }
     body={props.body ? props.body.slice(0, COMMENT_BODY_MAX) : props.body}

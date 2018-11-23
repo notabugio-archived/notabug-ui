@@ -140,11 +140,15 @@ export const basicQueryRoute = spec => ({
   ...spec,
   doUpdate: (orc, route, existing, timestamp) => {
     const scope = orc.nab.newScope({ noGun: true });
+    const startedAt = new Date().getTime();
     return spec.query(scope, route).then(r => {
       // this is a workaround for a lame SEA bug
       Object.keys(r).forEach(key => {
         if (r[key] !== null) r[key] = `${r[key]}`; // eslint-disable-line no-param-reassign
       });
+      const endedAt = new Date().getTime();
+      const duration = endedAt - startedAt;
+      console.log("doUpdate", duration / 1000, Object.keys(scope.getAccesses()).length, route.soul);
 
       if (
         !existing ||

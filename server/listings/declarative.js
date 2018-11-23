@@ -46,8 +46,9 @@ const itemSources = {
   },
   topic: (scope, definition) => {
     const topics = keysIn(definition.topic);
+    const sort = keysIn(definition.sort)[0] || "new";
     if (!topics.length) topics.push("all");
-    return multiTopic(scope, { topics });
+    return multiTopic(scope, { topics, sort });
   }
 };
 

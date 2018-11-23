@@ -100,7 +100,7 @@ export default oracle({
           (res, topic) => [...res, topic, `chat:${topic}`, `comments:${topic}`],
           []
         );
-        return multiTopic(scope, { topics })
+        return multiTopic(scope, { topics, days: 14 })
           .then(thingSouls =>
             sortThings(scope, {
               sort: "new",
@@ -150,7 +150,7 @@ export default oracle({
           (res, topic) => [...res, `chat:${topic}`],
           []
         );
-        return multiTopic(scope, { topics })
+        return multiTopic(scope, { topics, days: 7 })
           .then(thingSouls =>
             sortThings(scope, {
               sort: "new",

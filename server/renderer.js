@@ -86,7 +86,7 @@ export default (nab, req, res) =>
         localStorage: false,
         disableValidation: true
       });
-      const scope = (notabugApi.scope = nab.newScope({ isCacheing: true }));
+      const scope = (notabugApi.scope = nab.newScope({ isCacheing: true, noGun: true }));
 
       if (route.getListingParams) {
         dataQuery = preload(
@@ -104,7 +104,7 @@ export default (nab, req, res) =>
               <App {...{ notabugApi }} />
             </Router>
           );
-          console.log("rendering", req.url);
+          // console.log("rendering", req.url);
           if (isJson) return res.send(notabugApi.scope.getCache());
           const parts = htmlData.split("!!!CONTENT!!!");
           const result = [

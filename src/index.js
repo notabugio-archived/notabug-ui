@@ -7,8 +7,14 @@ import "snew-classic-ui/static/css/minimal.css";
 import "react-tippy/dist/tippy.css";
 import "styles/index.css";
 import { App } from "App";
-import { ErrorBoundary } from "utils";
 import { unregister } from "utils/registerServiceWorker";
+
+try {
+  localStorage.removeItem("gun/");
+  localStorage.removeItem("gap/gun/");
+} catch(e) {
+  console.error("error clearing localStorage", e.stack || e);
+}
 
 try {
   ReactDOM.render(
@@ -23,9 +29,7 @@ try {
   localStorage.removeItem("gap/gun/");
   ReactDOM.render(
     <BrowserRouter>
-      <ErrorBoundary>
-        <App />
-      </ErrorBoundary>
+      <App />
     </BrowserRouter>,
     document.body
   );

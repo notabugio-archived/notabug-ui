@@ -181,18 +181,27 @@ body > .content .chat-listing .link .midcol,
   top: 0;
   bottom: 0;
   padding: 0 0 0 0;
-  padding-right: 5px;
   position: relative;
-  height: 200px;
-  padding-bottom: 26px;
+  height: 220px;
+  margin-bottom: 26px;
 }
 
 .side .chat-listing {
 }
 
+.sidebar-chat .thing .md p {
+  margin-top: 0;
+}
+
+.sidebar-chat .thing .chat-topic-name,
+.sidebar-chat .thing .child,
 .sidebar-chat .arrow,
 .chat-modal .arrow {
   display: none;
+}
+
+.sidebar-chat .comment {
+  margin-left: 0;
 }
 
 .side .chat-input {

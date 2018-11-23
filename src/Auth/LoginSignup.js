@@ -243,7 +243,7 @@ export const LoginSignupPage = () => (
 
 Identities on nab are cryptographic keys owned by you.
 
-They provide additional features, but you can participate without one.
+They enable additional features, but you can participate without one.
 
 These features include an inbox and profile to showcase your content.
 

@@ -22,6 +22,8 @@ import {
 import { query, all, resolve } from "./notabug-peer/scope";
 import * as SOULS from "./notabug-peer/souls";
 
+const LISTING_SIZE = 1000;
+
 export const getTopicSouls = params => {
   const { topics = ["all"] } = params || {};
   const days = propOr(365, "days", params) || 90;
@@ -46,7 +48,7 @@ export const getTopicSouls = params => {
 };
 
 const thingVoteCount = voteType =>
-  query((scope, thingSoul) => scope.get(`${thingSoul}/${voteType}`).count());
+  query((scope, thingSoul) => scope.get(thingSoul).get(voteType).count());
 
 export const thingVotesUp = thingVoteCount("votesup");
 export const thingVotesDown = thingVoteCount("votesdown");
@@ -87,7 +89,7 @@ export const thingMeta = query(
           ? scope.get(`${thingSoul}/votecounts@${tabulator}.`).then() // eslint-disable-line
           : thingScores(scope, thingSoul).then()
         : resolve(),
-      data ? scope.get(`${thingSoul}/data`).then() : resolve()
+      data ? scope.get(thingSoul).get("data").then() : resolve()
     ]).then(([meta, votes, data]) => {
       if (!meta || !meta.id) return null;
       return { ...meta, votes, data };
@@ -122,7 +124,7 @@ export const multiThing = query((scope, params) =>
 */
 
 export const singleThingData = query((scope, { thingId: thingid }) =>
-  scope.get(SOULS.thingData.soul({ thingid })).then(data => {
+  scope.get(SOULS.thing.soul({ thingid })).get("data").then(data => {
     const { _, ...actual } = data || {}; // eslint-disable-line no-unused-vars
     return { [thingid]: data ? actual : data };
   })
@@ -165,8 +167,18 @@ export const singleUrl = query((scope, { url }) =>
   scope.get(SOULS.url.soul({ url })).souls()
 );
 
-export const singleTopic = query((scope, params) =>
-  all(
+export const singleTopic = query((scope, params) => {
+  let itemMax = LISTING_SIZE;
+  if (params.sort === "new") {
+    itemMax = LISTING_SIZE;
+  } else {
+    if (params.sort === "top") {
+      itemMax = itemMax * 5;
+    }
+    if (params.topic === "all") itemMax = itemMax * 10;
+  }
+
+  return all(
     map(
       soul => scope.get(soul).souls(),
       getTopicSouls({ ...params, topics: [params.topic] })
@@ -174,13 +186,13 @@ export const singleTopic = query((scope, params) =>
   ).then(
     reduce(
       (souls, more) =>
-        souls.length < (params.topic === "all" ? 50000 : 1000)
+        souls.length < itemMax
           ? [...souls, ...more]
           : souls,
       []
     )
-  )
-);
+  );
+});
 
 export const singleSubmission = query((scope, params) =>
   scope
@@ -389,7 +401,7 @@ export const filterThings = (scope, things, fn) =>
       .filter(thing => thing && thing.id)
       .map(thing =>
         scope
-          .get(SOULS.thingData.soul({ thingid: thing.id }))
+          .get(SOULS.thing.soul({ thingid: thing.id })).get("data")
           .then(data => ({
             ...thing,
             data
@@ -398,7 +410,7 @@ export const filterThings = (scope, things, fn) =>
             if (!thingWithData.data) return thingWithData;
             if (!thingWithData.data.opId) return thingWithData;
             return scope
-              .get(SOULS.thingData.soul({ thingid: thingWithData.data.opId }))
+              .get(SOULS.thing.soul({ thingid: thingWithData.data.opId })).get("data")
               .then(opData => ({
                 ...thingWithData,
                 opData

@@ -20,7 +20,7 @@ let FORCE_REALTIME = false;
 
 if (!isNode) {
   INDEXEDDB = !!window.indexedDB && !!/indexeddb/.test(window.location.search);
-  LOCAL_STORAGE = !INDEXEDDB && !/noLocalStorage/.test(window.location.search);
+  LOCAL_STORAGE = !INDEXEDDB && !!/localStorage/.test(window.location.search);
   FORCE_REALTIME = !/norealtime/.test(window.location.search);
   if (LOCAL_STORAGE) INDEXEDDB = false;
   if (INDEXEDDB) console.log("using indexeddb");

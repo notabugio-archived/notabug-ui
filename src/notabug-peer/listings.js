@@ -13,7 +13,6 @@ export const parseListingSource = source =>
     return assocPath(tokens, {}, def);
   }, {});
 
-
 const listing = query((scope, soul) => scope.get(soul), "listing");
 
 const getThingScores = query(
@@ -26,11 +25,14 @@ const getThingScores = query(
 
 const getThingData = query(
   (scope, thingid) =>
-    scope.get(SOULS.thingData.soul({ thingid })).then(res => {
-      if (!res) return res;
-      const { _, ...data } = res; // eslint-disable-line no-unused-vars
-      return data;
-    }),
+    scope
+      .get(SOULS.thing.soul({ thingid }))
+      .get("data")
+      .then(res => {
+        if (!res) return res;
+        const { _, ...data } = res; // eslint-disable-line no-unused-vars
+        return data;
+      }),
   "thingData"
 );
 
