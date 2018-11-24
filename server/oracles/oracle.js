@@ -61,7 +61,7 @@ export const oracle = specs => {
 
     for (const propName in msg.get || {}) {
       const soul = msg.get[propName];
-      if (soul.indexOf(computedPub) === -1) return;
+      if (!soul || !soul.indexOf || soul.indexOf(computedPub) === -1) return;
       const route = findRouteForSoul(soul);
       if (route)
         worker.push({

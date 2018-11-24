@@ -95,7 +95,7 @@ export const declarativeListing = query((scope, source) => {
   return itemSources[itemSource](scope, definition)
     .then(thingSouls => {
       if (opId) {
-        return scope.get(SOULS.thingData.soul({ thingid: opId })).then(data => {
+        return scope.get(SOULS.thing.soul({ thingid: opId })).get("data").then(data => {
           name = name || prop("topic", data);
           submitTopic = submitTopic || prop("topic", data);
           return thingSouls;
