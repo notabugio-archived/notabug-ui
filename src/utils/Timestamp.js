@@ -2,7 +2,7 @@ import React from "react";
 import TimeAgo from "react-timeago";
 
 const Edited = ({ title, children }) => (
-  <time className="edited-timestamp" title={`last edited ${children}`} datetime={title}>*</time>
+  <time className="edited-timestamp" title={`last edited ${children}`} dateTime={title}>*</time>
 );
 
 export const Timestamp = React.memo(
