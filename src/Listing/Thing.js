@@ -6,7 +6,7 @@ import React, {
   useEffect
 } from "react";
 import { ZalgoPromise as Promise } from "zalgo-promise";
-import { propOr } from "ramda";
+import { propOr, path } from "ramda";
 import { Loading } from "utils";
 import { NabContext, useScope } from "NabContext";
 import { Submission } from "Submission";
@@ -33,7 +33,7 @@ export const Thing = React.memo(
     isDetail,
     onDidUpdate
   }) => {
-    const { api, myContent } = useContext(NabContext);
+    const { api, me, myContent } = useContext(NabContext);
     const {
       listingParams: { indexer },
       speculativeIds
@@ -67,7 +67,7 @@ export const Thing = React.memo(
 
     const body = propOr("", "body", item) || "";
     const lineCount = body.length / 100 + body.split("\n").length - 1;
-    const collapseThreshold = (lineCount - 4) / 2.0;
+    const collapseThreshold = (lineCount / 3.0) - 4;
 
     const onToggleExpando = useCallback(
       evt => {
@@ -142,12 +142,53 @@ export const Thing = React.memo(
       !isMine && !!(collapseThreshold !== null && score < collapseThreshold);
     if (item && !ThingComponent) return null;
 
+    const tsts = path(["_", ">", "timestamp"], item);
+    const bodyts = path(["_", ">", "body"], item);
+    const edited = (tsts !== bodyts) && bodyts;
+
+    const soul = path(["_", "#"], item);
+    const signedMatch = api.souls.thingDataSigned.isMatch(soul);
+    const canEdit =
+      me &&
+      signedMatch &&
+      me.pub === `${signedMatch.id1}.${signedMatch.id2}` &&
+      soul;
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedBody, setEditedBody] = useState(propOr("", "body", item));
+
+    useEffect(() => {
+      setEditedBody(propOr("", "body", item));
+    }, [propOr("", "body", item)]);
+
+    const onToggleEditing = useCallback(evt => {
+      evt && evt.preventDefault();
+      setIsEditing(editing => !editing);
+    }, []);
+
+    const onChangeEditedBody = useCallback(evt => {
+      setEditedBody(evt.target.value);
+    }, []);
+
+    const onSubmitEdit = useCallback((evt) => {
+      evt && evt.preventDefault();
+      if (!canEdit) return;
+      api.gun.get(canEdit).get("body").put(editedBody);
+      setIsEditing(false);
+    }, [editedBody, canEdit]);
+
     const thingProps = {
       ListingContext,
       ups: scores.up,
       downs: scores.down,
       score: scores.score,
       comments: scores.comment,
+      edited,
+      canEdit,
+      isEditing,
+      editedBody,
+      onChangeEditedBody,
+      onSubmitEdit,
+      onToggleEditing: canEdit && onToggleEditing,
       rank,
       id,
       item,

@@ -79,6 +79,11 @@ export const thingData = objectType(
   checkThingMatch,
 );
 
+export const thingDataSigned = objectType(
+  `${PREFIX}/things/:thingid/data~:id1.:id2.`,
+  checkThingMatch,
+);
+
 export const thingVotes = objectType(
   `${PREFIX}/things/:thingid/votes:votekind`,
   checkThingMatch,

@@ -30,8 +30,8 @@ const getThingData = query(
       .get("data")
       .then(res => {
         if (!res) return res;
-        const { _, ...data } = res; // eslint-disable-line no-unused-vars
-        return data;
+        //const { _, ...data } = res; // eslint-disable-line no-unused-vars
+        return res;// data;
       }),
   "thingData"
 );

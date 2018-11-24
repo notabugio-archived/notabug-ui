@@ -3,7 +3,7 @@ import { ThingCommentEntry as SnewThingCommentEntry } from "snew-classic-ui";
 import { Link } from "utils";
 import { AuthorLink } from "Auth";
 
-export const ThingCommentEntry = ({
+export const ThingCommentEntry = React.memo(({
   ups,
   downs,
   isVotingUp,
@@ -34,4 +34,4 @@ export const ThingCommentEntry = ({
     onVoteUp={onVoteUp}
     onVoteDown={onVoteDown}
   />
-);
+));

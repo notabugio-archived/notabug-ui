@@ -17,12 +17,17 @@ export const Submission = ({
   comments,
   expanded,
   rank,
-  isViewing,
   isDetail,
   onToggleExpando,
   item,
   isVotingUp,
   isVotingDown,
+  isEditing,
+  edited,
+  editedBody,
+  onSubmitEdit,
+  onChangeEditedBody,
+  onToggleEditing,
   onVoteUp,
   onVoteDown
 }) => {
@@ -63,14 +68,20 @@ export const Submission = ({
           EmbedComponent,
           id,
           domain,
-          permalink
+          permalink,
+          isDetail,
+          edited,
+          isEditing,
+          editedBody,
+          onChangeEditedBody,
+          onSubmitEdit,
+          onToggleEditing: !item.url && isDetail && onToggleEditing
         }}
         {...{ rank, onVoteUp, onVoteDown, expandoType, image, video, iframe }}
         expanded={expanded || (isDetail && !item.url)}
         ups={ups || 0}
         downs={downs || 0}
         AuthorLink={AuthorLink}
-        isDetail={isViewing}
         title={item.title}
         author={item.author}
         author_fullname={item.authorId}

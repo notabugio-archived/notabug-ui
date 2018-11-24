@@ -41,6 +41,7 @@ const ThingLink = ({
   is_self,
   created,
   created_utc,
+  edited,
   expandoType="selftext",
   selftext,
   selftext_html,
@@ -53,6 +54,7 @@ const ThingLink = ({
   siteprefix,
   scoreTooltip,
   onToggleExpando,
+  onToggleEditing,
   preTagline,
   postTagline,
   preButtons,
@@ -153,6 +155,7 @@ const ThingLink = ({
       <p className="tagline">
         {preTagline || null}
         submitted <Timestamp {...{ created, created_utc }} />
+        {edited ?  <Timestamp {...{ edited }} /> : null}
         {author ? (
           <Fragment>
             {" by "}
@@ -186,6 +189,11 @@ const ThingLink = ({
               href={permalink}
               rel="nofollow"
             >{num_comments} comments</Link>
+          </li>
+        ) : null}
+        {onToggleEditing ? (
+          <li className="submission-edit-button edit-button">
+            <a title="edit" href="" onClick={onToggleEditing}>edit</a>
           </li>
         ) : null}
         {onShare ? (

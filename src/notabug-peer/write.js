@@ -1,37 +1,62 @@
 import { curry } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
+import Route from "route-parser";
 import objHash from "object-hash";
 import urllite from "urllite";
 import { getDayStr } from "./util";
 
+const authMatcher = new Route(":id1.:id2");
+
 export const putThing = curry((peer, data) => {
-  data.timestamp = data.timestamp || (new Date()).getTime(); // eslint-disable-line
-  const id = objHash(data, { unorderedSets: true });
-  const node = peer.souls.thing.get({ thingid: id });
-  const dataNode = peer.souls.thingData.get({ thingid: id });
-  dataNode.put(data);
-  node.get("data").put(dataNode);
-  node.put({ id, timestamp: data.timestamp });
-  peer.souls.things.get().set(node);
-  peer.indexThing(id, data);
-  return node;
-});
+  data.timestamp = data.timestamp || new Date().getTime(); // eslint-disable-line
+  const originalHash = objHash(data);
+  const { timestamp, kind, topic, authorId, opId, replyToId } = data;
+  const thingid = objHash({
+    timestamp,
+    kind,
+    topic,
+    authorId,
+    opId,
+    replyToId,
+    originalHash
+  });
 
-export const getStuff = curry((peer, path) => {
-  const user = peer.isLoggedIn();
-  if (!user) throw new Error("Login required");
-  const soul = `${path}${user.pub}`;
-  return peer.gun.get(soul);
-});
+  const node = peer.souls.thing.get({ thingid });
+  const { id1, id2 } = authMatcher.match(authorId || "") || {};
 
-export const putStuff = curry((peer, path, data) => {
-  const node = peer.getStuff(path);
-  node.put(data);
+  const dataSoul = authorId
+    ? peer.souls.thingDataSigned.soul({ thingid, id1, id2 })
+    : peer.souls.thingData.soul({ thingid: originalHash });
+
+  const metaData = {
+    id: thingid,
+    timestamp,
+    kind,
+    originalHash,
+    data: { "#": dataSoul },
+    votesup: { "#": peer.souls.thingVotes.soul({ thingid, votekind: "up" }) },
+    votesdown: {
+      "#": peer.souls.thingVotes.soul({ thingid, votekind: "down" })
+    },
+    allcomments: { "#": peer.souls.thingAllComments.soul({ thingid }) },
+    comments: { "#": peer.souls.thingComments.soul({ thingid }) }
+  };
+
+  if (topic)
+    metaData.topic = { "#": peer.souls.topic.soul({ topicname: topic }) };
+  if (authorId) metaData.author = { "#": `~${authorId}` };
+  if (opId) metaData.op = { "#": peer.souls.thing.soul({ thingid: opId }) };
+  if (replyToId)
+    metaData.replyTo = { "#": peer.souls.thing.soul({ thingid: replyToId }) };
+
+  peer.gun.get(dataSoul).put(data);
+  node.put(metaData);
+  peer.indexThing(thingid, data);
   return node;
 });
 
 export const submit = curry((peer, data) => {
-  const timestamp = data.timestamp || (new Date()).getTime();
+  const timestamp = data.timestamp || new Date().getTime();
   const user = peer.isLoggedIn();
 
   if (data.topic) data.topic = data.topic.toLowerCase().trim(); // eslint-disable-line
@@ -44,8 +69,14 @@ export const submit = curry((peer, data) => {
   const thing = peer.putThing({ ...data, timestamp, kind: "submission" });
 
   if (user) {
-    peer.gun.user().get("things").set(thing);
-    peer.gun.user().get("submissions").set(thing);
+    peer.gun
+      .user()
+      .get("things")
+      .set(thing);
+    peer.gun
+      .user()
+      .get("submissions")
+      .set(thing);
   }
 
   return new Promise(resolve => {
@@ -69,8 +100,14 @@ export const comment = curry((peer, data) => {
   const thing = peer.putThing({ ...data, kind: "comment" });
 
   if (user) {
-    peer.gun.user().get("things").set(thing);
-    peer.gun.user().get("comments").set(thing);
+    peer.gun
+      .user()
+      .get("things")
+      .set(thing);
+    peer.gun
+      .user()
+      .get("comments")
+      .set(thing);
   }
 
   return thing;
@@ -86,7 +123,11 @@ export const chat = curry((peer, data) => {
 
   const thing = peer.putThing({ ...data, kind: "chatmsg" });
 
-  if (user) peer.gun.user().get("things").set(thing);
+  if (user)
+    peer.gun
+      .user()
+      .get("things")
+      .set(thing);
   return thing;
 });
 
@@ -99,14 +140,16 @@ export const vote = curry((peer, id, kind, nonce) => {
 
 const topicPrefixes = {
   chatmsg: "chat:",
-  comment: "comments:",
+  comment: "comments:"
 };
 
 export const indexThing = curry((peer, thingid, data) => {
   if (!data.topic && !data.opId) return;
 
   if (data.opId && !data.topic) {
-    peer.souls.thingData.get({ thingid: data.opId })
+    peer.souls.thing
+      .get({ thingid: data.opId })
+      .get("data")
       .on(function recv(td) {
         if (!td) return;
         peer.indexThing(thingid, { ...data, topic: td.topic || "all" });
@@ -119,21 +162,30 @@ export const indexThing = curry((peer, thingid, data) => {
   const dayStr = getDayStr(data.timestamp);
   const [year, month, day] = dayStr.split("/");
   const topicPrefix = topicPrefixes[data.kind] || "";
-  const topicname = topicPrefix + data.topic.toLowerCase().trim();
+  const basetopicname = data.topic.toLowerCase().trim();
+  const topicname = topicPrefix + basetopicname;
   const topic = peer.souls.topic.get({ topicname });
   const topicDay = peer.souls.topicDay.get({ topicname, year, month, day });
 
   if (!data.skipAll && data.topic !== "all") {
     const allname = `${topicPrefix}all`;
     const allTopic = peer.souls.topic.get({ topicname: allname });
-    const allTopicDay = peer.souls.topicDay.get({ topicname: allname, year, month, day });
+    const allTopicDay = peer.souls.topicDay.get({
+      topicname: allname,
+      year,
+      month,
+      day
+    });
     allTopic.set(thing);
     allTopicDay.set(thing);
   }
 
   if (data.kind === "submission") {
     const urlInfo = data.url ? urllite(data.url) : {};
-    const domainName = (data.url ? (urlInfo.host || "").replace(/^www\./, "") : `self.${data.topic}`).toLowerCase();
+    const domainName = (data.url
+      ? (urlInfo.host || "").replace(/^www\./, "")
+      : `self.${data.topic}`
+    ).toLowerCase();
     const domain = peer.souls.domain.get({ domain: domainName });
     domain.set(thing);
 
@@ -147,49 +199,21 @@ export const indexThing = curry((peer, thingid, data) => {
   if (data.opId) {
     const op = peer.souls.thing.get({ thingid: data.opId });
     const allcomments = peer.souls.thingAllComments.get({ thingid: data.opId });
-    thing.get("op").put(op);
     op.get("allcomments").put(allcomments);
     allcomments.set(thing);
   }
 
   if (data.replyToId || data.opId) {
-    const replyTo = peer.souls.thing.get({ thingid: data.replyToId || data.opId });
-    const comments = peer.souls.thingComments.get({ thingid: data.replyToId || data.opId });
+    const replyTo = peer.souls.thing.get({
+      thingid: data.replyToId || data.opId
+    });
+    const comments = peer.souls.thingComments.get({
+      thingid: data.replyToId || data.opId
+    });
     comments.set(thing);
-    thing.get("replyTo").put(replyTo);
     replyTo.get("comments").put(comments);
   }
 
-  thing.get("votesup").once(() => null);
-  thing.get("votesdown").once(() => null);
-  thing.get("allcomments").once(() => null);
-  thing.get("comments").once(() => null);
   topic.set(thing);
   topicDay.set(thing);
-  thing.get("topic").set(topic);
-});
-
-export const saveThingInLens = curry((peer, thingid, category="saved") => {
-  if (peer.isLoggedIn()) throw new Error("Login required");
-  if (!category) throw new Error("Category required");
-  const lensname = category.toLowerCase();
-  const gunUser = peer.gun.user();
-  const thing = peer.souls.thing.get({ thingid });
-  const lenses = peer.getStuff(peer.souls.lenses.soul());
-  const lens = peer.getStuff(peer.souls.lens.soul({ lensname }));
-  const lensThings = peer.getStuff(peer.souls.lensThings.soul({ lensname }));
-  lensThings.set(thing);
-  lens.get("things").put(lensThings);
-  lenses.get(category).put(lens);
-  gunUser.get("lenses").put(lenses);
-  return lens;
-});
-
-export const unsaveThingInLens = curry((peer, thingid, category="saved") => {
-  if (peer.isLoggedIn()) throw new Error("Login required");
-  if (!category) throw new Error("Category required");
-  const lensname = category.toLowerCase();
-  const lensThings = peer.getStuff(peer.souls.lensThings.soul({ lensname }));
-  const thingSoul = peer.souls.thing.get({ thingid });
-  return lensThings.get(thingSoul).put(null);
 });

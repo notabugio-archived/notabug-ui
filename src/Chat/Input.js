@@ -15,7 +15,10 @@ export const ChatInput = ({ ListingContext }) => {
     evt => {
       evt && evt.preventDefault();
       if (!body || !body.trim() || body.length > COMMENT_BODY_MAX) return;
-      api.chat({ topic, body }).then(({ id }) => {
+      api.chat({ topic, body }).then((res) => {
+        console.log({ res });
+        const id = res && res.id;
+        if (!id) return;
         onMarkMine(id);
         addSpeculativeId && addSpeculativeId(id);
       });

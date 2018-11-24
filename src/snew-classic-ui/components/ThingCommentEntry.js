@@ -31,6 +31,7 @@ const ThingCommentEntry = ({
   distinguished,
   created,
   created_utc,
+  edited,
   link_author,
   link_author_fullname,
   link_title,
@@ -40,6 +41,11 @@ const ThingCommentEntry = ({
   preTagline,
   postTagline,
   afterAuthor,
+  isEditing,
+  editedBody,
+  onToggleEditing,
+  onChangeEditedBody,
+  onSubmitEdit,
   onReport,
   onGiveGold,
   onSave,
@@ -132,6 +138,7 @@ const ThingCommentEntry = ({
           <span className="score likes" key="likes" title={scoreTooltip}>{ups} points</span>
         ] : null}{" "}
         <Timestamp {...{ created, created_utc }} />
+        {edited ?  <Timestamp {...{ edited }} /> : null}
         {stickied && (<span className="stickied-tagline" title="stickied">stickied comment</span>)}
         {replyCount !== null ? (
           <a className="numchildren" >
@@ -143,9 +150,30 @@ const ThingCommentEntry = ({
       <form
         action="#"
         className="usertext warn-on-unload"
+        onSubmit={isEditing ? onSubmitEdit : null}
       >
         <input name="thing_id" type="hidden" defaultValue="t1_h1" />
-        <Markdown body={body} html={body_html} className="usertext-body may-blank-within md-container" />
+        {isEditing ? (
+          <div className="usertext-edit md-container">
+            <div className="md">
+              <textarea
+                rows="1"
+                cols="1"
+                name="text"
+                value={editedBody}
+                onChange={onChangeEditedBody}
+              />
+            </div>
+            <div className="bottom-area">
+              <div className="usertext-buttons">
+                <button type="submit" className="save">save</button>
+                <button type="butotn" onClick={onToggleEditing}>cancel</button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <Markdown body={body} html={body_html} className="usertext-body may-blank-within md-container" />
+        )}
       </form>
       <ul className="flat-list buttons">
         {permalink ? (
@@ -163,6 +191,11 @@ const ThingCommentEntry = ({
         {onSave ? (
           <li className="comment-save-button save-button">
             <a title="save" onClick={onSave}>save</a>
+          </li>
+        ) : null}
+        {onToggleEditing ? (
+          <li className="comment-edit-button edit-button">
+            <a title="edit" href="" onClick={onToggleEditing}>edit</a>
           </li>
         ) : null}
         {onReport ? (

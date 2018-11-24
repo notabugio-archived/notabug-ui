@@ -8,12 +8,11 @@ import { Comment } from "Comment";
 const ChatMsgEntry = ({
   isVotingUp,
   isVotingDown,
-  onVoteUp,
-  onVoteDown,
   ...props
 }) => (
   <SnewThingCommentEntry
-    {...props}
+    {...{ ...props, Link, AuthorLink }}
+    onToggleEditing={null}
     postTagline={
       props.topic ? (
         <span className="chat-topic-name">
@@ -23,12 +22,8 @@ const ChatMsgEntry = ({
     }
     body={props.body ? props.body.slice(0, COMMENT_BODY_MAX) : props.body}
     score={props.ups || props.downs ? props.score : null}
-    Link={Link}
-    AuthorLink={AuthorLink}
     likes={isVotingUp ? true : isVotingDown ? false : undefined}
     isVoting={isVotingUp || isVotingDown}
-    onVoteUp={onVoteUp}
-    onVoteDown={onVoteDown}
   />
 );
 

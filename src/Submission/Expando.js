@@ -12,17 +12,42 @@ export const Expando = ({
   selftext_html: html,
   image,
   iframe,
-  EmbedComponent
+  EmbedComponent,
+  isEditing,
+  editedBody,
+  onChangeEditedBody,
+  onToggleEditing,
+  onSubmitEdit
 }) => (
   <div className="expando">
     {expanded ? (
-      is_self && body ? (
-        <form className="usertext warn-on-unload">
-          <Markdown
-            body={body}
-            html={html}
-            className="usertext-body may-blank-within md-container"
-          />
+      is_self && (body || isEditing) ? (
+        <form className="usertext warn-on-unload" onSubmit={onSubmitEdit}>
+          {isEditing ? (
+            <div className="usertext-edit md-container">
+              <div className="md">
+                <textarea
+                  rows="1"
+                  cols="1"
+                  name="text"
+                  value={editedBody}
+                  onChange={onChangeEditedBody}
+                />
+              </div>
+              <div className="bottom-area">
+                <div className="usertext-buttons">
+                  <button type="submit" className="save">save</button>
+                  <button type="butotn" onClick={onToggleEditing}>cancel</button>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <Markdown
+              body={body}
+              html={html}
+              className="usertext-body may-blank-within md-container"
+            />
+          )}
         </form>
       ) : EmbedComponent ? (
         <EmbedComponent.Component {...EmbedComponent.props} key={url} />

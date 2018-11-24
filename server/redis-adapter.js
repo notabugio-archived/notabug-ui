@@ -163,7 +163,7 @@ function fromRedis(obj) {
     }
 
     if (key === "timestamp" || key === "lastActive" || />\./.test(key)) {
-      obj[key] = parseInt(obj[key], 10) || 0;
+      obj[key] = parseInt(obj[key], 10) || obj[key];
     }
     if (obj[key] && obj[key].length > FIELD_SIZE_LIMIT) {
       obj[key] = obj[key].slice(0, FIELD_SIZE_LIMIT);
