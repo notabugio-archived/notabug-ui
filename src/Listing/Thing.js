@@ -5,7 +5,6 @@ import React, {
   useCallback,
   useEffect
 } from "react";
-import { ZalgoPromise as Promise } from "zalgo-promise";
 import { propOr, path } from "ramda";
 import { Loading } from "utils";
 import { NabContext, useScope } from "NabContext";
@@ -13,6 +12,7 @@ import { Submission } from "Submission";
 import { Comment } from "Comment";
 import { ChatMsg } from "Chat/ChatMsg";
 import { useVotable } from "Voting";
+import debounce from "lodash/debounce";
 
 const components = {
   submission: Submission,
@@ -67,7 +67,7 @@ export const Thing = React.memo(
 
     const body = propOr("", "body", item) || "";
     const lineCount = body.length / 100 + body.split("\n").length - 1;
-    const collapseThreshold = (lineCount / 3.0) - 4;
+    const collapseThreshold = lineCount / 3.0 - 4;
 
     const onToggleExpando = useCallback(
       evt => {
@@ -87,46 +87,32 @@ export const Thing = React.memo(
       setIsShowingReply(false);
     }, []);
 
-    const doFetchParentItem = useCallback(
-      opId => {
-        if (parentItem) return Promise.resolve(parentItem);
-        return api.queries.thingData(scope, opId).then(updatedItem => {
-          if (!updatedItem) return;
-          setParentItem(updatedItem);
-        });
+    const doUpdate = useCallback(
+      () => {
+        const updatedScores = api.queries.thingScores.now(scope, indexer, id);
+        const updatedItem = api.queries.thingData.now(scope, id);
+        const updatedParentItem =
+          fetchParent && updatedItem && updatedItem.opId
+            ? api.queries.thingData.now(scope, updatedItem.opId)
+            : null;
+
+        if (id === "8a657c7cfc6c96128869e66097ab323c54a8bc7a") console.log("updatedItem", updatedItem);
+
+        updatedItem && setItem(updatedItem);
+        updatedParentItem && setParentItem(updatedParentItem);
+        updatedScores && setScores(updatedScores);
       },
-      [parentItem]
-    );
-
-    const doFetchItem = useCallback(
-      () =>
-        (item ? Promise.resolve(item) : api.queries.thingData(scope, id)).then(
-          updatedItem => {
-            if (!updatedItem) return;
-            const opId = propOr(null, "opId", updatedItem);
-            setItem(updatedItem);
-            return opId && doFetchParentItem(opId);
-          }
-        ),
-      [item, id, fetchParent]
-    );
-
-    const doUpdateScores = useCallback(
-      () =>
-        api.queries
-          .thingScores(scope, indexer, id)
-          .then(updatedScores => updatedScores && setScores(updatedScores)),
-      [scope, id, indexer]
+      [scope, id, indexer, fetchParent]
     );
 
     useEffect(
       () => {
-        doUpdateScores();
-        doFetchItem();
-        scope.on(doUpdateScores);
-        return () => scope.off(doUpdateScores);
+        const update = debounce(doUpdate, 10);
+        update();
+        scope.on(update);
+        return () => scope.off(update);
       },
-      [doUpdateScores]
+      [doUpdate]
     );
 
     useEffect(
@@ -140,11 +126,9 @@ export const Thing = React.memo(
     const ThingComponent = item ? components[item.kind] : null;
     const collapsed =
       !isMine && !!(collapseThreshold !== null && score < collapseThreshold);
-    if (item && !ThingComponent) return null;
-
     const tsts = path(["_", ">", "timestamp"], item);
     const bodyts = path(["_", ">", "body"], item);
-    const edited = (tsts !== bodyts) && bodyts;
+    const edited = tsts !== bodyts && bodyts;
 
     const soul = path(["_", "#"], item);
     const signedMatch = api.souls.thingDataSigned.isMatch(soul);
@@ -156,9 +140,12 @@ export const Thing = React.memo(
     const [isEditing, setIsEditing] = useState(false);
     const [editedBody, setEditedBody] = useState(propOr("", "body", item));
 
-    useEffect(() => {
-      setEditedBody(propOr("", "body", item));
-    }, [propOr("", "body", item)]);
+    useEffect(
+      () => {
+        setEditedBody(propOr("", "body", item));
+      },
+      [propOr("", "body", item)]
+    );
 
     const onToggleEditing = useCallback(evt => {
       evt && evt.preventDefault();
@@ -169,12 +156,20 @@ export const Thing = React.memo(
       setEditedBody(evt.target.value);
     }, []);
 
-    const onSubmitEdit = useCallback((evt) => {
-      evt && evt.preventDefault();
-      if (!canEdit) return;
-      api.gun.get(canEdit).get("body").put(editedBody);
-      setIsEditing(false);
-    }, [editedBody, canEdit]);
+    const onSubmitEdit = useCallback(
+      evt => {
+        evt && evt.preventDefault();
+        if (!canEdit) return;
+        api.gun
+          .get(canEdit)
+          .get("body")
+          .put(editedBody);
+        setIsEditing(false);
+      },
+      [editedBody, canEdit]
+    );
+
+    if (item && !ThingComponent) return null;
 
     const thingProps = {
       ListingContext,

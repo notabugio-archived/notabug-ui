@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.24.2",
+  "version": "0.24.3",
   "dependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.5",
@@ -43,10 +43,10 @@
     "qs": "^6.5.2",
     "ramda": "^0.25.0",
     "raw-loader": "^0.5.1",
-    "react": "^16.7.0-alpha.0",
+    "react": "16.7.0-alpha.2",
     "react-chatview": "^0.2.5",
     "react-click-outside": "^3.0.1",
-    "react-dom": "^16.7.0-alpha.0",
+    "react-dom": "16.7.0-alpha.2",
     "react-helmet": "^5.2.0",
     "react-instagram-embed": "^1.4.0",
     "react-player": "^1.6.4",

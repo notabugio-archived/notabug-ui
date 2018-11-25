@@ -194,7 +194,6 @@ export default oracle({
           scope,
           [
             "name curated",
-            "show ranks",
             "submit to whatever",
             ...FRONTPAGE_TOPICS.map(topic => `topic ${topic}`),
             `sort ${sort}`,
@@ -243,7 +242,7 @@ export default oracle({
       query: query((scope, { match: { thingid, sort, id1, id2 } }) =>
         declarativeListing(
           scope,
-          [ `op ${thingid}`, `sort ${sort}`, `tabulator ${id1}.${id2}` ].join(
+          [ `sort ${sort}`, `op ${thingid}`, `tabulator ${id1}.${id2}` ].join(
             "\n"
           )
         ).then(serialized => ({
@@ -290,7 +289,6 @@ export default oracle({
           [
             `name ${topic}`,
             ...topics.map(tp => `topic ${tp}`),
-            "show ranks",
             `submit to ${submitTo}`,
             `sort ${sort}`,
             `tabulator ${id1}.${id2}`

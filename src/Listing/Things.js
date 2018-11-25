@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import { Thing } from "Listing/Thing";
 import { prop } from "ramda";
+import { ErrorBoundary } from "utils";
 
 export const Things = React.memo(
   ({
@@ -17,11 +18,13 @@ export const Things = React.memo(
     const renderThing = (id, idx) => {
       const count = parseInt(prop("count", listingParams) || 0);
       return (
-        <Thing
-          {...{ ...props, ListingContext, id }}
-          key={id}
-          rank={!includeRanks ? null : count + idx + 1}
-        />
+        <ErrorBoundary>
+          <Thing
+            {...{ ...props, ListingContext, id }}
+            key={id}
+            rank={!includeRanks ? null : count + idx + 1}
+          />
+        </ErrorBoundary>
       );
     };
 

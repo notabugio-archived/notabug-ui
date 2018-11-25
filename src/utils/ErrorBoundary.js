@@ -9,7 +9,7 @@ export class ErrorBoundary extends React.PureComponent {
   }
   onReload = () => location.reload(); // eslint-disable-line
   render() {
-    const { error, info } = this.state;
+    const { error } = this.state;
     if (error) {
       const errorStr = `${error.stack || error}`
         .split("\n")
@@ -18,9 +18,7 @@ export class ErrorBoundary extends React.PureComponent {
       return (
         <div className="error-display">
           <h1>Error (this probably *is* a bug)</h1>
-          <h3>{error}</h3>
           <Markdown body={errorStr} />
-          <pre>{info}</pre>
           <button onClick={this.onReload}>reload notabug</button>
         </div>
       );
