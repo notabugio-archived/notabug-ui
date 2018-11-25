@@ -17,13 +17,11 @@ export const PagedContent = React.memo(
     const query = qs.parse(search, { ignoreQueryPrefix: true });
     const count = parseInt(query.count, 10) || 0;
     const limit = parseInt(query.limit, 10) || 25;
-    const { ids: allIds, listingParams } = useContext(ListingContext);
+    const { ids: allIds } = useContext(ListingContext);
     const { ids: limitedIds } = useLimitedListing({
       ids: allIds,
-      location,
       limit,
-      count,
-      listingParams
+      count
     });
     const hasPrev = count - limit >= 0;
     const hasNext = limitedIds.length >= limit;

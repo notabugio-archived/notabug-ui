@@ -12,7 +12,7 @@ import { Submission } from "Submission";
 import { Comment } from "Comment";
 import { ChatMsg } from "Chat/ChatMsg";
 import { useVotable } from "Voting";
-import debounce from "lodash/debounce";
+//import debounce from "lodash/debounce";
 
 const components = {
   submission: Submission,
@@ -105,9 +105,9 @@ export const Thing = React.memo(
 
     useEffect(
       () => {
-        const update = debounce(doUpdate, 50);
-        scope.on(update);
-        return () => scope.off(update);
+        //const update = debounce(doUpdate, 50);
+        scope.on(doUpdate);
+        return () => scope.off(doUpdate);
       },
       [doUpdate]
     );

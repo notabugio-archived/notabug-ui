@@ -38,7 +38,7 @@ export const Submission = ({
   const permalink = useMemo(
     () =>
       `/t/${item.topic || "all"}/comments/${id}/` +
-      slugify(item.title.toLowerCase()),
+      slugify((item.title || "").toLowerCase()),
     [item.topic, id, item.title]
   );
   const domain = item.url

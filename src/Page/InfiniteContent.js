@@ -5,7 +5,6 @@ import React, {
   useRef
 } from "react";
 import { add } from "ramda";
-import qs from "qs";
 import debounce from "lodash/debounce";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import ChatView from "react-chatview";
@@ -16,25 +15,21 @@ import { ErrorBoundary, Loading as LoadingComponent } from "utils";
 
 export const InfiniteContent = React.memo(
   ({
-    location,
     Loading=LoadingComponent,
     Empty = () => <LoadingComponent name="ball-grid-beat" />,
+    limit: limitProp = 25,
+    count=0,
     ListingContext
   }) => {
-    const { search } = location;
-    const query = qs.parse(search, { ignoreQueryPrefix: true });
-    const count = parseInt(query.count, 10) || 0;
-    const [limit, setLimit] = useState(parseInt(query.limit, 10) || 25);
+    const [limit, setLimit] = useState(limitProp);
     const [preventAutoScroll, setPreventAutoScroll] = useState(false);
     const scrollable = useRef(null);
-    const { ids: allIds, isChat, listingParams } = useContext(ListingContext);
+    const { ids: allIds, isChat } = useContext(ListingContext);
 
     const { ids: limitedIds } = useLimitedListing({
       ids: allIds,
-      location,
       limit,
-      count,
-      listingParams
+      count
     });
 
     const scrollToBottom = useCallback(
@@ -55,12 +50,18 @@ export const InfiniteContent = React.memo(
       []
     );
 
-    const onLoadMore = useCallback(() => {
+    const loadMore = useCallback(() => {
       setPreventAutoScroll(true);
-      setLimit(add(25));
+      setLimit(add(limitProp));
       stoppedScrolling();
-      return Promise.resolve();
-    }, []);
+    }, [limitProp]);
+
+    const onLoadMore = useCallback(() => {
+      return new Promise((resolve) => {
+        loadMore();
+        setTimeout(resolve, 200);
+      });
+    }, [loadMore]);
 
     return  (
       <ErrorBoundary>

@@ -21,7 +21,9 @@ const Cached = ({ location: { pathname, search }, Wrapped, ...props }) => {
           return;
         }
       }
-      onFetchCache(pathname, search);
+      onFetchCache(pathname, search).catch(error => {
+        console.error("error fetching cache", error.stack || error);
+      });
     },
     [pathname, search]
   );

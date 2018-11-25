@@ -7,7 +7,6 @@ import {
   useCallback
 } from "react";
 import { assoc, propOr, uniq, difference } from "ramda";
-import qs from "query-string";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import { NabContext, useScope } from "NabContext";
 import { SOUL_DELIMETER } from "notabug-peer/util";
@@ -100,14 +99,10 @@ export const useListing = ({ listingParams }) => {
 
 export const useLimitedListing = ({
   ids: allIds,
-  limit: limitProp,
-  listingParams,
-  location: { search }
+  limit,
+  count=0,
 }) => {
-  const query = qs.parse(search, { ignoreQueryPrefix: true });
-  const limit = parseInt(limitProp, 10) || parseInt(query.limit, 10) || 25;
-  const count = parseInt(listingParams.count, 10) || 0;
-  const ids = allIds.slice(count, count + limit);
+  const ids = useMemo(() => allIds.slice(count, count + limit), [allIds, limit, count]);
   return { ids, limit, count };
 };
 
