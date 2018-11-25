@@ -27,12 +27,7 @@ const getThingData = query(
   (scope, thingid) =>
     scope
       .get(SOULS.thing.soul({ thingid }))
-      .get("data")
-      .then(res => {
-        if (!res) return res;
-        //const { _, ...data } = res; // eslint-disable-line no-unused-vars
-        return res;// data;
-      }),
+      .get("data"),
   "thingData"
 );
 

@@ -160,8 +160,8 @@ export const useListingContent = ({ ids }) => {
 export const useListingContext = ({ listingParams }) => {
   const ListingContext = useMemo(() => createContext(), []);
   const ContentContext = useMemo(() => createContext(), []);
-  const listingProps = { ...useListing({ listingParams }), ContentContext };
-  const listingData = useMemo(() => listingProps, Object.values(listingProps));
+  const listingProps = useListing({ listingParams });
+  const listingData = useMemo(() => ({ ...listingProps, ContentContext }), [JSON.stringify((listingProps))]);
   return { ListingContext, ContentContext, listingData };
 };
 

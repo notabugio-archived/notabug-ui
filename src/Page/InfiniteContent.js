@@ -44,7 +44,7 @@ export const InfiniteContent = React.memo(
             if (scrollable && scrollable.current && !preventAutoScroll)
               scrollable.current.scrollTop = scrollable.current.scrollHeight;
           },
-          10
+          100
         );
       },
       [scrollable.current, preventAutoScroll]

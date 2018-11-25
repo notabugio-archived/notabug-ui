@@ -58,7 +58,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
           cache: window.initNabState,
           isRealtime: FORCE_REALTIME,
           onlyCache: !FORCE_REALTIME,
-          isCached: !FORCE_REALTIME,
+          isCached: true, //!FORCE_REALTIME,
           isCacheing: !FORCE_REALTIME
         });
       }
@@ -88,7 +88,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
   const onFetchCache = useCallback(
     (pathname, search) => {
       try {
-        if (FORCE_REALTIME) return Promise.resolve();
+        // if (FORCE_REALTIME) return Promise.resolve();
         return fetch(`/api${pathname}.json${search}`, [])
           .then(response => {
             if (response.status !== 200)
@@ -165,7 +165,9 @@ export const useScope = () => {
   useEffect(
     () => {
       if (scope === api.scope) return;
-      const updateCache = () => scope.loadCachedResults(api.scope.getCache());
+      const updateCache = (soul) => {
+        if (!soul) scope.loadCachedResults(api.scope.getCache());
+      };
       api.scope.on(updateCache);
       return () => api.scope.off(updateCache);
     },

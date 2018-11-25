@@ -96,19 +96,16 @@ export const Thing = React.memo(
             ? api.queries.thingData.now(scope, updatedItem.opId)
             : null;
 
-        if (id === "8a657c7cfc6c96128869e66097ab323c54a8bc7a") console.log("updatedItem", updatedItem);
-
+        updatedScores && setScores(updatedScores);
         updatedItem && setItem(updatedItem);
         updatedParentItem && setParentItem(updatedParentItem);
-        updatedScores && setScores(updatedScores);
       },
-      [scope, id, indexer, fetchParent]
+      [scope, id, indexer, fetchParent, item, parentItem]
     );
 
     useEffect(
       () => {
-        const update = debounce(doUpdate, 10);
-        update();
+        const update = debounce(doUpdate, 50);
         scope.on(update);
         return () => scope.off(update);
       },

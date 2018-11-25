@@ -86,6 +86,7 @@ export const scope = ({
   const realtime = () => {
     if (parentScope) return parentScope.realtime();
     if (!isRealtime) {
+      console.log("realtime");
       promises = {};
       isRealtime = true; // eslint-disable-line
       onlyCache = false; // eslint-disable-line

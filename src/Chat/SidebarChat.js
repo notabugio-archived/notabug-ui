@@ -7,7 +7,8 @@ import { tabulator } from "../config.json";
 
 export const SidebarChat = withRouter(({ location, topic }) => {
   const listingParams = useMemo(() => ({
-    soul: `nab/t/${topic}/chat@~${tabulator}.`
+    soul: `nab/t/${topic}/chat@~${tabulator}.`,
+    indexer: tabulator
   }));
   const { ListingContext, listingData } = useListingContext({ listingParams });
 
