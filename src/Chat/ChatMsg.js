@@ -1,6 +1,6 @@
 import React from "react";
 import { ThingCommentEntry as SnewThingCommentEntry } from "snew-classic-ui";
-import { COMMENT_BODY_MAX } from "notabug-peer";
+import { MAX_THING_BODY_SIZE } from "notabug-peer";
 import { Link } from "utils";
 import { AuthorLink } from "Auth";
 import { Comment } from "Comment";
@@ -20,7 +20,7 @@ const ChatMsgEntry = ({
         </span>
       ) : null
     }
-    body={props.body ? props.body.slice(0, COMMENT_BODY_MAX) : props.body}
+    body={props.body ? props.body.slice(0, MAX_THING_BODY_SIZE) : props.body}
     score={props.ups || props.downs ? props.score : null}
     likes={isVotingUp ? true : isVotingDown ? false : undefined}
     isVoting={isVotingUp || isVotingDown}

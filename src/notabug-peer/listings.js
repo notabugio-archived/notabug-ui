@@ -1,6 +1,6 @@
 import { prop, path, trim, assocPath } from "ramda";
 import { scope as getScope, query } from "./scope";
-import * as SOULS from "./souls";
+import * as SOULS from "./schema";
 
 export const parseListingSource = source =>
   source.split("\n").reduce((def, line) => {
@@ -31,6 +31,21 @@ const getThingData = query(
   "thingData"
 );
 
+const getWikiPageId = query(
+  (scope, authorId, name) =>
+    scope
+      .get(SOULS.userPages.soul({ authorId }))
+      .get(name)
+      .get("id"),
+  "wikiPageId"
+);
+
+export const getWikiPage = query(
+  (scope, authorId, name) =>
+    getWikiPageId(scope, authorId, name)
+      .then(id => id && getThingData(scope, id))
+);
+
 const userMetaQuery = query(
   (scope, id) =>
     scope.get(id).then(meta => ({
@@ -44,6 +59,8 @@ export const queries = () => ({
   listing,
   thingData: getThingData,
   thingScores: getThingScores,
+  wikiPageId: getWikiPageId,
+  wikiPage: getWikiPage,
   userMeta: userMetaQuery
 });
 export const newScope = nab => (opts = {}) =>

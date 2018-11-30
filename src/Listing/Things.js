@@ -18,18 +18,16 @@ export const Things = React.memo(
     const renderThing = (id, idx) => {
       const count = parseInt(prop("count", listingParams) || 0);
       return (
-        <ErrorBoundary>
+        <ErrorBoundary key={id}>
           <Thing
             {...{ ...props, ListingContext, id }}
-            key={id}
             rank={!includeRanks ? null : count + idx + 1}
           />
         </ErrorBoundary>
       );
     };
 
-    if (!ids.length && Empty) return <Empty />;
-    const rendered = ids.map(renderThing);
+    const rendered = (ids.length || !Empty) ? ids.map(renderThing) : [<Empty />];
     children && rendered.push(children);
     return (
       <Container {...{ ...containerProps, [childrenPropName]: rendered }} />

@@ -1,5 +1,13 @@
-export { ContentPolicy } from "./ContentPolicy";
-export { KnownPeers } from "./KnownPeers";
-export { PrivacyPolicy } from "./PrivacyPolicy";
+import React from "react";
+import { tabulator } from "../config.json";
+import { WikiPageContent } from "Wiki";
+import { PageTemplate, PageFooter } from "Page";
+
 export { Reddit } from "./Reddit";
-export { UserAgreement } from "./UserAgreement";
+
+export const StaticPage = ({ match: { params: { name  }} }) => (
+  <PageTemplate name={name}>
+    <WikiPageContent {...{ name, identifier: tabulator }} />
+    <PageFooter />
+  </PageTemplate>
+);

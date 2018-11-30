@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { propOr } from "ramda";
 import Spinner from "react-spinkit";
-import { COMMENT_BODY_MAX } from "notabug-peer";
+import { MAX_THING_BODY_SIZE } from "notabug-peer";
 import { ThingComment } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify } from "utils";
 import { NestedListing } from "Comment/NestedListing";
@@ -47,7 +47,7 @@ export const Comment = ({
   onHideReply
 }) => {
   const [collapsed, setCollapsed] = useState(collapsedProp);
-  const item = propItem || { body: "...", topic: "whatever" };
+  const item = propItem || { body: "..." };
   const { topic } = item || topicProp;
   const parentItem = propParentItem || (fetchParent ? { title: "..." } : null);
   let parentParams = {};
@@ -108,7 +108,7 @@ export const Comment = ({
       Markdown={propItem ? Markdown : MarkdownLoading}
       NestedListing={disableChildren ? () => null : NestedListing}
       opId={item.opId}
-      body={item.body ? item.body.slice(0, COMMENT_BODY_MAX) : item.body}
+      body={item.body ? item.body.slice(0, MAX_THING_BODY_SIZE) : item.body}
       author={item.author}
       author_fullname={item.authorId}
       siteprefix="t"

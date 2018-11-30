@@ -1,6 +1,6 @@
 import { prop, uniq } from "ramda";
 import { query } from "../notabug-peer/scope";
-import { PREFIX, SOUL_DELIMETER } from "../notabug-peer/util";
+import { PREFIX, SOUL_DELIMETER } from "../notabug-peer";
 import { sorts, multiTopic, sortThings } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
 import { declarativeListing } from "../listings/declarative";

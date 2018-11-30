@@ -8,6 +8,7 @@ import { routes } from "Routing";
 import init from "./notabug-peer";
 import { query, all } from "./notabug-peer/scope";
 import serialize from "serialize-javascript";
+import { tabulator } from "./ui-config.json";
 
 const serializeState = (data = {}) => `
 <script type="text/javascript">
@@ -60,7 +61,10 @@ const preload = (nab, scope, params) => {
         )
     )
   );
-  return preloadPageData.query(scope, params);
+  return Promise.all([
+    preloadPageData.query(scope, params),
+    nab.queries.wikiPage(scope, tabulator, "sidebar")
+  ]);
 };
 
 export default (nab, req, res) =>
@@ -86,7 +90,10 @@ export default (nab, req, res) =>
         localStorage: false,
         disableValidation: true
       });
-      const scope = (notabugApi.scope = nab.newScope({ isCacheing: true, noGun: true }));
+      const scope = (notabugApi.scope = nab.newScope({
+        isCacheing: true,
+        noGun: true
+      }));
 
       if (route.getListingParams) {
         dataQuery = preload(
@@ -94,6 +101,8 @@ export default (nab, req, res) =>
           scope,
           route.getListingParams({ ...routeMatch, query: req.query })
         );
+      } else if (route.preload) {
+        dataQuery = route.preload(scope, { ...routeMatch, query: req.query });
       }
 
       return dataQuery

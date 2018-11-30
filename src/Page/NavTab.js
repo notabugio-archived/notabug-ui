@@ -1,5 +1,5 @@
 import React from "react";
-import { PREFIX } from "notabug-peer/util";
+import { PREFIX } from "notabug-peer";
 import { Link } from "utils";
 import { NavTab as SnewNavTab } from "snew-classic-ui";
 

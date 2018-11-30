@@ -26,7 +26,6 @@ export const NestedContent = React.memo(
                   id={opId}
                   Loading={Submission}
                   isVisible
-                  isViewing
                   isDetail
                 />
               </div>

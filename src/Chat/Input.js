@@ -1,7 +1,7 @@
 import React, { Fragment, useContext, useState, useCallback } from "react";
 import { propOr } from "ramda";
 import isNode from "detect-node";
-import { COMMENT_BODY_MAX } from "notabug-peer";
+import { MAX_THING_BODY_SIZE } from "notabug-peer";
 import { NabContext } from "NabContext";
 
 export const ChatInput = ({ ListingContext }) => {
@@ -14,7 +14,7 @@ export const ChatInput = ({ ListingContext }) => {
   const onSend = useCallback(
     evt => {
       evt && evt.preventDefault();
-      if (!body || !body.trim() || body.length > COMMENT_BODY_MAX) return;
+      if (!body || !body.trim() || body.length > MAX_THING_BODY_SIZE) return;
       api.chat({ topic, body }).then((res) => {
         console.log({ res });
         const id = res && res.id;

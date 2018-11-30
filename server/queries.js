@@ -9,18 +9,27 @@ import {
   difference,
   path,
   isNil,
-  filter
+  filter,
+  union,
+  intersection,
+  keysIn
 } from "ramda";
-import {
-  emptyPromise,
-  unionArrays,
-  intersectArrays,
-  mergeObjects,
-  getDayStr,
-  PREFIX
-} from "./notabug-peer/util";
+import { getDayStr, PREFIX } from "./notabug-peer";
 import { query, all, resolve } from "./notabug-peer/scope";
 import * as SOULS from "./notabug-peer/souls";
+
+const emptyPromise = resolve(null);
+const unionArrays = reduce(union, []);
+const intersectArrays = reduce(
+  (res, ary) => (isNil(ary)) ? res : isNil(res) ? ary : intersection(res, ary),
+  null
+);
+
+export const mergeObjects = (objList) => {
+  const res = {};
+  objList.forEach(obj => keysIn(obj || {}).forEach(key => res[key] = obj[key]));
+  return res;
+};
 
 const LISTING_SIZE = 1000;
 
@@ -114,14 +123,6 @@ export const multiThingMeta = query((scope, params) =>
     )
   )
 );
-
-/*
-export const multiThing = query((scope, params) =>
-  all(
-    propOr([], "thingSouls", params).map(thingSoul => thing(scope, thingSoul))
-  )
-);
-*/
 
 export const singleThingData = query((scope, { thingId: thingid }) =>
   scope.get(SOULS.thing.soul({ thingid })).get("data").then(data => {

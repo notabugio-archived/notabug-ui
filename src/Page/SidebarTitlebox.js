@@ -1,15 +1,21 @@
 import React from "react";
-import { SidebarTitlebox as SnewSidebarTitlebox } from "snew-classic-ui";
-import { Markdown } from "utils";
+import { WikiPageContent } from "Wiki";
+import { tabulator } from "../config.json";
+import { Link } from "utils";
 
-const README = `
-> I think all censorship should be deplored.  My position is that bits are **not a bug**.
->
-> — [Aaron Swartz](/t/whatever/comments/927cbc4d33de6ad07e4b7bab65f758f77829e6ad/the-internet's-own-boy:-the-story-of-aaron-swartz) (1986 - 2013)
-
-notabug is a distributed content aggregator
-`;
-
-export const SidebarTitlebox = props => (
-  <SnewSidebarTitlebox {...{ ...props, Markdown }} description={README} />
+export const SidebarTitlebox = ({ siteprefix, subreddit, bottom }) => (
+  <div className="spacer">
+    <div className="titlebox">
+      {subreddit ? (
+        <h1 className="hover redditname">
+          <Link className="hover" href={`/${siteprefix}/${subreddit}/`}>{subreddit}</Link>
+        </h1>
+      ) : null}
+      <WikiPageContent name="sidebar" identifier={tabulator} />
+      <div className="bottom">
+        {bottom}
+      </div>
+      <div className="clear" />
+    </div>
+  </div>
 );

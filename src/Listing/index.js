@@ -9,7 +9,7 @@ import {
 import { assoc, propOr, uniq, difference } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import { NabContext, useScope } from "NabContext";
-import { SOUL_DELIMETER } from "notabug-peer/util";
+import { SOUL_DELIMETER } from "notabug-peer";
 export { Thing } from "./Thing";
 
 const { all } = Promise;

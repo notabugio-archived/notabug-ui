@@ -147,7 +147,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
   );
 };
 
-export const useScope = () => {
+export const useScope = (deps=[]) => {
   const { api } = useContext(NabContext);
   const scope = isNode
     ? api.scope
@@ -160,7 +160,7 @@ export const useScope = () => {
             isCached: !FORCE_REALTIME,
             isCacheing: !FORCE_REALTIME
           }),
-        []
+        deps
       );
   useEffect(
     () => {

@@ -1,11 +1,8 @@
 import { curry } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
-import Route from "route-parser";
 import objHash from "object-hash";
 import urllite from "urllite";
 import { getDayStr } from "./util";
-
-const authMatcher = new Route(":id1.:id2");
 
 export const putThing = curry((peer, data) => {
   data.timestamp = data.timestamp || new Date().getTime(); // eslint-disable-line
@@ -22,10 +19,9 @@ export const putThing = curry((peer, data) => {
   });
 
   const node = peer.souls.thing.get({ thingid });
-  const { id1, id2 } = authMatcher.match(authorId || "") || {};
 
   const dataSoul = authorId
-    ? peer.souls.thingDataSigned.soul({ thingid, id1, id2 })
+    ? peer.souls.thingDataSigned.soul({ thingid, authorId })
     : peer.souls.thingData.soul({ thingid: originalHash });
 
   const metaData = {
@@ -129,6 +125,33 @@ export const chat = curry((peer, data) => {
       .get("things")
       .set(thing);
   return thing;
+});
+
+export const writePage = curry((peer, name, body) => {
+  const user = peer.isLoggedIn();
+  if (!user) return Promise.reject("not logged in");
+  let thing;
+  const pagesSoul = peer.souls.userPages.soul({ authorId: user.pub });
+  const chain = peer.gun
+    .get(pagesSoul)
+    .get(name);
+  return chain.then(res => {
+    if (res && res.data) {
+      console.log("res", res);
+      chain.get("data").get("body").put(body);
+    } else {
+      const data = {
+        body,
+        title: name,
+        kind: "wikipage",
+        author: user.alias,
+        authorId: user.pub
+      };
+      console.log("page data", data);
+      thing = peer.putThing(data);
+      chain.put(thing);
+    }
+  });
 });
 
 export const vote = curry((peer, id, kind, nonce) => {

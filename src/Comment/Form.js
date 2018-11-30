@@ -1,6 +1,6 @@
 import React, { useContext, useState, useCallback } from "react";
 import { NabContext } from "NabContext";
-import { COMMENT_BODY_MAX } from "notabug-peer";
+import { MAX_THING_BODY_SIZE } from "notabug-peer";
 import { CommentForm as SnewCommentForm } from "snew-classic-ui";
 import { JavaScriptRequired } from "utils";
 
@@ -18,8 +18,8 @@ export const CommentForm = ({
   const replyToId = replyToIdProp || opId;
   let commentError = null;
 
-  if (body.length > COMMENT_BODY_MAX)
-    commentError = `this is too long (max: ${COMMENT_BODY_MAX})`;
+  if (body.length > MAX_THING_BODY_SIZE)
+    commentError = `this is too long (max: ${MAX_THING_BODY_SIZE})`;
   if (!body.trim().length) commentError = "a body is required";
 
   const onChangeBody = useCallback(evt => setBody(evt.target.value), []);

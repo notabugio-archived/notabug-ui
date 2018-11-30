@@ -11,11 +11,13 @@ import { NabContext, useScope } from "NabContext";
 import { Submission } from "Submission";
 import { Comment } from "Comment";
 import { ChatMsg } from "Chat/ChatMsg";
+import { WikiPageContent } from "Wiki/PageContent";
 import { useVotable } from "Voting";
-//import debounce from "lodash/debounce";
+import debounce from "lodash/debounce";
 
 const components = {
   submission: Submission,
+  wikipage: WikiPageContent,
   comment: Comment,
   chatmsg: ChatMsg
 };
@@ -25,6 +27,7 @@ export const Thing = React.memo(
     Loading: LoadingComponent = Loading,
     ListingContext,
     id,
+    name,
     rank,
     disableChildren,
     fetchParent,
@@ -35,9 +38,9 @@ export const Thing = React.memo(
   }) => {
     const { api, me, myContent } = useContext(NabContext);
     const {
-      listingParams: { indexer },
-      speculativeIds
-    } = useContext(ListingContext);
+      listingParams: { indexer } = {},
+      speculativeIds={}
+    } = useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];
 
     const scope = useScope();
@@ -105,9 +108,9 @@ export const Thing = React.memo(
 
     useEffect(
       () => {
-        //const update = debounce(doUpdate, 50);
-        scope.on(doUpdate);
-        return () => scope.off(doUpdate);
+        const update = debounce(doUpdate, 50);
+        scope.on(update);
+        return () => scope.off(update);
       },
       [doUpdate]
     );
@@ -132,7 +135,7 @@ export const Thing = React.memo(
     const canEdit =
       me &&
       signedMatch &&
-      me.pub === `${signedMatch.id1}.${signedMatch.id2}` &&
+      me.pub === `${signedMatch.authorId}` &&
       soul;
     const [isEditing, setIsEditing] = useState(false);
     const [editedBody, setEditedBody] = useState(propOr("", "body", item));
@@ -183,6 +186,7 @@ export const Thing = React.memo(
       onToggleEditing: canEdit && onToggleEditing,
       rank,
       id,
+      name,
       item,
       fetchParent,
       parentItem,

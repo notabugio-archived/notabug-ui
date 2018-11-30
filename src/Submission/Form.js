@@ -5,9 +5,9 @@ import qs from "qs";
 import slugify from "utils/slugify";
 import urllite from "urllite";
 import {
-  TOPIC_NAME_MAX,
-  SUBMISSION_BODY_MAX,
-  SUBMISSION_TITLE_MAX
+  MAX_TOPIC_SIZE,
+  MAX_THING_BODY_SIZE,
+  MAX_THING_TITLE_SIZE
 } from "notabug-peer";
 import { SubmitPage } from "snew-classic-ui";
 import { PageTemplate, PageFooter } from "Page";
@@ -32,9 +32,9 @@ export const SubmissionForm = ({
   const [url, setUrl] = useState(query.url || "");
   const [isSelf, setIsSelf] = useState(!!/selftext=true/.test(search));
 
-  const isBodyInvalid = body.length > SUBMISSION_BODY_MAX;
-  const isTitleInvalid = !title.length > SUBMISSION_TITLE_MAX;
-  const isTopicInvalid = !topic || topic.length > TOPIC_NAME_MAX;
+  const isBodyInvalid = body.length > MAX_THING_BODY_SIZE;
+  const isTitleInvalid = !title.length > MAX_THING_TITLE_SIZE;
+  const isTopicInvalid = !topic || topic.length > MAX_TOPIC_SIZE;
   const isUrlInvalid = useMemo(
     () => {
       if (isSelf) return false;
@@ -100,20 +100,20 @@ export const SubmissionForm = ({
           contentPolicyUrl="/rules"
           textError={
             isBodyInvalid
-              ? `this is too long (max: ${SUBMISSION_BODY_MAX})`
+              ? `this is too long (max: ${MAX_THING_BODY_SIZE})`
               : null
           }
           titleError={
             isTitleInvalid
               ? title
-                ? `this is too long (max: ${SUBMISSION_TITLE_MAX})`
+                ? `this is too long (max: ${MAX_THING_TITLE_SIZE})`
                 : "a title is required"
               : null
           }
           subredditError={
             isTopicInvalid
               ? topic
-                ? `this is too long (max: ${TOPIC_NAME_MAX})`
+                ? `this is too long (max: ${MAX_TOPIC_SIZE})`
                 : "a topic is required"
               : null
           }

@@ -1,8 +1,21 @@
 import React, { useMemo } from "react";
-import { Link } from "utils";
+import { Link, Markdown } from "utils";
 import { useListingContext } from "Listing";
 import { InfiniteContent } from "Page/InfiniteContent";
 import { tabulator } from "../config.json";
+
+const ChatLoading = () => (
+  <div className="thing comment">
+    <div className="entry unvoted">
+      <form className="usertext">
+        <Markdown
+          body="Nobody has said anything yet, be the first"
+        />
+      </form>
+    </div>
+    <div className="clearleft" />
+  </div>
+);
 
 export const SidebarChat = ({ topic }) => {
   const listingParams = useMemo(() => ({
@@ -22,6 +35,7 @@ export const SidebarChat = ({ topic }) => {
             <h1><Link href={`/t/${topic}/chat`}>{topic} chat</Link></h1>
           </div>
           <InfiniteContent
+            Empty={ChatLoading}
             isChat
             limit={5}
             {...{ ListingContext }}
