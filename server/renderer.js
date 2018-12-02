@@ -35,7 +35,8 @@ const preload = (nab, scope, params) => {
       all(ids.map(id => nab.queries.thingData(scope, id)))
         .then(data => {
           const opIds = {};
-          for (const item in data) {
+          for (const key in data) {
+            const item = data[key];
             const opId = propOr(null, "opId", item);
             if (opId && !data[opId]) opIds[opId] = true;
           }
