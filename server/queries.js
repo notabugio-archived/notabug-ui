@@ -16,7 +16,7 @@ import {
 } from "ramda";
 import { getDayStr, PREFIX } from "./notabug-peer";
 import { query, all, resolve } from "./notabug-peer/scope";
-import * as SOULS from "./notabug-peer/souls";
+import * as SOULS from "./notabug-peer/schema";
 
 const emptyPromise = resolve(null);
 const unionArrays = reduce(union, []);

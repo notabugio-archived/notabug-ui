@@ -8,7 +8,7 @@ import {
   sortThings
 } from "../queries";
 import { LISTING_SIZE, curate, censor, serializeListing } from "./utils";
-import * as SOULS from "../notabug-peer/souls";
+import * as SOULS from "../notabug-peer/schema";
 import { query } from "../notabug-peer/scope";
 import { parseListingSource } from "../notabug-peer/listings";
 

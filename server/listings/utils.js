@@ -1,4 +1,4 @@
-import * as SOULS from "../notabug-peer/souls";
+import * as SOULS from "../notabug-peer/schema";
 import { prop, uniq, map, filter, compose } from "ramda";
 import { query, all } from "../notabug-peer/scope";
 import { filterThings, multiAuthor, } from "../queries";

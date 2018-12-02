@@ -1,4 +1,4 @@
-import * as SOULS from "../notabug-peer/souls";
+import * as SOULS from "../notabug-peer/schema";
 import { PREFIX } from "../notabug-peer";
 import { query, all } from "../notabug-peer/scope";
 import { oracle, basicQueryRoute } from "./oracle";
