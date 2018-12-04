@@ -33,7 +33,7 @@ export const SubmissionForm = ({
   const [isSelf, setIsSelf] = useState(!!/selftext=true/.test(search));
 
   const isBodyInvalid = body.length > MAX_THING_BODY_SIZE;
-  const isTitleInvalid = !title.length > MAX_THING_TITLE_SIZE;
+  const isTitleInvalid = title.length > MAX_THING_TITLE_SIZE;
   const isTopicInvalid = !topic || topic.length > MAX_TOPIC_SIZE;
   const isUrlInvalid = useMemo(
     () => {

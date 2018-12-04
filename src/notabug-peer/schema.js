@@ -178,7 +178,7 @@ export const thing = nodeType(
         if (id && originalHash && thingid !== id) {
           console.error("meta id doesn't match", id, thingid, msg);
           console.log("val", val);
-          delete parent[pKey];
+          delete parent[key];
           return;
         }
         return val;
@@ -186,7 +186,7 @@ export const thing = nodeType(
       if (isThingDataSigned) {
         if (isThingDataSigned.authorId !== authorId) {
           console.warn("author mismatch", val);
-          delete parent[pKey];
+          delete parent[key];
           return;
         }
         if (thingid !== id || isThingDataSigned.thingid !== id) {
@@ -197,13 +197,13 @@ export const thing = nodeType(
             isThingDataSigned,
             msg
           );
-          delete parent[pKey];
+          delete parent[key];
           return;
         }
         return val;
       }
       if (val.originalHash) console.error("unknown thing?", val);
-      delete parent[pKey];
+      delete parent[key];
     })
 );
 
@@ -240,7 +240,7 @@ export const thingData = nodeType(
         const match = peer.souls.thingData.isMatch(prop("#", val) || key);
         if (id === match.thingid) return val;
         console.warn("thing data mismatch", id, match.thingid); // eslint-disable-line
-        delete parent[pKey];
+        delete parent[key];
       }
 
       return val;

@@ -78,12 +78,8 @@ export const allowFields = (...validators) => (
         )
       ).then(results => {
         if (!results.find(identity)) {
-          if (key.indexOf("~") === -1) {
-            console.warn("sanitizing", pKey, key, val[key]); // eslint-disable-line
-            delete val[key]; // eslint-disable-line
-          } else {
-            // console.warn("sea", pKey, key, msg); // eslint-disable-line
-          }
+          val[key] && console.warn("sanitizing", pKey, key, val[key]); // eslint-disable-line
+          delete val[key]; // eslint-disable-line
         }
       })
     )
@@ -110,7 +106,7 @@ export const allowFieldsSEA = (...validators) => (
         )
       ).then(results => {
         if (results.find(identity)) return;
-        console.warn("sanitizing", pKey, key, decoded); // eslint-disable-line
+        decoded &&  console.warn("sanitizing", pKey, key, decoded); // eslint-disable-line
         delete val[key]; // eslint-disable-line
       });
     })
