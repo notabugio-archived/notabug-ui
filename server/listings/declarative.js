@@ -68,7 +68,7 @@ export const declarativeListing = query((scope, source) => {
   const sort = keysIn(definition.sort)[0] || "new";
   const tabulator = `~${keysIn(definition.tabulator)[0]}`;
   let name = keysIn(definition.name)[0];
-  let submitTopic = keysIn(path(["submit", "to"], definition))[0] || "";
+  let submitTopic = keysIn(path(["submit", "to"], definition)).pop() || "";
   const censors = keysIn(definition.censor);
   const opId = keysIn(definition.op)[0];
 
