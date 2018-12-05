@@ -10,7 +10,7 @@ import {
 import { LISTING_SIZE, curate, censor, serializeListing } from "./utils";
 import * as SOULS from "../notabug-peer/schema";
 import { query } from "../notabug-peer/scope";
-import { parseListingSource } from "../notabug-peer/listings";
+import { parseListingSource, getWikiPage } from "../notabug-peer/listings";
 
 const itemSources = {
   replies: (scope, definition) => {
@@ -95,11 +95,14 @@ export const declarativeListing = query((scope, source) => {
   return itemSources[itemSource](scope, definition)
     .then(thingSouls => {
       if (opId) {
-        return scope.get(SOULS.thing.soul({ thingid: opId })).get("data").then(data => {
-          name = name || prop("topic", data);
-          submitTopic = submitTopic || prop("topic", data);
-          return thingSouls;
-        });
+        return scope
+          .get(SOULS.thing.soul({ thingid: opId }))
+          .get("data")
+          .then(data => {
+            name = name || prop("topic", data);
+            submitTopic = submitTopic || prop("topic", data);
+            return thingSouls;
+          });
       }
       const authorIds = keysIn(definition.author);
       if (authorIds.length) {
@@ -199,3 +202,18 @@ export const declarativeListing = query((scope, source) => {
       censors: ""
     }));
 });
+
+export const listingFromPage = query(
+  (scope, authorId, name, extraSource = "") =>
+    getWikiPage(scope, authorId, name).then(
+      compose(
+        body =>
+          declarativeListing(
+            scope,
+            extraSource ? `${body}\n\n# added by indexer\n${extraSource}` : body
+          ),
+        propOr("", "body"),
+        res => console.log("res", res) || res
+      )
+    )
+);
