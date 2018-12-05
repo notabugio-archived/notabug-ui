@@ -145,7 +145,7 @@ export default oracle({
       priority: 25,
       checkMatch: ({ sort }) => sort in sorts,
       query: query((scope, { match: { sort, indexer } }) =>
-        listingFromPage(scope, indexer, "listing:curated", `sort ${sort}`).then(
+        listingFromPage(scope, indexer, "listing:curated", `kind submission\nsort ${sort}`).then(
           serialized => ({
             ...serialized,
             tabs: ["hot", "new", "discussed", "controversial", "top"]
@@ -161,7 +161,7 @@ export default oracle({
       priority: 25,
       checkMatch: ({ sort }) => sort in sorts,
       query: query((scope, { match: { sort, indexer } }) =>
-        listingFromPage(scope, indexer, "listing:front", `sort ${sort}`).then(
+        listingFromPage(scope, indexer, "listing:front", `kind submission\nsort ${sort}`).then(
           serialized => ({
             ...serialized,
             tabs: [
@@ -210,7 +210,7 @@ export default oracle({
           [
             `name ${domain}`,
             ...domain.split("+").map(dm => `domain ${dm}`),
-            `sort ${sort}`
+            `kind submission\nsort ${sort}`
           ].join("\n")
         ).then(serialized => ({
           ...serialized,
@@ -239,6 +239,7 @@ export default oracle({
             `name ${topic}`,
             ...topics.map(tp => `topic ${tp}`),
             `submit to ${submitTo}`,
+            "kind submission",
             `sort ${sort}`
           ].join("\n")
         ).then(serialized => ({

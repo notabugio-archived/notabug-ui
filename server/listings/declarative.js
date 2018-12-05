@@ -76,6 +76,7 @@ export const declarativeListing = query((scope, source) => {
     itemSource !== "topic" ? ["topic"] : null,
     itemSource !== "domain" ? ["domain"] : null,
     itemSource !== "author" ? ["author"] : null,
+    ["kind"],
     ["ban", "domain"],
     ["ban", "topic"],
     ["ban", "author"],
@@ -131,6 +132,7 @@ export const declarativeListing = query((scope, source) => {
       const scoreMin = getValue("score above");
       const scoreMax = getValue("score below");
       const topics = keysIn(isPresent("topic"));
+      const kinds = keysIn(isPresent("kind"));
       if (upsMin !== null)
         filters.push(
           compose(
@@ -186,6 +188,13 @@ export const declarativeListing = query((scope, source) => {
             path(["data", "topic"])
           )
         );
+      if (kinds.length)
+        filters.push(
+          compose(
+            kind => console.log("kind", kind) || !!isPresent(["kind", kind]),
+            path(["data", "kind"])
+          )
+        );
       if (filters.length)
         return things.filter(thing => !filters.find(fn => !fn(thing)));
       return things;
@@ -212,8 +221,7 @@ export const listingFromPage = query(
             scope,
             extraSource ? `${body}\n\n# added by indexer\n${extraSource}` : body
           ),
-        propOr("", "body"),
-        res => console.log("res", res) || res
+        propOr("", "body")
       )
     )
 );
