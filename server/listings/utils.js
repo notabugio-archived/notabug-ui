@@ -13,7 +13,7 @@ export const serializeListing = ({ name="", things }) => ({
 const fetchThingSoulsData = scope => souls => all(
   souls
     .filter(x => !!x)
-    .map(soul => scope.get(`${soul}/data`).then(x => x))
+    .map(soul => scope.get(soul).get("data").then(x => x))
 );
 
 export const curate = query((scope, authorIds, submissionOnly = false) =>

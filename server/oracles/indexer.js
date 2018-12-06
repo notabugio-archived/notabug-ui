@@ -149,7 +149,7 @@ export default oracle({
           serialized => ({
             ...serialized,
             tabs: ["hot", "new", "discussed", "controversial", "top"]
-              .map(tab => `${PREFIX}/t/front/${tab}@~${indexer}.`)
+              .map(tab => `${PREFIX}/t/curated/${tab}@~${indexer}.`)
               .join(SOUL_DELIMETER)
           })
         )
