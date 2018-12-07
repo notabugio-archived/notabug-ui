@@ -353,7 +353,7 @@ export const genericSignedData = nodeType(
   ":uuid~:authorId.",
   ({ uuid, authorId }) => {
     console.warn(`generic SEA data ${uuid}/~${authorId}.`);
-    return (uuid && uuid.length === 20) && authorId && authorId.length < consts.MAX_AUTHOR_ID_SIZE;
+    return (uuid && uuid.length < 32) && authorId && authorId.length < consts.MAX_AUTHOR_ID_SIZE;
   },
   (key) => {
     console.log("genericSignedData", key);
