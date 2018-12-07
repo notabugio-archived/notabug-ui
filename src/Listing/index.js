@@ -102,8 +102,21 @@ export const useLimitedListing = ({
   limit,
   count=0,
 }) => {
+  const { api } = useContext(NabContext);
   const ids = useMemo(() => allIds.slice(count, count + limit), [allIds, limit, count]);
-  return { ids, limit, count };
+  const scope = api.scope;
+
+  const fetchNextPage = useCallback((extraItems) => {
+    const start = count + limit;
+    const end = start + extraItems;
+    const nextIds = allIds.slice(start, end);
+    if (!nextIds.length) return Promise.resolve();
+    return Promise.all(nextIds.map(id => api.queries.thingData(scope, id)
+      .then(({ opId } = {}) => opId && api.queries.thingData(scope, opId))))
+      .then(() => new Promise((resolve) => setTimeout(resolve, 50)));
+  }, [allIds, count, limit]);
+
+  return { ids, limit, count, fetchNextPage };
 };
 
 export const useListingContent = ({ ids }) => {

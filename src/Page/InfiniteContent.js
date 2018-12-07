@@ -1,9 +1,4 @@
-import React, {
-  useContext,
-  useState,
-  useCallback,
-  useRef
-} from "react";
+import React, { useContext, useState, useCallback, useRef } from "react";
 import { add } from "ramda";
 import debounce from "lodash/debounce";
 import { ZalgoPromise as Promise } from "zalgo-promise";
@@ -15,10 +10,10 @@ import { ErrorBoundary, Loading as LoadingComponent } from "utils";
 
 export const InfiniteContent = React.memo(
   ({
-    Loading=LoadingComponent,
+    Loading = LoadingComponent,
     Empty = () => <LoadingComponent name="ball-grid-beat" />,
     limit: limitProp = 25,
-    count=0,
+    count = 0,
     ListingContext
   }) => {
     const [limit, setLimit] = useState(limitProp);
@@ -26,7 +21,7 @@ export const InfiniteContent = React.memo(
     const scrollable = useRef(null);
     const { ids: allIds, isChat } = useContext(ListingContext);
 
-    const { ids: limitedIds } = useLimitedListing({
+    const { fetchNextPage, ids: limitedIds } = useLimitedListing({
       ids: allIds,
       limit,
       count
@@ -34,13 +29,10 @@ export const InfiniteContent = React.memo(
 
     const scrollToBottom = useCallback(
       () => {
-        setTimeout(
-          () => {
-            if (scrollable && scrollable.current && !preventAutoScroll)
-              scrollable.current.scrollTop = scrollable.current.scrollHeight;
-          },
-          100
-        );
+        setTimeout(() => {
+          if (scrollable && scrollable.current && !preventAutoScroll)
+            scrollable.current.scrollTop = scrollable.current.scrollHeight;
+        }, 100);
       },
       [scrollable.current, preventAutoScroll]
     );
@@ -50,20 +42,24 @@ export const InfiniteContent = React.memo(
       []
     );
 
-    const loadMore = useCallback(() => {
-      setPreventAutoScroll(true);
-      setLimit(add(limitProp));
-      stoppedScrolling();
-    }, [limitProp]);
+    const loadMore = useCallback(
+      () => {
+        setPreventAutoScroll(true);
+        setLimit(add(limitProp));
+        stoppedScrolling();
+      },
+      [limitProp]
+    );
 
-    const onLoadMore = useCallback(() => {
-      return new Promise((resolve) => {
-        loadMore();
-        setTimeout(resolve, 200);
-      });
-    }, [loadMore]);
+    const onLoadMore = useCallback(
+      () => {
+        if (isChat) return fetchNextPage(limitProp).then(loadMore);
+        return Promise.resolve(loadMore());
+      },
+      [isChat, loadMore, fetchNextPage]
+    );
 
-    return  (
+    return (
       <ErrorBoundary>
         <div className="content" role="main">
           <Things
@@ -87,7 +83,7 @@ export const InfiniteContent = React.memo(
               scrollLoadThreshold: 800,
               onInfiniteLoad: onLoadMore,
               flipped: isChat,
-              returnScrollable: el => scrollable.current = el
+              returnScrollable: el => (scrollable.current = el)
             }}
           />
           {isChat ? <ChatInput {...{ ListingContext }} /> : null}
@@ -96,4 +92,3 @@ export const InfiniteContent = React.memo(
     );
   }
 );
-
