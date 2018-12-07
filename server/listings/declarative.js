@@ -1,4 +1,5 @@
 import { compose, lte, gte, prop, propOr, path, keysIn } from "ramda";
+import urllite from "urllite";
 import {
   multiAuthor,
   multiTopic,
@@ -132,6 +133,10 @@ export const declarativeListing = query((scope, source) => {
       const scoreMin = getValue("score above");
       const scoreMax = getValue("score below");
       const topics = keysIn(isPresent("topic"));
+      const domainBans = keysIn(isPresent("ban domain"));
+      const topicBans = keysIn(isPresent("ban topic"));
+      const authorBans = keysIn(isPresent("ban author"));
+      const aliasBans = keysIn(isPresent("ban alias"));
       const kinds = keysIn(isPresent("kind"));
       if (upsMin !== null)
         filters.push(
@@ -186,6 +191,35 @@ export const declarativeListing = query((scope, source) => {
           compose(
             topic => !!isPresent(["topic", topic]),
             path(["data", "topic"])
+          )
+        );
+      if (topicBans.length)
+        filters.push(
+          compose(
+            topic => !isPresent(["ban", "topic", topic]),
+            path(["data", "topic"])
+          )
+        );
+      if (domainBans.length)
+        filters.push(
+          compose(
+            domain => !domain || !isPresent(["ban", "domain", domain]),
+            url => url && (urllite(url).host || "").replace(/^www\./, ""),
+            path(["data", "url"])
+          )
+        );
+      if (authorBans.length)
+        filters.push(
+          compose(
+            authorId => !isPresent(["ban", "authorId", authorId]),
+            path(["data", "authorId"])
+          )
+        );
+      if (aliasBans.length)
+        filters.push(
+          compose(
+            alias => !isPresent(["ban", "author", alias]),
+            path(["data", "author"])
           )
         );
       if (kinds.length)
