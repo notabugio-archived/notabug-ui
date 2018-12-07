@@ -53,7 +53,9 @@ export const InfiniteContent = React.memo(
 
     const onLoadMore = useCallback(
       () => {
-        if (isChat) return fetchNextPage(limitProp).then(loadMore);
+        if (isChat) return fetchNextPage(limitProp).then(loadMore).then(() => new Promise((resolve) => {
+          setTimeout(resolve, 50);
+        }));
         return Promise.resolve(loadMore());
       },
       [isChat, loadMore, fetchNextPage]
@@ -80,7 +82,7 @@ export const InfiniteContent = React.memo(
               className: `sitetable infinite-listing ${
                 isChat ? "chat-listing" : ""
               }`,
-              scrollLoadThreshold: 800,
+              scrollLoadThreshold: 1000,
               onInfiniteLoad: onLoadMore,
               flipped: isChat,
               returnScrollable: el => (scrollable.current = el)

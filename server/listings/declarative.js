@@ -191,7 +191,7 @@ export const declarativeListing = query((scope, source) => {
       if (kinds.length)
         filters.push(
           compose(
-            kind => console.log("kind", kind) || !!isPresent(["kind", kind]),
+            kind => !!isPresent(["kind", kind]),
             path(["data", "kind"])
           )
         );
