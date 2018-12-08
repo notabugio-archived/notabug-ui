@@ -60,6 +60,7 @@ export const Submission = ({
         </Helmet>
       ) : null*/}
       <ThingLink
+        nofollow
         {...{
           Markdown,
           Expando,
