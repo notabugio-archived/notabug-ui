@@ -4,7 +4,12 @@ import Snudown from "snuownd";
 import { withRouter } from "react-router-dom";
 
 const interceptClicks = identity;
-const parser = Snudown.getParser();
+
+const rendererState = Snudown.defaultRenderState();
+rendererState.nofollow = 1;
+const rendererCbs = Snudown.getRedditCallbacks();
+const renderer = Snudown.createCustomRenderer(rendererCbs, rendererState);
+const parser = Snudown.getParser(renderer);
 
 export const useEditText = ({ value: valueProp = "", isRequired = true, maxLength = 10000 } = {}) => {
   const [value, setValue] = useState(valueProp);
