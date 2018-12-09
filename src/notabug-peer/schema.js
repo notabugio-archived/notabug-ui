@@ -283,9 +283,7 @@ export const thingDataSigned = nodeType(
 
 export const userPages = nodeType(
   `${PREFIX}/pages~:authorId.`,
-  allowSoulFields(
-    and(keyIs("authorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE))
-  ),
+  allowSoulFields(and(keyIs("authorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE))),
   allowFieldsSEA(isSoul("thing"))
 );
 
@@ -314,6 +312,7 @@ const checkListingSoul = allowSoulFields(
   and(keyIs("tabulatorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE)),
   and(keyIs("sort"), maxSize(consts.MAX_LISTING_SOUL_SORT_SIZE)),
   and(keyIs("type"), maxSize(consts.MAX_LISTING_SOUL_TYPE_SIZE)),
+  and(keyIs("kind"), maxSize(consts.MAX_LISTING_SOUL_KIND_SIZE))
 );
 
 const sanitizeListingNode = allowFieldsSEA(
@@ -328,7 +327,7 @@ const sanitizeListingNode = allowFieldsSEA(
   and(keyIs("userId"), maxSize(consts.MAX_AUTHOR_ID_SIZE)),
   and(keyIs("opId"), maxSize(consts.MAX_HASH_SIZE)),
   and(keyIs("isChat"), isBoolean),
-  and(keyIs("includeRanks"), isBoolean),
+  and(keyIs("includeRanks"), isBoolean)
 );
 
 export const typedListing = nodeType(
@@ -343,8 +342,8 @@ export const listing = nodeType(
   sanitizeListingNode
 );
 
-export const repliesListing = nodeType(
-  `${PREFIX}/:prefix/:identifier/replies/:type/:sort@~:tabulatorId.`,
+export const userListing = nodeType(
+  `${PREFIX}/:prefix/:identifier/:kind/:type/:sort@~:tabulatorId.`,
   checkListingSoul,
   sanitizeListingNode
 );
@@ -353,9 +352,14 @@ export const genericSignedData = nodeType(
   ":uuid~:authorId.",
   ({ uuid, authorId }) => {
     console.warn(`generic SEA data ${uuid}/~${authorId}.`);
-    return (uuid && uuid.length < 32) && authorId && authorId.length < consts.MAX_AUTHOR_ID_SIZE;
+    return (
+      uuid &&
+      uuid.length < 32 &&
+      authorId &&
+      authorId.length < consts.MAX_AUTHOR_ID_SIZE
+    );
   },
-  (key) => {
+  key => {
     console.log("genericSignedData", key);
     return true;
   }

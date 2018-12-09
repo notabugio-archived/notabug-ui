@@ -1,12 +1,13 @@
 import Promise from "promise";
 import React from "react";
-import { compose, propOr, keysIn } from "ramda";
+import { propOr, keysIn } from "ramda";
 import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import { App } from "App";
 import { routes } from "Routing";
 import init from "./notabug-peer";
 import { query, all } from "./notabug-peer/scope";
+import { parseListingSource } from "./notabug-peer/listings";
 import serialize from "serialize-javascript";
 import { tabulator } from "./ui-config.json";
 
@@ -20,12 +21,22 @@ const preload = (nab, scope, params) => {
   const getLimitedListingIds = query((scope, { soul, limit, count = 0 }) =>
     nab.queries
       .listing(scope, soul)
-      .then(
-        compose(
-          idString => (idString || "").split("+").filter(x => !!x),
-          propOr("", "ids")
-        )
-      )
+      .then(listingData => {
+        const idString = propOr("", "ids", listingData);
+        const ids = (idString || "").split("+").filter(x => !!x);
+        const source = propOr("", "source", listingData);
+        const { getValueChain } = parseListingSource(source);
+        const [authorId, pageName] = getValueChain(["sourced", "from", "page"]);
+
+        if (authorId && pageName) {
+          return all([
+            nab.queries.wikiPage(scope, authorId, pageName),
+            nab.queries.wikiPage(scope, authorId, `${pageName}:sidebar`)
+          ]).then(() => ids);
+        }
+
+        return ids;
+      })
       .then(allIds =>
         limit || count ? allIds.slice(count, count + limit) : allIds
       )

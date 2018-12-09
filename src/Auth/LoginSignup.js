@@ -140,7 +140,7 @@ export const RegisterForm = injectHook(useLoginSignup)(
     ...props
   }) => {
     if (!canLogin || me) return null;
-    if (isWorking) return <Spinner name="ball-beat" color="#cee3f8" />;
+    if (isWorking) return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
     return (
       <SnewRegisterForm
         {...props}
@@ -180,7 +180,7 @@ export const LoginForm = injectHook(useLoginSignup)(
     ...props
   }) => {
     if (!canLogin || me) return null;
-    if (isWorking) return <Spinner name="ball-beat" color="#cee3f8" />;
+    if (isWorking) return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
     return (
       <SnewLoginForm
         {...props}
@@ -211,7 +211,7 @@ export const LoginFormSide = injectHook(useLoginSignup)(
     ...props
   }) => {
     if (!canLogin || me) return null;
-    if (isWorking) return <Spinner name="ball-beat" color="#cee3f8" />;
+    if (isWorking) return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
     return (
       <SnewLoginFormSide
         {...props}

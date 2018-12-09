@@ -57,6 +57,18 @@ const getUserPageParams = withParams(
   })
 );
 
+const getUserSpaceParams = withParams(
+  ({
+    params: { identifier, name, sort = "hot" },
+    query: { indexer = tabulator }
+  }) => {
+    return {
+      prefix: "user",
+      soul: `${PREFIX}/user/${identifier}/spaces/${name}/${sort}@~${indexer}.`
+    };
+  }
+);
+
 const getSubmissionListingParams = withParams(
   ({
     params: { submission_id },
@@ -143,6 +155,16 @@ export const routes = [
   {
     path: "/user/:identifier/pages",
     component: cached(WikiPage)
+  },
+  {
+    path: "/user/:identifier/spaces/:name/:sort",
+    component: cached(Page),
+    getListingParams: getUserSpaceParams
+  },
+  {
+    path: "/user/:identifier/spaces/:name",
+    component: cached(Page),
+    getListingParams: getUserSpaceParams
   },
   {
     path: "/user/:identifier/:type/:sort",

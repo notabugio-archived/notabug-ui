@@ -2,14 +2,14 @@ import React, { Fragment, useMemo } from "react";
 // import { Helmet } from "react-helmet";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
-import { Markdown, Timestamp, Link, slugify } from "utils";
+import { Markdown, Timestamp, Link, slugify, interceptClicks } from "utils";
 import { Expando, getExpando } from "./Expando";
 import { AuthorLink } from "Auth";
 // import { SaveThingButton } from "SaveThing";
 
 const nsfwRe = /(nsfw|porn|hentai|ecchi|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
 
-export const Submission = ({
+export const Submission = interceptClicks(({
   id,
   ups,
   downs,
@@ -124,6 +124,6 @@ export const Submission = ({
       />
     </Fragment>
   );
-};
+});
 
 export default Submission;

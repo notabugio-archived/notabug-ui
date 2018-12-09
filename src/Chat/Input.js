@@ -16,7 +16,6 @@ export const ChatInput = ({ ListingContext }) => {
       evt && evt.preventDefault();
       if (!body || !body.trim() || body.length > MAX_THING_BODY_SIZE) return;
       api.chat({ topic, body }).then((res) => {
-        console.log({ res });
         const id = res && res.id;
         if (!id) return;
         onMarkMine(id);

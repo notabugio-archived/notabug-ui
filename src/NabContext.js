@@ -1,7 +1,6 @@
 /* globals RindexedDB */
 import {
   createContext,
-  useContext,
   useState,
   useCallback,
   useEffect,
@@ -147,34 +146,6 @@ export const useNabGlobals = ({ notabugApi, history }) => {
   );
 };
 
-export const useScope = (deps=[]) => {
-  const { api } = useContext(NabContext);
-  const scope = isNode
-    ? api.scope
-    : useMemo(
-        () =>
-          api.newScope({
-            cache: api.scope.getCache(),
-            isRealtime: FORCE_REALTIME,
-            onlyCache: !FORCE_REALTIME,
-            isCached: !FORCE_REALTIME,
-            isCacheing: !FORCE_REALTIME
-          }),
-        deps
-      );
-  useEffect(
-    () => {
-      if (scope === api.scope) return;
-      const updateCache = (soul) => {
-        if (!soul) scope.loadCachedResults(api.scope.getCache());
-      };
-      api.scope.on(updateCache);
-      return () => api.scope.off(updateCache);
-    },
-    [scope]
-  );
-  return scope;
-};
 
 // https://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
 function isLocalStorageNameSupported() {

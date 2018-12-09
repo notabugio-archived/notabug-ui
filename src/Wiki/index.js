@@ -1,48 +1,22 @@
-import React, {
-  useContext,
-  useState,
-  useEffect,
-  useMemo,
-  useCallback
-} from "react";
+import React, { useContext } from "react";
 import Helmet from "react-helmet";
-import { NabContext, useScope } from "NabContext";
+import { NabContext } from "NabContext";
 import { PageTemplate } from "Page";
 import { Thing } from "Listing";
+import { useQuery } from "utils";
 import { WikiPageCreate } from "./PageCreate";
-import debounce from "lodash/debounce";
 
 export const WikiPageContent = ({
   emptyContent = null,
   name = "index",
+  asSource,
   identifier
 }) => {
   const { api, me } = useContext(NabContext);
-  const scope = useScope([name, identifier]);
-  const [id, setId] = useState(
-    useMemo(() => api.queries.wikiPageId.now(scope, identifier, name), [])
-  );
-
-  const doUpdate = useCallback(
-    () => {
-      const updatedId = api.queries.wikiPageId.now(scope, identifier, name);
-      updatedId && setId(updatedId);
-    },
-    [scope]
-  );
-
-  useEffect(
-    () => {
-      const update = debounce(doUpdate, 50);
-      scope.on(update);
-      return () => scope.off(update);
-    },
-    [scope]
-  );
-
+  const id = useQuery(api.queries.wikiPageId, [identifier, name]);
   if (!id && me && identifier === me.pub) return <WikiPageCreate name={name} />;
   if (!id) return emptyContent;
-  return <Thing id={id} isDetail name={name} />;
+  return <Thing key={id} id={id} isDetail {...{ asSource, name }} />;
 };
 
 export const WikiPage = ({
@@ -52,7 +26,7 @@ export const WikiPage = ({
 }) => (
   <PageTemplate name={name}>
     <Helmet>
-      <body className="wiki-page" />
+      <body className="wiki-page loggedin subscriber" />
     </Helmet>
     <div className="content" role="main">
       <WikiPageContent

@@ -7,7 +7,7 @@ import { ErrorBoundary } from "utils";
 
 export { routes } from "Routing";
 
-export const App = withRouter(({ notabugApi, history }) => (
+export const App = withRouter(React.memo(({ notabugApi, history }) => (
   <NabContext.Provider value={useNabGlobals({ notabugApi, history })}>
     <ErrorBoundary>
       <VotingQueue>
@@ -15,4 +15,4 @@ export const App = withRouter(({ notabugApi, history }) => (
       </VotingQueue>
     </ErrorBoundary>
   </NabContext.Provider>
-));
+)));

@@ -235,3 +235,9 @@ body > .content .chat-listing .link .midcol,
   top: 5px;
   right: 5px;
 }
+
+.side .new-wikipage-banner,
+.side h1.wikititle,
+.side .wikiaction-current {
+  display: none;
+}

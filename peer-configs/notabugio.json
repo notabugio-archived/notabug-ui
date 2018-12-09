@@ -4,7 +4,6 @@
     "script": "server.js",
     "args": [
       "--port", "3333",
-      "--debug",
       "--evict"
     ]
   }, {
@@ -18,7 +17,7 @@
       "--render"
     ]
   }, {
-    "uid": "oracles",
+    "uid": "listings",
     "script": "server.js",
     "args": [
       "--listings",
@@ -27,13 +26,22 @@
       "--peer", "http://localhost:3333/gun"
     ]
   }, {
-    "uid": "relay",
+    "uid": "tabulator",
     "script": "server.js",
     "args": [
-      "--peer", "http://localhost:3333/gun",
-      "--peer", "https://supportnikki.org/gun",
-      "--peer", "https://bluebit.space/gun",
-      "--evict"
+      "--tabulate",
+      "--redis",
+      "--leech",
+      "--peer", "http://localhost:3333/gun"
+    ]
+  }, {
+    "uid": "spaces",
+    "script": "server.js",
+    "args": [
+      "--spaces",
+      "--redis",
+      "--leech",
+      "--peer", "http://localhost:3333/gun"
     ]
   }
 ]

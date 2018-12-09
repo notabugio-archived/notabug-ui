@@ -8,8 +8,9 @@ import {
 } from "react";
 import { assoc, propOr, uniq, difference } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
-import { NabContext, useScope } from "NabContext";
-import { SOUL_DELIMETER } from "notabug-peer";
+import { NabContext } from "NabContext";
+import { useQuery, useScope } from "utils";
+import { parseListingSource } from "notabug-peer/listings";
 export { Thing } from "./Thing";
 
 const { all } = Promise;
@@ -17,15 +18,8 @@ const { all } = Promise;
 export const useListing = ({ listingParams }) => {
   const { api } = useContext(NabContext);
   const { soul } = listingParams;
-  const scope = useScope();
   const [speculativeIds, setSpeculativeIds] = useState([]);
-  const [state, setState] = useState(
-    useMemo(() => api.queries.listing.now(scope, soul), [soul])
-  );
-  const update = useCallback(
-    () => setState(api.queries.listing.now(scope, soul)),
-    [soul]
-  );
+  const state = useQuery(api.queries.listing, [soul]);
   const createdAt = parseInt(propOr("", "createdAt", state));
   const includeRanksString = propOr("", "includeRanks", state);
   const isChatString = propOr("", "isChat", state);
@@ -38,18 +32,22 @@ export const useListing = ({ listingParams }) => {
     isChatString !== "false" &&
     isChatString !== "0"
   );
-  const { ids: canonicalIds, tabs } = useMemo(
-    () => ({
-      ids: propOr("", "ids", state)
+
+  const canonicalIds = useMemo(
+    () =>
+      propOr("", "ids", state)
         .split("+")
         .filter(x => !!x),
-      tabs: propOr("", "tabs", state)
-        .split(SOUL_DELIMETER)
-        .filter(x => !!x)
-    }),
-    [state]
+    [propOr("", "ids", state)]
   );
 
+  const source = propOr("", "source", state);
+  const parsedSource = useMemo(() => parseListingSource(source), [
+    source,
+    state
+  ]);
+
+  const opId = useMemo(() => parsedSource.getValue("op"), [parsedSource]);
   const ids = useMemo(() => uniq([...speculativeIds, ...canonicalIds]), [
     ids,
     speculativeIds
@@ -75,19 +73,11 @@ export const useListing = ({ listingParams }) => {
     [canonicalIds]
   );
 
-  useEffect(
-    () => {
-      update();
-      scope.on(update);
-      return () => scope.off(update);
-    },
-    [update]
-  );
-
   return {
     ...(state || {}),
+    parsedSource,
     ids,
-    tabs,
+    opId,
     includeRanks,
     isChat,
     createdAt,
@@ -97,24 +87,32 @@ export const useListing = ({ listingParams }) => {
   };
 };
 
-export const useLimitedListing = ({
-  ids: allIds,
-  limit,
-  count=0,
-}) => {
+export const useLimitedListing = ({ ids: allIds, limit, count = 0 }) => {
   const { api } = useContext(NabContext);
-  const ids = useMemo(() => allIds.slice(count, count + limit), [allIds, limit, count]);
+  const ids = useMemo(() => allIds.slice(count, count + limit), [
+    allIds,
+    limit,
+    count
+  ]);
   const scope = api.scope;
 
-  const fetchNextPage = useCallback((extraItems) => {
-    const start = count + limit;
-    const end = start + extraItems;
-    const nextIds = allIds.slice(start, end);
-    if (!nextIds.length) return Promise.resolve();
-    return Promise.all(nextIds.map(id => api.queries.thingData(scope, id)
-      .then(({ opId } = {}) => opId && api.queries.thingData(scope, opId))))
-      .then(() => new Promise((resolve) => setTimeout(resolve, 50)));
-  }, [allIds, count, limit]);
+  const fetchNextPage = useCallback(
+    extraItems => {
+      const start = count + limit;
+      const end = start + extraItems;
+      const nextIds = allIds.slice(start, end);
+      if (!nextIds.length) return Promise.resolve();
+      return Promise.all(
+        nextIds.map(id =>
+          api.queries.thingData(scope, id).then(res => {
+            const { opId } = res || {};
+            return opId && api.queries.thingData(scope, opId);
+          })
+        )
+      ).then(() => new Promise(resolve => setTimeout(resolve, 50)));
+    },
+    [allIds, count, limit]
+  );
 
   return { ids, limit, count, fetchNextPage };
 };
@@ -169,7 +167,9 @@ export const useListingContext = ({ listingParams }) => {
   const ListingContext = useMemo(() => createContext(), []);
   const ContentContext = useMemo(() => createContext(), []);
   const listingProps = useListing({ listingParams });
-  const listingData = useMemo(() => ({ ...listingProps, ContentContext }), [JSON.stringify((listingProps))]);
+  const listingData = useMemo(() => ({ ...listingProps, ContentContext }), [
+    JSON.stringify(listingProps)
+  ]);
   return { ListingContext, ContentContext, listingData };
 };
 

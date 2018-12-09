@@ -148,7 +148,14 @@ export const basicQueryRoute = spec => ({
       });
       const endedAt = new Date().getTime();
       const duration = endedAt - startedAt;
-      console.log("doUpdate", duration / 1000, Object.keys(scope.getAccesses()).length, route.soul);
+      if (duration > 1000) {
+        console.log(
+          "slow doUpdate",
+          duration / 1000,
+          Object.keys(scope.getAccesses()).length,
+          route.soul
+        );
+      }
 
       if (
         !existing ||

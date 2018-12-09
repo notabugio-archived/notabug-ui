@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { PageTemplate } from "Page/Template";
 import { NestedContent } from "Page/NestedContent";
 import { InfiniteContent } from "Page/InfiniteContent";
@@ -10,8 +10,9 @@ import { ErrorBoundary } from "utils";
 export const ListingPage = React.memo(({ listingParams, ...props }) => {
   const { ListingContext, listingData } = useListingContext({ listingParams });
   const [infinite, setInfinite] = useState(false);
-  const { opId, isChat } = listingData;
+  const { opId, isChat, parsedSource } = listingData;
   let content;
+  const tabs = useMemo(() => parsedSource.getPairs("tab"), [parsedSource]);
 
   const onToggleInfinite = useCallback(evt => {
     evt && evt.preventDefault();
@@ -31,7 +32,7 @@ export const ListingPage = React.memo(({ listingParams, ...props }) => {
   }
   return (
     <ListingContext.Provider value={listingData}>
-      <PageTemplate {...{ ...props, ...listingData, listingParams }}>
+      <PageTemplate {...{ ...props, ...listingData, tabs, listingParams }}>
         <ErrorBoundary>
           {content}
           {infinite || isChat ? null : (

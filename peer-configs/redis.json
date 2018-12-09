@@ -5,10 +5,8 @@
     "args": [
       "--port", "3001",
       "--redis",
-      "--debug",
       "--render",
-      "--peer", "https://notabug.io/gun",
-      "--evict"
+      "--peer", "https://notabug.io/gun"
     ]
   }
 ]

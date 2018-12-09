@@ -1,4 +1,5 @@
 import React from "react";
+import { compose, trim } from "ramda";
 import { Link, Markdown } from "utils";
 import { propOr } from "ramda";
 import { ThingWikiPage } from "snew-classic-ui/components/ThingWikiPage";
@@ -8,11 +9,17 @@ export const WikiPageContent = ({
   name,
   item,
   editedBody,
+  asSource,
   onToggleEditing,
   onChangeEditedBody,
   onSubmitEdit
 }) => {
-  const body = propOr("", "body", item);
+  let body = propOr("", "body", item);
+  if (asSource) {
+    const lines = body ? body.split("\n").map(compose( s => `    ${s}`, trim)) : [];
+    body = lines.join("\n");
+  }
+
   return (
     <ThingWikiPage
       pageActions={

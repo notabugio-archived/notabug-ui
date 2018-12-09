@@ -1,12 +1,11 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { identity } from "ramda";
 import Snudown from "snuownd";
 import { withRouter } from "react-router-dom";
-
-const interceptClicks = identity;
+import { interceptClicks } from "./interceptClicks";
 
 const rendererState = Snudown.defaultRenderState();
 rendererState.nofollow = 1;
+rendererState.target = "_blank";
 const rendererCbs = Snudown.getRedditCallbacks();
 const renderer = Snudown.createCustomRenderer(rendererCbs, rendererState);
 const parser = Snudown.getParser(renderer);

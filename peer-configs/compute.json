@@ -4,12 +4,12 @@
     "script": "server.js",
     "command": "node --max-old-space-size=4096",
     "args": [
-      "--debug",
+      "--tabulate",
       "--listings",
+      "--spaces",
       "--redis",
       "--leech",
-      "--evict",
-      "--peer", "http://localhost:3333/gun"
+      "--peer", "http://localhost:3001/gun"
     ]
   }
 ]

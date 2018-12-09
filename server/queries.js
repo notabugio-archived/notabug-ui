@@ -6,12 +6,10 @@ import {
   propOr,
   pathOr,
   sortBy,
-  difference,
   path,
   isNil,
   filter,
   union,
-  intersection,
   keysIn
 } from "ramda";
 import { getDayStr, PREFIX } from "./notabug-peer";
@@ -20,14 +18,12 @@ import * as SOULS from "./notabug-peer/schema";
 
 const emptyPromise = resolve(null);
 const unionArrays = reduce(union, []);
-const intersectArrays = reduce(
-  (res, ary) => (isNil(ary)) ? res : isNil(res) ? ary : intersection(res, ary),
-  null
-);
 
-export const mergeObjects = (objList) => {
+export const mergeObjects = objList => {
   const res = {};
-  objList.forEach(obj => keysIn(obj || {}).forEach(key => res[key] = obj[key]));
+  objList.forEach(obj =>
+    keysIn(obj || {}).forEach(key => (res[key] = obj[key]))
+  );
   return res;
 };
 
@@ -57,7 +53,12 @@ export const getTopicSouls = params => {
 };
 
 const thingVoteCount = voteType =>
-  query((scope, thingSoul) => scope.get(thingSoul).get(voteType).count());
+  query((scope, thingSoul) =>
+    scope
+      .get(thingSoul)
+      .get(voteType)
+      .count()
+  );
 
 export const thingVotesUp = thingVoteCount("votesup");
 export const thingVotesDown = thingVoteCount("votesdown");
@@ -98,7 +99,12 @@ export const thingMeta = query(
           ? scope.get(`${thingSoul}/votecounts@${tabulator}.`).then() // eslint-disable-line
           : thingScores(scope, thingSoul).then()
         : resolve(),
-      data ? scope.get(thingSoul).get("data").then() : resolve()
+      data
+        ? scope
+            .get(thingSoul)
+            .get("data")
+            .then()
+        : resolve()
     ]).then(([meta, votes, data]) => {
       if (!meta || !meta.id) return null;
       return { ...meta, votes, data };
@@ -125,10 +131,13 @@ export const multiThingMeta = query((scope, params) =>
 );
 
 export const singleThingData = query((scope, { thingId: thingid }) =>
-  scope.get(SOULS.thing.soul({ thingid })).get("data").then(data => {
-    const { _, ...actual } = data || {}; // eslint-disable-line no-unused-vars
-    return { [thingid]: data ? actual : data };
-  })
+  scope
+    .get(SOULS.thing.soul({ thingid }))
+    .get("data")
+    .then(data => {
+      const { _, ...actual } = data || {}; // eslint-disable-line no-unused-vars
+      return { [thingid]: data ? actual : data };
+    })
 );
 
 export const singleAuthor = query((scope, params) =>
@@ -186,10 +195,7 @@ export const singleTopic = query((scope, params) => {
     )
   ).then(
     reduce(
-      (souls, more) =>
-        souls.length < itemMax
-          ? [...souls, ...more]
-          : souls,
+      (souls, more) => (souls.length < itemMax ? [...souls, ...more] : souls),
       []
     )
   );
@@ -202,83 +208,6 @@ export const singleSubmission = query((scope, params) =>
       SOULS.thing.soul({ thingid: params.submissionId }),
       ...souls
     ])
-);
-
-export const lensQuery = query((scope, params) =>
-  all([
-    params.lens.repliesToAuthorId
-      ? repliesToAuthor(scope, { ...params.lens, ...params })
-      : resolve(null),
-    multiAuthor(scope, { ...params.lens, ...params }),
-    multiDomain(scope, { ...params.lens, ...params }),
-    multiUrl(scope, { ...params.lens, ...params }),
-    multiTopic(scope, { ...params.lens, ...params }),
-    multiSubmission(scope, { ...params.lens, ...params }),
-    multiSpace(scope, { ...params.lens, ...params })
-  ]).then(intersectArrays)
-);
-
-export const storedLens = query(
-  (scope, lensSoul) =>
-    all([
-      scope
-        .get(lensSoul)
-        .get("things")
-        .souls()
-    ]).then(([thingSouls]) => thingSouls),
-  "lens"
-);
-
-export const singleLens = query((scope, { lensSoul, ...params }) =>
-  all([lensSoul ? storedLens(lensSoul) : resolve(null)]).then(([thingSouls]) =>
-    lensQuery(scope, params).then(lensSouls =>
-      lensSouls && lensSouls.length
-        ? intersectArrays([lensSouls, thingSouls])
-        : thingSouls || []
-    )
-  )
-);
-
-export const spaceQuery = query((scope, params) =>
-  !params.space
-    ? emptyPromise
-    : all([
-        multiLens(scope, { ...params, lenses: params.space.good }),
-        multiLens(scope, { ...params, lenses: params.space.bad })
-      ]).then(([goodSouls, badSouls]) =>
-        difference(goodSouls || [], badSouls || [])
-      )
-);
-
-export const storedSpace = query((scope, spaceSoul) =>
-  all([
-    scope
-      .get(spaceSoul)
-      .get("good")
-      .souls(),
-    scope
-      .get(spaceSoul)
-      .get("bad")
-      .souls()
-  ]).then(([goodLensSouls, badLensSouls]) =>
-    spaceQuery(scope, {
-      space: {
-        good: goodLensSouls.map(lensSoul => ({ lensSoul })),
-        bad: badLensSouls.map(lensSoul => ({ lensSoul }))
-      }
-    })
-  )
-);
-
-export const singleSpace = query((scope, { spaceSoul, ...params }) =>
-  all([spaceSoul ? storedSpace(spaceSoul) : resolve(null)]).then(
-    ([thingSouls]) =>
-      spaceQuery(scope, params).then(querySouls =>
-        querySouls && querySouls.length
-          ? intersectArrays([querySouls, thingSouls])
-          : thingSouls || []
-      )
-  )
 );
 
 const multiQuery = (singleQuery, plural, single, collate = unionArrays) =>
@@ -308,8 +237,11 @@ export const multiSubmission = multiQuery(
   "submissionIds",
   "submissionId"
 );
+
+/*
 export const multiLens = multiQuery(singleLens, "lenses", "lens");
 export const multiSpace = multiQuery(singleSpace, "spaces", "space");
+*/
 
 const voteSort = fn => (scope, params) =>
   multiThingMeta(scope, { ...params, scores: true }).then(
@@ -402,7 +334,8 @@ export const filterThings = (scope, things, fn) =>
       .filter(thing => thing && thing.id)
       .map(thing =>
         scope
-          .get(SOULS.thing.soul({ thingid: thing.id })).get("data")
+          .get(SOULS.thing.soul({ thingid: thing.id }))
+          .get("data")
           .then(data => ({
             ...thing,
             data
@@ -411,7 +344,8 @@ export const filterThings = (scope, things, fn) =>
             if (!thingWithData.data) return thingWithData;
             if (!thingWithData.data.opId) return thingWithData;
             return scope
-              .get(SOULS.thing.soul({ thingid: thingWithData.data.opId })).get("data")
+              .get(SOULS.thing.soul({ thingid: thingWithData.data.opId }))
+              .get("data")
               .then(opData => ({
                 ...thingWithData,
                 opData

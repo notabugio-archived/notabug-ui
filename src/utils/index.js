@@ -10,3 +10,5 @@ export { ScrollToTop } from "./ScrollToTop";
 export { Timestamp } from "./Timestamp";
 export { injectHook } from "./injectHook";
 export { default as slugify } from "./slugify";
+export { interceptClicks } from "./interceptClicks";
+export * from "./hooks";

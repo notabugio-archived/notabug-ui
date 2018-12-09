@@ -1,6 +1,6 @@
 import { prop } from "ramda";
 import { query } from "../notabug-peer/scope";
-import { PREFIX, SOUL_DELIMETER } from "../notabug-peer";
+import { PREFIX } from "../notabug-peer";
 import { sorts, multiTopic, sortThings } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
 import { listingFromPage } from "../listings/declarative";
@@ -40,11 +40,11 @@ export default oracle({
   concurrent: 1,
   routes: [
     basicQueryRoute({
-      path: `${PREFIX}/t/:topic/firehose@~:id1.:id2.`,
+      path: `${PREFIX}/t/:topic/firehose@~:indexer.`,
       priority: 75,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
-      query: query((scope, { match: { topic, id1, id2 } }) => {
+      query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics =
           topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
         const submitTopic =
@@ -60,7 +60,7 @@ export default oracle({
             sortThings(scope, {
               sort: "new",
               thingSouls,
-              tabulator: `~${id1}.${id2}`
+              tabulator: `~${indexer}`
             })
           )
           .then(things =>
@@ -75,7 +75,8 @@ export default oracle({
             submitTopic,
             isChat: true,
             censors: "",
-            tabs: [
+            tabs: "",
+            source: [
               "hot",
               "new",
               "discussed",
@@ -83,18 +84,18 @@ export default oracle({
               "top",
               "firehose"
             ]
-              .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
-              .join(SOUL_DELIMETER)
+              .map(tab => `tab ${tab} /t/${topic}/${tab}`)
+              .join("\n")
           }));
       })
     }),
 
     basicQueryRoute({
-      path: `${PREFIX}/t/:topic/chat@~:id1.:id2.`,
+      path: `${PREFIX}/t/:topic/chat@~:indexer.`,
       priority: 80,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
-      query: query((scope, { match: { topic, id1, id2 } }) => {
+      query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics =
           topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
         const submitTopic =
@@ -110,7 +111,7 @@ export default oracle({
             sortThings(scope, {
               sort: "new",
               thingSouls,
-              tabulator: `~${id1}.${id2}`
+              tabulator: `~${indexer}`
             })
           )
           .then(things =>
@@ -125,7 +126,8 @@ export default oracle({
             submitTopic,
             isChat: true,
             censors: "",
-            tabs: [
+            tabs: "",
+            source: [
               "hot",
               "new",
               "discussed",
@@ -134,8 +136,8 @@ export default oracle({
               "firehose",
               "chat"
             ]
-              .map(tab => `${PREFIX}/t/${topic}/${tab}@~${id1}.${id2}.`)
-              .join(SOUL_DELIMETER)
+              .map(tab => `tab ${tab} /t/${topic}/${tab}`)
+              .join("\n")
           }));
       })
     }),
@@ -145,13 +147,17 @@ export default oracle({
       priority: 25,
       checkMatch: ({ sort }) => sort in sorts,
       query: query((scope, { match: { sort, indexer } }) =>
-        listingFromPage(scope, indexer, "listing:curated", `kind submission\nsort ${sort}`).then(
-          serialized => ({
-            ...serialized,
-            tabs: ["hot", "new", "discussed", "controversial", "top"]
-              .map(tab => `${PREFIX}/t/curated/${tab}@~${indexer}.`)
-              .join(SOUL_DELIMETER)
-          })
+        listingFromPage(
+          scope,
+          indexer,
+          "listing:curated",
+          [
+            "kind submission",
+            `sort ${sort}`,
+            ...["hot", "new", "discussed", "controversial", "top"].map(
+              tab => `tab ${tab} /t/curated/${tab}`
+            )
+          ].join("\n")
         )
       )
     }),
@@ -161,20 +167,22 @@ export default oracle({
       priority: 25,
       checkMatch: ({ sort }) => sort in sorts,
       query: query((scope, { match: { sort, indexer } }) =>
-        listingFromPage(scope, indexer, "listing:front", `kind submission\nsort ${sort}`).then(
-          serialized => ({
-            ...serialized,
-            tabs: [
+        listingFromPage(
+          scope,
+          indexer,
+          "listing:front",
+          [
+            "kind submission",
+            `sort ${sort}`,
+            ...[
               "hot",
               "new",
               "discussed",
               "controversial",
               "top",
               "firehose"
-            ]
-              .map(tab => `${PREFIX}/t/front/${tab}@~${indexer}.`)
-              .join(SOUL_DELIMETER)
-          })
+            ].map(tab => `tab ${tab} /t/front/${tab}`)
+          ].join("\n")
         )
       )
     }),
@@ -187,13 +195,9 @@ export default oracle({
         listingFromPage(
           scope,
           indexer,
-          "listing:default",
+          "listing:comments",
           [`sort ${sort}`, `op ${thingid}`].join("\n")
-        ).then(serialized => ({
-          ...serialized,
-          opId: thingid,
-          tabs: [`${PREFIX}/things/${thingid}/comments/${sort}@~${indexer}.`]
-        }))
+        )
       )
     }),
 
@@ -206,20 +210,17 @@ export default oracle({
         listingFromPage(
           scope,
           indexer,
-          "listing:default",
+          "listing:domain",
           [
             `name ${domain}`,
             ...domain.split("+").map(dm => `domain ${dm}`),
-            `kind submission\nsort ${sort}`
-          ].join("\n")
-        ).then(serialized => ({
-          ...serialized,
-          tabs: ["hot", "new", "discussed", "controversial", "top"]
-            .map(
-              tab => `${PREFIX}/domain/${domain}/${tab}@~${indexer}.${indexer}.`
+            "kind submission",
+            `sort ${sort}`,
+            ...["hot", "new", "discussed", "controversial", "top"].map(
+              tab => `tab ${tab} /domain/${domain}/${tab}`
             )
-            .join(SOUL_DELIMETER)
-        }))
+          ].join("\n")
+        )
       )
     }),
 
@@ -234,20 +235,23 @@ export default oracle({
         return listingFromPage(
           scope,
           indexer,
-          "listing:default",
+          "listing:topic",
           [
             `name ${topic}`,
             ...topics.map(tp => `topic ${tp}`),
             `submit to ${submitTo}`,
             topic.indexOf(":") === -1 ? "kind submission" : "",
-            `sort ${sort}`
+            `sort ${sort}`,
+            ...[
+              "hot",
+              "new",
+              "discussed",
+              "controversial",
+              "top",
+              "firehose"
+            ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
           ].join("\n")
-        ).then(serialized => ({
-          ...serialized,
-          tabs: ["hot", "new", "discussed", "controversial", "top", "firehose"]
-            .map(tab => `${PREFIX}/t/${topic}/${tab}@~${indexer}.`)
-            .join(SOUL_DELIMETER)
-        }));
+        );
       })
     }),
 
@@ -264,9 +268,8 @@ export default oracle({
         listingFromPage(
           scope,
           indexer,
-          "listing:default",
+          "listing:inbox",
           [
-            "name message",
             `replies to author ${authorId}`,
             `type ${type}`,
             `sort ${sort}`
@@ -288,17 +291,16 @@ export default oracle({
         listingFromPage(
           scope,
           indexer,
-          "listing:default",
-          [`type ${type}`, `sort ${sort}`, `author ${authorId}`].join("\n")
-        ).then(serialized => ({
-          ...serialized,
-          userId: authorId,
-          tabs: ["overview", "comments", "submitted"]
-            .map(
-              tab => `${PREFIX}/user/${authorId}/${tab}/${sort}@~${indexer}.`
+          "listing:user",
+          [
+            `type ${type}`,
+            `sort ${sort}`,
+            `author ${authorId}`,
+            ...["overview", "comments", "submitted"].map(
+              tab => `tab ${tab} /user/${authorId}/${tab}/${sort}@~${indexer}.`
             )
-            .join(SOUL_DELIMETER)
-        }))
+          ].join("\n")
+        ).then(serialized => ({ ...serialized, userId: authorId }))
       )
     })
   ]

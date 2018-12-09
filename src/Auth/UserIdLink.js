@@ -1,20 +1,14 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { NabContext } from "NabContext";
+import { useQuery } from "utils";
 import { AuthorLink } from "./AuthorLink";
 
-export const UserIdLink = ({ userId, alias: aliasProp }) => {
+export const UserIdLink = ({ userId }) => {
   const { api } = useContext(NabContext);
-  const [alias, setAlias] = useState(aliasProp);
+  const userMeta = useQuery(api.queries.userMeta, [`~${userId}`]);
 
-  useEffect(() => {
-    api.gun && api.gun.get(`~${userId}`).then(user => {
-      if (!user) return;
-      setAlias(user.alias);
-    });
-  }, [api, userId]);
-
-  if (!userId || !alias) return null;
+  if (!userId || !userMeta) return null;
   return (
-    <AuthorLink author={alias} author_fullname={userId} />
+    <AuthorLink author={userMeta.userAlias} author_fullname={userId} />
   );
 };

@@ -1,8 +1,7 @@
 import React from "react";
 import { SubmitLinkSidebox, SubmitTextSidebox } from "snew-classic-ui";
-import { Link, Timestamp, JavaScriptRequired } from "utils";
-import { UserIdLink, AuthorLink, UserInfo, LoginFormSide } from "Auth";
-import { SidebarTitlebox } from "Page/SidebarTitlebox";
+import { Link, JavaScriptRequired } from "utils";
+import { AuthorLink, UserInfo, LoginFormSide, SidebarUserSpaces } from "Auth";
 import { SrHeaderArea } from "Page/SrHeaderArea";
 import { ListingInfo } from "Page/ListingInfo";
 import { NavTab } from "Page/NavTab";
@@ -19,7 +18,6 @@ export const PageTemplate = ({
   tabs,
   isChat,
   submitTopic,
-  createdAt,
   hideLogin = false,
   children
 }) => (
@@ -45,12 +43,11 @@ export const PageTemplate = ({
         ) : null}
         {tabs && tabs.length ? (
           <ul className="tabmenu">
-            {tabs.map(tab => (
+            {tabs.map(([name, path]) => (
               <NavTab
-                {...{ identifier, listingParams, opId }}
-                key={tab}
-                soul={tab}
-                prefix={listingParams.prefix || "t"}
+                {...{ identifier, name, listingParams, opId }}
+                key={name}
+                path={path}
               />
             ))}
           </ul>
@@ -70,15 +67,9 @@ export const PageTemplate = ({
                   author_fullname={userId}
                 />
               </h1>
-              <div className="bottom">
-                {createdAt ? (
-                  <span className="age">
-                    created <Timestamp {...{ created_utc: createdAt }} />
-                  </span>
-                ) : null}
-              </div>
             </div>
           </div>
+          <SidebarUserSpaces userId={userId} />
           {hideLogin ? null : <LoginFormSide />}
         </React.Fragment>
       ) : (
@@ -96,24 +87,12 @@ export const PageTemplate = ({
                 siteprefix="t"
                 subreddit={submitTopic}
               />
-              <SidebarTitlebox
-                {...{ Link }}
-                siteprefix="t"
-                subreddit={name}
-                bottom={
-                  listingParams && listingParams.indexer ? (
-                    <React.Fragment>
-                      indexed by <UserIdLink userId={listingParams.indexer} />
-                    </React.Fragment>
-                  ) : null
-                }
-              />
             </React.Fragment>
           ) : null}
         </React.Fragment>
       )}
       <JavaScriptRequired silent>
-        <ListingInfo {...{ source }} />
+        <ListingInfo {...{ listingParams, userId, name, source }} />
         {!isChat && submitTopic ? <SidebarChat topic={submitTopic} /> : null}
       </JavaScriptRequired>
       <SidebarVotingStatus />

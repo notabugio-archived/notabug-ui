@@ -32,8 +32,8 @@ export const WikiPageCreate = ({ name }) => {
   if (isSaving) return null;
 
   return (
-    <div className="content" role="main">
-      <div className="reddit-infobar md-container-small">
+    <React.Fragment>
+      <div className="new-wikipage-banner reddit-infobar md-container-small">
         <div className="md"><p>creating a new page</p></div>
       </div>
       <ThingWikiPage
@@ -42,11 +42,11 @@ export const WikiPageCreate = ({ name }) => {
         {...{
           name,
           editedBody,
-          error,
+          error: editedBody && error,
           onChangeEditedBody,
           onSubmitEdit
         }}
       />
-    </div>
+    </React.Fragment>
   );
 };

@@ -6,14 +6,14 @@ import React, {
   useEffect
 } from "react";
 import { propOr, path } from "ramda";
-import { Loading } from "utils";
-import { NabContext, useScope } from "NabContext";
+import { Loading, useQuery } from "utils";
+import { query, resolve } from "notabug-peer/scope";
+import { NabContext } from "NabContext";
 import { Submission } from "Submission";
 import { Comment } from "Comment";
 import { ChatMsg } from "Chat/ChatMsg";
 import { WikiPageContent } from "Wiki/PageContent";
 import { useVotable } from "Voting";
-import debounce from "lodash/debounce";
 
 const components = {
   submission: Submission,
@@ -34,34 +34,36 @@ export const Thing = React.memo(
     hideReply = false,
     expanded: expandedProp = false,
     isDetail,
+    asSource,
     onDidUpdate
   }) => {
     const { api, me, myContent } = useContext(NabContext);
-    const {
-      listingParams: { indexer } = {},
-      speculativeIds={}
-    } = useContext(ListingContext || {}) || {};
+    const { listingParams: { indexer } = {}, speculativeIds = {} } =
+      useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];
 
-    const scope = useScope();
+    const scores = useQuery(api.queries.thingScores, [indexer, id]) || {
+      up: 0,
+      down: 0,
+      score: 0,
+      comment: 0
+    };
+
+    const item = useQuery(api.queries.thingData, [id]);
+    const parentItem = useQuery(
+      useMemo(
+        () =>
+          query((scope, parentId, shouldFetch) =>
+            parentId && shouldFetch
+              ? api.queries.thingData(scope, parentId)
+              : resolve(null)
+          ),
+        []
+      ),
+      [propOr(null, "opId", item), fetchParent]
+    );
+
     const isMine = !!myContent[id];
-    const { initialScores, initialItem, initialParentItem } = useMemo(() => {
-      const initialScores = api.queries.thingScores.now(scope, indexer, id) || {
-        up: 0,
-        down: 0,
-        score: 0,
-        comment: 0
-      };
-      const initialItem = api.queries.thingData.now(scope, id);
-      const initialParentItem =
-        fetchParent && initialItem && initialItem.opId
-          ? api.queries.thingData.now(scope, initialItem.opId)
-          : null;
-      return { initialScores, initialItem, initialParentItem };
-    }, []);
-    const [scores, setScores] = useState(initialScores);
-    const [item, setItem] = useState(initialItem);
-    const [parentItem, setParentItem] = useState(initialParentItem);
     const [isShowingReply, setIsShowingReply] = useState(false);
     const [expanded, setExpanded] = useState(expandedProp);
     const { isVotingUp, isVotingDown, onVoteUp, onVoteDown } = useVotable({
@@ -90,31 +92,6 @@ export const Thing = React.memo(
       setIsShowingReply(false);
     }, []);
 
-    const doUpdate = useCallback(
-      () => {
-        const updatedScores = api.queries.thingScores.now(scope, indexer, id);
-        const updatedItem = api.queries.thingData.now(scope, id);
-        const updatedParentItem =
-          fetchParent && updatedItem && updatedItem.opId
-            ? api.queries.thingData.now(scope, updatedItem.opId)
-            : null;
-
-        updatedScores && setScores(updatedScores);
-        updatedItem && setItem(updatedItem);
-        updatedParentItem && setParentItem(updatedParentItem);
-      },
-      [scope, id, indexer, fetchParent, item, parentItem]
-    );
-
-    useEffect(
-      () => {
-        const update = debounce(doUpdate, 50);
-        scope.on(update);
-        return () => scope.off(update);
-      },
-      [doUpdate]
-    );
-
     useEffect(
       () => {
         onDidUpdate && onDidUpdate();
@@ -133,10 +110,7 @@ export const Thing = React.memo(
     const soul = path(["_", "#"], item);
     const signedMatch = api.souls.thingDataSigned.isMatch(soul);
     const canEdit =
-      me &&
-      signedMatch &&
-      me.pub === `${signedMatch.authorId}` &&
-      soul;
+      me && signedMatch && me.pub === `${signedMatch.authorId}` && soul;
     const [isEditing, setIsEditing] = useState(false);
     const [editedBody, setEditedBody] = useState(propOr("", "body", item));
 
@@ -197,6 +171,7 @@ export const Thing = React.memo(
       isShowingReply,
       hideReply,
       isDetail,
+      asSource,
       isMine,
       isVotingUp,
       isVotingDown,

@@ -27,7 +27,7 @@ export const Things = React.memo(
       );
     };
 
-    const rendered = (ids.length || !Empty) ? ids.map(renderThing) : [<Empty />];
+    const rendered = (ids.length || !Empty) ? ids.map(renderThing) : [<Empty key="empty" />];
     children && rendered.push(children);
     return (
       <Container {...{ ...containerProps, [childrenPropName]: rendered }} />

@@ -1,9 +1,9 @@
-import { prop, path, trim, assocPath } from "ramda";
+import { prop, path, trim, assocPath, keysIn } from "ramda";
 import { scope as getScope, query } from "./scope";
 import * as SOULS from "./schema";
 
-export const parseListingSource = source =>
-  source.split("\n").reduce((def, line) => {
+export const parseListingSource = source => {
+  const tokenMap = source.split("\n").reduce((def, line) => {
     const tokens = line
       .trim()
       .split(" ")
@@ -12,6 +12,40 @@ export const parseListingSource = source =>
     if (!tokens.length) return def;
     return assocPath(tokens, {}, def);
   }, {});
+
+  const isPresent = p => {
+    let check = p;
+    if (typeof p === "string") check = p.split(" ");
+    return check && path(check, tokenMap);
+  };
+
+  const getValues = p => keysIn(isPresent(p));
+  const getValue = p => getValues(p)[0] || null;
+  const getLastValue = p => getValues(p).pop() || null;
+
+  const getValueChain = p => {
+    const keys = typeof p === "string" ? p.split(" ") : p;
+    const values = [];
+    let next = p;
+
+    while (next) {
+      next = getValue([...keys, ...values]);
+      next && values.push(next);
+    }
+
+    return values;
+  };
+
+  const getPairs = p => {
+    const keys = typeof p === "string" ? p.split(" ") : p;
+    return getValues(keys).reduce((pairs, key) =>  {
+      const val = getValue([...keys, key]);
+      return [...pairs, [key, val]];
+    }, []);
+  };
+
+  return { isPresent, getValue, getValues, getLastValue, getValueChain, getPairs };
+};
 
 const listing = query((scope, soul) => scope.get(soul), "listing");
 
@@ -24,11 +58,13 @@ const getThingScores = query(
 );
 
 const getThingData = query(
-  (scope, thingid) =>
-    scope
-      .get(SOULS.thing.soul({ thingid }))
-      .get("data"),
+  (scope, thingid) => scope.get(SOULS.thing.soul({ thingid })).get("data"),
   "thingData"
+);
+
+const getUserPages = query(
+  (scope, authorId) => scope.get(SOULS.userPages.soul({ authorId })),
+  "userPages"
 );
 
 const getWikiPageId = query(
@@ -40,10 +76,8 @@ const getWikiPageId = query(
   "wikiPageId"
 );
 
-export const getWikiPage = query(
-  (scope, authorId, name) =>
-    getWikiPageId(scope, authorId, name)
-      .then(id => id && getThingData(scope, id))
+export const getWikiPage = query((scope, authorId, name) =>
+  getWikiPageId(scope, authorId, name).then(id => id && getThingData(scope, id))
 );
 
 const userMetaQuery = query(
@@ -59,6 +93,7 @@ export const queries = () => ({
   listing,
   thingData: getThingData,
   thingScores: getThingScores,
+  userPages: getUserPages,
   wikiPageId: getWikiPageId,
   wikiPage: getWikiPage,
   userMeta: userMetaQuery
