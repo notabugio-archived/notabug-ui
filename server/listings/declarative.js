@@ -138,6 +138,8 @@ export const declarativeListing = query((scope, source) => {
         addFilter(gte(scoreMax), parseInt, path(["votes", "score"]));
       if (getValues("topic").length && itemSource !== "topic")
         addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
+      if (getValues("domain").length && itemSource !== "domain")
+        addFilter(t => !!isPresent(["domain", t]), path(["data", "domain"]));
       if (getValues("ban topic").length)
         addFilter(
           topic => !isPresent(["ban", "topic", topic]),
