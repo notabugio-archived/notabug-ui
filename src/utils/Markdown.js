@@ -6,6 +6,7 @@ import { interceptClicks } from "./interceptClicks";
 const rendererState = Snudown.defaultRenderState();
 rendererState.nofollow = 1;
 rendererState.target = "_blank";
+rendererState.flags = Snudown.DEFAULT_BODY_FLAGS;
 const rendererCbs = Snudown.getRedditCallbacks();
 const renderer = Snudown.createCustomRenderer(rendererCbs, rendererState);
 const parser = Snudown.getParser(renderer);
