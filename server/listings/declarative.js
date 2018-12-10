@@ -69,6 +69,8 @@ export const declarativeListing = query((scope, source) => {
     itemSource !== "domain" ? "domain" : null,
     itemSource !== "author" ? "author" : null,
     "kind",
+    "require signed",
+    "require anon",
     "ban domain",
     "ban topic",
     "ban author",
@@ -140,6 +142,10 @@ export const declarativeListing = query((scope, source) => {
         addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
       if (getValues("domain").length && itemSource !== "domain")
         addFilter(t => !!isPresent(["domain", t]), path(["data", "domain"]));
+      if (isPresent("require signed"))
+        addFilter(path(["data", "authorId"]));
+      if (isPresent("require anon"))
+        addFilter(compose(authorId => !authorId, path(["data", "authorId"])));
       if (getValues("ban topic").length)
         addFilter(
           topic => !isPresent(["ban", "topic", topic]),
