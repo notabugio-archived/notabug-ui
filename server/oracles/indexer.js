@@ -297,7 +297,7 @@ export default oracle({
             `sort ${sort}`,
             `author ${authorId}`,
             ...["overview", "comments", "submitted"].map(
-              tab => `tab ${tab} /user/${authorId}/${tab}/${sort}@~${indexer}.`
+              tab => `tab ${tab} /user/${authorId}/${tab}`
             )
           ].join("\n")
         ).then(serialized => ({ ...serialized, userId: authorId }))

@@ -8,7 +8,8 @@ export const SidebarUserSpaces = ({ userId }) => {
   const pages = useQuery(api.queries.userPages, [userId]);
   const spaceNames = keysIn(pages)
     .filter(compose(prop("length"), match(/^space:[^:]*$/)))
-    .map(replace(/^space:/, ""));
+    .map(replace(/^space:/, ""))
+    .sort();
   const { visibleCount, moreCount, onShowMore } = useShowMore(spaceNames);
   const hasMore = moreCount > 0;
 
