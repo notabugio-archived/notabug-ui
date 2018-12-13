@@ -14,7 +14,7 @@ export const useScope = (deps=[]) => {
             isRealtime: true,
             onlyCache: false,
             isCached: true,
-            isCacheing: true
+            isCacheing: false
           }),
         deps
       );

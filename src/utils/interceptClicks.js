@@ -11,7 +11,7 @@ export const interceptClicks = (
       if (e.defaultPrevented || e.metaKey || e.ctrlKey || e.shiftKey || (e.button !== 0)) return;
       while (el && el.nodeName !== "A") el = el.parentNode;
       if (!el || el.attributes.download) return;
-      if (el.rel && /(?:^|\s+)external(?:\s+|$)/.test(el.rel)) return;
+      // if (el.rel && /(?:^|\s+)external(?:\s+|$)/.test(el.rel)) return;
       const url = urllite(el.href);
       const windowURL = urllite(window.location.href);
       const path = url.pathname

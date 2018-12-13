@@ -26,12 +26,14 @@ export const SidebarUserSpaces = ({ userId }) => {
               <Link href={`/user/${userId}/spaces/${name}`}>{name}</Link>
             </li>
           ))}
+          {hasMore ? (
+            <li>
+              <button className="expand-summary" onClick={onShowMore}>
+                ... and {moreCount} more...
+              </button>
+            </li>
+          ) : null}
         </ul>
-        {hasMore ? (
-          <button className="expand-summary" onClick={onShowMore}>
-            ... and {moreCount} more...
-          </button>
-        ) : null}
       </div>
     </div>
   );

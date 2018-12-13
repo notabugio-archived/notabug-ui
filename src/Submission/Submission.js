@@ -1,5 +1,6 @@
 import React, { Fragment, useMemo } from "react";
 // import { Helmet } from "react-helmet";
+import { withRouter } from "react-router-dom";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify, interceptClicks } from "utils";
@@ -9,7 +10,9 @@ import { AuthorLink } from "Auth";
 
 const nsfwRe = /(nsfw|porn|hentai|ecchi|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
 
-export const Submission = interceptClicks(({
+const ThingLinkComponent = withRouter(interceptClicks(ThingLink));
+
+export const Submission = ({
   id,
   ups,
   downs,
@@ -59,7 +62,7 @@ export const Submission = interceptClicks(({
           <title>{item.title}</title>
         </Helmet>
       ) : null*/}
-      <ThingLink
+      <ThingLinkComponent
         nofollow
         {...{
           Markdown,
@@ -124,6 +127,6 @@ export const Submission = interceptClicks(({
       />
     </Fragment>
   );
-});
+};
 
 export default Submission;

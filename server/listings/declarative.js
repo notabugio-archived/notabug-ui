@@ -1,4 +1,4 @@
-import { compose, lte, gte, prop, propOr, path, keysIn } from "ramda";
+import { compose, lte, gte, prop, propOr, path, keysIn, uniqBy } from "ramda";
 import urllite from "urllite";
 import {
   multiAuthor,
@@ -68,9 +68,11 @@ export const declarativeListing = query((scope, source) => {
     itemSource !== "topic" ? "topic" : null,
     itemSource !== "domain" ? "domain" : null,
     itemSource !== "author" ? "author" : null,
+    "unique by content",
     "kind",
     "require signed",
     "require anon",
+    "alias",
     "ban domain",
     "ban topic",
     "ban author",
@@ -118,12 +120,12 @@ export const declarativeListing = query((scope, source) => {
     )
     .then(things => {
       const filters = [];
-      const upsMin = getValue("ups above");
-      const upsMax = getValue("ups below");
-      const downsMin = getValue("downs above");
-      const downsMax = getValue("downs below");
-      const scoreMin = getValue("score above");
-      const scoreMax = getValue("score below");
+      const upsMin = parseInt(getValue("ups above")) || null;
+      const upsMax = parseInt(getValue("ups below")) || null;
+      const downsMin = parseInt(getValue("downs above")) || null;
+      const downsMax = parseInt(getValue("downs below")) || null;
+      const scoreMin = parseInt(getValue("score above")) || null;
+      const scoreMax = parseInt(getValue("score below")) || null;
       const addFilter = (...fns) => filters.push(compose(...fns));
 
       if (upsMin !== null)
@@ -140,6 +142,8 @@ export const declarativeListing = query((scope, source) => {
         addFilter(gte(scoreMax), parseInt, path(["votes", "score"]));
       if (getValues("topic").length && itemSource !== "topic")
         addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
+      if (getValues("alias").length && itemSource !== "alias")
+        addFilter(t => !!isPresent(["alias", t]), path(["data", "author"]));
       if (getValues("domain").length && itemSource !== "domain")
         addFilter(t => !!isPresent(["domain", t]), path(["data", "domain"]));
       if (isPresent("require signed"))
@@ -173,6 +177,16 @@ export const declarativeListing = query((scope, source) => {
       if (filters.length)
         return things.filter(thing => !filters.find(fn => !fn(thing)));
       return things;
+    })
+    .then(things => {
+      if (!isPresent("unique by content")) return things;
+      return uniqBy(thing => {
+        const author = path(["data", "author"], thing);
+        const title = path(["data", "title"], thing);
+        const body = path(["data", "body"], thing);
+        const url = path(["data", "url"], thing);
+        return JSON.stringify({ title, body, url, author });
+      }, things);
     })
     .then(things => censor(scope, censors.map(id => `~${id}`), things))
     .then(things => things.slice(0, LISTING_SIZE))
