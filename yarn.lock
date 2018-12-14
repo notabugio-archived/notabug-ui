@@ -5192,14 +5192,11 @@ gun@^0.9.96:
   dependencies:
     ws "~>5.2.0"
 
-gun@^0.9.999992:
-  version "0.9.999992"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.999992.tgz#7aa023691bb7d456ee0ddb0cfe975832a5c74aa8"
-  integrity sha512-yLZsiXx8GtrTI6CfWXOfk/p4IcENyt8m6+yfPCZg8iRV2f75o+2jdRkMf/Kxwf2j3SogtDft2qCy2cM4CMdl/g==
+gun@^0.9.99999:
+  version "0.9.99999"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99999.tgz#579aa1f9aaf8a19bdbcedc8d75362d841c8225db"
+  integrity sha512-W/xxWFO/8M/3QLvU8YHyKu9RCP+WVfdevJSx3ZH4hParyhRT/GU0ekfb4ZolM/5iCZ4Mn95MrDFjsu9b07PxUQ==
   dependencies:
-    "@trust/webcrypto" "^0.9.2"
-    node-webcrypto-ossl "^1.0.38"
-    text-encoding "^0.6.4"
     ws "~>5.2.0"
 
 gzip-size@5.0.0:
@@ -7532,7 +7529,7 @@ node-rsa@^0.4.0:
   dependencies:
     asn1 "0.2.3"
 
-node-webcrypto-ossl@1.0.39, node-webcrypto-ossl@^1.0.38:
+node-webcrypto-ossl@1.0.39:
   version "1.0.39"
   resolved "https://registry.yarnpkg.com/node-webcrypto-ossl/-/node-webcrypto-ossl-1.0.39.tgz#527473d4a0647e97a3954591f209f688b8f694d5"
   integrity sha512-cEq67y6GJ5jcKdANi5XqejqMvM/eIGxuOOE8F+c0XS950jSpvOcjUNHLmIe3/dN/UKyUkb+dri0BU4OgmCJd2g==
@@ -10629,7 +10626,7 @@ test-value@^3.0.0:
     array-back "^2.0.0"
     typical "^2.6.1"
 
-text-encoding@^0.6.1, text-encoding@^0.6.4:
+text-encoding@^0.6.1:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.4.tgz#e399a982257a276dae428bb92845cb71bdc26d19"
   integrity sha1-45mpgiV6J22uQou5KEXLcb3CbRk=
