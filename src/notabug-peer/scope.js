@@ -119,7 +119,7 @@ export const scope = ({
               Gun.SEA.verify(
                 rawData[key],
                 false,
-                result => (data[key] = result)
+                (res) => (data[key] = Gun.SEA.opt.unpack(res, key, data))
               );
             });
             receive(data);

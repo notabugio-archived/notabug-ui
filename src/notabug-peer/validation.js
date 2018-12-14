@@ -99,14 +99,14 @@ export const allowFieldsSEA = (...validators) => (
   Promise.all(
     keysIn(val || {}).map(key => {
       let decoded = null;
-      Gun.SEA.verify(val[key], false, res => (decoded = res));
+      Gun.SEA.verify(val[key], false, (res) => (decoded = Gun.SEA.opt.unpack(res, key, val)));
       return Promise.all(
         [keyIs("_"), keyIs("#"), ...validators].map(fn =>
           Promise.resolve(fn(key, decoded, val, pKey, msg, peer))
         )
       ).then(results => {
         if (results.find(identity)) return;
-        decoded &&  console.warn("sanitizing", pKey, key, decoded); // eslint-disable-line
+        decoded &&  console.warn("sea sanitizing", pKey, key, decoded); // eslint-disable-line
         delete val[key]; // eslint-disable-line
       });
     })
