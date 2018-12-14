@@ -31,7 +31,7 @@ if (!isNode) {
     require("gun/lib/store.js");
     require("gun/lib/rindexed.js");
   }
-  if (!/nosea/.test(window.location.search)) require("utils/sea");
+  if (!/nosea/.test(window.location.search)) require("gun/sea");
 }
 
 export const NabContext = createContext();
