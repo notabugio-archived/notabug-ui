@@ -14,7 +14,7 @@ export default oracle({
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
       query: query((scope, { match: { topic, indexer } }) => {
-        const normalTopics = topic === topic.split("+");
+        const normalTopics = topic.split("+");
         const submitTopic =
           topic === "all" ? "whatever" : normalTopics[0] || "whatever";
         const topics = normalTopics.reduce(

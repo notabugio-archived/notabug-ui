@@ -43,6 +43,9 @@ export const useListing = ({ listingParams }) => {
   );
 
   const source = propOr("", "source", state);
+
+  console.log("source", source.split("\n"));
+
   const parsedSource = useMemo(() => parseListingSource(source), [
     source,
     state
