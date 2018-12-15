@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "utils";
+import { tabulator } from "../config.json";
 
 const HEADER_TOPICS = [
   "art",
@@ -41,14 +42,14 @@ export const SrHeaderArea = () => (
           </li>
           <li>
             <span className="separator">-</span>
-            <Link className="choice" href="/">
-              frontpage
+            <Link className="choice" href={`/user/${tabulator}/spaces/spaces`}>
+              spaces
             </Link>
           </li>
           <li>
             <span className="separator">-</span>
-            <Link className="choice" href="/t/curated">
-              curated
+            <Link className="choice" href="/">
+              frontpage
             </Link>
           </li>
           <li>

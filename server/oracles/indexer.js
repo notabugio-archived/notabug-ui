@@ -1,39 +1,8 @@
-import { prop } from "ramda";
 import { query } from "../notabug-peer/scope";
 import { PREFIX } from "../notabug-peer";
-import { sorts, multiTopic, sortThings } from "../queries";
+import { sorts } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
 import { listingFromPage } from "../listings/declarative";
-
-const LISTING_SIZE = 1000;
-
-const FRONTPAGE_TOPICS = [
-  "art",
-  "ask",
-  "books",
-  "domains",
-  "food",
-  "funny",
-  "gaming",
-  "gifs",
-  "history",
-  "movies",
-  "music",
-  "news",
-  "notabug",
-  "pics",
-  "politics",
-  "programming",
-  "religion",
-  "quotes",
-  "science",
-  "space",
-  "technology",
-  "travel",
-  "tv",
-  "videos",
-  "whatever"
-];
 
 export default oracle({
   name: "indexer",
@@ -45,48 +14,31 @@ export default oracle({
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
       query: query((scope, { match: { topic, indexer } }) => {
-        const normalTopics =
-          topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
+        const normalTopics = topic === topic.split("+");
         const submitTopic =
-          topic === "front" || topic === "all"
-            ? "whatever"
-            : normalTopics[0] || "whatever";
+          topic === "all" ? "whatever" : normalTopics[0] || "whatever";
         const topics = normalTopics.reduce(
           (res, topic) => [...res, topic, `chat:${topic}`, `comments:${topic}`],
           []
         );
-        return multiTopic(scope, { topics, days: 14 })
-          .then(thingSouls =>
-            sortThings(scope, {
-              sort: "new",
-              thingSouls,
-              tabulator: `~${indexer}`
-            })
-          )
-          .then(things =>
-            serializeListing({
-              name: topic,
-              things: things.slice(0, LISTING_SIZE)
-            })
-          )
-          .then(serialized => ({
-            ...serialized,
-            includeRanks: false,
-            submitTopic,
-            isChat: true,
-            censors: "",
-            tabs: "",
-            source: [
+        return listingFromPage(
+          scope,
+          indexer,
+          "listing:firehose",
+          [
+            "sort new",
+            `submit to ${submitTopic}`,
+            ...topics.map(t => `topic ${t}`),
+            ...[
               "hot",
               "new",
               "discussed",
               "controversial",
               "top",
               "firehose"
-            ]
-              .map(tab => `tab ${tab} /t/${topic}/${tab}`)
-              .join("\n")
-          }));
+            ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
+          ].join("\n")
+        ).then(serialized => ({ ...serialized, isChat: true }));
       })
     }),
 
@@ -96,84 +48,21 @@ export default oracle({
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
       query: query((scope, { match: { topic, indexer } }) => {
-        const normalTopics =
-          topic === "front" ? FRONTPAGE_TOPICS : topic.split("+");
+        const normalTopics = topic.split("+");
         const submitTopic =
-          topic === "front" || topic === "all"
-            ? "whatever"
-            : normalTopics[0] || "whatever";
+          topic === "all" ? "whatever" : normalTopics[0] || "whatever";
         const topics = normalTopics.reduce(
           (res, topic) => [...res, `chat:${topic}`],
           []
         );
-        return multiTopic(scope, { topics, days: 7 })
-          .then(thingSouls =>
-            sortThings(scope, {
-              sort: "new",
-              thingSouls,
-              tabulator: `~${indexer}`
-            })
-          )
-          .then(things =>
-            serializeListing({
-              name: topic,
-              things: things.slice(0, LISTING_SIZE)
-            })
-          )
-          .then(serialized => ({
-            ...serialized,
-            includeRanks: false,
-            submitTopic,
-            isChat: true,
-            censors: "",
-            tabs: "",
-            source: [
-              "hot",
-              "new",
-              "discussed",
-              "controversial",
-              "top",
-              "firehose",
-              "chat"
-            ]
-              .map(tab => `tab ${tab} /t/${topic}/${tab}`)
-              .join("\n")
-          }));
-      })
-    }),
-
-    basicQueryRoute({
-      path: `${PREFIX}/t/curated/:sort@~:indexer.`,
-      priority: 25,
-      checkMatch: ({ sort }) => sort in sorts,
-      query: query((scope, { match: { sort, indexer } }) =>
-        listingFromPage(
+        return listingFromPage(
           scope,
           indexer,
-          "listing:curated",
+          "listing:chat",
           [
-            "kind submission",
-            `sort ${sort}`,
-            ...["hot", "new", "discussed", "controversial", "top"].map(
-              tab => `tab ${tab} /t/curated/${tab}`
-            )
-          ].join("\n")
-        )
-      )
-    }),
-
-    basicQueryRoute({
-      path: `${PREFIX}/t/front/:sort@~:indexer.`,
-      priority: 25,
-      checkMatch: ({ sort }) => sort in sorts,
-      query: query((scope, { match: { sort, indexer } }) =>
-        listingFromPage(
-          scope,
-          indexer,
-          "listing:front",
-          [
-            "kind submission",
-            `sort ${sort}`,
+            "sort new",
+            `submit to ${submitTopic}`,
+            topics.map(topic => `topic ${topic}`),
             ...[
               "hot",
               "new",
@@ -181,10 +70,10 @@ export default oracle({
               "controversial",
               "top",
               "firehose"
-            ].map(tab => `tab ${tab} /t/front/${tab}`)
+            ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
           ].join("\n")
-        )
-      )
+        ).then(serialized => ({ ...serialized, isChat: true }));
+      })
     }),
 
     basicQueryRoute({
@@ -304,12 +193,4 @@ export default oracle({
       )
     })
   ]
-});
-
-const serializeListing = ({ name = "", things }) => ({
-  name,
-  ids: things
-    .map(prop("id"))
-    .filter(id => !!id)
-    .join("+")
 });

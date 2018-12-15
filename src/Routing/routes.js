@@ -30,21 +30,11 @@ const getPageParams = withParams(
   })
 );
 
-const getFrontPageParams = withParams(
-  ({
-    params: { prefix = "t", identifier = "front", sort = "hot" },
-    query: { indexer = tabulator }
-  }) => ({
-    prefix,
-    soul: `${PREFIX}/${prefix}/${identifier}/${sort}@~${indexer}.`
-  })
-);
-
 const getUserPageParams = withParams(
   ({
     params: {
       prefix = "user",
-      identifier = "all",
+      identifier = tabulator,
       sort = "new",
       type = "overview"
     },
@@ -59,7 +49,7 @@ const getUserPageParams = withParams(
 
 const getUserSpaceParams = withParams(
   ({
-    params: { identifier, name, sort = "hot" },
+    params: { identifier=tabulator, name="frontpage", sort = "hot" },
     query: { indexer = tabulator }
   }) => {
     return {
@@ -194,12 +184,12 @@ export const routes = [
   {
     path: "/:sort",
     component: cached(Page),
-    getListingParams: getFrontPageParams
+    getListingParams: getUserSpaceParams
   },
   {
     path: "/",
     exact: true,
     component: cached(Page),
-    getListingParams: getFrontPageParams
+    getListingParams: getUserSpaceParams
   }
 ].map(toRoute);

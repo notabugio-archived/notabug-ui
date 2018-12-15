@@ -18,6 +18,7 @@ const { all } = Promise;
 export const useListing = ({ listingParams }) => {
   const { api } = useContext(NabContext);
   const { soul } = listingParams;
+  console.log({ soul });
   const [speculativeIds, setSpeculativeIds] = useState([]);
   const state = useQuery(api.queries.listing, [soul]);
   const createdAt = parseInt(propOr("", "createdAt", state));
