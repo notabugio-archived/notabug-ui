@@ -90,6 +90,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
   const onFetchCache = useCallback((pathname, search) => {
     try {
       // if (FORCE_REALTIME) return Promise.resolve();
+      return Promise.resolve();
       return fetch(`/api${pathname}.json${search}`, [])
         .then(response => {
           if (response.status !== 200)

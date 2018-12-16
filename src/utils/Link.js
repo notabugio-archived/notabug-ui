@@ -13,7 +13,7 @@ export const Link = withRouter((
       r[key] = props[key];
       return r;
     }, {});
-  if (!((href && href[0] === "/") || href[0] === "?"))
+  if (!href || !((href[0] === "/") || href[0] === "?"))
     return <a href={href} {...props } >{children}</a>;
 
   let destQuery = query.indexer ? { indexer: query.indexer } : null;
