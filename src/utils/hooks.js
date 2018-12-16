@@ -1,7 +1,10 @@
 import { useContext, useState, useCallback, useMemo, useEffect } from "react";
+import { values } from "ramda";
 import { NabContext } from "NabContext";
 import isNode from "detect-node";
 import debounce from "lodash/debounce";
+
+export const useMemoizedObject = obj => useMemo(() => obj, values(obj));
 
 export const useScope = (deps=[]) => {
   const { api } = useContext(NabContext);
@@ -35,17 +38,23 @@ export const useScope = (deps=[]) => {
 export const useQuery = (query, args=[]) => {
   const scope = useScope(args);
 
+  const [hasResponseState, setHasResponse] = useState(false);
   const [result, setResult] = useState(
     useMemo(() => query.now(scope, ...args), [])
   );
+  const hasResponse = (typeof result !== "undefined") || hasResponseState;
 
   const doUpdate = useCallback(
-    () => query(scope, ...args).then(res => res && setResult(res)),
+    () => query(scope, ...args).then(res => {
+      setHasResponse(true);
+      res && setResult(res);
+    }),
     [scope, ...args]
   );
 
   useEffect(
     () => {
+      setHasResponse(false);
       const update = debounce(doUpdate, 50);
       update();
       scope.on(update);
@@ -54,7 +63,7 @@ export const useQuery = (query, args=[]) => {
     [doUpdate]
   );
 
-  return result;
+  return [result, hasResponse];
 };
 
 export const useShowMore = (items, foldSize=5) => {

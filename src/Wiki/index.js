@@ -13,7 +13,7 @@ export const WikiPageContent = ({
   identifier
 }) => {
   const { api, me } = useContext(NabContext);
-  const id = useQuery(api.queries.wikiPageId, [identifier, name]);
+  const [id] = useQuery(api.queries.wikiPageId, [identifier, name]);
   if (!id && me && identifier === me.pub) return <WikiPageCreate name={name} />;
   if (!id) return emptyContent;
   return <Thing key={id} id={id} isDetail {...{ asSource, name }} />;

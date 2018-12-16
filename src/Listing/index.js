@@ -18,9 +18,8 @@ const { all } = Promise;
 export const useListing = ({ listingParams }) => {
   const { api } = useContext(NabContext);
   const { soul } = listingParams;
-  console.log({ soul });
   const [speculativeIds, setSpeculativeIds] = useState([]);
-  const state = useQuery(api.queries.listing, [soul]);
+  const [state] = useQuery(api.queries.listing, [soul]);
   const createdAt = parseInt(propOr("", "createdAt", state));
   const includeRanksString = propOr("", "includeRanks", state);
   const isChatString = propOr("", "isChat", state);
@@ -43,9 +42,6 @@ export const useListing = ({ listingParams }) => {
   );
 
   const source = propOr("", "source", state);
-
-  console.log("source", source.split("\n"));
-
   const parsedSource = useMemo(() => parseListingSource(source), [
     source,
     state

@@ -16,8 +16,20 @@ const listingComponent = (Component, getParams) => props => {
   return <Component {...{ ...props, listingParams }} key={userId || "anon"} />;
 };
 
-export const toRoute = ({ component, getListingParams, ...other }) => ({
+const spaceComponent = (Component, getParams) => props => {
+  if (!getParams) return <Component {...props} />;
+  const {
+    match: { params },
+    location: { search }
+  } = props;
+  const query = qs.parse(search, { ignoreQueryPrefix: true });
+  const listingParams = getParams({ params, query });
+  return <Component {...{ ...props, listingParams }} />;
+};
+
+export const toRoute = ({ component, getSpaceParams, getListingParams, ...other }) => ({
   ...other,
+  getSpaceParams,
   getListingParams,
-  component: listingComponent(component, getListingParams)
+  component: getSpaceParams ? spaceComponent(component, getSpaceParams) : listingComponent(component, getListingParams)
 });

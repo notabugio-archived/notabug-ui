@@ -91,8 +91,8 @@ export const PageTemplate = ({
           ) : null}
         </React.Fragment>
       )}
+      <ListingInfo {...{ listingParams, userId, name, source }} />
       <JavaScriptRequired silent>
-        <ListingInfo {...{ listingParams, userId, name, source }} />
         {!isChat && submitTopic ? <SidebarChat topic={submitTopic} /> : null}
       </JavaScriptRequired>
       <SidebarVotingStatus />

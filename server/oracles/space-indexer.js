@@ -3,6 +3,7 @@ import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
 import { listingFromPage } from "../listings/declarative";
+import { spaceSourceWithDefaults } from "../notabug-peer/listings";
 
 export default oracle({
   name: "space-indexer",
@@ -18,12 +19,8 @@ export default oracle({
           scope,
           authorId,
           `space:${name}`,
-          [
-            `sort ${sort}`,
-            ...["hot", "new", "discussed", "controversial", "top"].map(
-              tab => `tab ${tab} /user/${authorId}/spaces/${name}/${tab}`
-            )
-          ].join("\n")
+          `sort ${sort}`,
+          source => spaceSourceWithDefaults({ source, owner: authorId, name: name })
         )
       )
     }),

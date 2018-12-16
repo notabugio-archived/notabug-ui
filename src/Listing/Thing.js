@@ -5,7 +5,7 @@ import React, {
   useCallback,
   useEffect
 } from "react";
-import { propOr, path } from "ramda";
+import { prop, propOr, path } from "ramda";
 import { Loading, useQuery } from "utils";
 import { query, resolve } from "notabug-peer/scope";
 import { NabContext } from "NabContext";
@@ -38,19 +38,14 @@ export const Thing = React.memo(
     onDidUpdate
   }) => {
     const { api, me, myContent } = useContext(NabContext);
-    const { listingParams: { indexer } = {}, speculativeIds = {} } =
+    const { listingParams: { indexer, tabulator } = {}, speculativeIds = {} } =
       useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];
 
-    const scores = useQuery(api.queries.thingScores, [indexer, id]) || {
-      up: 0,
-      down: 0,
-      score: 0,
-      comment: 0
-    };
+    const [scores] = useQuery(api.queries.thingScores, [tabulator || indexer, id]);
 
-    const item = useQuery(api.queries.thingData, [id]);
-    const parentItem = useQuery(
+    const [item] = useQuery(api.queries.thingData, [id]);
+    const [parentItem] = useQuery(
       useMemo(
         () =>
           query((scope, parentId, shouldFetch) =>
@@ -99,7 +94,7 @@ export const Thing = React.memo(
       [item, parentItem]
     );
 
-    const score = parseInt(scores.score) || 0;
+    const score = parseInt(prop("score", scores)) || 0;
     const ThingComponent = item ? components[item.kind] : null;
     const collapsed =
       !isMine && !!(collapseThreshold !== null && score < collapseThreshold);
@@ -147,10 +142,10 @@ export const Thing = React.memo(
 
     const thingProps = {
       ListingContext,
-      ups: scores.up,
-      downs: scores.down,
-      score: scores.score,
-      comments: scores.comment,
+      ups: propOr(0, "up", scores),
+      downs: propOr(0, "down", scores),
+      score: propOr(0, "score", scores),
+      comments: propOr(0, "comment", scores),
       edited,
       canEdit,
       isEditing,

@@ -5,7 +5,7 @@ import { AuthorLink } from "./AuthorLink";
 
 export const UserIdLink = ({ userId }) => {
   const { api } = useContext(NabContext);
-  const userMeta = useQuery(api.queries.userMeta, [`~${userId}`]);
+  const [userMeta] = useQuery(api.queries.userMeta, [`~${userId}`]);
 
   if (!userId || !userMeta) return null;
   return (

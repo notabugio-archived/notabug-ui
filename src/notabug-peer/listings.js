@@ -1,9 +1,10 @@
 import { prop, path, trim, assocPath, keysIn } from "ramda";
 import { scope as getScope, query } from "./scope";
 import * as SOULS from "./schema";
+import { tabulator as defaultIndexer } from "../config.json";
 
 export const parseListingSource = source => {
-  const tokenMap = source.split("\n").reduce((def, line) => {
+  const tokenMap = (source || "").split("\n").reduce((def, line) => {
     const tokens = line
       .trim()
       .split(" ")
@@ -38,13 +39,49 @@ export const parseListingSource = source => {
 
   const getPairs = p => {
     const keys = typeof p === "string" ? p.split(" ") : p;
-    return getValues(keys).reduce((pairs, key) =>  {
+    return getValues(keys).reduce((pairs, key) => {
       const val = getValue([...keys, key]);
       return [...pairs, [key, val]];
     }, []);
   };
 
-  return { isPresent, getValue, getValues, getLastValue, getValueChain, getPairs };
+  return {
+    isPresent,
+    getValue,
+    getValues,
+    getLastValue,
+    getValueChain,
+    getPairs
+  };
+};
+
+export const spaceSourceWithDefaults = ({
+  owner,
+  name,
+  source,
+  tabs = ["hot", "new", "discussed", "controversial", "top"]
+}) => {
+  let result = [source || ""];
+  const parsedSource = parseListingSource(source);
+
+  if (!parsedSource.getValue("tab")) {
+    tabs.map(tab =>
+      result.push(`tab ${tab} /user/${owner}/spaces/${name}/${tab}`)
+    );
+  }
+
+  let indexer = parsedSource.getValue("indexer");
+  if (!indexer) {
+    result.push(`indexer ${defaultIndexer}`);
+    indexer = defaultIndexer;
+  }
+
+  let tabulator = parsedSource.getValue("tabulator");
+  if (!tabulator) {
+    tabulator.push(`indexer ${indexer}`);
+  }
+
+  return result.join("\n");
 };
 
 const listing = query((scope, soul) => scope.get(soul), "listing");

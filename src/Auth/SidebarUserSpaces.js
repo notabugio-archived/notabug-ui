@@ -5,7 +5,7 @@ import { Link, useQuery, useShowMore } from "utils";
 
 export const SidebarUserSpaces = ({ userId }) => {
   const { api } = useContext(NabContext);
-  const pages = useQuery(api.queries.userPages, [userId]);
+  const [pages] = useQuery(api.queries.userPages, [userId]);
   const spaceNames = keysIn(pages)
     .filter(compose(prop("length"), match(/^space:[^:]*$/)))
     .map(replace(/^space:/, ""))

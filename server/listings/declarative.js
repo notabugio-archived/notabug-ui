@@ -1,4 +1,4 @@
-import { compose, lte, gte, prop, propOr, path, keysIn, uniqBy } from "ramda";
+import { identity, compose, lte, gte, prop, propOr, path, keysIn, uniqBy } from "ramda";
 import urllite from "urllite";
 import {
   multiAuthor,
@@ -203,7 +203,7 @@ export const declarativeListing = query((scope, source) => {
 });
 
 export const listingFromPage = query(
-  (scope, authorId, name, extraSource = "") => {
+  (scope, authorId, name, extraSource = "", transformSource=identity) => {
     const extra = `
 # added by indexer
 ${extraSource || ""}
@@ -211,7 +211,7 @@ sourced from page ${authorId} ${name}
 `;
     return getWikiPage(scope, authorId, name).then(
       compose(
-        body => declarativeListing(scope, `${body}\n\n${extra}`),
+        body => declarativeListing(scope, `${body}\n${transformSource(body)}\n${extra}`),
         propOr("", "body")
       )
     );

@@ -26,6 +26,7 @@ export default oracle({
           indexer,
           "listing:firehose",
           [
+            `name ${topic}`,
             "sort new",
             `submit to ${submitTopic}`,
             ...topics.map(t => `topic ${t}`),

@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback } from "react";
 import { prop } from "ramda";
-import { Link } from "utils";
+import { JavaScriptRequired, Link } from "utils";
 import { UserIdLink } from "Auth";
 import { WikiPageContent } from "Wiki";
 import { SidebarUserList } from "Auth/SidebarUserList";
@@ -28,7 +28,6 @@ export const ListingInfo = React.memo(({ userId, listingParams, name, source }) 
   }, []);
 
   const indexer = prop("indexer", listingParams);
-
 
   if (!source) return null;
   return (
@@ -61,37 +60,39 @@ export const ListingInfo = React.memo(({ userId, listingParams, name, source }) 
         </div>
       ) : null}
       <TopicList {...{ topics }} />
-      <SidebarUserList title="CURATORS" ids={curators} />
-      <SidebarUserList title="CENSORS" ids={censors} />
-      <div className="spacer">
-        <div className="sidecontentbox">
-          {isExpanded ? (
-            <div className="title">
-              {authorId && pageName ? (
-                <h1>
-                  <Link href={`/user/${authorId}/pages/${pageName}`}>
-                    listing source
-                  </Link>
-                </h1>
-              ) : (
-                <h1>listing source</h1>
-              )}
-            </div>
-          ) : null}
-          <div className={isExpanded ? "content" : ""}>
-            {isExpanded && pageName && authorId ? (
-              <WikiPageContent asSource name={pageName} identifier={authorId} />
+      <JavaScriptRequired silent>
+        <SidebarUserList title="CURATORS" ids={curators} />
+        <SidebarUserList title="CENSORS" ids={censors} />
+        <div className="spacer">
+          <div className="sidecontentbox">
+            {isExpanded ? (
+              <div className="title">
+                {authorId && pageName ? (
+                  <h1>
+                    <Link href={`/user/${authorId}/pages/${pageName}`}>
+                      listing source
+                    </Link>
+                  </h1>
+                ) : (
+                  <h1>listing source</h1>
+                )}
+              </div>
             ) : null}
-            <div className="more">
-              <a href="" onClick={onToggle}>
-                {isExpanded
-                  ? "...hide listing source..."
-                  : "...show listing source..."}
-              </a>
+            <div className={isExpanded ? "content" : ""}>
+              {isExpanded && pageName && authorId ? (
+                <WikiPageContent asSource name={pageName} identifier={authorId} />
+              ) : null}
+              <div className="more">
+                <a href="" onClick={onToggle}>
+                  {isExpanded
+                    ? "...hide listing source..."
+                    : "...show listing source..."}
+                </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </JavaScriptRequired>
     </React.Fragment>
   );
 });

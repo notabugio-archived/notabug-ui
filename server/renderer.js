@@ -1,15 +1,16 @@
 import Promise from "promise";
 import React from "react";
-import { propOr, keysIn } from "ramda";
+import { prop, propOr, keysIn } from "ramda";
 import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import { App } from "App";
 import { routes } from "Routing";
 import init from "./notabug-peer";
+import { PREFIX } from "./notabug-peer";
 import { query, all } from "./notabug-peer/scope";
-import { parseListingSource } from "./notabug-peer/listings";
+import { parseListingSource, spaceSourceWithDefaults } from "./notabug-peer/listings";
 import serialize from "serialize-javascript";
-import { tabulator } from "./ui-config.json";
+import { tabulator as defaultIndexer } from "./ui-config.json";
 
 const serializeState = (data = {}) => `
 <script type="text/javascript">
@@ -75,8 +76,42 @@ const preload = (nab, scope, params) => {
   );
   return Promise.all([
     preloadPageData.query(scope, params),
-    nab.queries.wikiPage(scope, tabulator, "sidebar")
+    nab.queries.wikiPage(scope, defaultIndexer, "sidebar")
   ]);
+};
+
+const preloadSpace = (nab, scope, params) => {
+  const sort = prop("sort", params);
+  const owner = prop("owner", params) || defaultIndexer;
+  const name = prop("name", params) || "frontpage";
+
+  return nab.queries.wikiPage(scope, owner, `space:${name}`)
+    .then(result => {
+      const body = prop("body", result);
+      const source = spaceSourceWithDefaults({ owner, name, source: body });
+      const parsedSource = parseListingSource(source);
+      const indexer = parsedSource.getValue("indexer") || defaultIndexer;
+      const tabulator = parsedSource.getValue("tabulator") || indexer;
+      const defaultTab = parsedSource.getValue("tab");
+      const defaultTabPath = defaultTab ? parsedSource.getValue(["tab", defaultTab]) : null;
+
+      const soul = (() => {
+        if (sort || !defaultTabPath) {
+          return nab.schema.userListing.soul({
+            prefix: "user",
+            identifier: owner,
+            kind: "spaces",
+            type: name,
+            sort: sort || "hot",
+            tabulatorId: tabulator
+          });
+        }
+        return `${PREFIX}${defaultTabPath}@~${indexer}.`;
+      })();
+
+      const listingParams = { soul, indexer, tabulator };
+      return preload(nab, scope, listingParams);
+    });
 };
 
 export default (nab, req, res) =>
@@ -112,6 +147,12 @@ export default (nab, req, res) =>
           nab,
           scope,
           route.getListingParams({ ...routeMatch, query: req.query })
+        );
+      } else if (route.getSpaceParams) {
+        dataQuery = preloadSpace(
+          nab,
+          scope,
+          route.getSpaceParams({ ...routeMatch, query: req.query })
         );
       } else if (route.preload) {
         dataQuery = route.preload(scope, { ...routeMatch, query: req.query });

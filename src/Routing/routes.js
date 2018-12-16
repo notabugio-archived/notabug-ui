@@ -1,6 +1,7 @@
 import { StaticPage, Reddit } from "static";
 import { cached } from "utils";
 import { Page } from "Page";
+import { Space } from "Space";
 import { LoginSignupPage } from "Auth";
 import { SubmissionForm } from "Submission/Form";
 import { WikiPage } from "Wiki";
@@ -49,12 +50,12 @@ const getUserPageParams = withParams(
 
 const getUserSpaceParams = withParams(
   ({
-    params: { identifier=tabulator, name="frontpage", sort = "hot" },
-    query: { indexer = tabulator }
+    params: { identifier = tabulator, name = "frontpage", sort = null }
   }) => {
     return {
-      prefix: "user",
-      soul: `${PREFIX}/user/${identifier}/spaces/${name}/${sort}@~${indexer}.`
+      owner: identifier,
+      name,
+      sort
     };
   }
 );
@@ -148,13 +149,13 @@ export const routes = [
   },
   {
     path: "/user/:identifier/spaces/:name/:sort",
-    component: cached(Page),
-    getListingParams: getUserSpaceParams
+    component: cached(Space),
+    getSpaceParams: getUserSpaceParams
   },
   {
     path: "/user/:identifier/spaces/:name",
-    component: cached(Page),
-    getListingParams: getUserSpaceParams
+    component: cached(Space),
+    getSpaceParams: getUserSpaceParams
   },
   {
     path: "/user/:identifier/:type/:sort",
@@ -183,13 +184,13 @@ export const routes = [
   },
   {
     path: "/:sort",
-    component: cached(Page),
-    getListingParams: getUserSpaceParams
+    component: cached(Space),
+    getSpaceParams: getUserSpaceParams
   },
   {
     path: "/",
     exact: true,
-    component: cached(Page),
-    getListingParams: getUserSpaceParams
+    component: cached(Space),
+    getSpaceParams: getUserSpaceParams
   }
 ].map(toRoute);
