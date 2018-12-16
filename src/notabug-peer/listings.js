@@ -78,7 +78,7 @@ export const spaceSourceWithDefaults = ({
 
   let tabulator = parsedSource.getValue("tabulator");
   if (!tabulator) {
-    tabulator.push(`indexer ${indexer}`);
+    result.push(`tabulator ${indexer}`);
   }
 
   return result.join("\n");
