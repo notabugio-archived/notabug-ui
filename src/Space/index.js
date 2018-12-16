@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useMemo } from "react";
 import { useNotabug } from "NabContext";
 import { prop } from "ramda";
 import { PREFIX } from "notabug-peer";
@@ -33,6 +33,11 @@ export const Space = React.memo(({ listingParams: spaceParams, ...props }) => {
     ? parsedSource.getValue(["tab", defaultTab])
     : null;
 
+  const isIdSticky = useCallback(
+    id => !!parsedSource.isPresent(["sticky", id]),
+    [parsedSource]
+  );
+
   const soul = (() => {
     if (!hasSource && !body) return null;
     if (sort || !defaultTabPath) {
@@ -57,7 +62,8 @@ export const Space = React.memo(({ listingParams: spaceParams, ...props }) => {
     parsedSource,
     ownerAlias,
     indexer,
-    tabulator
+    tabulator,
+    isIdSticky
   });
 
   return (

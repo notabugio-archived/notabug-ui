@@ -1,11 +1,13 @@
 import React, { Fragment, useMemo } from "react";
 // import { Helmet } from "react-helmet";
+import { always } from "ramda";
 import { withRouter } from "react-router-dom";
 import urllite from "urllite";
 import { ThingLink } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify, interceptClicks } from "utils";
 import { Expando, getExpando } from "./Expando";
 import { AuthorLink } from "Auth";
+import { useSpace } from "Space";
 // import { SaveThingButton } from "SaveThing";
 
 const nsfwRe = /(nsfw|porn|hentai|ecchi|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
@@ -34,6 +36,7 @@ export const Submission = ({
   onVoteUp,
   onVoteDown
 }) => {
+  const { isIdSticky = always(false) } = useSpace() || {};
   let scoreDisp = null;
   if (score || score === 0) scoreDisp = ups - downs || 0;
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
@@ -83,6 +86,7 @@ export const Submission = ({
         }}
         {...{ rank, onVoteUp, onVoteDown, expandoType, image, video, iframe }}
         expanded={expanded || (isDetail && !item.url)}
+        stickied={isIdSticky(id)}
         ups={ups || 0}
         downs={downs || 0}
         AuthorLink={AuthorLink}

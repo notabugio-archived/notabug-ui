@@ -190,7 +190,7 @@ export const declarativeListing = query((scope, source) => {
     })
     .then(things => censor(scope, censors.map(id => `~${id}`), things))
     .then(things => things.slice(0, LISTING_SIZE))
-    .then(things => serializeListing({ name, things }))
+    .then(things => serializeListing({ name, things, stickyIds: getValues("sticky") }))
     .then(serialized => ({
       ...serialized,
       source,

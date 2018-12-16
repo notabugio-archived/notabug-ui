@@ -5,9 +5,9 @@ import { filterThings, multiAuthor, } from "../queries";
 
 export const LISTING_SIZE = 1000;
 
-export const serializeListing = ({ name="", things }) => ({
+export const serializeListing = ({ name="", things, stickyIds=[] }) => ({
   name,
-  ids: things.map(prop("id")).filter(id => !!id).join("+")
+  ids: [...stickyIds, ...things.map(prop("id")).filter(id => !!id)].join("+")
 });
 
 const fetchThingSoulsData = scope => souls => all(
