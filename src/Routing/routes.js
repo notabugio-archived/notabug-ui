@@ -1,7 +1,7 @@
 import { StaticPage, Reddit } from "static";
 import { cached } from "utils";
 import { Page } from "Page";
-import { Space } from "Space";
+import { SpaceListingPage } from "Space";
 import { LoginSignupPage } from "Auth";
 import { SubmissionForm } from "Submission/Form";
 import { WikiPage } from "Wiki";
@@ -149,12 +149,12 @@ export const routes = [
   },
   {
     path: "/user/:identifier/spaces/:name/:sort",
-    component: cached(Space),
+    component: cached(SpaceListingPage),
     getSpaceParams: getUserSpaceParams
   },
   {
     path: "/user/:identifier/spaces/:name",
-    component: cached(Space),
+    component: cached(SpaceListingPage),
     getSpaceParams: getUserSpaceParams
   },
   {
@@ -184,13 +184,13 @@ export const routes = [
   },
   {
     path: "/:sort",
-    component: cached(Space),
+    component: cached(SpaceListingPage),
     getSpaceParams: getUserSpaceParams
   },
   {
     path: "/",
     exact: true,
-    component: cached(Space),
+    component: cached(SpaceListingPage),
     getSpaceParams: getUserSpaceParams
   }
 ].map(toRoute);
