@@ -1,10 +1,10 @@
-import React, { useContext } from "react";
+import React from "react";
 import { keysIn, match, compose, prop, replace } from "ramda";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { Link, useQuery, useShowMore } from "utils";
 
 export const SidebarUserSpaces = ({ userId }) => {
-  const { api } = useContext(NabContext);
+  const { api } = useNotabug();
   const [pages] = useQuery(api.queries.userPages, [userId]);
   const spaceNames = keysIn(pages)
     .filter(compose(prop("length"), match(/^space:[^:]*$/)))

@@ -8,7 +8,7 @@ import {
 } from "react";
 import { assoc, propOr, uniq, difference } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { useQuery, useScope } from "utils";
 import { parseListingSource } from "notabug-peer/listings";
 export { Thing } from "./Thing";
@@ -16,7 +16,7 @@ export { Thing } from "./Thing";
 const { all } = Promise;
 
 export const useListing = ({ listingParams }) => {
-  const { api } = useContext(NabContext);
+  const { api } = useNotabug();
   const { soul } = listingParams;
   const [speculativeIds, setSpeculativeIds] = useState([]);
   const [state] = useQuery(api.queries.listing, [soul]);
@@ -88,7 +88,7 @@ export const useListing = ({ listingParams }) => {
 };
 
 export const useLimitedListing = ({ ids: allIds, limit, count = 0 }) => {
-  const { api } = useContext(NabContext);
+  const { api } = useNotabug();
   const ids = useMemo(() => allIds.slice(count, count + limit), [
     allIds,
     limit,
@@ -118,7 +118,7 @@ export const useLimitedListing = ({ ids: allIds, limit, count = 0 }) => {
 };
 
 export const useListingContent = ({ ids }) => {
-  const { api } = useContext(NabContext);
+  const { api } = useNotabug();
   const scope = useScope();
   const initialContent = useMemo(
     () =>

@@ -1,9 +1,9 @@
-import React, { useContext } from "react";
+import React from "react";
 import qs from "qs";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 
 const listingComponent = (Component, getParams) => props => {
-  const { me } = useContext(NabContext);
+  const { me } = useNotabug();
   const userId = me && me.pub;
 
   if (!getParams) return <Component {...props} />;

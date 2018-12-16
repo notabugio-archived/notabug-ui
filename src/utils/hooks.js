@@ -1,13 +1,13 @@
-import { useContext, useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
 import { values } from "ramda";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import isNode from "detect-node";
 import debounce from "lodash/debounce";
 
 export const useMemoizedObject = obj => useMemo(() => obj, values(obj));
 
 export const useScope = (deps=[]) => {
-  const { api } = useContext(NabContext);
+  const { api } = useNotabug();
   const scope = isNode
     ? api.scope
     : useMemo(

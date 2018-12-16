@@ -2,7 +2,7 @@ import React, { createContext, useState, useCallback, useEffect, useContext, use
 import { identity, assoc, dissoc, prop } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import { PREFIX } from "notabug-peer";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { doWork } from "./pow";
 
 export const VotingQueueContext = createContext();
@@ -12,7 +12,7 @@ export const VotingQueue = ({ children }) => (
 );
 
 export const useVotingQueue = () => {
-  const { api } = useContext(NabContext);
+  const { api } = useNotabug();
   const [voteQueue, setVotingQueue] = useState({});
   const [currentVote, setCurrentVote] = useState(null);
 

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useMemo } from "react";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { prop } from "ramda";
 import { PREFIX } from "notabug-peer";
 import {
@@ -14,7 +14,7 @@ const SpaceContext = createContext();
 export const useSpace = () => useContext(SpaceContext) || null;
 
 export const Space = React.memo(({ listingParams: spaceParams, ...props }) => {
-  const { api } = useContext(NabContext);
+  const { api } = useNotabug();
   const sort = prop("sort", spaceParams);
   const owner = prop("owner", spaceParams) || defaultIndexer;
   const name = prop("name", spaceParams) || "frontpage";

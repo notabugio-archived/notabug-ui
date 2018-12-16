@@ -1,6 +1,6 @@
-import React, { useState, useCallback, useContext } from "react";
+import React, { useState, useCallback } from "react";
 import { ZalgoPromise as Promise } from "zalgo-promise";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import Spinner from "react-spinkit";
 import { RegisterForm as SnewRegisterForm } from "snew-classic-ui";
 import { LoginForm as SnewLoginForm } from "snew-classic-ui";
@@ -10,7 +10,7 @@ import { JavaScriptRequired } from "utils";
 import { Markdown, injectHook } from "utils";
 
 export const useLoginSignup = () => {
-  const { me, api, history, hasLocalStorage } = useContext(NabContext);
+  const { me, api, history, hasLocalStorage } = useNotabug();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isWorking, setIsWorking] = useState(false);

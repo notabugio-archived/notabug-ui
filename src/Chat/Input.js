@@ -2,10 +2,10 @@ import React, { Fragment, useContext, useState, useCallback } from "react";
 import { propOr } from "ramda";
 import isNode from "detect-node";
 import { MAX_THING_BODY_SIZE } from "notabug-peer";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 
 export const ChatInput = ({ ListingContext }) => {
-  const { me, api, onMarkMine } = useContext(NabContext);
+  const { me, api, onMarkMine } = useNotabug();
   const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext);
   const [body, setBody] = useState("");
   const alias = propOr("anon", "alias", me);

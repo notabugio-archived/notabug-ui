@@ -1,6 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import isNode from "detect-node";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { locationKey } from "./locationKey";
 
 let hasBooted = false;
@@ -8,7 +8,7 @@ let renderedLocation = null;
 if (!isNode) renderedLocation = window.initNabState && window.location;
 
 const Cached = ({ location: { pathname, search }, Wrapped, ...props }) => {
-  const { onFetchCache } = useContext(NabContext);
+  const { onFetchCache } = useNotabug();
 
   useEffect(
     () => {

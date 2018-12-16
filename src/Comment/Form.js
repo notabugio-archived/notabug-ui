@@ -1,5 +1,5 @@
 import React, { useContext, useState, useCallback } from "react";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { MAX_THING_BODY_SIZE } from "notabug-peer";
 import { CommentForm as SnewCommentForm } from "snew-classic-ui";
 import { JavaScriptRequired } from "utils";
@@ -12,7 +12,7 @@ export const CommentForm = ({
   const { opId, submitTopic: topic, addSpeculativeId } = useContext(
     ListingContext
   );
-  const { api, onMarkMine } = useContext(NabContext);
+  const { api, onMarkMine } = useNotabug();
   const [body, setBody] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const replyToId = replyToIdProp || opId;

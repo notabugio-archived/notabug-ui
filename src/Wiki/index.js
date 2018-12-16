@@ -1,6 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import Helmet from "react-helmet";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { PageTemplate } from "Page";
 import { Thing } from "Listing";
 import { useQuery } from "utils";
@@ -12,7 +12,7 @@ export const WikiPageContent = ({
   asSource,
   identifier
 }) => {
-  const { api, me } = useContext(NabContext);
+  const { api, me } = useNotabug();
   const [id] = useQuery(api.queries.wikiPageId, [identifier, name]);
   if (!id && me && identifier === me.pub) return <WikiPageCreate name={name} />;
   if (!id) return emptyContent;

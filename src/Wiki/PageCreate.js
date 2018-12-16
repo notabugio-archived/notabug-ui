@@ -1,11 +1,11 @@
-import React, { useContext, useState, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { ThingWikiPage } from "snew-classic-ui/components/ThingWikiPage";
 import { useEditText } from "utils/Markdown";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { MAX_THING_BODY_SIZE } from "notabug-peer";
 
 export const WikiPageCreate = ({ name }) => {
-  const { api, me } = useContext(NabContext);
+  const { api, me } = useNotabug();
   const [isSaving, setIsSaving] = useState(false);
 
   const {

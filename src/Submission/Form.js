@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useContext, useMemo } from "react";
-import { NabContext } from "NabContext";
+import React, { useState, useCallback, useMemo } from "react";
+import { useNotabug } from "NabContext";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import qs from "qs";
 import slugify from "utils/slugify";
@@ -24,7 +24,7 @@ export const SubmissionForm = ({
     params: { topic: initialTopic = "whatever" }
   }
 }) => {
-  const { api, history, onMarkMine } = useContext(NabContext);
+  const { api, history, onMarkMine } = useNotabug();
   const query = qs.parse(search, { ignoreQueryPrefix: true });
   const [topic, setTopic] = useState(initialTopic || "whatever");
   const [title, setTitle] = useState(query.title || "");

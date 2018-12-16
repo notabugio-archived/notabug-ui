@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
-import { NabContext } from "NabContext";
+import React from "react";
+import { useNotabug } from "NabContext";
 import { UserInfo as SnewUserInfo } from "snew-classic-ui";
 import { Link } from "utils";
 import { AuthorLink } from "./AuthorLink";
 
 export const UserInfo = props => {
-  const { me, onLogout } = useContext(NabContext);
+  const { me, onLogout } = useNotabug();
   return me ? (
     <SnewUserInfo
       {...{ ...props, Link, AuthorLink }}

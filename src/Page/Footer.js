@@ -1,8 +1,8 @@
-import React, { useState, useContext, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 import { Link } from "utils";
 import VisibilitySensor from "react-visibility-sensor";
 import isNode from "detect-node";
-import { NabContext } from "NabContext";
+import { useNotabug} from "NabContext";
 
 const sitename = isNode ? "this peer" : window.location.hostname; // eslint-disable-line
 const version = isNode
@@ -10,9 +10,7 @@ const version = isNode
   : process.env.REACT_APP_VERSION;
 
 export const PageFooter = () => {
-  const { hasAttributedReddit, setHasAttributedReddit } = useContext(
-    NabContext
-  );
+  const { hasAttributedReddit, setHasAttributedReddit } = useNotabug();
   const [displayRedditAttribution] = useState(!hasAttributedReddit);
 
   const onChangeVisibility = useCallback(isVisible => {

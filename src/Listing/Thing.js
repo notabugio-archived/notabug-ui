@@ -8,7 +8,7 @@ import React, {
 import { prop, propOr, path } from "ramda";
 import { Loading, useQuery } from "utils";
 import { query, resolve } from "notabug-peer/scope";
-import { NabContext } from "NabContext";
+import { useNotabug } from "NabContext";
 import { Submission } from "Submission";
 import { Comment } from "Comment";
 import { ChatMsg } from "Chat/ChatMsg";
@@ -37,7 +37,7 @@ export const Thing = React.memo(
     asSource,
     onDidUpdate
   }) => {
-    const { api, me, myContent } = useContext(NabContext);
+    const { api, me, myContent } = useNotabug();
     const { listingParams: { indexer, tabulator } = {}, speculativeIds = {} } =
       useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];

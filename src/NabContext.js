@@ -1,6 +1,7 @@
 /* globals RindexedDB */
-import {
+import React, {
   createContext,
+  useContext,
   useState,
   useCallback,
   useEffect,
@@ -8,6 +9,7 @@ import {
 } from "react";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import { assoc } from "ramda";
+import { withRouter } from "react-router-dom";
 import isNode from "detect-node";
 import fetch from "isomorphic-fetch";
 import "gun/gun";
@@ -35,6 +37,7 @@ if (!isNode) {
 }
 
 export const NabContext = createContext();
+export const useNotabug = () => useContext(NabContext);
 
 export const useNabGlobals = ({ notabugApi, history }) => {
   let hasLocalStorage = false;
@@ -84,23 +87,20 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     [api]
   );
 
-  const onFetchCache = useCallback(
-    (pathname, search) => {
-      try {
-        // if (FORCE_REALTIME) return Promise.resolve();
-        return fetch(`/api${pathname}.json${search}`, [])
-          .then(response => {
-            if (response.status !== 200)
-              throw new Error("Bad response from server");
-            return response.json();
-          })
-          .then(api.scope.loadCachedResults);
-      } catch(e) {
-        return Promise.reject(e);
-      }
-    },
-    []
-  );
+  const onFetchCache = useCallback((pathname, search) => {
+    try {
+      // if (FORCE_REALTIME) return Promise.resolve();
+      return fetch(`/api${pathname}.json${search}`, [])
+        .then(response => {
+          if (response.status !== 200)
+            throw new Error("Bad response from server");
+          return response.json();
+        })
+        .then(api.scope.loadCachedResults);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }, []);
 
   const onMarkMine = useCallback(id => setMyContent(assoc(id, true)), []);
 
@@ -146,6 +146,11 @@ export const useNabGlobals = ({ notabugApi, history }) => {
   );
 };
 
+export const NabProvider = withRouter(({ history, notabugApi, children }) => (
+  <NabContext.Provider value={useNabGlobals({ notabugApi, history })}>
+    {children}
+  </NabContext.Provider>
+));
 
 // https://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
 function isLocalStorageNameSupported() {
