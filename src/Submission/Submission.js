@@ -36,6 +36,7 @@ export const Submission = ({
   onVoteUp,
   onVoteDown
 }) => {
+  const space = useSpace();
   const { isIdSticky = always(false) } = useSpace() || {};
   let scoreDisp = null;
   if (score || score === 0) scoreDisp = ups - downs || 0;
@@ -43,7 +44,9 @@ export const Submission = ({
   const urlInfo = item.url ? urllite(item.url) : {};
   const permalink = useMemo(
     () =>
-      `/t/${item.topic || "all"}/comments/${id}/` +
+      (space && space.useForComments
+        ? `/user/${space.owner}/spaces/${space.name}/comments/${id}/`
+        : `/t/${item.topic || "all"}/comments/${id}/`) +
       slugify((item.title || "").toLowerCase()),
     [item.topic, id, item.title]
   );

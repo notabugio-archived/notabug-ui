@@ -29,7 +29,9 @@ export const ListingInfo = React.memo(({ userId, listingParams, name, source }) 
     setIsExpanded(ex => !ex);
   }, []);
 
-  const indexer = prop("indexer", listingParams);
+  const indexer = prop("indexer", space) || prop("indexer", listingParams);
+  const ownerId = prop("owner", space) || authorId;
+  const displayName = prop("displayName", space) || name;
 
   if (!source) return null;
   return (
@@ -40,7 +42,7 @@ export const ListingInfo = React.memo(({ userId, listingParams, name, source }) 
             {userId ? null : (
               <React.Fragment>
                 <h1 className="hover redditname">
-                  <Link className="hover" href="">{name}</Link>
+                  <Link className="hover" href="">{displayName}</Link>
                 </h1>
                 {space ? (
                   <WikiPageContent name={`space:${space.name}:sidebar`} identifier={space.owner} />
@@ -50,9 +52,9 @@ export const ListingInfo = React.memo(({ userId, listingParams, name, source }) 
               </React.Fragment>
             )}
             <div className="bottom">
-              {(authorId !== indexer && pageName) ? (
+              {(ownerId !== indexer && pageName) ? (
                 <React.Fragment>
-                  owner: <UserIdLink userId={authorId} />
+                  owner: <UserIdLink userId={ownerId} />
                 </React.Fragment>
               ) : null}
               {indexer ? (

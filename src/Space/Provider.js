@@ -27,21 +27,28 @@ export const SpaceProvider = React.memo(({ owner, name, children }) => {
   const defaultTabPath = defaultTab
     ? parsedSource.getValue(["tab", defaultTab])
     : null;
+  const displayName = parsedSource.getValue("name") || name;
 
   const isIdSticky = useCallback(
     id => !!parsedSource.isPresent(["sticky", id]),
     [parsedSource]
   );
 
+  const useForComments = !parsedSource.isPresent("comments leave space");
+  const path = `/user/${owner}/spaces/${name}`;
+
   const spaceContext = useMemoizedObject({
     owner,
     name,
+    displayName,
+    path,
     source,
     parsedSource,
     ownerAlias,
     defaultTabPath,
     indexer,
     tabulator,
+    useForComments,
     isIdSticky
   });
 
@@ -59,4 +66,3 @@ export const SpaceProvider = React.memo(({ owner, name, children }) => {
     </SpaceContext.Provider>
   );
 });
-
