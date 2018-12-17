@@ -44,6 +44,7 @@ const SpaceListingPageContent = ({ sort: sortProp, opId, ...props }) => {
         identifier: owner,
         kind: "spaces",
         type: name,
+        sort,
         tabulatorId: tabulator
       });
     }
