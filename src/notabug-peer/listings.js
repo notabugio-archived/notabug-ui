@@ -1,9 +1,13 @@
 import { prop, path, trim, assocPath, keysIn } from "ramda";
-import { scope as getScope, query } from "./scope";
+import { scope as getScope, query, resolve } from "./scope";
 import * as SOULS from "./schema";
 import { tabulator as defaultIndexer } from "../config.json";
 
 export const parseListingSource = source => {
+  if (source && typeof source !== "string") {
+    console.warn("unexpected source type", source);
+    source = "";
+  }
   const tokenMap = (source || "").split("\n").reduce((def, line) => {
     const tokens = line
       .trim()
@@ -84,7 +88,7 @@ export const spaceSourceWithDefaults = ({
   return result.join("\n");
 };
 
-const listing = query((scope, soul) => scope.get(soul), "listing");
+const listing = query((scope, soul) => soul ? scope.get(soul) : resolve(null), "listing");
 
 const getThingScores = query(
   (scope, tabulator, thingid) =>

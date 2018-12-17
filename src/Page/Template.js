@@ -23,7 +23,6 @@ export const PageTemplate = ({
   children
 }) => {
   const space = useSpace();
-  console.log("space", space);
   return (
     <React.Fragment>
       <div id="header" role="banner">

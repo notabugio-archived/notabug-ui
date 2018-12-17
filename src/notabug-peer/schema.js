@@ -213,7 +213,6 @@ const thingDataFields = [
   and(keyIs("topic"), maxSize(consts.MAX_TOPIC_SIZE)),
   and(keyIs("body"), maxSize(consts.MAX_THING_BODY_SIZE)),
   and(keyIs("author"), maxSize(consts.MAX_AUTHOR_ALIAS_SIZE)),
-  and(keyIs("authorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE)),
   and(keyIs("opId"), maxSize(consts.MAX_HASH_SIZE)),
   and(keyIs("replyToId"), maxSize(consts.MAX_HASH_SIZE)),
   and(keyIs("domain"), maxSize(consts.MAX_DOMAIN_SIZE)),
@@ -278,7 +277,10 @@ export const thingVotes = nodeType(
 export const thingDataSigned = nodeType(
   `${PREFIX}/things/:thingid/data~:authorId.`,
   checkThingSoulMatch,
-  allowFieldsSEA(...thingDataFields)
+  allowFieldsSEA(
+    ...thingDataFields,
+    and(keyIs("authorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE), valFromSoul("thingDataSigned", "authorId"))
+  )
 );
 
 export const userPages = nodeType(
