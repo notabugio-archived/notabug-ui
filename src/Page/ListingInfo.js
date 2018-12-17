@@ -5,9 +5,11 @@ import { UserIdLink } from "Auth";
 import { WikiPageContent } from "Wiki";
 import { SidebarUserList } from "Auth/SidebarUserList";
 import { TopicList } from "Page/TopicList";
+import { useSpace } from "Space";
 import { parseListingSource } from "notabug-peer/listings";
 
 export const ListingInfo = React.memo(({ userId, listingParams, name, source }) => {
+  const space = useSpace();
   const { curators, censors, topics, authorId, pageName } = useMemo(
     () => {
       const { getValues, getValueChain } = parseListingSource(source || "");
@@ -40,7 +42,11 @@ export const ListingInfo = React.memo(({ userId, listingParams, name, source }) 
                 <h1 className="hover redditname">
                   <Link className="hover" href="">{name}</Link>
                 </h1>
-                <WikiPageContent name={`${pageName}:sidebar`} identifier={authorId} />
+                {space ? (
+                  <WikiPageContent name={`space:${space.name}:sidebar`} identifier={space.owner} />
+                ) : (
+                  <WikiPageContent name={`${pageName}:sidebar`} identifier={authorId} />
+                )}
               </React.Fragment>
             )}
             <div className="bottom">

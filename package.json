@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.29.5",
+  "version": "0.29.6",
   "dependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.5",

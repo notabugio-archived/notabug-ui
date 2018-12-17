@@ -8,7 +8,10 @@ import { routes } from "Routing";
 import init from "./notabug-peer";
 import { PREFIX } from "./notabug-peer";
 import { query, all } from "./notabug-peer/scope";
-import { parseListingSource, spaceSourceWithDefaults } from "./notabug-peer/listings";
+import {
+  parseListingSource,
+  spaceSourceWithDefaults
+} from "./notabug-peer/listings";
 import serialize from "serialize-javascript";
 import { tabulator as defaultIndexer } from "./ui-config.json";
 
@@ -82,36 +85,51 @@ const preload = (nab, scope, params) => {
 
 const preloadSpace = (nab, scope, params) => {
   const sort = prop("sort", params);
+  const opId = prop("opId", params);
   const owner = prop("owner", params) || defaultIndexer;
   const name = prop("name", params) || "frontpage";
 
-  return nab.queries.wikiPage(scope, owner, `space:${name}`)
-    .then(result => {
-      const body = prop("body", result);
-      const source = spaceSourceWithDefaults({ owner, name, source: body });
-      const parsedSource = parseListingSource(source);
-      const indexer = parsedSource.getValue("indexer") || defaultIndexer;
-      const tabulator = parsedSource.getValue("tabulator") || indexer;
-      const defaultTab = parsedSource.getValue("tab");
-      const defaultTabPath = defaultTab ? parsedSource.getValue(["tab", defaultTab]) : null;
+  return nab.queries.wikiPage(scope, owner, `space:${name}`).then(result => {
+    const body = prop("body", result);
+    const source = spaceSourceWithDefaults({ owner, name, source: body });
+    const parsedSource = parseListingSource(source);
+    const indexer = parsedSource.getValue("indexer") || defaultIndexer;
+    const tabulator = parsedSource.getValue("tabulator") || indexer;
+    const defaultTab = parsedSource.getValue("tab");
+    const defaultTabPath = defaultTab
+      ? parsedSource.getValue(["tab", defaultTab])
+      : null;
 
-      const soul = (() => {
-        if (sort || !defaultTabPath) {
-          return nab.schema.userListing.soul({
-            prefix: "user",
-            identifier: owner,
-            kind: "spaces",
-            type: name,
-            sort: sort || "hot",
-            tabulatorId: tabulator
-          });
-        }
-        return `${PREFIX}${defaultTabPath}@~${indexer}.`;
-      })();
+    const soul = (() => {
+      if (opId) {
+        // TODO: More specific schema types?
+        return nab.schema.typedListing.soul({
+          prefix: "things",
+          identifier: opId,
+          type: "comments",
+          sort: sort || "best",
+          tabulatorId: tabulator
+        });
+      }
+      if (sort || !defaultTabPath) {
+        return nab.schema.userListing.soul({
+          prefix: "user",
+          identifier: owner,
+          kind: "spaces",
+          type: name,
+          sort: sort || "hot",
+          tabulatorId: tabulator
+        });
+      }
+      return `${PREFIX}${defaultTabPath}@~${indexer}.`;
+    })();
 
-      const listingParams = { soul, indexer, tabulator };
-      return preload(nab, scope, listingParams);
-    });
+    const listingParams = { soul, indexer, tabulator };
+    return all([
+      preload(nab, scope, listingParams),
+      nab.queries.wikiPage(scope, owner, `space:${name}:sidebar`)
+    ]);
+  });
 };
 
 export default (nab, req, res) =>

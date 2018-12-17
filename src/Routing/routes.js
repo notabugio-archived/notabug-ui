@@ -49,13 +49,26 @@ const getUserPageParams = withParams(
 );
 
 const getUserSpaceParams = withParams(
+  ({ params: { identifier = tabulator, name = "frontpage", sort, opId } }) => {
+    return {
+      owner: identifier,
+      name,
+      sort,
+      opId
+    };
+  }
+);
+
+const getUserSpaceSubmissionParams = withParams(
   ({
-    params: { identifier = tabulator, name = "frontpage", sort = null }
+    params: { identifier = tabulator, name = "frontpage", opId },
+    query: { sort }
   }) => {
     return {
       owner: identifier,
       name,
-      sort
+      sort,
+      opId
     };
   }
 );
@@ -63,8 +76,7 @@ const getUserSpaceParams = withParams(
 const getSubmissionListingParams = withParams(
   ({
     params: { submission_id },
-    query: { sort = "best" },
-    query: { indexer = tabulator }
+    query: { sort = "best", indexer = tabulator }
   }) => ({
     soul: `nab/things/${submission_id}/comments/${sort}@~${indexer}.`,
     sort,
@@ -146,6 +158,16 @@ export const routes = [
   {
     path: "/user/:identifier/pages",
     component: cached(WikiPage)
+  },
+  {
+    path: "/user/:identifier/spaces/:name/comments/:opId/:slug",
+    component: cached(SpaceListingPage),
+    getSpaceParams: getUserSpaceSubmissionParams
+  },
+  {
+    path: "/user/:identifier/spaces/:name/comments/:opId",
+    component: cached(SpaceListingPage),
+    getSpaceParams: getUserSpaceSubmissionParams
   },
   {
     path: "/user/:identifier/spaces/:name/:sort",

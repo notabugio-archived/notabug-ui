@@ -23,8 +23,8 @@ const spaceComponent = (Component, getParams) => props => {
     location: { search }
   } = props;
   const query = qs.parse(search, { ignoreQueryPrefix: true });
-  const listingParams = getParams({ params, query });
-  return <Component {...{ ...props, listingParams }} />;
+  const spaceParams = getParams({ params, query });
+  return <Component {...{ ...props, spaceParams }} />;
 };
 
 export const toRoute = ({ component, getSpaceParams, getListingParams, ...other }) => ({
