@@ -70,8 +70,8 @@ export const submit = curry((peer, data) => {
       const submissionsSoul = peer.schema.userSubmissions.soul({ authorId: user.pub });
       const things = peer.gun.get(thingsSoul);
       const submissions = peer.gun.get(submissionsSoul);
-      peer.gun.get("things").put(things);
-      peer.gun.get("submissions").put(submissions);
+      peer.gun.user().get("things").put(things);
+      peer.gun.user().get("submissions").put(submissions);
       things.set(thing);
       submissions.set(thing);
     }).then(() => (
@@ -113,8 +113,8 @@ export const comment = curry((peer, data) => {
       const commentsSoul = peer.schema.userComments.soul({ authorId: user.pub });
       const things = peer.gun.get(thingsSoul);
       const comments = peer.gun.get(commentsSoul);
-      peer.gun.get("things").put(things);
-      peer.gun.get("comments").put(comments);
+      peer.gun.user().get("things").put(things);
+      peer.gun.user().get("comments").put(comments);
       things.set(thing);
       comments.set(thing);
     }).then(() => thing);
@@ -178,7 +178,7 @@ export const chat = curry((peer, data) => {
     upgradeSouls(peer).then(() => {
       const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
       const things = peer.gun.get(thingsSoul);
-      peer.gun.get("things").put(things);
+      peer.gun.user().get("things").put(things);
       things.set(thing);
     });
   return thing;
