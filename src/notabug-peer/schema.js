@@ -213,6 +213,7 @@ const thingDataFields = [
   and(keyIs("topic"), maxSize(consts.MAX_TOPIC_SIZE)),
   and(keyIs("body"), maxSize(consts.MAX_THING_BODY_SIZE)),
   and(keyIs("author"), maxSize(consts.MAX_AUTHOR_ALIAS_SIZE)),
+  and(keyIs("authorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE)),
   and(keyIs("opId"), maxSize(consts.MAX_HASH_SIZE)),
   and(keyIs("replyToId"), maxSize(consts.MAX_HASH_SIZE)),
   and(keyIs("domain"), maxSize(consts.MAX_DOMAIN_SIZE)),
@@ -278,8 +279,8 @@ export const thingDataSigned = nodeType(
   `${PREFIX}/things/:thingid/data~:authorId.`,
   checkThingSoulMatch,
   allowFieldsSEA(
-    ...thingDataFields,
-    and(keyIs("authorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE), valFromSoul("thingDataSigned", "authorId"))
+    and(keyIs("authorId"), maxSize(consts.MAX_AUTHOR_ID_SIZE), valFromSoul("thingDataSigned", "authorId")),
+    ...thingDataFields
   )
 );
 
@@ -348,6 +349,24 @@ export const userListing = nodeType(
   `${PREFIX}/:prefix/:identifier/:kind/:type/:sort@~:tabulatorId.`,
   checkListingSoul,
   sanitizeListingNode
+);
+
+export const userThings = nodeType(
+  `${PREFIX}/things~:authorId.`,
+  ({ authorId }) => !!authorId && authorId.length < consts.MAX_AUTHOR_ID_SIZE,
+  allowFieldsSEA(and(isSoul("thing"), soulMatchesKey))
+);
+
+export const userSubmissions = nodeType(
+  `${PREFIX}/submissions~:authorId.`,
+  ({ authorId }) => !!authorId && authorId.length < consts.MAX_AUTHOR_ID_SIZE,
+  allowFieldsSEA(and(isSoul("thing"), soulMatchesKey))
+);
+
+export const userComments = nodeType(
+  `${PREFIX}/comments~:authorId.`,
+  ({ authorId }) => !!authorId && authorId.length < consts.MAX_AUTHOR_ID_SIZE,
+  allowFieldsSEA(and(isSoul("thing"), soulMatchesKey))
 );
 
 export const genericSignedData = nodeType(

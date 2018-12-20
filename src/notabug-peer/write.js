@@ -1,4 +1,4 @@
-import { curry } from "ramda";
+import { curry, path, keysIn } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import objHash from "object-hash";
 import urllite from "urllite";
@@ -65,15 +65,27 @@ export const submit = curry((peer, data) => {
   const thing = peer.putThing({ ...data, timestamp, kind: "submission" });
 
   if (user) {
-    peer.gun
-      .user()
-      .get("things")
-      .set(thing);
-    peer.gun
-      .user()
-      .get("submissions")
-      .set(thing);
+    return upgradeSouls(peer).then(() => {
+      const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
+      const submissionsSoul = peer.schema.userSubmissions.soul({ authorId: user.pub });
+      const things = peer.gun.get(thingsSoul);
+      const submissions = peer.gun.get(submissionsSoul);
+      peer.gun.get("things").put(things);
+      peer.gun.get("submissions").put(submissions);
+      things.set(thing);
+      submissions.set(thing);
+    }).then(() => (
+      new Promise(resolve => {
+        thing.on(result => {
+          if (!result) return;
+          thing.off();
+          resolve(result);
+        });
+      })
+    ));
   }
+
+  // peer.gun.user().get("submissions").put(peer.gun.user().get("submissions"));
 
   return new Promise(resolve => {
     thing.on(result => {
@@ -96,18 +108,61 @@ export const comment = curry((peer, data) => {
   const thing = peer.putThing({ ...data, kind: "comment" });
 
   if (user) {
-    peer.gun
-      .user()
-      .get("things")
-      .set(thing);
-    peer.gun
-      .user()
-      .get("comments")
-      .set(thing);
+    return upgradeSouls(peer).then(() => {
+      const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
+      const commentsSoul = peer.schema.userComments.soul({ authorId: user.pub });
+      const things = peer.gun.get(thingsSoul);
+      const comments = peer.gun.get(commentsSoul);
+      peer.gun.get("things").put(things);
+      peer.gun.get("comments").put(comments);
+      things.set(thing);
+      comments.set(thing);
+    }).then(() => thing);
   }
+
+  // peer.gun.user().get("comments").put(peer.gun.user().get("comments"));
 
   return thing;
 });
+
+const upgradeSouls = (peer) => {
+  const user = peer.isLoggedIn();
+  if (!user || !user.pub) return Promise.resolve(null);
+  const { pub: authorId } = user;
+
+  const userChain = () => peer.gun.user();
+  const upgradeThing = (name, schemaType) => {
+    return userChain().then(user => {
+      return userChain().get(name).then(node => {
+        const soul = path(["_", "#"], node);
+        if (soul && !schemaType.isMatch(soul)) {
+          const newSoul = schemaType.soul({ authorId });
+          peer.gun.get(soul).then(nodeData => {
+            const { _, ...data } = nodeData || {};
+            keysIn(data).forEach(key => {
+              const val = data[key];
+              if (val && val[1]) {
+                data[key] = {
+                  "#": val[1]
+                }
+              }
+            });
+            console.log("upgrading", soul, "to", newSoul, data);
+            const upgradedNode = peer.gun.get(schemaType.soul({ authorId  }));
+            upgradedNode.put(data);
+            userChain().get(name).put(upgradedNode);
+          });
+        }
+      });
+    });
+  }
+
+  return Promise.all([
+    upgradeThing("things", peer.schema.userThings),
+    upgradeThing("comments", peer.schema.userComments),
+    upgradeThing("submissions", peer.schema.userSubmissions),
+  ]);
+};
 
 export const chat = curry((peer, data) => {
   const user = peer.isLoggedIn();
@@ -120,10 +175,12 @@ export const chat = curry((peer, data) => {
   const thing = peer.putThing({ ...data, kind: "chatmsg" });
 
   if (user)
-    peer.gun
-      .user()
-      .get("things")
-      .set(thing);
+    upgradeSouls(peer).then(() => {
+      const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
+      const things = peer.gun.get(thingsSoul);
+      peer.gun.get("things").put(things);
+      things.set(thing);
+    });
   return thing;
 });
 
