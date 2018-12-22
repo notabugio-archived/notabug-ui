@@ -28,6 +28,7 @@ export const WikiPage = ({
     <Helmet>
       <body className="wiki-page loggedin subscriber" />
     </Helmet>
+    <a name="content" key="anchor" />
     <div className="content" role="main">
       <WikiPageContent
         {...{ name, identifier }}

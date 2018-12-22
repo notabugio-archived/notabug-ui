@@ -29,7 +29,7 @@ const HEADER_TOPICS = [
   "whatever"
 ];
 
-export const SrHeaderArea = () => (
+export const TopBar = () => (
   <div id="sr-header-area">
     <div className="width-clip">
       <div className="sr-list">

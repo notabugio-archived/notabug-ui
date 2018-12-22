@@ -1,4 +1,14 @@
-import { identity, compose, lte, gte, prop, propOr, path, keysIn, uniqBy } from "ramda";
+import {
+  identity,
+  compose,
+  lte,
+  gte,
+  prop,
+  propOr,
+  path,
+  keysIn,
+  uniqBy
+} from "ramda";
 import urllite from "urllite";
 import {
   multiAuthor,
@@ -9,60 +19,93 @@ import {
   sortThings
 } from "../queries";
 import { LISTING_SIZE, curate, censor, serializeListing } from "./utils";
-import * as SOULS from "../notabug-peer/schema";
+import * as SCHEMA from "../notabug-peer/schema";
 import { query } from "../notabug-peer/scope";
-import { parseListingSource, getWikiPage } from "../notabug-peer/listings";
+import { getWikiPage } from "../notabug-peer/listings";
+import { toFilters } from "../notabug-peer/source";
 
 const itemSources = {
-  replies: (scope, { getValues, getValue }) => {
-    const repliesToAuthorId = getValues("replies to author").map(
-      id => `~${id}`
-    )[0];
-    const type = getValue("type");
+  replies: (
+    scope,
+    {
+      filters: {
+        allow: { repliesTo: repliesToAuthorId, type }
+      }
+    }
+  ) => {
     if (!repliesToAuthorId) return itemSources.topic();
     return repliesToAuthor(scope, { type, repliesToAuthorId });
   },
-  op: (scope, { getValues }) => {
-    const submissionIds = getValues("op");
-    if (!submissionIds) return itemSources.topic();
+  op: (
+    scope,
+    {
+      filters: {
+        allow: { ops: submissionIds }
+      }
+    }
+  ) => {
+    if (!submissionIds.length) return itemSources.topic();
     return multiSubmission(scope, { submissionIds });
   },
-  curator: (scope, { getValues }) => {
-    const curators = getValues("curator");
+  curator: (scope, { curators }) => {
     if (!curators.length) return itemSources.topic();
     return curate(scope, curators.map(id => `~${id}`), true).then(ids =>
-      ids.map(thingid => SOULS.thing.soul({ thingid }))
+      ids.map(thingid => SCHEMA.thing.soul({ thingid }))
     );
   },
-  author: (scope, { getValues, getValue }) => {
-    const authorIds = getValues("author").map(id => `~${id}`);
-    const type = getValue("type");
-    if (!authorIds) return itemSources.topic();
+  author: (
+    scope,
+    {
+      filters: {
+        allow: { type, authors }
+      }
+    }
+  ) => {
+    const authorIds = authors.map(id => `~${id}`);
+    if (!authorIds.length) return itemSources.topic();
     return multiAuthor(scope, { type, authorIds });
   },
-  domain: (scope, { getValues }) => {
-    const domains = getValues("domain");
+  domain: (
+    scope,
+    {
+      filters: {
+        allow: { domains }
+      }
+    }
+  ) => {
     if (!domains.length) return itemSources.topic();
     return multiDomain(scope, { domains });
   },
-  topic: (scope, { getValues, getValue }) => {
-    const topics = getValues("topic");
-    const sort = getValue("sort") || "new";
+  topic: (
+    scope,
+    {
+      sort,
+      filters: {
+        allow: { topics }
+      }
+    }
+  ) => {
     if (!topics.length) topics.push("all");
-    return multiTopic(scope, { topics, sort });
+    return multiTopic(scope, { topics, sort: sort || "new" });
   }
 };
 
 export const declarativeListing = query((scope, source) => {
-  const definition = parseListingSource(source);
-  const { isPresent, getValue, getValues, getLastValue } = definition;
+  const definition = toFilters(source);
+  const {
+    tabulator,
+    censors,
+    isPresent,
+    thingFilter,
+    uniqueByContent,
+    stickyIds
+  } = definition;
   const itemSource = keysIn(itemSources).find(isPresent) || "topic";
-  const sort = getValue("sort") || "new";
-  const tabulator = `~${getValue("tabulator")}`;
-  let name = getValue("name");
-  let submitTopic = getLastValue("submit to") || "";
-  const censors = getValues("censor");
-  const opId = getValue("op");
+  const sort = definition.sort || "new";
+  const opId = definition.filters.allow.ops[0];
+  let { displayName: name } = definition;
+  let submitTopic = definition.submitTopics[0] || "";
+  const author = definition.filters.allow.authors[0];
 
   const needsData = !![
     itemSource !== "topic" ? "topic" : null,
@@ -93,7 +136,7 @@ export const declarativeListing = query((scope, source) => {
     .then(thingSouls => {
       if (opId) {
         return scope
-          .get(SOULS.thing.soul({ thingid: opId }))
+          .get(SCHEMA.thing.soul({ thingid: opId }))
           .get("data")
           .then(data => {
             name = name || prop("topic", data);
@@ -101,8 +144,8 @@ export const declarativeListing = query((scope, source) => {
             return thingSouls;
           });
       }
-      if (getValue("author")) {
-        return scope.get(`~${getValue("author")}`).then(meta => {
+      if (author) {
+        return scope.get(`~${author}`).then(meta => {
           name = name || propOr("", "alias", meta);
           return thingSouls;
         });
@@ -113,73 +156,14 @@ export const declarativeListing = query((scope, source) => {
       sortThings(scope, {
         sort,
         thingSouls,
-        tabulator,
+        tabulator: `~${tabulator}`,
         scores: needsScores,
         data: needsData
       })
     )
+    .then(things => things.filter(thingFilter))
     .then(things => {
-      const filters = [];
-      const upsMin = parseInt(getValue("ups above")) || null;
-      const upsMax = parseInt(getValue("ups below")) || null;
-      const downsMin = parseInt(getValue("downs above")) || null;
-      const downsMax = parseInt(getValue("downs below")) || null;
-      const scoreMin = parseInt(getValue("score above")) || null;
-      const scoreMax = parseInt(getValue("score below")) || null;
-      const addFilter = (...fns) => filters.push(compose(...fns));
-
-      if (upsMin !== null)
-        addFilter(lte(upsMin), parseInt, path(["votes", "up"]));
-      if (upsMax !== null)
-        addFilter(gte(upsMax), parseInt, path(["votes", "up"]));
-      if (downsMin !== null)
-        addFilter(lte(downsMin), parseInt, path(["votes", "down"]));
-      if (downsMax !== null)
-        addFilter(gte(downsMax), parseInt, path(["votes", "down"]));
-      if (scoreMin !== null)
-        addFilter(lte(scoreMin), parseInt, path(["votes", "score"]));
-      if (scoreMax !== null)
-        addFilter(gte(scoreMax), parseInt, path(["votes", "score"]));
-      if (getValues("topic").length && itemSource !== "topic")
-        addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
-      if (getValues("alias").length && itemSource !== "alias")
-        addFilter(t => !!isPresent(["alias", t]), path(["data", "author"]));
-      if (getValues("domain").length && itemSource !== "domain")
-        addFilter(t => !!isPresent(["domain", t]), path(["data", "domain"]));
-      if (isPresent("require signed"))
-        addFilter(path(["data", "authorId"]));
-      if (isPresent("require anon"))
-        addFilter(compose(authorId => !authorId, path(["data", "authorId"])));
-      if (getValues("ban topic").length)
-        addFilter(
-          topic => !isPresent(["ban", "topic", topic]),
-          path(["data", "topic"])
-        );
-      if (getValues("ban domain").length)
-        addFilter(
-          domain => !domain || !isPresent(["ban", "domain", domain]),
-          url => url && (urllite(url).host || "").replace(/^www\./, ""),
-          path(["data", "url"])
-        );
-      if (getValues("ban author").length)
-        addFilter(
-          authorId => !isPresent(["ban", "author", authorId]),
-          path(["data", "authorId"])
-        );
-      if (getValues("ban alias").length)
-        addFilter(
-          alias => !isPresent(["ban", "alias", alias]),
-          path(["data", "author"])
-        );
-      if (getValues("kind").length)
-        addFilter(kind => !!isPresent(["kind", kind]), path(["data", "kind"]));
-
-      if (filters.length)
-        return things.filter(thing => !filters.find(fn => !fn(thing)));
-      return things;
-    })
-    .then(things => {
-      if (!isPresent("unique by content")) return things;
+      if (!uniqueByContent) return things;
       return uniqBy(thing => {
         const author = path(["data", "author"], thing);
         const title = path(["data", "title"], thing);
@@ -190,20 +174,12 @@ export const declarativeListing = query((scope, source) => {
     })
     .then(things => censor(scope, censors.map(id => `~${id}`), things))
     .then(things => things.slice(0, LISTING_SIZE))
-    .then(things => serializeListing({ name, things, stickyIds: getValues("sticky") }))
-    .then(serialized => ({
-      ...serialized,
-      source,
-      submitTopic,
-      includeRanks: !!isPresent("show ranks"),
-      tabs: "",
-      curators: "",
-      censors: ""
-    }));
+    .then(things => serializeListing({ name, things, stickyIds }))
+    .then(serialized => ({ ...serialized, source, submitTopic }));
 });
 
 export const listingFromPage = query(
-  (scope, authorId, name, extraSource = "", transformSource=identity) => {
+  (scope, authorId, name, extraSource = "", transformSource = identity) => {
     const extra = `
 # added by indexer
 ${extraSource || ""}
@@ -211,7 +187,11 @@ sourced from page ${authorId} ${name}
 `;
     return getWikiPage(scope, authorId, name).then(
       compose(
-        body => declarativeListing(scope, `${body}\n${transformSource(body)}\n${extra}`),
+        body =>
+          declarativeListing(
+            scope,
+            `${body}\n${transformSource(body)}\n${extra}`
+          ),
         propOr("", "body")
       )
     );

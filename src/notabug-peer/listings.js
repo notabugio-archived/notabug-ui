@@ -1,6 +1,6 @@
 import { prop, path, trim, assocPath, keysIn } from "ramda";
 import { scope as getScope, query, resolve } from "./scope";
-import * as SOULS from "./schema";
+import * as SCHEMA from "./schema";
 import { tabulator as defaultIndexer } from "../config.json";
 
 export const parseListingSource = source => {
@@ -88,30 +88,33 @@ export const spaceSourceWithDefaults = ({
   return result.join("\n");
 };
 
-const listing = query((scope, soul) => soul ? scope.get(soul) : resolve(null), "listing");
+const listing = query(
+  (scope, soul) => (soul ? scope.get(soul) : resolve(null)),
+  "listing"
+);
 
 const getThingScores = query(
   (scope, tabulator, thingid) =>
     scope
-      .get(`${SOULS.thing.soul({ thingid })}/votecounts@~${tabulator}.`)
+      .get(`${SCHEMA.thing.soul({ thingid })}/votecounts@~${tabulator}.`)
       .then(),
   "thingScores"
 );
 
 const getThingData = query(
-  (scope, thingid) => scope.get(SOULS.thing.soul({ thingid })).get("data"),
+  (scope, thingid) => scope.get(SCHEMA.thing.soul({ thingid })).get("data"),
   "thingData"
 );
 
 const getUserPages = query(
-  (scope, authorId) => scope.get(SOULS.userPages.soul({ authorId })),
+  (scope, authorId) => scope.get(SCHEMA.userPages.soul({ authorId })),
   "userPages"
 );
 
 const getWikiPageId = query(
   (scope, authorId, name) =>
     scope
-      .get(SOULS.userPages.soul({ authorId }))
+      .get(SCHEMA.userPages.soul({ authorId }))
       .get(name)
       .get("id"),
   "wikiPageId"

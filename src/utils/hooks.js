@@ -6,6 +6,15 @@ import debounce from "lodash/debounce";
 
 export const useMemoizedObject = obj => useMemo(() => obj, values(obj));
 
+export const useToggle = (defaultState = false) => {
+  const [isExpanded, setIsExpanded] = useState(defaultState);
+  const onToggleExpanded = useCallback(evt => {
+    evt && evt.preventDefault();
+    setIsExpanded(ex => !ex);
+  }, []);
+  return [isExpanded, onToggleExpanded, setIsExpanded];
+};
+
 export const useScope = (deps=[]) => {
   const { api } = useNotabug();
   const scope = isNode

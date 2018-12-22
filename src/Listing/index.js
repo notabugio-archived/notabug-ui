@@ -10,7 +10,7 @@ import { assoc, propOr, uniq, difference } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import { useNotabug } from "NabContext";
 import { useQuery, useScope } from "utils";
-import { parseListingSource } from "notabug-peer/listings";
+import { toListingObject } from "notabug-peer/source";
 export { Thing } from "./Thing";
 
 const { all } = Promise;
@@ -42,7 +42,7 @@ export const useListing = ({ listingParams }) => {
   );
 
   const source = propOr("", "source", state);
-  const parsedSource = useMemo(() => parseListingSource(source), [
+  const parsedSource = useMemo(() => toListingObject(source), [
     source,
     state
   ]);
@@ -75,7 +75,7 @@ export const useListing = ({ listingParams }) => {
 
   return {
     ...(state || {}),
-    parsedSource,
+    ...parsedSource,
     ids,
     opId,
     includeRanks,

@@ -1,4 +1,5 @@
 import React, { useState, useCallback } from "react";
+import { JavaScriptRequired } from "utils";
 import { UserIdLink } from "Auth";
 
 export const SidebarUserList = ({ title = "users", ids, foldSize = 5 }) => {
@@ -11,32 +12,34 @@ export const SidebarUserList = ({ title = "users", ids, foldSize = 5 }) => {
       evt && evt.preventDefault();
       setVisibleCount(ids.length);
     },
-    [ids.length]
+    [ids && ids.length]
   );
 
   if (!ids || !ids.length) return null;
 
   return (
-    <div className="spacer">
-      <div className="sidecontentbox">
-        <div className="title">
-          <h1>{title}</h1>
+    <JavaScriptRequired silent>
+      <div className="spacer">
+        <div className="sidecontentbox">
+          <div className="title">
+            <h1>{title}</h1>
+          </div>
+          <ul className="content">
+            {ids.slice(0, visibleCount).map(userId => (
+              <li key={userId}>
+                <UserIdLink {...{ userId }} />
+              </li>
+            ))}
+            {hasMore ? (
+              <li className="more">
+                <a href="" onClick={onShowMore}>
+                  ... and {moreCount} more...
+                </a>
+              </li>
+            ) : null}
+          </ul>
         </div>
-        <ul className="content">
-          {ids.slice(0, visibleCount).map(userId => (
-            <li key={userId}>
-              <UserIdLink {...{ userId }} />
-            </li>
-          ))}
-          {hasMore ? (
-            <li className="more">
-              <a href="" onClick={onShowMore}>
-                ... and {moreCount} more...
-              </a>
-            </li>
-          ) : null}
-        </ul>
       </div>
-    </div>
+    </JavaScriptRequired>
   );
 };

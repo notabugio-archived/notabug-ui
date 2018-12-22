@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { Link, Markdown } from "utils";
+import { JavaScriptRequired, Link, Markdown } from "utils";
 import { useListingContext } from "Listing";
 import { InfiniteContent } from "Page/InfiniteContent";
 import { tabulator } from "../config.json";
@@ -28,20 +28,22 @@ export const SidebarChat = ({ topic }) => {
   if (!topic) return null;
 
   return (
-    <ListingContext.Provider value={listingData}>
-      <div className="spacer">
-        <div className="sidecontentbox sidebar-chat">
-          <div className="title">
-            <h1><Link href={`/t/${topic}/chat`}>{topic} chat</Link></h1>
+    <JavaScriptRequired silent>
+      <ListingContext.Provider value={listingData}>
+        <div className="spacer">
+          <div className="sidecontentbox sidebar-chat">
+            <div className="title">
+              <h1><Link href={`/t/${topic}/chat`}>{topic} chat</Link></h1>
+            </div>
+            <InfiniteContent
+              Empty={ChatLoading}
+              isChat
+              limit={5}
+              {...{ ListingContext }}
+            />
           </div>
-          <InfiniteContent
-            Empty={ChatLoading}
-            isChat
-            limit={5}
-            {...{ ListingContext }}
-          />
         </div>
-      </div>
-    </ListingContext.Provider>
+      </ListingContext.Provider>
+    </JavaScriptRequired>
   );
 };

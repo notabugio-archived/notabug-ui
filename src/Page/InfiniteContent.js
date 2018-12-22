@@ -63,6 +63,7 @@ export const InfiniteContent = React.memo(
 
     return (
       <ErrorBoundary>
+        <a name="content" key="anchor" />
         <div className="content" role="main">
           <Things
             {...{

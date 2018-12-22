@@ -45,7 +45,7 @@ export const Submission = ({
   const permalink = useMemo(
     () =>
       (space && space.useForComments
-        ? `/user/${space.owner}/spaces/${space.name}/comments/${id}/`
+        ? `/user/${space.owner}/spaces/${space.spaceName}/comments/${id}/`
         : `/t/${item.topic || "all"}/comments/${id}/`) +
       slugify((item.title || "").toLowerCase()),
     [item.topic, id, item.title]

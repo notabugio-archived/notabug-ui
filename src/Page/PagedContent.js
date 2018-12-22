@@ -28,6 +28,7 @@ export const PagedContent = React.memo(
 
     return (
       <ErrorBoundary>
+        <a name="content" key="anchor" />
         <div className="content" role="main">
           <div className="sitetable" id="siteTable">
             <Things
