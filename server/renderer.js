@@ -9,7 +9,7 @@ import init from "./notabug-peer";
 import { PREFIX } from "./notabug-peer";
 import { query, all } from "./notabug-peer/scope";
 import {
-  parseListingSource,
+  toListingObject,
   spaceSourceWithDefaults
 } from "./notabug-peer/source";
 import serialize from "serialize-javascript";
@@ -29,7 +29,7 @@ const preload = (nab, scope, params) => {
         const idString = propOr("", "ids", listingData);
         const ids = (idString || "").split("+").filter(x => !!x);
         const source = propOr("", "source", listingData);
-        const { getValueChain } = parseListingSource(source);
+        const { getValueChain } = toListingObject(source);
         const [authorId, pageName] = getValueChain(["sourced", "from", "page"]);
 
         if (authorId && pageName) {
@@ -92,7 +92,7 @@ const preloadSpace = (nab, scope, params) => {
   return nab.queries.wikiPage(scope, owner, `space:${name}`).then(result => {
     const body = prop("body", result);
     const source = spaceSourceWithDefaults({ owner, name, source: body });
-    const parsedSource = parseListingSource(source);
+    const parsedSource = toListingObject(source);
     const indexer = parsedSource.getValue("indexer") || defaultIndexer;
     const tabulator = parsedSource.getValue("tabulator") || indexer;
     const defaultTab = parsedSource.getValue("tab");

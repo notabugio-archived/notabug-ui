@@ -1,18 +1,20 @@
 import React, { useContext, useState, useCallback } from "react";
+import { path } from "ramda";
 import { useNotabug } from "NabContext";
 import { MAX_THING_BODY_SIZE } from "notabug-peer";
 import { CommentForm as SnewCommentForm } from "snew-classic-ui";
-import { JavaScriptRequired } from "utils";
+import { JavaScriptRequired, useQuery } from "utils";
 
 export const CommentForm = ({
   ListingContext,
   replyToId: replyToIdProp,
   onHideReply
 }) => {
-  const { opId, submitTopic: topic, addSpeculativeId } = useContext(
+  const { opId, submitTopic, addSpeculativeId } = useContext(
     ListingContext
   );
   const { api, onMarkMine } = useNotabug();
+  const topic = submitTopic || path([0, "topic"], useQuery(api.queries.thingData, [opId])) || "whatever";
   const [body, setBody] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const replyToId = replyToIdProp || opId;
