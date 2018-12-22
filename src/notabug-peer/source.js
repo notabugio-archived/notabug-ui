@@ -3,6 +3,8 @@ import urllite from "urllite";
 
 import { tabulator as defaultIndexer } from "../config.json";
 
+const potentialSources = ["replies", "op", "curator", "author", "domain", "topic"];
+
 export const toListingObject = (source, ownerId = null, spaceName = null) => {
   const parsedSource = parseListingSource(source);
   const obj = { ...parsedSource };
@@ -17,6 +19,7 @@ export const toListingObject = (source, ownerId = null, spaceName = null) => {
     obj.fromPageAuthor = ownerId,
     obj.fromPageName = spaceName ? `space:${spaceName}` : undefined
   ] = getValueChain("sourced from page");
+  obj.itemSource = potentialSources.find(isPresent) || "topic";
   obj.displayName = parsedSource.getValue("name") || spaceName;
   obj.indexer = getValue("tabulator") || defaultIndexer;
   obj.tabulator = getValue("tabulator") || obj.indexer;
@@ -88,7 +91,7 @@ const intPath = p =>
 
 export const toFilters = obj => {
   if (typeof obj === "string") obj = toListingObject(obj);
-  const { filters, voteFilters, isPresent } = obj;
+  const { filters, voteFilters, isPresent, itemSource } = obj;
   const filterFunctions = [];
   const voteFilterFunctions = [];
 
@@ -99,9 +102,9 @@ export const toFilters = obj => {
     addFilter(t => !!isPresent(["alias", t]), path(["data", "author"]));
   if (filters.allow.authors.length)
     addFilter(t => !!isPresent(["author", t]), path(["data", "authorId"]));
-  if (filters.allow.domains.length)
+  if (filters.allow.domains.length && itemSource !== "domain")
     addFilter(t => !!isPresent(["domain", t]), path(["data", "domain"]));
-  if (filters.allow.topics.length)
+  if (filters.allow.topics.length && itemSource !== "topic")
     addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
   if (filters.allow.kinds.length)
     addFilter(kind => !!isPresent(["kind", kind]), path(["data", "kind"]));
@@ -211,4 +214,33 @@ const parseListingSource = source => {
     getValueChain,
     getPairs
   };
+};
+
+export const spaceSourceWithDefaults = ({
+  owner,
+  name,
+  source,
+  tabs = ["hot", "new", "discussed", "controversial", "top"]
+}) => {
+  let result = [source || ""];
+  const parsedSource = parseListingSource(source);
+
+  if (!parsedSource.getValue("tab")) {
+    tabs.map(tab =>
+      result.push(`tab ${tab} /user/${owner}/spaces/${name}/${tab}`)
+    );
+  }
+
+  let indexer = parsedSource.getValue("indexer");
+  if (!indexer) {
+    result.push(`indexer ${defaultIndexer}`);
+    indexer = defaultIndexer;
+  }
+
+  let tabulator = parsedSource.getValue("tabulator");
+  if (!tabulator) {
+    result.push(`tabulator ${indexer}`);
+  }
+
+  return result.join("\n");
 };

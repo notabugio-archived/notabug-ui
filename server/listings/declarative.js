@@ -93,6 +93,7 @@ const itemSources = {
 export const declarativeListing = query((scope, source) => {
   const definition = toFilters(source);
   const {
+    itemSource,
     tabulator,
     censors,
     isPresent,
@@ -100,7 +101,6 @@ export const declarativeListing = query((scope, source) => {
     uniqueByContent,
     stickyIds
   } = definition;
-  const itemSource = keysIn(itemSources).find(isPresent) || "topic";
   const sort = definition.sort || "new";
   const opId = definition.filters.allow.ops[0];
   let { displayName: name } = definition;

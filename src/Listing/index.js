@@ -42,12 +42,9 @@ export const useListing = ({ listingParams }) => {
   );
 
   const source = propOr("", "source", state);
-  const parsedSource = useMemo(() => toListingObject(source), [
-    source,
-    state
-  ]);
+  const parsedSource = useMemo(() => toListingObject(source), [source, state]);
 
-  const opId = useMemo(() => parsedSource.getValue("op"), [parsedSource]);
+  const opId = parsedSource.filters.allow.ops[0];
   const ids = useMemo(() => uniq([...speculativeIds, ...canonicalIds]), [
     ids,
     speculativeIds

@@ -1,8 +1,7 @@
 import React, { createContext, useContext, useMemo } from "react";
 import { useNotabug } from "NabContext";
-import { spaceSourceWithDefaults } from "notabug-peer/listings";
-import { toListingObject } from "notabug-peer/source";
-import { JavaScriptRequired, useQuery } from "utils";
+import { toListingObject, spaceSourceWithDefaults } from "notabug-peer/source";
+import { Loading, useQuery } from "utils";
 import { PageTemplate } from "Page";
 
 const SpaceContext = createContext();
@@ -22,9 +21,9 @@ export const SpaceProvider = React.memo(({ owner, name, children }) => {
       {isLoaded ? children : (
         <PageTemplate>
           <div className="content" role="main">
-            <JavaScriptRequired>
-              <h1>Loading Space...</h1>
-            </JavaScriptRequired>
+            <div className="spacer">
+              <Loading message="loading space" />
+            </div>
           </div>
         </PageTemplate>
       )}
