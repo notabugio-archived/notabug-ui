@@ -29,6 +29,7 @@ export default oracle({
             `name ${topic}`,
             "sort new",
             `submit to ${submitTopic}`,
+            `chat in ${submitTopic}`,
             ...topics.map(t => `topic ${t}`),
             ...[
               "hot",
@@ -130,6 +131,7 @@ export default oracle({
             `name ${topic}`,
             ...topics.map(tp => `topic ${tp}`),
             `submit to ${submitTo}`,
+            `chat in ${submitTo}`,
             topic.indexOf(":") === -1 ? "kind submission" : "",
             `sort ${sort}`,
             ...[

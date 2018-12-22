@@ -100,7 +100,7 @@ export const toFilters = obj => {
 
   if (filters.allow.aliases.length)
     addFilter(t => !!isPresent(["alias", t]), path(["data", "author"]));
-  if (filters.allow.authors.length)
+  if (filters.allow.authors.length && itemSource !== "author")
     addFilter(t => !!isPresent(["author", t]), path(["data", "authorId"]));
   if (filters.allow.domains.length && itemSource !== "domain")
     addFilter(t => !!isPresent(["domain", t]), path(["data", "domain"]));

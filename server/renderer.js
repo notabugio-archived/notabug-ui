@@ -11,7 +11,7 @@ import { query, all } from "./notabug-peer/scope";
 import {
   parseListingSource,
   spaceSourceWithDefaults
-} from "./notabug-peer/listings";
+} from "./notabug-peer/source";
 import serialize from "serialize-javascript";
 import { tabulator as defaultIndexer } from "./ui-config.json";
 

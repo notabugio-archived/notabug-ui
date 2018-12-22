@@ -42,7 +42,7 @@ const node = (scope, soul) =>
 
 const edge = (scope, key, parentaccess) =>
   parentaccess.then(data => {
-    const soul = path([key, "#"], data);
+    const soul = path([key, "#"], data) || path([key, 2, "#"], data); // WTF GUN?
     const val = prop(key, data);
     return soul ? scope.get(soul).then() : val;
   });
