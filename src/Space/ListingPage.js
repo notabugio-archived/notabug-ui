@@ -22,7 +22,7 @@ export const SpaceListingPage = ({ spaceParams, ...props }) => {
 
 const SpaceListingPageContent = ({ sort: sortProp, opId, ...props }) => {
   const { api } = useNotabug();
-  const { owner, name, indexer, tabulator, defaultTabPath } = useSpace();
+  const { owner, spaceName: name, indexer, tabulator, defaultTabPath } = useSpace();
   let sort = sortProp;
   const soul = (() => {
     if (opId) {
