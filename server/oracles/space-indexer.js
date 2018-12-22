@@ -3,7 +3,7 @@ import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
 import { oracle, basicQueryRoute } from "./oracle";
 import { listingFromPage } from "../listings/declarative";
-import { spaceSourceWithDefaults } from "../notabug-peer/listings";
+import { spaceSourceWithDefaults } from "../notabug-peer/source";
 
 export default oracle({
   name: "space-indexer",
