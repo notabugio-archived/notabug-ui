@@ -9,9 +9,10 @@ const listing = query(
 
 const getThingScores = query(
   (scope, tabulator, thingid) =>
-    scope
-      .get(`${SCHEMA.thing.soul({ thingid })}/votecounts@~${tabulator}.`)
-      .then(),
+    tabulator ?
+      scope
+        .get(`${SCHEMA.thing.soul({ thingid })}/votecounts@~${tabulator}.`)
+        .then() : resolve(),
   "thingScores"
 );
 

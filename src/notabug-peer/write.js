@@ -65,35 +65,29 @@ export const submit = curry((peer, data) => {
   const thing = peer.putThing({ ...data, timestamp, kind: "submission" });
 
   if (user) {
-    return upgradeSouls(peer).then(() => {
-      const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
-      const submissionsSoul = peer.schema.userSubmissions.soul({ authorId: user.pub });
-      const things = peer.gun.get(thingsSoul);
-      const submissions = peer.gun.get(submissionsSoul);
-      peer.gun.user().get("things").put(things);
-      peer.gun.user().get("submissions").put(submissions);
-      things.set(thing);
-      submissions.set(thing);
-    }).then(() => (
-      new Promise(resolve => {
-        thing.on(result => {
-          if (!result) return;
-          thing.off();
-          resolve(result);
+    return upgradeSouls(peer)
+      .then(() => {
+        const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
+        const submissionsSoul = peer.schema.userSubmissions.soul({
+          authorId: user.pub
         });
+        const things = peer.gun.get(thingsSoul);
+        const submissions = peer.gun.get(submissionsSoul);
+        peer.gun
+          .user()
+          .get("things")
+          .put(things);
+        peer.gun
+          .user()
+          .get("submissions")
+          .put(submissions);
+        things.set(thing);
+        submissions.set(thing);
       })
-    ));
+      .then(() => thing);
   }
 
-  // peer.gun.user().get("submissions").put(peer.gun.user().get("submissions"));
-
-  return new Promise(resolve => {
-    thing.on(result => {
-      if (!result) return;
-      thing.off();
-      resolve(result);
-    });
-  });
+  return thing;
 });
 
 export const comment = curry((peer, data) => {
@@ -108,16 +102,26 @@ export const comment = curry((peer, data) => {
   const thing = peer.putThing({ ...data, kind: "comment" });
 
   if (user) {
-    return upgradeSouls(peer).then(() => {
-      const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
-      const commentsSoul = peer.schema.userComments.soul({ authorId: user.pub });
-      const things = peer.gun.get(thingsSoul);
-      const comments = peer.gun.get(commentsSoul);
-      peer.gun.user().get("things").put(things);
-      peer.gun.user().get("comments").put(comments);
-      things.set(thing);
-      comments.set(thing);
-    }).then(() => thing);
+    return upgradeSouls(peer)
+      .then(() => {
+        const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
+        const commentsSoul = peer.schema.userComments.soul({
+          authorId: user.pub
+        });
+        const things = peer.gun.get(thingsSoul);
+        const comments = peer.gun.get(commentsSoul);
+        peer.gun
+          .user()
+          .get("things")
+          .put(things);
+        peer.gun
+          .user()
+          .get("comments")
+          .put(comments);
+        things.set(thing);
+        comments.set(thing);
+      })
+      .then(() => thing);
   }
 
   // peer.gun.user().get("comments").put(peer.gun.user().get("comments"));
@@ -125,7 +129,7 @@ export const comment = curry((peer, data) => {
   return thing;
 });
 
-const upgradeSouls = (peer) => {
+const upgradeSouls = peer => {
   const user = peer.isLoggedIn();
   if (!user || !user.pub) return Promise.resolve(null);
   const { pub: authorId } = user;
@@ -133,34 +137,38 @@ const upgradeSouls = (peer) => {
   const userChain = () => peer.gun.user();
   const upgradeThing = (name, schemaType) => {
     return userChain().then(user => {
-      return userChain().get(name).then(node => {
-        const soul = path(["_", "#"], node);
-        if (soul && !schemaType.isMatch(soul)) {
-          const newSoul = schemaType.soul({ authorId });
-          peer.gun.get(soul).then(nodeData => {
-            const { _, ...data } = nodeData || {};
-            keysIn(data).forEach(key => {
-              const val = data[key];
-              if (val && val[1]) {
-                data[key] = {
-                  "#": val[1]
+      return userChain()
+        .get(name)
+        .then(node => {
+          const soul = path(["_", "#"], node);
+          if (soul && !schemaType.isMatch(soul)) {
+            const newSoul = schemaType.soul({ authorId });
+            peer.gun.get(soul).then(nodeData => {
+              const { _, ...data } = nodeData || {};
+              keysIn(data).forEach(key => {
+                const val = data[key];
+                if (val && val[1]) {
+                  data[key] = {
+                    "#": val[1]
+                  };
                 }
-              }
+              });
+              console.log("upgrading", soul, "to", newSoul, data);
+              const upgradedNode = peer.gun.get(schemaType.soul({ authorId }));
+              upgradedNode.put(data);
+              userChain()
+                .get(name)
+                .put(upgradedNode);
             });
-            console.log("upgrading", soul, "to", newSoul, data);
-            const upgradedNode = peer.gun.get(schemaType.soul({ authorId  }));
-            upgradedNode.put(data);
-            userChain().get(name).put(upgradedNode);
-          });
-        }
-      });
+          }
+        });
     });
-  }
+  };
 
   return Promise.all([
     upgradeThing("things", peer.schema.userThings),
     upgradeThing("comments", peer.schema.userComments),
-    upgradeThing("submissions", peer.schema.userSubmissions),
+    upgradeThing("submissions", peer.schema.userSubmissions)
   ]);
 };
 
@@ -178,7 +186,10 @@ export const chat = curry((peer, data) => {
     upgradeSouls(peer).then(() => {
       const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
       const things = peer.gun.get(thingsSoul);
-      peer.gun.user().get("things").put(things);
+      peer.gun
+        .user()
+        .get("things")
+        .put(things);
       things.set(thing);
     });
   return thing;
@@ -189,13 +200,14 @@ export const writePage = curry((peer, name, body) => {
   if (!user) return Promise.reject("not logged in");
   let thing;
   const pagesSoul = peer.souls.userPages.soul({ authorId: user.pub });
-  const chain = peer.gun
-    .get(pagesSoul)
-    .get(name);
+  const chain = peer.gun.get(pagesSoul).get(name);
   return chain.then(res => {
     if (res && res.data) {
       console.log("res", res);
-      chain.get("data").get("body").put(body);
+      chain
+        .get("data")
+        .get("body")
+        .put(body);
     } else {
       const data = {
         body,

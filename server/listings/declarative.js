@@ -34,7 +34,7 @@ const itemSources = {
     }
   ) => {
     if (!repliesToAuthorId) return itemSources.topic();
-    return repliesToAuthor(scope, { type, repliesToAuthorId });
+    return repliesToAuthor(scope, { type, repliesToAuthorId: `~${repliesToAuthorId}` });
   },
   op: (
     scope,

@@ -230,6 +230,7 @@ export const thingData = nodeType(
     sanitizeThingData(key, val, parent, pKey, msg, peer).then(() => {
       const { _, ...record } = val; // eslint-disable-line no-unused-vars
       delete record["#"];
+      record.timestamp = parseFloat(record.timestamp, 10);
 
       if (peer.isBlocked(key)) {
         val["url"] = null; // eslint-disable-line

@@ -156,8 +156,8 @@ export default (nab, req, res) =>
         disableValidation: true
       });
       const scope = (notabugApi.scope = nab.newScope({
-        isCacheing: true,
-        noGun: true
+        noGun: !!nab.gun.redis,
+        isCacheing: true
       }));
 
       if (route.getListingParams) {

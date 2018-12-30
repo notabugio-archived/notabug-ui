@@ -112,7 +112,6 @@ export const scope = ({
         if (typeof soul !== "string") throw new Error(`bad SOUL ${soul}`);
         if (gun.redis) {
           gun.redis.get(soul).then(rawData => {
-            if (!rawData && !noGun) gun.get(soul).then(receive);
             const data = rawData ? { ...rawData } : rawData;
             if (!Gun.SEA || soul.indexOf("~") === -1) return receive(rawData);
             Object.keys(data || {}).forEach(key => {
