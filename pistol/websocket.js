@@ -2,8 +2,8 @@ const { curry } = require("ramda");
 const { Server } = require("ws");
 const PING = 60000;
 
-module.exports.server = curry((port, db) => {
-  new Server({ port }).on("connection", ws => {
+module.exports.server = curry(({ web, port }, db) => {
+  new Server({ port: !web ? port : undefined, server: web }).on("connection", ws => {
     let connected = true;
     let hasLoggedErr = false;
     const connection = db.connected(msg => {

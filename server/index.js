@@ -16,10 +16,17 @@ const options = commandLineArgs([
   { name: "debug", alias: "d", type: Boolean, defaultValue: false },
   { name: "render", alias: "z", type: Boolean, defaultValue: false },
   { name: "port", alias: "p", type: Number, defaultValue: null },
+  { name: "pistol", alias: "i", type: Boolean, defaultValue: false },
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
   { name: "peer", alias: "c", multiple: true, type: String },
   { name: "leech", type: Boolean, defaultValue: false },
-  { name: "until", alias: "u", multiple: true, type: Number, defaultValue: 1000 },
+  {
+    name: "until",
+    alias: "u",
+    multiple: true,
+    type: Number,
+    defaultValue: 1000
+  },
   { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "spaces", alias: "s", type: Boolean, defaultValue: false },
   { name: "tabulate", alias: "t", type: Boolean, defaultValue: false },
@@ -32,8 +39,8 @@ const combinedOracles = combineOracles([
   ...(options.spaces ? [spaceIndexerOracle] : [])
 ]);
 
-
-process.env.GUN_ENV = process.env.GUN_ENV || options.debug ? "debug" : undefined;
+process.env.GUN_ENV =
+  process.env.GUN_ENV || options.debug ? "debug" : undefined;
 require("gun/nts");
 require("gun/lib/store");
 require("gun/lib/rs3");
@@ -50,9 +57,11 @@ if (!options.persist && !options.redis && options.json6) {
   require("gun/lib/file");
 }
 
-Gun.on("opt", function(root){
+Gun.on("opt", function(root) {
   this.to.next(root);
-  if(root.once){ return; }
+  if (root.once) {
+    return;
+  }
   root.opt.super = true;
 });
 
@@ -73,7 +82,10 @@ const peerOptions = {
   persist: options.persist,
   disableValidation: options.disableValidation,
   until: options.until,
-  oracle: (options.listings || options.spaces || options.tabulate) ? combinedOracles: null,
+  oracle:
+    options.listings || options.spaces || options.tabulate
+      ? combinedOracles
+      : null,
   leech: options.leech,
   super: !options.leech
 };
@@ -81,10 +93,11 @@ const peerOptions = {
 if (options.port) {
   nab = initServer({
     ...peerOptions,
+    pistol: options.pistol,
     render: options.render,
     redis: options.redis,
     host: options.host,
-    port: options.port,
+    port: options.port
   });
 } else {
   nab = init(peerOptions);
@@ -96,11 +109,14 @@ if (options.redis) {
 
 if (options.index) {
   const indexed = {};
-  nab.gun.get("nab/things").map().once(function ({ id }) {
-    if (!options.index || !id || indexed[id]) return;
-    indexed[id] = true;
-    this.get("data").once(data => data && nab.indexThing(id, data));
-  });
+  nab.gun
+    .get("nab/things")
+    .map()
+    .once(function({ id }) {
+      if (!options.index || !id || indexed[id]) return;
+      indexed[id] = true;
+      this.get("data").once(data => data && nab.indexThing(id, data));
+    });
 }
 
 if (options.listings || options.spaces || options.tabulate) {

@@ -32,12 +32,16 @@ const WebsocketRelayPistol = opts =>
       : identity,
     relayMessages,
     db => db.onOut(validateMessage) && db,
-    opts.port ? websocket.server(opts.port) : identity
+    (opts.port || opts.web) ? websocket.server(opts) : identity
   )(opts);
 
+module.exports = WebsocketRelayPistol;
+
+/*
 WebsocketRelayPistol(
   commandLineArgs([
     { name: "redis", alias: "r", type: Boolean, defaultValue: false },
     { name: "port", alias: "p", type: Number, defaultValue: 4242 }
   ])
 );
+*/

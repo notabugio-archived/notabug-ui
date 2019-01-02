@@ -29,5 +29,16 @@ export const initServer = ({ port, host, render, ...options }) => {
     app.get("*", expires(60), (...args) => renderer(nab, ...args));
   }
 
-  return nab = init({ ...options, web: app.listen(port, host) });
+  const web = app.listen(port, host);
+
+  nab = init({
+    ...options,
+    web: options.pistol ? undefined : web,
+    peers: [
+      ...(options.peers || []),
+      ...(options.pistol ? [`http://${host}:${port}/gun`] : [])
+    ]
+  });
+  if (options.pistol) require("../pistol/server")({ redis: options.redis, web });
+  return nab;
 };

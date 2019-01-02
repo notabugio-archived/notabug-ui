@@ -584,11 +584,16 @@ const validateIsLegacyThing = (
   keyInParent
 ) => {
   const dataSoul = path(["data", "#"], data);
-  newest = without(["comments", "allcomments", "votesup", "votesdown"], keys(path(["_", ">"], data)))
-    .map(key => path(["_", ">", key], data)).sort().pop();
+  const newest = without(
+    ["comments", "allcomments", "votesup", "votesdown"],
+    keys(path(["_", ">"], data))
+  )
+    .map(key => path(["_", ">", key], data))
+    .sort()
+    .pop();
   const { thingId } = routes.ThingData.match(dataSoul) || {};
   const id = prop("id", data);
-  return id && id === thingId && newest && (newest < 1543102814945);
+  return id && id === thingId && newest && newest < 1543102814945;
 };
 
 const validateThingHashMatchesSoul = (_schema, data) => {
