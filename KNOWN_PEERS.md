@@ -27,6 +27,6 @@ This will give you a basic radisk backed peer connected to notabug.io serving th
 
     yarn ui
 
-Will then give you a UI dev server at port 3333
+Will then give you a UI dev server at port 3000
 
 See https://github.com/notabugio/notabug/tree/master/peer-configs for more config examples.

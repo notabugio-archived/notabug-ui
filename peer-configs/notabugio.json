@@ -6,6 +6,7 @@
       "--port", "3333",
       "--redis",
       "--pistol",
+      "--evict",
       "--render"
     ]
   }, {
