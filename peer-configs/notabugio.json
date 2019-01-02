@@ -1,46 +1,27 @@
 [
   {
-    "uid": "gun",
-    "script": "server.js",
+    "uid": "pistol",
+    "script": "pistol/server.js",
     "args": [
-      "--port", "3333",
-      "--evict"
+      "--redis",
+      "--port", "3333"
     ]
   }, {
     "uid": "http",
     "script": "server.js",
     "args": [
       "--port", "4444",
-      "--peer", "http://localhost:3333/gun",
-      "--evict",
       "--redis",
       "--render"
     ]
   }, {
-    "uid": "listings",
+    "uid": "oracles",
     "script": "server.js",
     "args": [
       "--listings",
-      "--redis",
-      "--leech",
-      "--peer", "http://localhost:3333/gun"
-    ]
-  }, {
-    "uid": "tabulator",
-    "script": "server.js",
-    "args": [
       "--tabulate",
-      "--redis",
-      "--leech",
-      "--peer", "http://localhost:3333/gun"
-    ]
-  }, {
-    "uid": "spaces",
-    "script": "server.js",
-    "args": [
       "--spaces",
       "--redis",
-      "--leech",
       "--peer", "http://localhost:3333/gun"
     ]
   }

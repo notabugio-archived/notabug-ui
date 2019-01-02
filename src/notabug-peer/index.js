@@ -48,6 +48,7 @@ export default function notabug(config={}) {
     // Nuke gun's localStorage if it fills up, kinda lame but less lame than total failure
     if (!persist && localStorage) peer.gun.on("localStorage:error", ack => ack.retry({}));
     blocked.forEach(soul => peer.gun.get(soul).put({ url: null, body: "[removed]", title: "[removed]" }));
+    if (config.leech) peer.gun._.on("out", { leech: true });
     if (config.oracle) peer.gun.on("put", msg => config.oracle.onPut(peer, msg));
   }
 

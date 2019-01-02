@@ -224,9 +224,9 @@ export const writePage = curry((peer, name, body) => {
 });
 
 export const vote = curry((peer, id, kind, nonce) => {
-  const thing = peer.souls.thing.get({ thingid: id });
+  // const thing = peer.souls.thing.get({ thingid: id });
   const votes = peer.souls.thingVotes.get({ thingid: id, votekind: kind });
-  thing.get(`votes${kind}`).put(votes);
+  // thing.get(`votes${kind}`).put(votes);
   return votes.get(nonce).put("1");
 });
 
@@ -283,7 +283,7 @@ export const indexThing = curry((peer, thingid, data) => {
 
     if (data.url) {
       const urlNode = peer.souls.url.get({ url: data.url });
-      thing.get("url").put(urlNode);
+      // thing.get("url").put(urlNode);
       urlNode.set(thing);
     }
   }
@@ -291,7 +291,7 @@ export const indexThing = curry((peer, thingid, data) => {
   if (data.opId) {
     const op = peer.souls.thing.get({ thingid: data.opId });
     const allcomments = peer.souls.thingAllComments.get({ thingid: data.opId });
-    op.get("allcomments").put(allcomments);
+    // op.get("allcomments").put(allcomments);
     allcomments.set(thing);
   }
 
@@ -303,7 +303,7 @@ export const indexThing = curry((peer, thingid, data) => {
       thingid: data.replyToId || data.opId
     });
     comments.set(thing);
-    replyTo.get("comments").put(comments);
+    // replyTo.get("comments").put(comments);
   }
 
   topic.set(thing);

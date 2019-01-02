@@ -106,7 +106,7 @@ export const allowFieldsSEA = (...validators) => (
         )
       ).then(results => {
         if (results.find(identity)) return;
-        decoded &&  console.warn("sea sanitizing", pKey, key, decoded); // eslint-disable-line
+        decoded && key !== "authorClass" && console.warn("sea sanitizing", pKey, key, decoded); // eslint-disable-line
         delete val[key]; // eslint-disable-line
       });
     })
