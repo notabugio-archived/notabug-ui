@@ -1,17 +1,11 @@
 [
   {
-    "uid": "pistol",
-    "script": "pistol/server.js",
-    "args": [
-      "--redis",
-      "--port", "3333"
-    ]
-  }, {
     "uid": "http",
     "script": "server.js",
     "args": [
-      "--port", "4444",
+      "--port", "3333",
       "--redis",
+      "--pistol",
       "--render"
     ]
   }, {
