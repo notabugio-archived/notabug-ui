@@ -1,10 +1,9 @@
 [
   {
-    "uid": "notabug",
+    "uid": "notabug-radisk",
     "script": "server.js",
     "args": [
       "--port", "3333",
-      "--json6",
       "--render",
       "--pistol",
       "--peer", "https://notabug.io/gun",

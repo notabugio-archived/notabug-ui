@@ -23,10 +23,10 @@ Different peers may maintain a more or less restrictive content policy and diffe
     mkdir htdocs && cp -R build/* htdocs/
     forever start peer-configs/radisk.json
 
-This will give you a basic radisk backed peer connected to notabug.io serving the UI on 127.0.0.1:3001
+This will give you a basic radisk backed peer connected to notabug.io serving the UI on 127.0.0.1:3333
 
     yarn ui
 
-Will then give you a UI dev server at port 3000
+Will then give you a UI dev server at port 3333
 
 See https://github.com/notabugio/notabug/tree/master/peer-configs for more config examples.

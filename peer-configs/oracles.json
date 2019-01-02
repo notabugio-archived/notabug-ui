@@ -8,8 +8,7 @@
       "--listings",
       "--spaces",
       "--redis",
-      "--leech",
-      "--peer", "http://localhost:3001/gun"
+      "--peer", "http://localhost:3333/gun"
     ]
   }
 ]

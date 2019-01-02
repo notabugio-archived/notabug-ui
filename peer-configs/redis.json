@@ -3,10 +3,13 @@
     "uid": "notabug",
     "script": "server.js",
     "args": [
-      "--port", "3001",
+      "--port",
+      "3333",
       "--redis",
+      "--pistol",
       "--render",
-      "--peer", "https://notabug.io/gun"
+      "--peer",
+      "https://notabug.io/gun"
     ]
   }
 ]

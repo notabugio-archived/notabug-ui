@@ -4,8 +4,6 @@ docker stop notabug
 docker rm notabug
 
 docker run \
-  -p 3001:3001 \
-  -p 3002:3002 \
-  -p 3003:3003 \
+  -p 3333:3333 \
   --name notabug \
   notabug

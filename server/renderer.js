@@ -22,7 +22,7 @@ window.initNabState = ${serialize(data, { isJSON: true })};
 `;
 
 const preload = (nab, scope, params) => {
-  const getLimitedListingIds = query((scope, { soul, limit, count = 0 }) =>
+  const getLimitedListingIds = query((scope, { soul, limit = 25, count = 0 }) =>
     nab.queries
       .listing(scope, soul)
       .then(listingData => {
@@ -157,6 +157,7 @@ export default (nab, req, res) =>
       });
       const scope = (notabugApi.scope = nab.newScope({
         noGun: !!nab.gun.redis,
+        timeout: 1000,
         isCacheing: true
       }));
 

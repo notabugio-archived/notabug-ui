@@ -19,10 +19,10 @@ const ChatLoading = () => (
 
 export const SidebarChat = ({ topic }) => {
   const listingParams = useMemo(() => ({
-    soul: `nab/t/${topic}/chat@~${tabulator}.`,
+    soul: topic && `nab/t/${topic}/chat@~${tabulator}.`,
     limit: 10,
     indexer: tabulator
-  }));
+  }), [topic]);
   const { ListingContext, listingData } = useListingContext({ listingParams });
 
   if (!topic) return null;

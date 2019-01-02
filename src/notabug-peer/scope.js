@@ -64,6 +64,7 @@ export const scope = ({
   graph: defaultGraph = {},
   gun,
   parentScope,
+  timeout = 10000,
   cache = null,
   noGun = false,
   isCacheing = false,
@@ -118,7 +119,7 @@ export const scope = ({
               Gun.SEA.verify(
                 rawData[key],
                 false,
-                (res) => (data[key] = Gun.SEA.opt.unpack(res, key, data))
+                res => (data[key] = Gun.SEA.opt.unpack(res, key, data))
               );
             });
             receive(data);
@@ -126,8 +127,11 @@ export const scope = ({
         }
         if (!gun.redis) {
           setTimeout(() => {
-            if (!(soul in graph)) receive(null);
-          }, 10000);
+            if (!(soul in graph)) {
+              console.log("slow query", soul);
+              receive(null);
+            }
+          }, timeout);
         }
         if (!noGun) gun.get(soul).on(receive);
       }));

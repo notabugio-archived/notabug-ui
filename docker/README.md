@@ -12,6 +12,6 @@ Then start the docker image
 $ ./start.sh
 ```
 
-Then you can view http://localhost:3001/ with your browser.
+Then you can view http://localhost:3333/ with your browser.
 
 You are done!
