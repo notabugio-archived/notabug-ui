@@ -6,7 +6,7 @@ import { LoginSignupPage } from "Auth";
 import { SubmissionForm } from "Submission/Form";
 import { WikiPage } from "Wiki";
 import { toRoute } from "./toRoute";
-import { tabulator } from "../config.json";
+import { tabulator, owner } from "../config.json";
 import { PREFIX } from "notabug-peer";
 import { getWikiPage } from "notabug-peer/listings";
 
@@ -35,7 +35,7 @@ const getUserPageParams = withParams(
   ({
     params: {
       prefix = "user",
-      identifier = tabulator,
+      identifier = owner || tabulator,
       sort = "new",
       type = "overview"
     },
@@ -49,7 +49,9 @@ const getUserPageParams = withParams(
 );
 
 const getUserSpaceParams = withParams(
-  ({ params: { identifier = tabulator, name = "frontpage", sort, opId } }) => {
+  ({
+    params: { identifier = owner || tabulator, name = "frontpage", sort, opId }
+  }) => {
     return {
       owner: identifier,
       name,
@@ -61,7 +63,7 @@ const getUserSpaceParams = withParams(
 
 const getUserSpaceSubmissionParams = withParams(
   ({
-    params: { identifier = tabulator, name = "frontpage", opId },
+    params: { identifier = owner || tabulator, name = "frontpage", opId },
     query: { sort }
   }) => {
     return {

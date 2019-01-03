@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "utils";
-import { tabulator } from "../config.json";
+import { tabulator, owner } from "../config.json";
 
 const HEADER_TOPICS = [
   "art",
@@ -42,7 +42,7 @@ export const TopBar = () => (
           </li>
           <li>
             <span className="separator">-</span>
-            <Link className="choice" href={`/user/${tabulator}/spaces/spaces`}>
+            <Link className="choice" href={`/user/${owner || tabulator}/spaces/spaces`}>
               spaces
             </Link>
           </li>
