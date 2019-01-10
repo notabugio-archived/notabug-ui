@@ -5397,8 +5397,8 @@ gun-file@^1.0.123:
   resolved "https://github.com/notabugio/gun-suppressor-sear.git#a82f3c3abcd270b555e1e82af4f9da9846f1b73e"
 
 "gun-suppressor@https://github.com/notabugio/gun-suppressor.git":
-  version "0.0.11"
-  resolved "https://github.com/notabugio/gun-suppressor.git#a717038f2fb3222e1963c297aa55c81f89280449"
+  version "0.0.12"
+  resolved "https://github.com/notabugio/gun-suppressor.git#9de85689f150faa135133e36e454eae1a260727e"
 
 gun@^0.9.96:
   version "0.9.99997"

@@ -99,6 +99,7 @@ if (options.port) {
   });
 } else {
   nab = init(peerOptions);
+  if (options.persist) nab.gun.get("~@").once(() => null);
 }
 
 if (options.redis) {
