@@ -117,9 +117,10 @@ export const scope = ({
             if (!Gun.SEA || soul.indexOf("~") === -1) return receive(rawData);
             Object.keys(data || {}).forEach(key => {
               Gun.SEA.verify(
-                rawData[key],
+                // rawData[key],
+                Gun.SEA.opt.pack(rawData[key], key, rawData, soul),
                 false,
-                res => (data[key] = Gun.SEA.opt.unpack(res, key, data))
+                res => (data[key] = Gun.SEA.opt.unpack(res, key, rawData))
               );
             });
             receive(data);

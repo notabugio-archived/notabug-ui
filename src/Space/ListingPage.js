@@ -1,7 +1,7 @@
 import React from "react";
 import { prop } from "ramda";
-import { useNotabug } from "NabContext";
 import { PREFIX } from "notabug-peer";
+import { routes } from "notabug-peer/json-schema";
 import { useMemoizedObject } from "utils";
 import { Page } from "Page";
 import { useSpace, SpaceProvider } from "./Provider";
@@ -21,31 +21,32 @@ export const SpaceListingPage = ({ spaceParams, ...props }) => {
 };
 
 const SpaceListingPageContent = ({ sort: sortProp, opId, ...props }) => {
-  const { api } = useNotabug();
-  const { owner, spaceName: name, indexer, tabulator, defaultTabPath } = useSpace();
+  const {
+    owner,
+    spaceName: name,
+    indexer,
+    tabulator,
+    defaultTabPath
+  } = useSpace();
   let sort = sortProp;
   const soul = (() => {
     if (opId) {
-      // TODO: More specific schema types?
       if (!sort) sort = "best";
-      return api.schema.typedListing.soul({
-        prefix: "things",
-        identifier: opId,
-        type: "comments",
+      return routes.ThingCommentsListing.reverse({
+        thingId: opId,
         sort,
-        tabulatorId: tabulator
+        indexer: tabulator
       });
     }
 
     if (sort || !defaultTabPath) {
       if (!sort) sort = "hot";
-      return api.schema.userListing.soul({
+      return routes.SpaceListing.reverse({
         prefix: "user",
-        identifier: owner,
-        kind: "spaces",
-        type: name,
+        authorId: owner,
+        name,
         sort,
-        tabulatorId: tabulator
+        indexer: tabulator
       });
     }
     return `${PREFIX}${defaultTabPath}@~${indexer}.`;

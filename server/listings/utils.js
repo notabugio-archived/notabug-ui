@@ -1,20 +1,26 @@
-import * as SOULS from "../notabug-peer/schema";
+import { routes } from "../notabug-peer/json-schema";
 import { prop, uniq, map, filter, compose } from "ramda";
 import { query, all } from "../notabug-peer/scope";
-import { filterThings, multiAuthor, } from "../queries";
+import { filterThings, multiAuthor } from "../queries";
 
 export const LISTING_SIZE = 1000;
 
-export const serializeListing = ({ name="", things, stickyIds=[] }) => ({
+export const serializeListing = ({ name = "", things, stickyIds = [] }) => ({
   name,
   ids: [...stickyIds, ...things.map(prop("id")).filter(id => !!id)].join("+")
 });
 
-const fetchThingSoulsData = scope => souls => all(
-  souls
-    .filter(x => !!x)
-    .map(soul => scope.get(soul).get("data").then(x => x))
-);
+const fetchThingSoulsData = scope => souls =>
+  all(
+    souls
+      .filter(x => !!x)
+      .map(soul =>
+        scope
+          .get(soul)
+          .get("data")
+          .then(x => x)
+      )
+  );
 
 export const curate = query((scope, authorIds, submissionOnly = false) =>
   all([
@@ -35,7 +41,7 @@ export const curate = query((scope, authorIds, submissionOnly = false) =>
     multiAuthor(scope, {
       type: "submitted",
       authorIds
-    }).then(map(soul => SOULS.thing.isMatch(soul).thingid))
+    }).then(map(soul => routes.Thing.match(soul).thingid))
   ]).then(([ids1, ids2]) => uniq([...ids1, ...ids2]))
 );
 

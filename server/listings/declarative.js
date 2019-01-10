@@ -19,7 +19,7 @@ import {
   sortThings
 } from "../queries";
 import { LISTING_SIZE, curate, censor, serializeListing } from "./utils";
-import * as SCHEMA from "../notabug-peer/schema";
+import { routes as souls } from "../notabug-peer/json-schema";
 import { query } from "../notabug-peer/scope";
 import { getWikiPage } from "../notabug-peer/listings";
 import { toFilters } from "../notabug-peer/source";
@@ -34,7 +34,10 @@ const itemSources = {
     }
   ) => {
     if (!repliesToAuthorId) return itemSources.topic();
-    return repliesToAuthor(scope, { type, repliesToAuthorId: `~${repliesToAuthorId}` });
+    return repliesToAuthor(scope, {
+      type,
+      repliesToAuthorId: `~${repliesToAuthorId}`
+    });
   },
   op: (
     scope,
@@ -50,7 +53,7 @@ const itemSources = {
   curator: (scope, { curators }) => {
     if (!curators.length) return itemSources.topic();
     return curate(scope, curators.map(id => `~${id}`), true).then(ids =>
-      ids.map(thingid => SCHEMA.thing.soul({ thingid }))
+      ids.map(thingId => souls.Thing.reverse({ thingId }))
     );
   },
   author: (
@@ -136,7 +139,7 @@ export const declarativeListing = query((scope, source) => {
     .then(thingSouls => {
       if (opId) {
         return scope
-          .get(SCHEMA.thing.soul({ thingid: opId }))
+          .get(souls.Thing.reverse({ thingId: opId }))
           .get("data")
           .then(data => {
             name = name || prop("topic", data);

@@ -1,4 +1,4 @@
-import * as SOULS from "../notabug-peer/schema";
+import { routes } from "../notabug-peer/json-schema";
 import { PREFIX } from "../notabug-peer";
 import { query, all } from "../notabug-peer/scope";
 import { oracle, basicQueryRoute } from "./oracle";
@@ -7,11 +7,11 @@ export default oracle({
   name: "tabulator",
   routes: [
     basicQueryRoute({
-      path: `${PREFIX}/things/:thingid/votecounts@~:tab1.:tab2.`,
+      path: `${PREFIX}/things/:thingId/votecounts@~:tab1.:tab2.`,
       priority: 10,
-      checkMatch: ({ thingid }) => !!thingid,
+      checkMatch: ({ thingId }) => !!thingId,
       query: query((scope, route) => {
-        const thingSoul = SOULS.thing.soul(route.match);
+        const thingSoul = routes.Thing.reverse(route.match);
         return all([
           scope.get(`${thingSoul}/votesup`).count(),
           scope.get(`${thingSoul}/votesdown`).count(),

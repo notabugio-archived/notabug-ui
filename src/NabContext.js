@@ -12,13 +12,14 @@ import { assoc } from "ramda";
 import { withRouter } from "react-router-dom";
 import isNode from "detect-node";
 import fetch from "isomorphic-fetch";
-import "gun/gun";
 import notabugPeer from "notabug-peer";
+const Gun = require("gun/gun");
 
 let INDEXEDDB = false;
 let LOCAL_STORAGE = false;
 let FORCE_REALTIME = false;
 
+global.Gun = global.Gun || Gun;
 if (!isNode) {
   INDEXEDDB = !!window.indexedDB && !!/indexeddb/.test(window.location.search);
   LOCAL_STORAGE = !INDEXEDDB && !!/localStorage/.test(window.location.search);
@@ -26,7 +27,6 @@ if (!isNode) {
   if (LOCAL_STORAGE) INDEXEDDB = false;
   if (INDEXEDDB) console.log("using indexeddb");
   if (LOCAL_STORAGE) console.log("using localstorage");
-  require("gun/lib/les.js");
   if (INDEXEDDB) {
     require("gun/lib/radix.js");
     require("gun/lib/radisk.js");

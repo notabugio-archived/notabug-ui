@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.33.1",
+  "version": "0.34.0",
   "dependencies": {
     "@babel/cli": "7.2.3",
     "@babel/core": "^7.1.5",
@@ -34,8 +34,11 @@
     "flat": "^4.1.0",
     "forever": "^0.15.3",
     "formidable": "^1.2.1",
-    "gun": "^0.9.999993",
+    "gun": "^0.9.999997",
     "gun-file": "^1.0.123",
+    "gun-receiver": "https://github.com/notabugio/gun-receiver.git",
+    "gun-suppressor": "https://github.com/notabugio/gun-suppressor.git",
+    "gun-suppressor-sear": "https://github.com/notabugio/gun-suppressor-sear.git",
     "ignore-styles": "^5.0.1",
     "isomorphic-fetch": "^2.2.1",
     "jdenticon": "2.1.1",
@@ -49,7 +52,7 @@
     "react-dom": "16.7.0-alpha.2",
     "react-helmet": "^5.2.0",
     "react-instagram-embed": "^1.4.0",
-    "react-player": "1.7.1",
+    "react-player": "1.8.0",
     "react-popper": "^1.3.0",
     "react-router-dom": "^4.3.1",
     "react-scripts": "^2.1.1",
@@ -61,7 +64,7 @@
     "redis": "^2.8.0",
     "regenerator-runtime": "0.13.1",
     "route-parser": "^0.0.5",
-    "serialize-javascript": "1.6.0",
+    "serialize-javascript": "1.6.1",
     "snuownd": "https://github.com/JordanMilne/snuownd.git",
     "text-encoding": "^0.7.0",
     "urllite": "^0.5.0",
@@ -88,7 +91,7 @@
     "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom"
   },
   "devDependencies": {
-    "prettier": "1.15.3",
+    "prettier": "^1.15.3",
     "react-app-rewired": "^1.5.2"
   },
   "browserslist": [

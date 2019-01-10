@@ -8,6 +8,7 @@ import React, {
 import { prop, propOr, path } from "ramda";
 import { Loading, useQuery } from "utils";
 import { query, resolve } from "notabug-peer/scope";
+import { routes as souls } from "notabug-peer/json-schema";
 import { useNotabug } from "NabContext";
 import { Submission } from "Submission";
 import { Comment } from "Comment";
@@ -42,7 +43,10 @@ export const Thing = React.memo(
       useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];
 
-    const [scores] = useQuery(api.queries.thingScores, [tabulator || indexer, id]);
+    const [scores] = useQuery(api.queries.thingScores, [
+      tabulator || indexer,
+      id
+    ]);
 
     const [item] = useQuery(api.queries.thingData, [id]);
     const [parentItem] = useQuery(
@@ -103,7 +107,7 @@ export const Thing = React.memo(
     const edited = tsts !== bodyts && bodyts;
 
     const soul = path(["_", "#"], item);
-    const signedMatch = api.souls.thingDataSigned.isMatch(soul);
+    const signedMatch = souls.ThingDataSigned.match(soul);
     const canEdit =
       me && signedMatch && me.pub === `${signedMatch.authorId}` && soul;
     const [isEditing, setIsEditing] = useState(false);

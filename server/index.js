@@ -1,5 +1,4 @@
 import commandLineArgs from "command-line-args";
-import blocked from "./blocked";
 import { combineOracles } from "./oracles/oracle";
 import indexerOracle from "./oracles/indexer";
 import spaceIndexerOracle from "./oracles/space-indexer";
@@ -75,7 +74,6 @@ const { initServer } = require("./http");
 let nab;
 
 const peerOptions = {
-  blocked,
   putMutate: require("./unfuck-redis"),
   localStorage: options.localStorage,
   peers: options.peer,

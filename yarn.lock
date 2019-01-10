@@ -5388,6 +5388,18 @@ gun-file@^1.0.123:
     gun "^0.9.96"
     json-6 "^0"
 
+"gun-receiver@https://github.com/notabugio/gun-receiver.git":
+  version "0.0.2"
+  resolved "https://github.com/notabugio/gun-receiver.git#2fecb22708d1bf9a0d73253e2f26213e07380428"
+
+"gun-suppressor-sear@https://github.com/notabugio/gun-suppressor-sear.git":
+  version "0.0.6"
+  resolved "https://github.com/notabugio/gun-suppressor-sear.git#a82f3c3abcd270b555e1e82af4f9da9846f1b73e"
+
+"gun-suppressor@https://github.com/notabugio/gun-suppressor.git":
+  version "0.0.11"
+  resolved "https://github.com/notabugio/gun-suppressor.git#a717038f2fb3222e1963c297aa55c81f89280449"
+
 gun@^0.9.96:
   version "0.9.99997"
   resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99997.tgz#303f09e34ad57e2b65671841e2bcbf4791c3d0bc"
@@ -5395,14 +5407,13 @@ gun@^0.9.96:
   dependencies:
     ws "~>5.2.0"
 
-gun@^0.9.999993:
-  version "0.9.999993"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.999993.tgz#5b5e7e080b72ef54dd3fc51cdf37048590333b0b"
-  integrity sha512-Zszrlf5JskPl5fS+PLzf5qYJKzFZLVlFMXo+4+bsPRNi5QjCcXf+2FUb2iFot+yeV29sgoYmrswkLmRJATizGA==
+gun@^0.9.999997:
+  version "0.9.999997"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.999997.tgz#a4d033d6a29abad95888f2a610e360980b4c158e"
+  integrity sha512-nY1c07k4RV+7/2jGbirZkwYSxdXM9CxwXaCS+c0QZ7LngVZG9g4rLxpnBPGIaztszcGatKjSn2voQB7HOhla8w==
   dependencies:
-    "@trust/webcrypto" "^0.9.2"
-    node-webcrypto-ossl "^1.0.38"
-    text-encoding "^0.6.4"
+    node-webcrypto-ossl "^1.0.39"
+    text-encoding "^0.7.0"
     ws "~>5.2.0"
 
 gzip-size@5.0.0:
@@ -7735,7 +7746,7 @@ node-rsa@^0.4.0:
   dependencies:
     asn1 "0.2.3"
 
-node-webcrypto-ossl@1.0.39, node-webcrypto-ossl@^1.0.38:
+node-webcrypto-ossl@1.0.39, node-webcrypto-ossl@^1.0.39:
   version "1.0.39"
   resolved "https://registry.yarnpkg.com/node-webcrypto-ossl/-/node-webcrypto-ossl-1.0.39.tgz#527473d4a0647e97a3954591f209f688b8f694d5"
   integrity sha512-cEq67y6GJ5jcKdANi5XqejqMvM/eIGxuOOE8F+c0XS950jSpvOcjUNHLmIe3/dN/UKyUkb+dri0BU4OgmCJd2g==
@@ -9017,15 +9028,15 @@ preserve@^0.2.0:
   resolved "https://registry.yarnpkg.com/preserve/-/preserve-0.2.0.tgz#815ed1f6ebc65926f865b310c0713bcb3315ce4b"
   integrity sha1-gV7R9uvGWSb4ZbMQwHE7yzMVzks=
 
-prettier@1.15.3:
-  version "1.15.3"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.15.3.tgz#1feaac5bdd181237b54dbe65d874e02a1472786a"
-  integrity sha512-gAU9AGAPMaKb3NNSUUuhhFAS7SCO4ALTN4nRIn6PJ075Qd28Yn2Ig2ahEJWdJwJmlEBTUfC7mMUSFy8MwsOCfg==
-
 prettier@^1.14.2:
   version "1.14.3"
   resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.14.3.tgz#90238dd4c0684b7edce5f83b0fb7328e48bd0895"
   integrity sha512-qZDVnCrnpsRJJq5nSsiHCE3BYMED2OtsI+cmzIzF1QIfqm5ALf8tEJcO27zV1gKNKRPdhjO0dNWnrzssDQ1tFg==
+
+prettier@^1.15.3:
+  version "1.15.3"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-1.15.3.tgz#1feaac5bdd181237b54dbe65d874e02a1472786a"
+  integrity sha512-gAU9AGAPMaKb3NNSUUuhhFAS7SCO4ALTN4nRIn6PJ075Qd28Yn2Ig2ahEJWdJwJmlEBTUfC7mMUSFy8MwsOCfg==
 
 pretty-bytes@^4.0.2:
   version "4.0.2"
@@ -9399,10 +9410,10 @@ react-instagram-embed@^1.4.0:
   dependencies:
     query-string "^5.1.0"
 
-react-player@1.7.1:
-  version "1.7.1"
-  resolved "https://registry.yarnpkg.com/react-player/-/react-player-1.7.1.tgz#6733e59d99380148d92bc45b311fd0f9b2669690"
-  integrity sha512-arBhAfKPdTOME47qAsk7g8MWIZXP/5TaqV0kRfUr2cDuUgqTTvlFRL7mgC4++a74fxMqUcqNOQL+ClpdH3skpA==
+react-player@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/react-player/-/react-player-1.8.0.tgz#83080c040c5a69b80e76531c60973a7ea812ec8f"
+  integrity sha512-DqIJvkL7itGLgs/8u+sgeD3DXq5kc/O6FsB6J9KEuoaiYiSKhluBRymZWIwfCuPNTdpPsA2roZ+NSCyLrHAA9g==
   dependencies:
     deepmerge "^2.0.1"
     load-script "^1.0.0"
@@ -10143,10 +10154,10 @@ send@0.16.2:
     range-parser "~1.2.0"
     statuses "~1.4.0"
 
-serialize-javascript@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-1.6.0.tgz#b30ce5ddd6517f2c445e129ff5834a399fb5861e"
-  integrity sha512-AQxrNqu4EXWt03dJdgKXI+Au9+pvEuM5+Nk5g6+TmuxMCkEL03VhZ31HM+VKeaaZbFpDHaoSruiHq4PW9AIrOQ==
+serialize-javascript@1.6.1:
+  version "1.6.1"
+  resolved "https://registry.yarnpkg.com/serialize-javascript/-/serialize-javascript-1.6.1.tgz#4d1f697ec49429a847ca6f442a2a755126c4d879"
+  integrity sha512-A5MOagrPFga4YaKQSWHryl7AXvbQkEqpw4NNYMTNYUNV51bA8ABHgYFpqKx+YFFrw59xMV1qGH1R4AgoNIVgCw==
 
 serialize-javascript@^1.4.0:
   version "1.5.0"
@@ -10831,7 +10842,7 @@ test-value@^3.0.0:
     array-back "^2.0.0"
     typical "^2.6.1"
 
-text-encoding@^0.6.1, text-encoding@^0.6.4:
+text-encoding@^0.6.1:
   version "0.6.4"
   resolved "https://registry.yarnpkg.com/text-encoding/-/text-encoding-0.6.4.tgz#e399a982257a276dae428bb92845cb71bdc26d19"
   integrity sha1-45mpgiV6J22uQou5KEXLcb3CbRk=

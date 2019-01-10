@@ -1,6 +1,6 @@
 import { prop, path } from "ramda";
 import { scope as getScope, query, resolve } from "./scope";
-import * as SCHEMA from "./schema";
+import { routes } from "./json-schema";
 
 const listing = query(
   (scope, soul) => (soul ? scope.get(soul) : resolve(null)),
@@ -8,28 +8,29 @@ const listing = query(
 );
 
 const getThingScores = query(
-  (scope, tabulator, thingid) =>
-    tabulator ?
-      scope
-        .get(`${SCHEMA.thing.soul({ thingid })}/votecounts@~${tabulator}.`)
-        .then() : resolve(),
+  (scope, tabulator, thingId) =>
+    tabulator
+      ? scope
+          .get(`${routes.Thing.reverse({ thingId })}/votecounts@~${tabulator}.`)
+          .then()
+      : resolve(),
   "thingScores"
 );
 
 const getThingData = query(
-  (scope, thingid) => scope.get(SCHEMA.thing.soul({ thingid })).get("data"),
+  (scope, thingId) => scope.get(routes.Thing.reverse({ thingId })).get("data"),
   "thingData"
 );
 
 const getUserPages = query(
-  (scope, authorId) => scope.get(SCHEMA.userPages.soul({ authorId })),
+  (scope, authorId) => scope.get(routes.AuthorPages.reverse({ authorId })),
   "userPages"
 );
 
 const getWikiPageId = query(
   (scope, authorId, name) =>
     scope
-      .get(SCHEMA.userPages.soul({ authorId }))
+      .get(routes.AuthorPages.reverse({ authorId }))
       .get(name)
       .get("id"),
   "wikiPageId"

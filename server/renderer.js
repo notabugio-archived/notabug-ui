@@ -5,6 +5,7 @@ import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import { App } from "App";
 import { routes } from "Routing";
+import { routes as souls } from "./notabug-peer/json-schema";
 import init from "./notabug-peer";
 import { PREFIX } from "./notabug-peer";
 import { query, all } from "./notabug-peer/scope";
@@ -102,23 +103,18 @@ const preloadSpace = (nab, scope, params) => {
 
     const soul = (() => {
       if (opId) {
-        // TODO: More specific schema types?
-        return nab.schema.typedListing.soul({
-          prefix: "things",
-          identifier: opId,
-          type: "comments",
+        return souls.ThingCommentsListing.reverse({
+          thingId: opId,
           sort: sort || "best",
-          tabulatorId: tabulator
+          indexer: tabulator
         });
       }
       if (sort || !defaultTabPath) {
-        return nab.schema.userListing.soul({
-          prefix: "user",
-          identifier: owner,
-          kind: "spaces",
-          type: name,
+        return souls.SpaceListing.reverse({
+          authorId: owner,
+          name,
           sort: sort || "hot",
-          tabulatorId: tabulator
+          indexer: tabulator
         });
       }
       return `${PREFIX}${defaultTabPath}@~${indexer}.`;

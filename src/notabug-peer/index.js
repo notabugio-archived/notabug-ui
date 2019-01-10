@@ -1,8 +1,7 @@
 /* globals Gun */
-import { assoc } from "ramda";
 import * as write from "./write";
-import * as schema from "./schema";
-import { validateWireInput } from "./validation";
+// import { validateWireInput } from "./validation";
+import { validateWireInput } from "./json-schema-validation";
 import * as auth from "./auth";
 import { queries, newScope } from "./listings";
 export * from "./util";
@@ -13,14 +12,10 @@ const DEFAULT_PEERS = [];
 
 export default function notabug(config={}) {
   const {
-    peers=DEFAULT_PEERS, blocked=[], noGun=false, localStorage=false,
+    peers=DEFAULT_PEERS, noGun=false, localStorage=false,
     persist=false, ...rest
   } = config || {};
-  const blockedMap = blocked.reduce((res, soul) => ({ ...res, [soul]: true }), {});
-  const peer = {
-    config,
-    isBlocked: soul => !!blockedMap[soul],
-  };
+  const peer = { config };
   const gunConfig = { peers, localStorage, ...rest };
   if (persist) {
     gunConfig.localStorage = false;
@@ -29,7 +24,6 @@ export default function notabug(config={}) {
   } else {
     gunConfig.radisk = false;
   }
-  peer.souls = peer.schema = Object.keys(schema).reduce((res, key) => assoc(key, schema[key](peer), res), {});
 
   if (!noGun) {
     Gun.on("opt", context => {
@@ -47,7 +41,6 @@ export default function notabug(config={}) {
     peer.gun = Gun(gunConfig);
     // Nuke gun's localStorage if it fills up, kinda lame but less lame than total failure
     if (!persist && localStorage) peer.gun.on("localStorage:error", ack => ack.retry({}));
-    blocked.forEach(soul => peer.gun.get(soul).put({ url: null, body: "[removed]", title: "[removed]" }));
     if (config.leech) peer.gun._.on("out", { leech: true });
     if (config.oracle) peer.gun.on("put", msg => config.oracle.onPut(peer, msg));
   }

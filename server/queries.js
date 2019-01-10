@@ -14,7 +14,7 @@ import {
 } from "ramda";
 import { getDayStr, PREFIX } from "./notabug-peer";
 import { query, all, resolve } from "./notabug-peer/scope";
-import * as SOULS from "./notabug-peer/schema";
+import { routes } from "./notabug-peer/json-schema";
 
 const emptyPromise = resolve(null);
 const unionArrays = reduce(union, []);
@@ -72,9 +72,9 @@ export const thing = query((scope, thingSoul) =>
     const result = { id: meta.id, timestamp: meta.timestamp };
     const replyToSoul = path(["replyTo", "#"], meta);
     const opSoul = path(["op", "#"], meta);
-    const opId = opSoul ? SOULS.thing.isMatch(opSoul).thingid : null;
+    const opId = opSoul ? routes.Thing.match(opSoul).thingid : null;
     const replyToId = replyToSoul
-      ? SOULS.thing.isMatch(replyToSoul).thingid
+      ? routes.Thing.match(replyToSoul).thingid
       : null;
     if (opId) result.opId = opId;
     if (replyToId) result.replyToId = replyToId;
@@ -130,13 +130,13 @@ export const multiThingMeta = query((scope, params) =>
   )
 );
 
-export const singleThingData = query((scope, { thingId: thingid }) =>
+export const singleThingData = query((scope, { thingId }) =>
   scope
-    .get(SOULS.thing.soul({ thingid }))
+    .get(routes.Thing.reverse({ thingId }))
     .get("data")
     .then(data => {
       const { _, ...actual } = data || {}; // eslint-disable-line no-unused-vars
-      return { [thingid]: data ? actual : data };
+      return { [thingId]: data ? actual : data };
     })
 );
 
@@ -170,11 +170,11 @@ export const repliesToAuthor = query(
 );
 
 export const singleDomain = query((scope, { domain }) =>
-  scope.get(SOULS.domain.soul({ domain })).souls()
+  scope.get(routes.Domain.reverse({ domainName: domain })).souls()
 );
 
 export const singleUrl = query((scope, { url }) =>
-  scope.get(SOULS.url.soul({ url })).souls()
+  scope.get(routes.URL.reverse({ url })).souls()
 );
 
 export const singleTopic = query((scope, params) => {
@@ -203,9 +203,9 @@ export const singleTopic = query((scope, params) => {
 
 export const singleSubmission = query((scope, params) =>
   scope
-    .get(SOULS.thingAllComments.soul({ thingid: params.submissionId }))
+    .get(routes.ThingAllComments.reverse({ thingId: params.submissionId }))
     .souls(souls => [
-      SOULS.thing.soul({ thingid: params.submissionId }),
+      routes.Thing.reverse({ thingId: params.submissionId }),
       ...souls
     ])
 );
@@ -334,7 +334,7 @@ export const filterThings = (scope, things, fn) =>
       .filter(thing => thing && thing.id)
       .map(thing =>
         scope
-          .get(SOULS.thing.soul({ thingid: thing.id }))
+          .get(routes.Thing.reverse({ thingId: thing.id }))
           .get("data")
           .then(data => ({
             ...thing,
@@ -344,7 +344,7 @@ export const filterThings = (scope, things, fn) =>
             if (!thingWithData.data) return thingWithData;
             if (!thingWithData.data.opId) return thingWithData;
             return scope
-              .get(SOULS.thing.soul({ thingid: thingWithData.data.opId }))
+              .get(routes.Thing.reverse({ thingId: thingWithData.data.opId }))
               .get("data")
               .then(opData => ({
                 ...thingWithData,

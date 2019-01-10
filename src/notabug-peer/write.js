@@ -3,12 +3,13 @@ import { ZalgoPromise as Promise } from "zalgo-promise";
 import objHash from "object-hash";
 import urllite from "urllite";
 import { getDayStr } from "./util";
+import { routes } from "./json-schema";
 
 export const putThing = curry((peer, data) => {
   data.timestamp = data.timestamp || new Date().getTime(); // eslint-disable-line
   const originalHash = objHash(data);
   const { timestamp, kind, topic, authorId, opId, replyToId } = data;
-  const thingid = objHash({
+  const thingId = objHash({
     timestamp,
     kind,
     topic,
@@ -18,36 +19,34 @@ export const putThing = curry((peer, data) => {
     originalHash
   });
 
-  const node = peer.souls.thing.get({ thingid });
+  const node = peer.gun.get(routes.Thing.reverse({ thingId }));
 
   const dataSoul = authorId
-    ? peer.souls.thingDataSigned.soul({ thingid, authorId })
-    : peer.souls.thingData.soul({ thingid: originalHash });
+    ? routes.ThingDataSigned.reverse({ thingId, authorId })
+    : routes.ThingData.reverse({ thingId: originalHash });
 
   const metaData = {
-    id: thingid,
+    id: thingId,
     timestamp,
     kind,
     originalHash,
     data: { "#": dataSoul },
-    votesup: { "#": peer.souls.thingVotes.soul({ thingid, votekind: "up" }) },
-    votesdown: {
-      "#": peer.souls.thingVotes.soul({ thingid, votekind: "down" })
-    },
-    allcomments: { "#": peer.souls.thingAllComments.soul({ thingid }) },
-    comments: { "#": peer.souls.thingComments.soul({ thingid }) }
+    votesup: { "#": routes.ThingVotesUp.reverse({ thingId }) },
+    votesdown: { "#": routes.ThingVotesDown.reverse({ thingId }) },
+    allcomments: { "#": routes.ThingAllComments.reverse({ thingId }) },
+    comments: { "#": routes.ThingComments.reverse({ thingId }) }
   };
 
   if (topic)
-    metaData.topic = { "#": peer.souls.topic.soul({ topicname: topic }) };
+    metaData.topic = { "#": routes.Topic.reverse({ topicName: topic }) };
   if (authorId) metaData.author = { "#": `~${authorId}` };
-  if (opId) metaData.op = { "#": peer.souls.thing.soul({ thingid: opId }) };
+  if (opId) metaData.op = { "#": routes.Thing.reverse({ thingId: opId }) };
   if (replyToId)
-    metaData.replyTo = { "#": peer.souls.thing.soul({ thingid: replyToId }) };
+    metaData.replyTo = { "#": routes.Thing.reverse({ thingId: replyToId }) };
 
   peer.gun.get(dataSoul).put(data);
   node.put(metaData);
-  peer.indexThing(thingid, data);
+  peer.indexThing(thingId, data);
   return node;
 });
 
@@ -67,8 +66,8 @@ export const submit = curry((peer, data) => {
   if (user) {
     return upgradeSouls(peer)
       .then(() => {
-        const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
-        const submissionsSoul = peer.schema.userSubmissions.soul({
+        const thingsSoul = routes.AuthorThings.reverse({ authorId: user.pub });
+        const submissionsSoul = routes.AuthorSubmissions.reverse({
           authorId: user.pub
         });
         const things = peer.gun.get(thingsSoul);
@@ -104,8 +103,8 @@ export const comment = curry((peer, data) => {
   if (user) {
     return upgradeSouls(peer)
       .then(() => {
-        const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
-        const commentsSoul = peer.schema.userComments.soul({
+        const thingsSoul = routes.AuthorThings.reverse({ authorId: user.pub });
+        const commentsSoul = routes.AuthorComments.reverse({
           authorId: user.pub
         });
         const things = peer.gun.get(thingsSoul);
@@ -135,14 +134,14 @@ const upgradeSouls = peer => {
   const { pub: authorId } = user;
 
   const userChain = () => peer.gun.user();
-  const upgradeThing = (name, schemaType) => {
+  const upgradeThing = (name, schemaRoute) => {
     return userChain().then(user => {
       return userChain()
         .get(name)
         .then(node => {
           const soul = path(["_", "#"], node);
-          if (soul && !schemaType.isMatch(soul)) {
-            const newSoul = schemaType.soul({ authorId });
+          if (soul && !schemaRoute.match(soul)) {
+            const newSoul = schemaRoute.reverse({ authorId });
             peer.gun.get(soul).then(nodeData => {
               const { _, ...data } = nodeData || {};
               keysIn(data).forEach(key => {
@@ -154,7 +153,9 @@ const upgradeSouls = peer => {
                 }
               });
               console.log("upgrading", soul, "to", newSoul, data);
-              const upgradedNode = peer.gun.get(schemaType.soul({ authorId }));
+              const upgradedNode = peer.gun.get(
+                schemaRoute.reverse({ authorId })
+              );
               upgradedNode.put(data);
               userChain()
                 .get(name)
@@ -166,9 +167,9 @@ const upgradeSouls = peer => {
   };
 
   return Promise.all([
-    upgradeThing("things", peer.schema.userThings),
-    upgradeThing("comments", peer.schema.userComments),
-    upgradeThing("submissions", peer.schema.userSubmissions)
+    upgradeThing("things", routes.AuthorThings),
+    upgradeThing("comments", routes.AuthorComments),
+    upgradeThing("submissions", routes.AuthorSubmissions)
   ]);
 };
 
@@ -184,7 +185,7 @@ export const chat = curry((peer, data) => {
 
   if (user)
     upgradeSouls(peer).then(() => {
-      const thingsSoul = peer.schema.userThings.soul({ authorId: user.pub });
+      const thingsSoul = routes.AuthorThings.reverse({ authorId: user.pub });
       const things = peer.gun.get(thingsSoul);
       peer.gun
         .user()
@@ -199,7 +200,7 @@ export const writePage = curry((peer, name, body) => {
   const user = peer.isLoggedIn();
   if (!user) return Promise.reject("not logged in");
   let thing;
-  const pagesSoul = peer.souls.userPages.soul({ authorId: user.pub });
+  const pagesSoul = routes.AuthorPages.reverse({ authorId: user.pub });
   const chain = peer.gun.get(pagesSoul).get(name);
   return chain.then(res => {
     if (res && res.data) {
@@ -224,9 +225,11 @@ export const writePage = curry((peer, name, body) => {
 });
 
 export const vote = curry((peer, id, kind, nonce) => {
-  // const thing = peer.souls.thing.get({ thingid: id });
-  const votes = peer.souls.thingVotes.get({ thingid: id, votekind: kind });
-  // thing.get(`votes${kind}`).put(votes);
+  const votes = peer.gun.get(
+    routes[kind === "up" ? "ThingVotesUp" : "ThingVotesDown"].reverse({
+      thingId: id
+    })
+  );
   return votes.get(nonce).put("1");
 });
 
@@ -235,39 +238,43 @@ const topicPrefixes = {
   comment: "comments:"
 };
 
-export const indexThing = curry((peer, thingid, data) => {
+export const indexThing = curry((peer, thingId, data) => {
   if (!data.topic && !data.opId) return;
 
   if (data.opId && !data.topic) {
-    peer.souls.thing
-      .get({ thingid: data.opId })
+    peer.gun
+      .get(routes.Thing.reverse({ thingId: data.opId }))
       .get("data")
       .on(function recv(td) {
         if (!td) return;
-        peer.indexThing(thingid, { ...data, topic: td.topic || "all" });
+        peer.indexThing(thingId, { ...data, topic: td.topic || "all" });
         this.off();
       });
     return;
   }
 
-  const thing = peer.souls.thing.get({ thingid });
+  const thing = peer.gun.get(routes.Thing.reverse({ thingId }));
   const dayStr = getDayStr(data.timestamp);
   const [year, month, day] = dayStr.split("/");
   const topicPrefix = topicPrefixes[data.kind] || "";
-  const basetopicname = data.topic.toLowerCase().trim();
-  const topicname = topicPrefix + basetopicname;
-  const topic = peer.souls.topic.get({ topicname });
-  const topicDay = peer.souls.topicDay.get({ topicname, year, month, day });
+  const baseTopicName = data.topic.toLowerCase().trim();
+  const topicName = topicPrefix + baseTopicName;
+  const topic = peer.gun.get(routes.Topic.reverse({ topicName }));
+  const topicDay = peer.gun.get(
+    routes.TopicDay.reverse({ topicName, year, month, day })
+  );
 
   if (!data.skipAll && data.topic !== "all") {
     const allname = `${topicPrefix}all`;
-    const allTopic = peer.souls.topic.get({ topicname: allname });
-    const allTopicDay = peer.souls.topicDay.get({
-      topicname: allname,
-      year,
-      month,
-      day
-    });
+    const allTopic = peer.gun.get(routes.Topic.reverse({ topicName: allname }));
+    const allTopicDay = peer.gun.get(
+      routes.TopicDay.reverse({
+        topicName: allname,
+        year,
+        month,
+        day
+      })
+    );
     allTopic.set(thing);
     allTopicDay.set(thing);
   }
@@ -278,30 +285,36 @@ export const indexThing = curry((peer, thingid, data) => {
       ? (urlInfo.host || "").replace(/^www\./, "")
       : `self.${data.topic}`
     ).toLowerCase();
-    const domain = peer.souls.domain.get({ domain: domainName });
+    const domain = peer.gun.get(routes.Domain.reverse({ domain: domainName }));
     domain.set(thing);
 
     if (data.url) {
-      const urlNode = peer.souls.url.get({ url: data.url });
+      const urlNode = peer.gun.get(routes.URL.reverse({ url: data.url }));
       // thing.get("url").put(urlNode);
       urlNode.set(thing);
     }
   }
 
   if (data.opId) {
-    const op = peer.souls.thing.get({ thingid: data.opId });
-    const allcomments = peer.souls.thingAllComments.get({ thingid: data.opId });
+    const op = peer.gun.get(routes.Thing.reverse({ thingId: data.opId }));
+    const allcomments = peer.gun.get(
+      routes.ThingAllComments.reverse({ thingId: data.opId })
+    );
     // op.get("allcomments").put(allcomments);
     allcomments.set(thing);
   }
 
   if (data.replyToId || data.opId) {
-    const replyTo = peer.souls.thing.get({
-      thingid: data.replyToId || data.opId
-    });
-    const comments = peer.souls.thingComments.get({
-      thingid: data.replyToId || data.opId
-    });
+    const replyTo = peer.gun.get(
+      routes.Thing.reverse({
+        thingId: data.replyToId || data.opId
+      })
+    );
+    const comments = peer.gun.get(
+      routes.ThingComments.reverse({
+        thingId: data.replyToId || data.opId
+      })
+    );
     comments.set(thing);
     // replyTo.get("comments").put(comments);
   }

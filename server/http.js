@@ -6,14 +6,22 @@ import init from "./notabug-peer";
 
 const staticMedia = express.Router();
 staticMedia.use(
-  "/media", expires({ ttl: 60*60*24 }),
-  expressStaticGzip(path.join(__dirname, "..", "htdocs", "media"), { index: false })
+  "/media",
+  expires({ ttl: 60 * 60 * 24 }),
+  expressStaticGzip(path.join(__dirname, "..", "htdocs", "media"), {
+    index: false
+  })
 );
 staticMedia.use(
-  "/static", expires({ ttl: 60*60*24 }),
-  expressStaticGzip(path.join(__dirname, "..", "htdocs", "static"), { index: false })
+  "/static",
+  expires({ ttl: 60 * 60 * 24 }),
+  expressStaticGzip(path.join(__dirname, "..", "htdocs", "static"), {
+    index: false
+  })
 );
-staticMedia.use(express.static(path.join(__dirname, "..", "htdocs"), { index: false }));
+staticMedia.use(
+  express.static(path.join(__dirname, "..", "htdocs"), { index: false })
+);
 
 export const initServer = ({ port, host, render, ...options }) => {
   const app = express();
@@ -22,7 +30,7 @@ export const initServer = ({ port, host, render, ...options }) => {
   if (render) {
     app.use(staticMedia);
     require("@babel/register")({
-      ignore: [ /(node_modules|server-build)/ ],
+      ignore: [/(node_modules|server-build)/],
       presets: ["@babel/preset-env", "@babel/preset-react"]
     });
     const renderer = require("./renderer").default;
@@ -39,6 +47,9 @@ export const initServer = ({ port, host, render, ...options }) => {
       ...(options.pistol ? [`http://${host}:${port}/gun`] : [])
     ]
   });
-  if (options.pistol) require("../pistol/server")({ redis: options.redis, web });
+  if (options.pistol)
+    require("./receiver").default({ redis: options.redis, web });
+  // without a get gun never connects to receiver
+  if (options.pistol) nab.gun.get("~@").once(() => null);
   return nab;
 };
