@@ -296,27 +296,19 @@ export const indexThing = curry((peer, thingId, data) => {
   }
 
   if (data.opId) {
-    const op = peer.gun.get(routes.Thing.reverse({ thingId: data.opId }));
     const allcomments = peer.gun.get(
       routes.ThingAllComments.reverse({ thingId: data.opId })
     );
-    // op.get("allcomments").put(allcomments);
     allcomments.set(thing);
   }
 
   if (data.replyToId || data.opId) {
-    const replyTo = peer.gun.get(
-      routes.Thing.reverse({
-        thingId: data.replyToId || data.opId
-      })
-    );
     const comments = peer.gun.get(
       routes.ThingComments.reverse({
         thingId: data.replyToId || data.opId
       })
     );
     comments.set(thing);
-    // replyTo.get("comments").put(comments);
   }
 
   topic.set(thing);

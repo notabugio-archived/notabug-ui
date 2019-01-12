@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext } from "react";
 import qs from "qs";
 import { Link, JavaScriptRequired } from "utils";

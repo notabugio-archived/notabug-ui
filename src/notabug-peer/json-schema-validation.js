@@ -155,8 +155,8 @@ export function validateWireInput(peer, context) {
   context.on("in", function wireInput(msg) {
     if ("ping" in msg || "leech" in msg) return;
     if (msg.put && !keys(msg.put).length) return;
-    suppressor
-      .validate(msg)
+    const promise = peer.config.disableValidation ? Promise.resolve(msg) : suppressor.validate(msg);
+    promise
       .then(validated => {
         if (!validated) return console.log("msg didn't validate", msg);
         if (peer.config.oracle && msg.get) {

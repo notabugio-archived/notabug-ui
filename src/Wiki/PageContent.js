@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import { compose, trim } from "ramda";
 import { Link, Markdown } from "utils";

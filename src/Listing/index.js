@@ -46,7 +46,7 @@ const useListing = ({ listingParams }) => {
 
   const opId = parsedSource.filters.allow.ops[0];
   const ids = useMemo(() => uniq([...speculativeIds, ...canonicalIds]), [
-    ids,
+    canonicalIds,
     speculativeIds
   ]);
 

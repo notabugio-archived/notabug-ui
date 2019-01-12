@@ -91,7 +91,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     try {
       // if (FORCE_REALTIME) return Promise.resolve();
       return Promise.resolve();
-      return fetch(`/api${pathname}.json${search}`, [])
+      return fetch(`/api${pathname}.json${search}`, []) // eslint-disable-line no-unreachable
         .then(response => {
           if (response.status !== 200)
             throw new Error("Bad response from server");

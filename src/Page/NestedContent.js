@@ -18,7 +18,7 @@ export const NestedContent = React.memo(
     return (
       <ErrorBoundary>
         <ContentContext.Provider value={contentData}>
-          <a name="content" key="anchor" />
+          <a name="content" key="anchor" /* eslint-disable-line */ />
           <div className="content" role="main">
             <div className="spacer">
               <div className="sitetable linklisting" id="siteTable">

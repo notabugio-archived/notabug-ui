@@ -5,7 +5,7 @@ import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
 import "snew-classic-ui/static/css/minimal.css";
 import "snew-classic-ui/static/css/wiki.css";
-import "react-tippy/dist/tippy.css";
+import "react-popper-tooltip/dist/styles.css";
 import "styles/index.css";
 import { App } from "App";
 import { ErrorBoundary } from "utils";

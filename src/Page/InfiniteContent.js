@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext, useState, useCallback, useRef } from "react";
 import { add } from "ramda";
 import debounce from "lodash/debounce";

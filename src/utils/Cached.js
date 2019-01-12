@@ -15,7 +15,7 @@ const Cached = ({ location: { pathname, search }, Wrapped, ...props }) => {
       if (!hasBooted && renderedLocation) {
         if (
           pathname === renderedLocation.pathname &&
-          search == renderedLocation.search
+          search === renderedLocation.search
         ) {
           hasBooted = true;
           return;

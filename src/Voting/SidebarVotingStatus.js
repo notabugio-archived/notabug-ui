@@ -40,18 +40,17 @@ export const SidebarVotingStatus = React.memo(({ color = "#FF8B60" }) => {
         ) : null}
         <div className="more">
           {currentVote ? (
-            <a href="" onClick={onPauseQueue}>
+            <button onClick={onPauseQueue}>
               pause
-            </a>
+            </button>
           ) : (
-            <a href="" onClick={onResumeQueue}>
+            <button onClick={onResumeQueue}>
               resume
-            </a>
-          )}{" "}
-          |{" "}
-          <a href="" onClick={onResetQueue}>
+            </button>
+          )}
+          <button onClick={onResetQueue}>
             cancel
-          </a>
+          </button>
         </div>
       </div>
     </React.Fragment>

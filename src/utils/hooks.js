@@ -2,7 +2,6 @@ import { useState, useCallback, useMemo, useEffect } from "react";
 import { values } from "ramda";
 import { useNotabug } from "NabContext";
 import isNode from "detect-node";
-import debounce from "lodash/debounce";
 
 export const useMemoizedObject = obj => useMemo(() => obj, values(obj));
 
@@ -64,10 +63,9 @@ export const useQuery = (query, args=[]) => {
   useEffect(
     () => {
       setHasResponse(false);
-      const update = debounce(doUpdate, 50);
-      update();
-      scope.on(update);
-      return () => scope.off(update);
+      doUpdate();
+      scope.on(doUpdate);
+      return () => scope.off(doUpdate);
     },
     [doUpdate]
   );
@@ -77,7 +75,7 @@ export const useQuery = (query, args=[]) => {
 
 export const useShowMore = (items, foldSize=5) => {
   const [visibleCount, setVisibleCount] = useState(foldSize);
-  const moreCount = (items && items.length || 0) - visibleCount;
+  const moreCount = ((items && items.length) || 0) - visibleCount;
 
   const onShowMore = useCallback(
     evt => {

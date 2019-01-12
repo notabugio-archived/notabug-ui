@@ -93,7 +93,7 @@ export const definitions = {
     title: "URL",
     description: "All things for a given URL",
     soul: {
-      pattern: `${consts.PREFIX}/urls/\*url`,
+      pattern: `${consts.PREFIX}/urls/\*url`, // eslint-disable-line no-useless-escape
       properties: {
         url: { $ref: "schema.json#/definitions/url" }
       },

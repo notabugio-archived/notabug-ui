@@ -20,14 +20,14 @@ export const TopicList = React.memo(({ topics }) => {
           ) : null}
           <ul className={isOpen ? "content" : ""}>
             {isOpen ? topics.map(topic => (
-              <li>
+              <li key={topic}>
                 <Link href={`/t/${topic}`}>{topic}</Link>
               </li>
             )) : null}
             <li className="more">
-              <a href="" onClick={toggleOpen}>
-                ...{isOpen ? "hide" : "show"} {topics.length} topics...
-              </a>
+              <button onClick={toggleOpen}>
+                {isOpen ? "hide" : "show"} {topics.length} topics
+              </button>
             </li>
           </ul>
         </div>

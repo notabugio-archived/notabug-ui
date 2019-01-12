@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import Helmet from "react-helmet";
 import { useNotabug } from "NabContext";

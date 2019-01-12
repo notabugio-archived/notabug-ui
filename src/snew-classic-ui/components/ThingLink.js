@@ -1,3 +1,4 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment } from "react";
 import ExpandoComponent from "./Expando";
 import LinkComponent from "./Link";
@@ -132,7 +133,7 @@ const ThingLink = ({
       <Link
         className="thumbnail may-blank loggedin"
         href={url}
-        rel={nofollow && !is_self ? "nofollow" : ""}
+        rel={nofollow && !is_self ? "nofollow noopener" : "noopener"}
         target={is_self ? null : linkTarget}
       >
         <img alt="Thumb" height={70} src={thumbnail} width={70} />
@@ -152,7 +153,7 @@ const ThingLink = ({
           className="title may-blank loggedin"
           href={url}
           tabIndex={rank}
-          rel={nofollow ? "nofollow" : ""}
+          rel={nofollow ? "nofollow noopener" : "noopener"}
           target={is_self ? null : linkTarget}
         >
           {title}
@@ -245,7 +246,12 @@ const ThingLink = ({
         {onShare ? (
           <li className="share">
             {typeof onShare === "string" ? (
-              <a className="post-sharing-button" href={onShare} target="_blank">
+              <a
+                className="post-sharing-button"
+                href={onShare}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
                 share
               </a>
             ) : (

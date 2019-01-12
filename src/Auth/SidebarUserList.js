@@ -1,10 +1,11 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useState, useCallback } from "react";
 import { JavaScriptRequired } from "utils";
 import { UserIdLink } from "Auth";
 
 export const SidebarUserList = ({ title = "users", ids, foldSize = 5 }) => {
   const [visibleCount, setVisibleCount] = useState(foldSize);
-  const moreCount = (ids && ids.length || 0) - visibleCount;
+  const moreCount = ((ids && ids.length) || 0) - visibleCount;
   const hasMore = moreCount > 0;
 
   const onShowMore = useCallback(

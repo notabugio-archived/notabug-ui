@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/anchor-has-content */
+/* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { Fragment } from "react";
 import ProfileHeaderComponent from "./ProfileHeader";
 import FooterParentComponent from "./FooterParent";
@@ -58,7 +60,7 @@ export const ProfilePage = ({
     <a name="content" />
     {children || null}
     {optional(FooterParent, { ...props, key: "footer" })}
-    <img id="hsts_pixel" key="hsts_pixel" />
+    <img id="hsts_pixel" key="hsts_pixel" alt="?"/>
     <p className="bottommenu debuginfo" key="debuginfo">
       <span className="icon">π</span> <span className="content">
         Rendered by go1dfish on open-source-reddit at 2017-10-22 02:55:43.787032+00:00

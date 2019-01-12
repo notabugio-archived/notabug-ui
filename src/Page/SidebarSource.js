@@ -5,6 +5,7 @@ import { JavaScriptRequired, Link, useToggle } from "utils";
 export const SidebarSource = ({ name, identifier }) => {
   const [isSourceExpanded, onToggleSourceExpanded] = useToggle(false);
   if (!name || !identifier) return null;
+  const path = `/user/${identifier}/pages/${name}`;
   return (
     <JavaScriptRequired silent>
       <div className="spacer">
@@ -12,7 +13,7 @@ export const SidebarSource = ({ name, identifier }) => {
           {isSourceExpanded ? (
             <div className="title">
               <h1>
-                <Link href={`/user/${identifier}/pages/${name}`}>
+                <Link href={path}>
                   listing source
                 </Link>
               </h1>
@@ -23,7 +24,7 @@ export const SidebarSource = ({ name, identifier }) => {
               <WikiPageContent asSource {...{ name, identifier }} />
             ) : null}
             <div className="more">
-              <a href="" onClick={onToggleSourceExpanded}>
+              <a href={path} onClick={onToggleSourceExpanded}>
                 ...{isSourceExpanded ? "hide" : "show"} listing source...
               </a>
             </div>

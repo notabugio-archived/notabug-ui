@@ -9,7 +9,7 @@ export const Page = ({ listingParams, ...props }) =>
     <ListingPage {...{ ...props, listingParams }} />
   ) : (
     <PageTemplate {...props}>
-      <a name="content" key="anchor" />
+      <a name="content" key="anchor" /* eslint-disable-line */ />
       <div className="content" role="main">
         <ErrorBoundary>{props.children}</ErrorBoundary>
       </div>

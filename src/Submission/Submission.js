@@ -109,7 +109,6 @@ export const Submission = ({
         score={scoreDisp}
         num_comments={comments}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
-        linkTarget="_blank"
         scoreTooltip={`+${ups} / -${downs}`}
         preTagline={
           <span className="individual-vote-counts">
