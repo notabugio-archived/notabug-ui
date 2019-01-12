@@ -14,7 +14,7 @@ export const PageName = ({ path, name }) => {
 export const PageTab = ({ name, path, listingParams }) => (
   <NavTab
     {...{ Link, href: path }}
-    className={listingParams.soul.match(path) ? "selected" : ""}
+    className={listingParams && listingParams.soul.match(path) ? "selected" : ""}
   >
     {name}
   </NavTab>

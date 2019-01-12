@@ -1,32 +1,21 @@
 import { assoc, path, keys } from "ramda";
 import Route from "route-parser";
 import * as sea from "gun-suppressor-sear";
-
-const PREFIX = "nab";
-const MAX_HASH_SIZE = 64;
-const MAX_TOPIC_SIZE = 42;
-const MAX_DOMAIN_SIZE = 256;
-const MAX_THING_KIND_SIZE = 16;
-const MAX_THING_TITLE_SIZE = 300;
-const MAX_THING_BODY_SIZE = 50000;
-
-const MAX_LISTING_IDS_SIZE = 50000;
-const MAX_LISTING_SOURCE_SIZE = 50000;
-const MAX_LISTING_TABS_SIZE = 5000;
+import * as consts from "./constants";
 
 export const definitions = {
   ...sea.AUTH_SCHEMA,
   topicName: {
     type: "string",
     minLength: 1,
-    maxLength: MAX_TOPIC_SIZE
+    maxLength: consts.MAX_TOPIC_SIZE
   },
 
   TopicDay: {
     title: "Topic Day",
     description: "A single day of things in a topic",
     soul: {
-      pattern: `${PREFIX}/topics/:topicName/days/:year/:month/:day`,
+      pattern: `${consts.PREFIX}/topics/:topicName/days/:year/:month/:day`,
       properties: {
         topicName: { $ref: "schema.json#/definitions/topicName" },
         year: { type: "number", minimum: 2018, maximum: 2100 },
@@ -55,7 +44,7 @@ export const definitions = {
     title: "Topic",
     description: "All things in a topic",
     soul: {
-      pattern: `${PREFIX}/topics/:topicName`,
+      pattern: `${consts.PREFIX}/topics/:topicName`,
       properties: {
         topicName: { $ref: "schema.json#/definitions/topicName" }
       },
@@ -80,14 +69,14 @@ export const definitions = {
   domainName: {
     type: "string",
     minLength: 1,
-    maxLength: MAX_DOMAIN_SIZE
+    maxLength: consts.MAX_DOMAIN_SIZE
   },
 
   Domain: {
     title: "Domain",
     description: "All things in a domain",
     soul: {
-      pattern: `${PREFIX}/domains/:domainName`,
+      pattern: `${consts.PREFIX}/domains/:domainName`,
       properties: {
         domainName: { $ref: "schema.json#/definitions/domainName" }
       },
@@ -104,7 +93,7 @@ export const definitions = {
     title: "URL",
     description: "All things for a given URL",
     soul: {
-      pattern: `${PREFIX}/urls/\*url`,
+      pattern: `${consts.PREFIX}/urls/\*url`,
       properties: {
         url: { $ref: "schema.json#/definitions/url" }
       },
@@ -118,7 +107,7 @@ export const definitions = {
 
   thingId: {
     type: "string",
-    maxLength: MAX_HASH_SIZE
+    maxLength: consts.MAX_HASH_SIZE
   },
 
   thingSoul: {
@@ -131,7 +120,7 @@ export const definitions = {
     title: "Thing All Comments",
     description: "All comments for a given submission",
     soul: {
-      pattern: `${PREFIX}/things/:thingId/allcomments`,
+      pattern: `${consts.PREFIX}/things/:thingId/allcomments`,
       allOf: [{ $ref: "schema.json#/definitions/thingSoul" }]
     },
     additionalProperties: {
@@ -144,7 +133,7 @@ export const definitions = {
     title: "Thing Comments",
     description: "Direct replies to a thing",
     soul: {
-      pattern: `${PREFIX}/things/:thingId/comments`,
+      pattern: `${consts.PREFIX}/things/:thingId/comments`,
       allOf: [{ $ref: "schema.json#/definitions/thingSoul" }]
     },
     additionalProperties: {
@@ -156,7 +145,7 @@ export const definitions = {
   timestamp: { type: ["number", "string"] },
   thingKind: {
     type: "string",
-    maxLength: MAX_THING_KIND_SIZE
+    maxLength: consts.MAX_THING_KIND_SIZE
   },
 
   Thing: {
@@ -164,7 +153,7 @@ export const definitions = {
     description:
       "These are submissions, comments, chat messages and wiki pages",
     soul: {
-      pattern: `${PREFIX}/things/:thingId`,
+      pattern: `${consts.PREFIX}/things/:thingId`,
       allOf: [{ $ref: "schema.json#/definitions/thingSoul" }]
     },
     propsFromSoul: { id: "thingId" },
@@ -248,7 +237,7 @@ export const definitions = {
 
   ThingVotesUp: {
     soul: {
-      pattern: `${PREFIX}/things/:thingId/votesup`,
+      pattern: `${consts.PREFIX}/things/:thingId/votesup`,
       allOf: [{ $ref: "schema.json#/definitions/thingSoul" }]
     },
     allOf: [{ $ref: "#/definitions/ProofOfWorkVotes" }]
@@ -256,7 +245,7 @@ export const definitions = {
 
   ThingVotesDown: {
     soul: {
-      pattern: `${PREFIX}/things/:thingId/votesdown`,
+      pattern: `${consts.PREFIX}/things/:thingId/votesdown`,
       allOf: [{ $ref: "schema.json#/definitions/thingSoul" }]
     },
     allOf: [{ $ref: "#/definitions/ProofOfWorkVotes" }]
@@ -266,7 +255,7 @@ export const definitions = {
     title: "Unsigned Thing Data",
     description: "This is the actual content of a thing",
     soul: {
-      pattern: `${PREFIX}/things/:thingId/data`,
+      pattern: `${consts.PREFIX}/things/:thingId/data`,
       allOf: [{ $ref: "schema.json#/definitions/thingSoul" }],
       required: ["thingId"]
     },
@@ -275,10 +264,10 @@ export const definitions = {
       title: {
         type: "string",
         minLength: 1,
-        maxLength: MAX_THING_TITLE_SIZE
+        maxLength: consts.MAX_THING_TITLE_SIZE
       },
       topic: { $ref: "#/definitions/topicName" },
-      body: { type: ["null", "string"], maxLength: MAX_THING_BODY_SIZE },
+      body: { type: ["null", "string"], maxLength: consts.MAX_THING_BODY_SIZE },
       author: { $ref: "#/definitions/seaAlias" },
       authorId: { $ref: "#/definitions/seaAuthorId" },
       opId: { $ref: "#/definitions/thingId" },
@@ -295,7 +284,7 @@ export const definitions = {
     description:
       "This is the actual content of a thing, cryptographically signed",
     soul: {
-      pattern: `${PREFIX}/things/:thingId/data~:authorId.`,
+      pattern: `${consts.PREFIX}/things/:thingId/data~:authorId.`,
       properties: {
         thingId: { $ref: "schema.json#/definitions/thingId" },
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" }
@@ -308,12 +297,12 @@ export const definitions = {
         sea: {
           type: "string",
           minLength: 1,
-          maxLength: MAX_THING_TITLE_SIZE
+          maxLength: consts.MAX_THING_TITLE_SIZE
         }
       },
       topic: { sea: { $ref: "schema.json#/definitions/topicName" } },
       body: {
-        sea: { type: ["null", "string"], maxLength: MAX_THING_BODY_SIZE }
+        sea: { type: ["null", "string"], maxLength: consts.MAX_THING_BODY_SIZE }
       },
       author: {
         sea: { $ref: "schema.json#/definitions/seaAlias" }
@@ -331,7 +320,7 @@ export const definitions = {
     title: "Thing Vote Counts",
     description: "Aggregated counts from a tabulator",
     soul: {
-      pattern: `${PREFIX}/things/:thingId/votecounts@~:tabulatorId.`,
+      pattern: `${consts.PREFIX}/things/:thingId/votecounts@~:tabulatorId.`,
       properties: {
         thingId: { $ref: "schema.json#/definitions/thingId" },
         tabulatorId: { $ref: "schema.json#/definitions/seaAuthorId" }
@@ -351,24 +340,24 @@ export const definitions = {
     description: "Shared description of listing properties",
     type: "object",
     properties: {
-      ids: { sea: { type: "string", maxLength: MAX_LISTING_IDS_SIZE } },
+      ids: { sea: { type: "string", maxLength: consts.MAX_LISTING_IDS_SIZE } },
       source: {
-        sea: { type: "string", maxLength: MAX_LISTING_SOURCE_SIZE }
+        sea: { type: "string", maxLength: consts.MAX_LISTING_SOURCE_SIZE }
       },
 
       // XXX: rest are deprecated in favor of source
-      name: { sea: { type: ["string", "null"], maxLength: MAX_TOPIC_SIZE } },
+      name: { sea: { type: ["string", "null"], maxLength: consts.MAX_TOPIC_SIZE } },
       submitTopic: {
-        sea: { type: "string", maxLength: MAX_TOPIC_SIZE }
+        sea: { type: "string", maxLength: consts.MAX_TOPIC_SIZE }
       },
       tabs: {
-        sea: { type: "string", maxLength: MAX_LISTING_TABS_SIZE }
+        sea: { type: "string", maxLength: consts.MAX_LISTING_TABS_SIZE }
       },
       curators: {
-        sea: { type: "string", maxLength: MAX_LISTING_SOURCE_SIZE }
+        sea: { type: "string", maxLength: consts.MAX_LISTING_SOURCE_SIZE }
       },
       censors: {
-        sea: { type: "string", maxLength: MAX_LISTING_SOURCE_SIZE }
+        sea: { type: "string", maxLength: consts.MAX_LISTING_SOURCE_SIZE }
       },
       userId: { sea: { $ref: "schema.json#/definitions/seaAuthorId" } },
       opId: { sea: { $ref: "schema.json#/definitions/thingId" } },
@@ -394,7 +383,7 @@ export const definitions = {
 
   TopicListing: {
     soul: {
-      pattern: `${PREFIX}/t/:topic/:sort@~:indexer.`,
+      pattern: `${consts.PREFIX}/t/:topic/:sort@~:indexer.`,
       properties: {
         topic: { $ref: "schema.json#/definitions/topicName" },
         sort: { $ref: "schema.json#/definitions/sortName" },
@@ -406,7 +395,7 @@ export const definitions = {
 
   DomainListing: {
     soul: {
-      pattern: `${PREFIX}/domain/:domain/:sort@~:indexer.`,
+      pattern: `${consts.PREFIX}/domain/:domain/:sort@~:indexer.`,
       properties: {
         domain: { $ref: "schema.json#/definitions/domainName" },
         sort: { $ref: "schema.json#/definitions/sortName" },
@@ -418,7 +407,7 @@ export const definitions = {
 
   ThingCommentsListing: {
     soul: {
-      pattern: `${PREFIX}/things/:thingId/comments/:sort@~:indexer.`,
+      pattern: `${consts.PREFIX}/things/:thingId/comments/:sort@~:indexer.`,
       properties: {
         thingId: { $ref: "schema.json#/definitions/thingId" },
         sort: { $ref: "schema.json#/definitions/sortName" },
@@ -435,7 +424,7 @@ export const definitions = {
 
   AuthorRepliesListing: {
     soul: {
-      pattern: `${PREFIX}/user/:authorId/replies/:type/:sort@~:indexer.`,
+      pattern: `${consts.PREFIX}/user/:authorId/replies/:type/:sort@~:indexer.`,
       properties: {
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" },
         sort: { $ref: "schema.json#/definitions/sortName" },
@@ -448,7 +437,7 @@ export const definitions = {
 
   AuthorProfileListing: {
     soul: {
-      pattern: `${PREFIX}/user/:authorId/:type/:sort@~:indexer.`,
+      pattern: `${consts.PREFIX}/user/:authorId/:type/:sort@~:indexer.`,
       properties: {
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" },
         sort: { $ref: "schema.json#/definitions/sortName" },
@@ -461,7 +450,7 @@ export const definitions = {
 
   SpaceListing: {
     soul: {
-      pattern: `${PREFIX}/user/:authorId/spaces/:name/:sort@~:indexer.`,
+      pattern: `${consts.PREFIX}/user/:authorId/spaces/:name/:sort@~:indexer.`,
       properties: {
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" },
         sort: { $ref: "schema.json#/definitions/sortName" },
@@ -476,7 +465,7 @@ export const definitions = {
     title: "Author's Comments",
     description: "All of an authors comments should be linked here",
     soul: {
-      pattern: `${PREFIX}/comments~:authorId.`,
+      pattern: `${consts.PREFIX}/comments~:authorId.`,
       properties: {
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" }
       },
@@ -494,7 +483,7 @@ export const definitions = {
     title: "Author's Submissions",
     description: "All of an author's submissions should be linked here",
     soul: {
-      pattern: `${PREFIX}/submissions~:authorId.`,
+      pattern: `${consts.PREFIX}/submissions~:authorId.`,
       properties: {
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" }
       },
@@ -506,7 +495,7 @@ export const definitions = {
     title: "Author's Things",
     description: "All of an author's things should be linked here",
     soul: {
-      pattern: `${PREFIX}/things~:authorId.`,
+      pattern: `${consts.PREFIX}/things~:authorId.`,
       properties: {
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" }
       },
@@ -524,7 +513,7 @@ export const definitions = {
     title: "Author Page Map",
     description: "Mapping of page names to things",
     soul: {
-      pattern: `${PREFIX}/pages~:authorId.`,
+      pattern: `${consts.PREFIX}/pages~:authorId.`,
       properties: {
         authorId: { $ref: "schema.json#/definitions/seaAuthorId" }
       },

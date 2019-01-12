@@ -15,7 +15,7 @@ export { Thing } from "./Thing";
 
 const { all } = Promise;
 
-export const useListing = ({ listingParams }) => {
+const useListing = ({ listingParams }) => {
   const { api } = useNotabug();
   const { soul } = listingParams;
   const [speculativeIds, setSpeculativeIds] = useState([]);

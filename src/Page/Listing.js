@@ -1,5 +1,4 @@
 import React from "react";
-import { useSpace } from "Space/Provider";
 import { PageTemplate } from "Page/Template";
 import { NestedContent } from "Page/NestedContent";
 import { InfiniteContent } from "Page/InfiniteContent";
@@ -9,10 +8,9 @@ import { useListingContext } from "Listing";
 import { ErrorBoundary, useToggle } from "utils";
 
 export const ListingPage = React.memo(({ listingParams, ...props }) => {
-  const space = useSpace();
   const { ListingContext, listingData } = useListingContext({ listingParams });
   const [infinite, onToggleInfinite] = useToggle(false);
-  const { userId, opId, isChat, name } = listingData;
+  const { opId, isChat } = listingData;
   const cProps = { ...props, opId, ListingContext, onToggleInfinite };
   let Content = PagedContent;
   if (infinite || isChat) Content = InfiniteContent;
@@ -20,10 +18,7 @@ export const ListingPage = React.memo(({ listingParams, ...props }) => {
 
   return (
     <ListingContext.Provider value={listingData}>
-      <PageTemplate
-        {...{ ...props, userId, opId, isChat, name, listingParams }}
-        meta={space ? space : listingData}
-      >
+      <PageTemplate {...{ ...props, ListingContext }}>
         <ErrorBoundary>
           <Content {...cProps} />
           {infinite || isChat ? null : (

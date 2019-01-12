@@ -7,7 +7,7 @@ import { PageTemplate } from "Page";
 const SpaceContext = createContext();
 export const useSpace = () => useContext(SpaceContext) || null;
 
-export const SpaceProvider = React.memo(({ owner, name, children }) => {
+export const SpaceProvider = React.memo(({ owner, name, children: childrenProp }) => {
   const { api } = useNotabug();
   const [{ body } = {}, isLoaded] = useQuery(api.queries.wikiPage, [
     owner,
@@ -15,6 +15,7 @@ export const SpaceProvider = React.memo(({ owner, name, children }) => {
   ]);
   const source = spaceSourceWithDefaults({ owner, name, source: body });
   const spaceContext = useMemo(() => toListingObject(source, owner, name), [source, owner, name]);
+  const children = isLoaded && (typeof childrenProp === "function" ? childrenProp() : childrenProp);
 
   return (
     <SpaceContext.Provider value={spaceContext}>

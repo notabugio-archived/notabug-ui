@@ -55,8 +55,8 @@ export const useQuery = (query, args=[]) => {
 
   const doUpdate = useCallback(
     () => query(scope, ...args).then(res => {
-      setHasResponse(true);
       res && setResult(res);
+      setHasResponse(true);
     }),
     [scope, ...args]
   );

@@ -1,7 +1,7 @@
 import { StaticPage, Reddit } from "static";
 import { cached } from "utils";
 import { Page } from "Page";
-import { SpaceListingPage } from "Space";
+import { SpaceSubmitPage, SpaceListingPage } from "Space";
 import { LoginSignupPage } from "Auth";
 import { SubmissionForm } from "Submission/Form";
 import { WikiPage } from "Wiki";
@@ -105,7 +105,11 @@ export const routes = [
   },
   { path: "/t/:topic/submit", component: SubmissionForm },
   { path: "/login", component: LoginSignupPage },
-  { path: "/submit", component: SubmissionForm },
+  {
+    path: "/submit",
+    component: cached(SpaceSubmitPage),
+    getSpaceParams: getUserSpaceParams
+  },
   { path: "/r/*", component: Reddit },
   {
     path: "/:prefix/:identifier/comments/:submission_id/:slug",
@@ -160,6 +164,11 @@ export const routes = [
   {
     path: "/user/:identifier/pages",
     component: cached(WikiPage)
+  },
+  {
+    path: "/user/:identifier/spaces/:name/submit",
+    component: cached(SpaceSubmitPage),
+    getSpaceParams: getUserSpaceParams
   },
   {
     path: "/user/:identifier/spaces/:name/comments/:opId/:slug",
