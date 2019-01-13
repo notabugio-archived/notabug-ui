@@ -65,7 +65,7 @@ const imgExts = ["jpg", "jpeg", "png", "gif"];
 
 export const getExpando = (item, rawDomain, urlInfo) => {
   const domain = rawDomain ? rawDomain.toLowerCase() : rawDomain;
-  const query = qs.parse(urlInfo.search, { ignoreQueryPrefix: true });
+  const query = qs.parse(urlInfo.query);
   let iframe;
   let EmbedComponent;
   let reactPlayer;

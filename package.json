@@ -67,7 +67,7 @@
     "serialize-javascript": "1.6.1",
     "snuownd": "https://github.com/JordanMilne/snuownd.git",
     "text-encoding": "^0.7.0",
-    "urllite": "^0.5.0",
+    "uri-js": "^4.2.2",
     "uuid": "^3.2.1",
     "worker-loader": "^2.0.0",
     "zalgo-promise": "1.0.28"

@@ -22,7 +22,7 @@ export const PageTemplate = ({
 }) => {
   const listingData = useContext(ListingContext || {});
   const space = useSpace();
-  const { listingParams, userId, listingName } = listingData || {};
+  const { listingParams, userId, name: listingName } = listingData || {};
   const {
     path,
     displayName,

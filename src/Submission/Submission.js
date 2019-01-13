@@ -2,7 +2,7 @@ import React, { Fragment, useMemo } from "react";
 // import { Helmet } from "react-helmet";
 import { always } from "ramda";
 import { withRouter } from "react-router-dom";
-import urllite from "urllite";
+import { parse as parseURI } from "uri-js";
 import { ThingLink } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify, interceptClicks } from "utils";
 import { Expando, getExpando } from "./Expando";
@@ -41,7 +41,7 @@ export const Submission = ({
   let scoreDisp = null;
   if (score || score === 0) scoreDisp = ups - downs || 0;
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
-  const urlInfo = item.url ? urllite(item.url) : {};
+  const urlInfo = item.url ? parseURI(item.url) : {};
   const permalink = useMemo(
     () =>
       (space && space.useForComments
@@ -51,7 +51,7 @@ export const Submission = ({
     [item.topic, id, item.title]
   );
   const domain = item.url
-    ? (urlInfo.host || "").replace(/^www\./, "")
+    ? (urlInfo.host || urlInfo.scheme || "").replace(/^www\./, "")
     : item.topic
     ? `self.${item.topic}`
     : null;
@@ -109,6 +109,7 @@ export const Submission = ({
         score={scoreDisp}
         num_comments={comments}
         likes={isVotingUp ? true : isVotingDown ? false : undefined}
+        linkTarget="_blank"
         scoreTooltip={`+${ups} / -${downs}`}
         preTagline={
           <span className="individual-vote-counts">

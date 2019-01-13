@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import qs from "qs";
 import slugify from "utils/slugify";
-import urllite from "urllite";
+import { parse as parseURI } from "uri-js";
 import {
   MAX_TOPIC_SIZE,
   MAX_THING_BODY_SIZE,
@@ -45,8 +45,8 @@ export const SubmissionForm = withRouter(
       () => {
         if (isSelf) return false;
         if (!url) return true;
-        const { host, protocol } = urllite(url) || {};
-        if (host && protocol) return false;
+        const { host, scheme } = parseURI(url) || {};
+        if ((host || scheme)) return false;
         return true;
       },
       [isSelf, url]

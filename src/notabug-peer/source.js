@@ -1,9 +1,16 @@
 import { compose, lte, gte, path, trim, assocPath, keysIn } from "ramda";
-import urllite from "urllite";
+import { parse as parseURI } from "uri-js";
 
 import { tabulator as defaultIndexer } from "../config.json";
 
-const potentialSources = ["replies", "op", "curator", "author", "domain", "topic"];
+const potentialSources = [
+  "replies",
+  "op",
+  "curator",
+  "author",
+  "domain",
+  "topic"
+];
 
 export const toListingObject = (source, ownerId = null, spaceName = null) => {
   const parsedSource = parseListingSource(source);
@@ -122,7 +129,11 @@ export const toFilters = obj => {
   if (filters.deny.domains.length)
     addFilter(
       domain => !domain || !isPresent(["ban", "domain", domain]),
-      url => url && (urllite(url).host || "").replace(/^www\./, ""),
+      url => {
+        if (!url) return;
+        const parsed = parseURI(url);
+        return (parsed.host || parsed.scheme || "").replace(/^www\./, "");
+      },
       path(["data", "url"])
     );
   if (filters.deny.topics.length)

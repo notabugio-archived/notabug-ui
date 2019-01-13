@@ -1,7 +1,7 @@
 import { curry, path, keysIn } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import objHash from "object-hash";
-import urllite from "urllite";
+import { parse as parseURI } from "uri-js";
 import { getDayStr } from "./util";
 import { routes } from "./json-schema";
 
@@ -280,9 +280,9 @@ export const indexThing = curry((peer, thingId, data) => {
   }
 
   if (data.kind === "submission") {
-    const urlInfo = data.url ? urllite(data.url) : {};
+    const urlInfo = data.url ? parseURI(data.url) : {};
     const domainName = (data.url
-      ? (urlInfo.host || "").replace(/^www\./, "")
+      ? (urlInfo.host || urlInfo.scheme || "").replace(/^www\./, "")
       : `self.${data.topic}`
     ).toLowerCase();
     const domain = peer.gun.get(routes.Domain.reverse({ domain: domainName }));
