@@ -1432,10 +1432,10 @@ ajv@^6.0.1, ajv@^6.1.0, ajv@^6.5.3:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
-ajv@^6.6.2:
-  version "6.6.2"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.6.2.tgz#caceccf474bf3fc3ce3b147443711a24063cc30d"
-  integrity sha512-FBHEW6Jf5TB9MGBgUUA9XHkTbjXYfAUjY43ACMfmdMRHniyoMHjHjzD50OK8LGDWQwp4rWEsIq5kEqq7rvIM1g==
+ajv@^6.7.0:
+  version "6.7.0"
+  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.7.0.tgz#e3ce7bb372d6577bb1839f1dfdfcbf5ad2948d96"
+  integrity sha512-RZXPviBTtfmtka9n9sy1N5M5b82CbxWIR6HIis4s3WQTXDJamc/0gpCWNGz6EWdWp4DOfjzJfhz/AS9zVPjjWg==
   dependencies:
     fast-deep-equal "^2.0.1"
     fast-json-stable-stringify "^2.0.0"
@@ -2363,7 +2363,7 @@ babel-preset-jest@^23.2.0:
     babel-plugin-jest-hoist "^23.2.0"
     babel-plugin-syntax-object-rest-spread "^6.13.0"
 
-babel-preset-react-app@7.0.0, babel-preset-react-app@^7.0.0:
+babel-preset-react-app@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/babel-preset-react-app/-/babel-preset-react-app-7.0.0.tgz#86bf71e43cb8d36e40da69f8b4ad5d6f945dec93"
   integrity sha512-LQKCB3xxdhAlRbk6IIZdO4ry1yA8gKGVV4phjOIgCEQr3oyaLPXf2j+lfD0zljOE2wkN2axRGOLTzdUPzVDO4w==
@@ -5333,17 +5333,25 @@ gud@^1.0.0:
   resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
-gun-file@^1.0.123:
-  version "1.0.123"
-  resolved "https://registry.yarnpkg.com/gun-file/-/gun-file-1.0.123.tgz#ac4d25cde5c6e86da26011a943e74c976dbc3864"
-  integrity sha512-Vs5AdPhv5WldcRCbYg9/Lydx0qgx4No3i5YRXu0L3Hw+Y49mVqNqauHzpbQTO2hjQ+Cii6YjaYVBfDYXsdlA0g==
-  dependencies:
-    gun "^0.9.96"
-    json-6 "^0"
+"gun-cleric-scope@https://github.com/notabugio/gun-cleric-scope.git":
+  version "0.0.2"
+  resolved "https://github.com/notabugio/gun-cleric-scope.git#1db0ef47ab46658de7d7c19c731937aa69e17885"
+
+"gun-cleric@https://github.com/notabugio/gun-cleric.git":
+  version "0.0.1"
+  resolved "https://github.com/notabugio/gun-cleric.git#920a684eaf7d6fbd46468a9311a5fe94edce116b"
 
 "gun-receiver@https://github.com/notabugio/gun-receiver.git":
-  version "0.0.2"
-  resolved "https://github.com/notabugio/gun-receiver.git#2fecb22708d1bf9a0d73253e2f26213e07380428"
+  version "0.1.0"
+  resolved "https://github.com/notabugio/gun-receiver.git#9b848998ada56ef70ef44d57e53b9134a823c958"
+
+"gun-redis@https://github.com/notabugio/gun-redis.git":
+  version "0.1.0"
+  resolved "https://github.com/notabugio/gun-redis.git#59dd6326d11142b1bfaabe96ae7406558f6ba147"
+
+"gun-scope@https://github.com/notabugio/gun-scope.git":
+  version "0.0.1"
+  resolved "https://github.com/notabugio/gun-scope.git#66268dcb2b255f6d2ed776f9d27c82be3897999a"
 
 "gun-suppressor-sear@https://github.com/notabugio/gun-suppressor-sear.git":
   version "0.0.7"
@@ -5353,14 +5361,7 @@ gun-file@^1.0.123:
   version "0.0.12"
   resolved "https://github.com/notabugio/gun-suppressor.git#9de85689f150faa135133e36e454eae1a260727e"
 
-gun@^0.9.96:
-  version "0.9.99997"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.99997.tgz#303f09e34ad57e2b65671841e2bcbf4791c3d0bc"
-  integrity sha512-WGRi5ETnEq3iX7/TP3qZgTc4D7nEhP+PDrwSYJ6yBOHg8XrjSkS/V+iC1SicWAjsKrnHf9a+MsgJW+EUPpI3ZA==
-  dependencies:
-    ws "~>5.2.0"
-
-gun@^0.9.999997:
+gun@0.9.999997:
   version "0.9.999997"
   resolved "https://registry.yarnpkg.com/gun/-/gun-0.9.999997.tgz#a4d033d6a29abad95888f2a610e360980b4c158e"
   integrity sha512-nY1c07k4RV+7/2jGbirZkwYSxdXM9CxwXaCS+c0QZ7LngVZG9g4rLxpnBPGIaztszcGatKjSn2voQB7HOhla8w==
@@ -6833,11 +6834,6 @@ jsesc@~0.5.0:
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/jsesc/-/jsesc-0.5.0.tgz#e7dee66e35d6fc16f710fe91d5cf69f70f08911d"
   integrity sha1-597mbjXW/Bb3EP6R1c9p9w8IkR0=
-
-json-6@^0:
-  version "0.1.128"
-  resolved "https://registry.yarnpkg.com/json-6/-/json-6-0.1.128.tgz#0c52ddf38af9bd2d8ca5fdb402fc0e70776ccbf2"
-  integrity sha512-drsXxm2Z5DnjgtH80fy6qMfNPQMpaK4blHBcWlHFLiaz/NKfRFSuvhLoJGzZuo64B/t8Nx1stNzCTUzrmKz+dw==
 
 json-parse-better-errors@^1.0.1, json-parse-better-errors@^1.0.2:
   version "1.0.2"
@@ -9208,11 +9204,6 @@ qs@6.5.2, qs@~6.5.2:
   resolved "https://registry.yarnpkg.com/qs/-/qs-6.5.2.tgz#cb3ae806e8740444584ef154ce8ee98d403f3e36"
   integrity sha512-N5ZAX4/LxJmF+7wN74pUD6qAh9/wnvdQcjq9TZjevvXzSUo7bfmw91saqMjzGS2xq91/odN2dW/WOl7qQHNDGA==
 
-qs@^6.5.2:
-  version "6.6.0"
-  resolved "https://registry.yarnpkg.com/qs/-/qs-6.6.0.tgz#a99c0f69a8d26bf7ef012f871cdabb0aee4424c2"
-  integrity sha512-KIJqT9jQJDQx5h5uAVPimw6yVg2SekOKu959OCtktD3FjzbpvaPr8i4zzg07DOMz+igA4W/aNM7OV8H37pFYfA==
-
 query-string@^5.1.0:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/query-string/-/query-string-5.1.1.tgz#a78c012b71c17e05f2e3fa2319dd330682efb3cb"
@@ -9221,6 +9212,14 @@ query-string@^5.1.0:
     decode-uri-component "^0.2.0"
     object-assign "^4.1.0"
     strict-uri-encode "^1.0.0"
+
+query-string@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/query-string/-/query-string-6.2.0.tgz#468edeb542b7e0538f9f9b1aeb26f034f19c86e1"
+  integrity sha512-5wupExkIt8RYL4h/FE+WTg3JHk62e6fFPWtAZA9J5IWK1PfTfKkMS93HBUHcFpeYi9KsY5pFbh+ldvEyaz5MyA==
+  dependencies:
+    decode-uri-component "^0.2.0"
+    strict-uri-encode "^2.0.0"
 
 querystring-es3@^0.2.0:
   version "0.2.1"
@@ -9521,10 +9520,10 @@ react-spinkit@^3.0.0:
     object-assign "^4.1.0"
     prop-types "^15.5.8"
 
-react-timeago@^4.1.9:
-  version "4.1.9"
-  resolved "https://registry.yarnpkg.com/react-timeago/-/react-timeago-4.1.9.tgz#a5dee4ac072299a9a5ca5a61f56177a80f83c1fb"
-  integrity sha512-MKucv9nU65BOPqIrClAFxqvpGCC4RdRpqp0P1YIb7C3yT6TQVdcoOlr0k4TDHvLQhbkwd3nbTxiDQMa3iDlZxg==
+react-timeago@4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/react-timeago/-/react-timeago-4.3.0.tgz#ff47bb12c3c2a40bc31e6b3e457f5ac4a690a3ec"
+  integrity sha512-q89RXb4K16xyDdy2GR/mIRYrDw8ll/RlohSIgjCr1J85eHKeL/XEl4XPKICMdJnJpaXwRzOjlsdnEuxWsi61RQ==
 
 react-visibility-sensor@^5.0.2:
   version "5.0.2"
@@ -9645,6 +9644,11 @@ realpath-native@^1.0.0:
   integrity sha512-+S3zTvVt9yTntFrBpm7TQmQ3tzpCrnA1a/y+3cUHAc9ZR6aIjG0WNLR+Rj79QpJktY+VeW/TQtFlQ1bzsehI8g==
   dependencies:
     util.promisify "^1.0.0"
+
+reconnecting-websocket@^4.1.10:
+  version "4.1.10"
+  resolved "https://registry.yarnpkg.com/reconnecting-websocket/-/reconnecting-websocket-4.1.10.tgz#15485b5c5266ab6dd99187e23e8da207d24c4270"
+  integrity sha512-x6vgqa8q9KRuJyFkOvBKH1TfyTmN5OWQUf1MIsblfOSY29VE+iI9cKqmIuPvg9TO/hUBxdmUIVutDkcdbqFwZg==
 
 recursive-readdir@2.2.2:
   version "2.2.2"
@@ -10598,6 +10602,11 @@ strict-uri-encode@^1.0.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-1.1.0.tgz#279b225df1d582b1f54e65addd4352e18faa0713"
   integrity sha1-J5siXfHVgrH1TmWt3UNS4Y+qBxM=
+
+strict-uri-encode@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/strict-uri-encode/-/strict-uri-encode-2.0.0.tgz#b9c7330c7042862f6b142dc274bbcc5866ce3546"
+  integrity sha1-ucczDHBChi9rFC3CdLvMWGbONUY=
 
 string-length@^2.0.0:
   version "2.0.0"

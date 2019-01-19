@@ -12,8 +12,8 @@ import {
   union,
   keysIn
 } from "ramda";
+import { query, all, resolve } from "gun-scope";
 import { getDayStr, PREFIX } from "./notabug-peer";
-import { query, all, resolve } from "./notabug-peer/scope";
 import { routes } from "./notabug-peer/json-schema";
 
 const emptyPromise = resolve(null);

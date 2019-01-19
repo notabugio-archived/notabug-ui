@@ -1,5 +1,5 @@
 import { prop, path } from "ramda";
-import { scope as getScope, query, resolve } from "./scope";
+import { scope as getScope, query, resolve } from "gun-scope";
 import { routes } from "./json-schema";
 
 const listing = query(

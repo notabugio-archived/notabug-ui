@@ -1,4 +1,3 @@
-/* eslint import/no-webpack-loader-syntax: off */
 import "@babel/polyfill";
 import React from "react";
 import ReactDOM from "react-dom";

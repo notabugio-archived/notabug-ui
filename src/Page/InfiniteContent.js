@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext, useState, useCallback, useRef } from "react";
 import { add } from "ramda";
-import debounce from "lodash/debounce";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import ChatView from "react-chatview";
 import { ChatMsg, ChatInput } from "Chat";
@@ -19,7 +18,7 @@ export const InfiniteContent = React.memo(
     ListingContext
   }) => {
     const [limit, setLimit] = useState(limitProp);
-    const [preventAutoScroll, setPreventAutoScroll] = useState(false);
+    const [lastScrollTime, setLastScrollTime] = useState(0);
     const scrollable = useRef(null);
     const { ids: allIds, isChat } = useContext(ListingContext);
 
@@ -32,32 +31,33 @@ export const InfiniteContent = React.memo(
     const scrollToBottom = useCallback(
       () => {
         setTimeout(() => {
-          if (scrollable && scrollable.current && !preventAutoScroll)
+          const now = new Date().getTime();
+          if (now - lastScrollTime > 5000 && scrollable && scrollable.current)
             scrollable.current.scrollTop = scrollable.current.scrollHeight;
         }, 100);
       },
-      [scrollable.current, preventAutoScroll]
-    );
-
-    const stoppedScrolling = useCallback(
-      debounce(() => setPreventAutoScroll(false), 5000),
-      []
+      [scrollable.current, lastScrollTime]
     );
 
     const loadMore = useCallback(
       () => {
-        setPreventAutoScroll(true);
         setLimit(add(limitProp));
-        stoppedScrolling();
+        setLastScrollTime(new Date().getTime());
       },
       [limitProp]
     );
 
     const onLoadMore = useCallback(
       () => {
-        if (isChat) return fetchNextPage(limitProp).then(loadMore).then(() => new Promise((resolve) => {
-          setTimeout(resolve, 50);
-        }));
+        if (isChat)
+          return fetchNextPage(limitProp)
+            .then(loadMore)
+            .then(
+              () =>
+                new Promise(resolve => {
+                  setTimeout(resolve, 50);
+                })
+            );
         return Promise.resolve(loadMore());
       },
       [isChat, loadMore, fetchNextPage]

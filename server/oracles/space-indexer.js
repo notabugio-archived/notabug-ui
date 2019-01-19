@@ -1,7 +1,8 @@
-import { query } from "../notabug-peer/scope";
+import { query } from "gun-scope";
+import { oracle } from "gun-cleric";
+import { basic } from "gun-cleric-scope";
 import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
-import { oracle, basicQueryRoute } from "./oracle";
 import { listingFromPage } from "../listings/declarative";
 import { spaceSourceWithDefaults } from "../notabug-peer/source";
 
@@ -9,7 +10,7 @@ export default oracle({
   name: "space-indexer",
   concurrent: 1,
   routes: [
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/user/:authorId/spaces/:name/:sort@~:indexer.`,
       priority: 20,
       checkMatch: ({ sort, name, authorId }) =>
@@ -23,7 +24,6 @@ export default oracle({
           source => spaceSourceWithDefaults({ source, owner: authorId, name: name })
         )
       )
-    }),
-
+    })
   ]
 });

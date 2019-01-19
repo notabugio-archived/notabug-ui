@@ -1,14 +1,15 @@
-import { query } from "../notabug-peer/scope";
+import { query } from "gun-scope";
+import { oracle } from "gun-cleric";
+import { basic } from "gun-cleric-scope";
 import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
-import { oracle, basicQueryRoute } from "./oracle";
 import { listingFromPage } from "../listings/declarative";
 
 export default oracle({
   name: "indexer",
   concurrent: 1,
   routes: [
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/t/:topic/firehose@~:indexer.`,
       priority: 75,
       checkMatch: ({ topic }) =>
@@ -44,7 +45,7 @@ export default oracle({
       })
     }),
 
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/t/:topic/chat@~:indexer.`,
       priority: 80,
       checkMatch: ({ topic }) =>
@@ -78,7 +79,7 @@ export default oracle({
       })
     }),
 
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/things/:thingid/comments/:sort@~:indexer.`,
       checkMatch: ({ sort }) => sort in sorts,
       priority: 85,
@@ -92,7 +93,7 @@ export default oracle({
       )
     }),
 
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/domain/:domain/:sort@~:indexer.`,
       priority: 25,
       checkMatch: ({ sort, domain }) =>
@@ -115,7 +116,7 @@ export default oracle({
       )
     }),
 
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/t/:topic/:sort@~:indexer.`,
       priority: 60,
       checkMatch: ({ sort, topic }) =>
@@ -146,7 +147,7 @@ export default oracle({
       })
     }),
 
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/user/:authorId/replies/:type/:sort@~:indexer.`,
       priority: 20,
       checkMatch: ({ sort, type, authorId }) =>
@@ -169,7 +170,7 @@ export default oracle({
       )
     }),
 
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/user/:authorId/:type/:sort@~:indexer.`,
       priority: 30,
       checkMatch: ({ sort, type, authorId }) =>

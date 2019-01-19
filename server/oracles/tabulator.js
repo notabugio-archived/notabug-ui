@@ -1,12 +1,13 @@
+import { query, all } from "gun-scope";
+import { oracle } from "gun-cleric";
+import { basic } from "gun-cleric-scope";
 import { routes } from "../notabug-peer/json-schema";
 import { PREFIX } from "../notabug-peer";
-import { query, all } from "../notabug-peer/scope";
-import { oracle, basicQueryRoute } from "./oracle";
 
 export default oracle({
   name: "tabulator",
   routes: [
-    basicQueryRoute({
+    basic({
       path: `${PREFIX}/things/:thingId/votecounts@~:tab1.:tab2.`,
       priority: 10,
       checkMatch: ({ thingId }) => !!thingId,

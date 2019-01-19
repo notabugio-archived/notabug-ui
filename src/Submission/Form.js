@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from "react";
 import { useNotabug } from "NabContext";
 import { withRouter } from "react-router-dom";
 import { ZalgoPromise as Promise } from "zalgo-promise";
-import qs from "qs";
+import qs from "query-string";
 import slugify from "utils/slugify";
 import { parse as parseURI } from "uri-js";
 import {
@@ -29,7 +29,7 @@ export const SubmissionForm = withRouter(
   }) => {
     const { api, history, onMarkMine } = useNotabug();
     const space = useSpace();
-    const query = qs.parse(search, { ignoreQueryPrefix: true });
+    const query = qs.parse(search);
     const [topic, setTopic] = useState(
       (space && space.submitTopics[0]) || initialTopic || "whatever"
     );
@@ -76,7 +76,6 @@ export const SubmissionForm = withRouter(
       preventDefault(
         () => {
           if (isInvalid) return Promise.resolve();
-          api.scope.realtime();
           return api
             .submit({ title, body, topic, url: isSelf ? null : url })
             .then(({ id }) => {

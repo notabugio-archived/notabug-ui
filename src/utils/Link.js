@@ -1,6 +1,6 @@
 import React from "react";
 import { Link as RegLink, NavLink, withRouter } from "react-router-dom";
-import qs from "qs";
+import qs from "query-string";
 
 export const Link = withRouter((
   // eslint-disable-next-line no-unused-vars
@@ -20,7 +20,7 @@ export const Link = withRouter((
 
   if (href.indexOf("?") !== -1) {
     const parts = href.split("?");
-    const destSearch = { ...(destQuery || {}), ...qs.parse(parts.pop() || "", { ignoreQueryPrefix: true }) };
+    const destSearch = { ...(destQuery || {}), ...qs.parse(parts.pop() || "") };
     href = parts[0] + "?" + qs.stringify(destSearch);
   } else if (destQuery) {
     href = href + "?" + qs.stringify(destQuery);

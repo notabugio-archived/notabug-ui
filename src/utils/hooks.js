@@ -22,7 +22,6 @@ export const useScope = (deps=[]) => {
         () =>
           api.newScope({
             cache: api.scope.getCache(),
-            isRealtime: true,
             onlyCache: false,
             isCached: true,
             isCacheing: false

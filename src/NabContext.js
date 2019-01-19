@@ -11,7 +11,7 @@ import { ZalgoPromise as Promise } from "zalgo-promise";
 import { assoc } from "ramda";
 import { withRouter } from "react-router-dom";
 import isNode from "detect-node";
-import fetch from "isomorphic-fetch";
+// import fetch from "isomorphic-fetch";
 import notabugPeer from "notabug-peer";
 const Gun = require("gun/gun");
 
@@ -58,7 +58,6 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       if (!isNode && !nab.scope) {
         nab.scope = nab.newScope({
           cache: window.initNabState,
-          isRealtime: FORCE_REALTIME,
           onlyCache: !FORCE_REALTIME,
           isCached: true, //!FORCE_REALTIME,
           isCacheing: !FORCE_REALTIME
@@ -87,10 +86,12 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     [api]
   );
 
-  const onFetchCache = useCallback((pathname, search) => {
-    try {
-      // if (FORCE_REALTIME) return Promise.resolve();
-      return Promise.resolve();
+  const onFetchCache = useCallback(
+    (/*pathname, search*/) => {
+      try {
+        // if (FORCE_REALTIME) return Promise.resolve();
+        return Promise.resolve();
+        /*
       return fetch(`/api${pathname}.json${search}`, []) // eslint-disable-line no-unreachable
         .then(response => {
           if (response.status !== 200)
@@ -98,10 +99,13 @@ export const useNabGlobals = ({ notabugApi, history }) => {
           return response.json();
         })
         .then(api.scope.loadCachedResults);
-    } catch (e) {
-      return Promise.reject(e);
-    }
-  }, []);
+      */
+      } catch (e) {
+        return Promise.reject(e);
+      }
+    },
+    []
+  );
 
   const onMarkMine = useCallback(id => setMyContent(assoc(id, true)), []);
 

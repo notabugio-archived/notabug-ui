@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext } from "react";
-import qs from "qs";
+import qs from "query-string";
 import { Link, JavaScriptRequired } from "utils";
 import { useLimitedListing } from "Listing";
 import { Things } from "Listing/Things";
@@ -10,13 +10,13 @@ import { ErrorBoundary, Loading as LoadingComponent } from "utils";
 export const PagedContent = React.memo(
   ({
     location,
-    Loading=LoadingComponent,
+    Loading = LoadingComponent,
     Empty = () => <LoadingComponent name="ball-grid-beat" />,
     onToggleInfinite,
     ListingContext
   }) => {
     const { pathname, search } = location;
-    const query = qs.parse(search, { ignoreQueryPrefix: true });
+    const query = qs.parse(search);
     const count = parseInt(query.count, 10) || 0;
     const limit = parseInt(query.limit, 10) || 25;
     const { ids: allIds } = useContext(ListingContext);
@@ -76,4 +76,3 @@ export const PagedContent = React.memo(
     );
   }
 );
-

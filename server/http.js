@@ -42,13 +42,14 @@ export const initServer = ({ port, host, render, ...options }) => {
   nab = init({
     ...options,
     web: options.pistol ? undefined : web,
-    peers: [
-      ...(options.peers || []),
-      ...(options.pistol ? [`http://${host}:${port}/gun`] : [])
-    ]
+    peers: (options.pistol ? [`http://${host}:${port}/gun`] : options.peers || [])
   });
   if (options.pistol)
-    require("./receiver").default({ redis: options.redis, web });
+    require("./receiver").default({
+      redis: options.redis,
+      peers: options.peers,
+      web
+    });
   // without a get gun never connects to receiver
   if (options.pistol) nab.gun.get("~@").once(() => null);
   return nab;

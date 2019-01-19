@@ -153,15 +153,17 @@ export const suppressor = createSuppressor({ definitions, init: initAjv });
 
 export function validateWireInput(peer, context) {
   context.on("in", function wireInput(msg) {
+    const _ = msg["_"];
+    delete msg["_"];
     if ("ping" in msg || "leech" in msg) return;
     if (msg.put && !keys(msg.put).length) return;
-    const promise = peer.config.disableValidation ? Promise.resolve(msg) : suppressor.validate(msg);
+    const promise = peer.config.disableValidation
+      ? Promise.resolve(msg)
+      : suppressor.validate(msg);
     promise
       .then(validated => {
         if (!validated) return console.log("msg didn't validate", msg);
-        if (peer.config.oracle && msg.get) {
-          peer.config.oracle.onGet(peer, msg);
-        }
+        msg["_"] = _;
         this.to.next(msg);
       })
       .catch(err => console.error("validate err", msg, err.stack || err));

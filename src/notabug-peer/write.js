@@ -2,7 +2,7 @@ import { curry, path, keysIn } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import objHash from "object-hash";
 import { parse as parseURI } from "uri-js";
-import { getDayStr } from "./util";
+import { getDayStr } from "./constants";
 import { routes } from "./json-schema";
 
 export const putThing = curry((peer, data) => {

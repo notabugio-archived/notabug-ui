@@ -1,5 +1,5 @@
 import React from "react";
-import qs from "qs";
+import qs from "query-string";
 import ReactPlayer from "react-player";
 import InstagramEmbed from "react-instagram-embed";
 import { Markdown } from "utils";

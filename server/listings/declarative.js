@@ -17,9 +17,9 @@ import {
   repliesToAuthor,
   sortThings
 } from "../queries";
+import { query } from "gun-scope";
 import { LISTING_SIZE, curate, censor, serializeListing } from "./utils";
 import { routes as souls } from "../notabug-peer/json-schema";
-import { query } from "../notabug-peer/scope";
 import { getWikiPage } from "../notabug-peer/listings";
 import { toFilters } from "../notabug-peer/source";
 

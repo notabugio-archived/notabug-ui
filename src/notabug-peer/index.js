@@ -1,51 +1,27 @@
 /* globals Gun */
-import * as write from "./write";
-// import { validateWireInput } from "./validation";
+import { keys } from "ramda";
 import { validateWireInput } from "./json-schema-validation";
-import * as auth from "./auth";
 import { queries, newScope } from "./listings";
-export * from "./util";
+import * as write from "./write";
+import * as auth from "./auth";
 export * from "./constants";
-export { nowOr, now } from "./scope";
 
-const DEFAULT_PEERS = [];
-
-export default function notabug(config={}) {
-  const {
-    peers=DEFAULT_PEERS, noGun=false, localStorage=false,
-    persist=false, ...rest
-  } = config || {};
+export default function notabug(config = {}) {
+  const { leech, disableValidation, noGun, localStorage, persist, ...rest } =
+    config || {};
   const peer = { config };
-  const gunConfig = { peers, localStorage, ...rest };
-  if (persist) {
-    gunConfig.localStorage = false;
-    gunConfig.radisk = true;
-    gunConfig.until = gunConfig.until || 1000;
-  } else {
-    gunConfig.radisk = false;
-  }
 
   if (!noGun) {
-    Gun.on("opt", context => {
-      /*context.on("out", function wireOutput(msg) {
-        if (msg && msg.err && msg.err === "Error: Invalid graph!") return;
-        if (!msg || !(msg.put || msg.get)) return;
-        this.to.next(msg);
-      });*/
-      validateWireInput(peer, context);
-    });
-
-    // for indexeddb
-    if (gunConfig.storeFn) gunConfig.store = gunConfig.storeFn(gunConfig);
-
-    peer.gun = Gun(gunConfig);
-    // Nuke gun's localStorage if it fills up, kinda lame but less lame than total failure
-    if (!persist && localStorage) peer.gun.on("localStorage:error", ack => ack.retry({}));
-    if (config.leech) peer.gun._.on("out", { leech: true });
-    if (config.oracle) peer.gun.on("put", msg => config.oracle.onPut(peer, msg));
+    const cfg = { localStorage: !!localStorage, radisk: !!persist, ...rest };
+    if (persist) cfg.localStorage = false;
+    if (!disableValidation) Gun.on("opt", ctx => validateWireInput(peer, ctx));
+    if (cfg.storeFn) cfg.store = cfg.storeFn(cfg); // for indexeddb
+    peer.gun = Gun(cfg);
+    if (cfg.localStorage) peer.gun.on("localStorage:error", a => a.retry({}));
+    if (leech) peer.gun._.on("out", { leech: true });
   }
 
   const fns = { queries, newScope, ...write, ...auth };
-  Object.keys(fns).map(key => peer[key] = fns[key](peer));
+  keys(fns).map(key => (peer[key] = fns[key](peer)));
   return peer;
 }

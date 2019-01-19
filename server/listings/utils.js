@@ -1,6 +1,6 @@
+import { query, all } from "gun-scope";
 import { routes } from "../notabug-peer/json-schema";
 import { prop, uniq, map, filter, compose } from "ramda";
-import { query, all } from "../notabug-peer/scope";
 import { filterThings, multiAuthor } from "../queries";
 
 export const LISTING_SIZE = 1000;

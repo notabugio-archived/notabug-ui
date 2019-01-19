@@ -5,11 +5,12 @@ import {
   Receiver,
   deduplicateMessages,
   allowLeech,
-  redisBackend,
   relayMessages,
   websocketTransport
 } from "gun-receiver";
+import { receiver as redis } from "gun-redis";
 import { suppressor } from "./notabug-peer/json-schema-validation";
+const Gun = require("gun/gun");
 
 const validateMessage = ({ json, skipValidation, ...msg }) => {
   if (skipValidation) return { ...msg, json };
@@ -19,20 +20,21 @@ const validateMessage = ({ json, skipValidation, ...msg }) => {
   });
 };
 
+const redisSupport = pipe(
+  redis.respondToGets(Gun),
+  chainInterface,
+  preventConflicts
+);
+
 export default opts =>
   pipe(
     Receiver,
     db => db.onIn(validateMessage) && db,
     deduplicateMessages,
     allowLeech,
-    opts.redis
-      ? pipe(
-          redisBackend.respondToGets,
-          chainInterface,
-          preventConflicts
-        )
-      : identity,
+    opts.redis ? redisSupport : identity,
     relayMessages,
     db => db.onOut(validateMessage) && db,
-    opts.port || opts.web ? websocketTransport.server(opts) : identity
+    opts.port || opts.web ? websocketTransport.server(opts) : identity,
+    ...opts.peers.map(peer => websocketTransport.client(peer))
   )(opts);

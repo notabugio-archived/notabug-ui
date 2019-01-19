@@ -5,10 +5,10 @@ import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
 import { App } from "App";
 import { routes } from "Routing";
+import { query, all } from "gun-scope";
 import { routes as souls } from "./notabug-peer/json-schema";
 import init from "./notabug-peer";
 import { PREFIX } from "./notabug-peer";
-import { query, all } from "./notabug-peer/scope";
 import {
   toListingObject,
   spaceSourceWithDefaults
@@ -153,6 +153,7 @@ export default (nab, req, res) =>
       });
       const scope = (notabugApi.scope = nab.newScope({
         noGun: !!nab.gun.redis,
+        getter: nab.gun.redis ? nab.gun.redis.read : undefined,
         timeout: 1000,
         isCacheing: true
       }));

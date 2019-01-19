@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { prop, propOr, path } from "ramda";
 import { Loading, useQuery } from "utils";
-import { query, resolve } from "notabug-peer/scope";
+import { query, resolve } from "gun-scope";
 import { routes as souls } from "notabug-peer/json-schema";
 import { useNotabug } from "NabContext";
 import { Submission } from "Submission";

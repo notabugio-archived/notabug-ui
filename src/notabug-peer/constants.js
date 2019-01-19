@@ -21,3 +21,11 @@ export const MAX_LISTING_SOUL_IDENTIFIER_SIZE = MAX_AUTHOR_ID_SIZE;
 export const MAX_LISTING_SOUL_SORT_SIZE = 16;
 export const MAX_LISTING_SOUL_TYPE_SIZE = MAX_TOPIC_SIZE;
 export const MAX_LISTING_SOUL_KIND_SIZE = 16;
+
+export function getDayStr(timestamp) {
+  const d = new Date(timestamp || new Date().getTime());
+  const year = d.getUTCFullYear();
+  const month = d.getUTCMonth() + 1;
+  const dayNum = d.getUTCDate();
+  return `${year}/${month}/${dayNum}`;
+}
