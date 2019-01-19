@@ -27,7 +27,7 @@ const options = commandLineArgs([
 
 const peerOptions = {
   ...pick(["localStorage", "persist", "disableValidation", "until"], options),
-  peers: options.peer,
+  peers: options.peer || [],
   super: !options.leech
 };
 
