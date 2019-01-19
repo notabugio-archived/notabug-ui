@@ -124,7 +124,7 @@ export const listingIds = query(
 
 export const multiThingMeta = query((scope, params) =>
   all(
-    propOr([], "thingSouls", params).map(thingSoul =>
+    propOr([], "thingSouls", params).filter(x => !!x).map(thingSoul =>
       thingMeta(scope, { ...params, thingSoul })
     )
   )
