@@ -69,7 +69,7 @@ export const thingAllCommentsCount = query((scope, thingSoul) =>
 export const thing = query((scope, thingSoul) =>
   scope.get(thingSoul).then(meta => {
     if (!meta || !meta.id) return null;
-    const result = { id: meta.id, timestamp: meta.timestamp };
+    const result = { id: meta.id, timestamp: parseFloat(meta.timestamp, 10) };
     const replyToSoul = path(["replyTo", "#"], meta);
     const opSoul = path(["op", "#"], meta);
     const opId = opSoul ? routes.Thing.match(opSoul).thingid : null;
@@ -278,7 +278,7 @@ export const sorts = {
   ),
   comments: voteSort(
     compose(
-      x => -1 * x,
+      x => -1 * parseFloat(x, 10),
       pathOr(0, ["votes", "comment"])
     )
   ),
