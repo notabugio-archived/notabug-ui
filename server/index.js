@@ -1,6 +1,7 @@
 import commandLineArgs from "command-line-args";
-import { pick, path } from "ramda";
-import { gunCleric } from "gun-cleric";
+import { pick } from "ramda";
+// import { gunCleric } from "gun-cleric";
+import { gunClericSharedScope as gunCleric } from "gun-cleric-scope";
 import indexerOracle from "./oracles/indexer";
 import spaceIndexerOracle from "./oracles/space-indexer";
 import tabulatorOracle from "./oracles/tabulator";
@@ -68,13 +69,7 @@ if (oracles.length) {
     oracles.forEach(oracle =>
       oracle.config({
         pub,
-        write: (soul, node) => nab.gun.get(soul).put(node),
-        newScope: () =>
-          nab.newScope({
-            noGun: true,
-            // parentScope: nab.scope,
-            getter: path(["gun", "redis", "read"], nab)
-          })
+        write: (soul, node) => nab.gun.get(soul).put(node)
       })
     );
     gunCleric(nab.gun, oracles);
