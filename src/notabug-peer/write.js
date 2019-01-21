@@ -285,7 +285,7 @@ export const indexThing = curry((peer, thingId, data) => {
       ? (urlInfo.host || urlInfo.scheme || "").replace(/^www\./, "")
       : `self.${data.topic}`
     ).toLowerCase();
-    const domain = peer.gun.get(routes.Domain.reverse({ domain: domainName }));
+    const domain = peer.gun.get(routes.Domain.reverse({ domainName }));
     domain.set(thing);
 
     if (data.url) {
