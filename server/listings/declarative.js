@@ -174,6 +174,7 @@ export const declarativeListing = query((scope, source) => {
         return JSON.stringify({ title, body, url, author });
       }, things);
     })
+    // TODO: filter in chunks until > LISTING_SIZE
     .then(things => censor(scope, censors.map(id => `~${id}`), things))
     .then(things => things.slice(0, LISTING_SIZE))
     .then(things => serializeListing({ name, things, stickyIds }))

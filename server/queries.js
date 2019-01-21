@@ -40,11 +40,11 @@ export const getTopicSouls = params => {
   return Object.keys(
     topics.reduce(
       (result, topicName) =>
-        dayStrings.reverse().reduce(
-          (res, ds) => ({
-            ...res,
-            [`${PREFIX}/topics/${topicName}/days/${ds}`]: true
-          }),
+        dayStrings.reduce(
+          (res, ds) => {
+            res[`${PREFIX}/topics/${topicName}/days/${ds}`] = true;
+            return res;
+          },
           result
         ),
       {}
@@ -124,11 +124,16 @@ export const listingIds = query(
 
 export const multiThingMeta = query((scope, params) =>
   all(
-    propOr([], "thingSouls", params).filter(x => !!x).map(thingSoul =>
-      thingMeta(scope, { ...params, thingSoul })
+    reduce(
+      (promises, thingSoul) => {
+        if (!thingSoul) return promises;
+        promises.push(thingMeta(scope, { ...params, thingSoul }));
+        return promises;
+      },
+      [],
+      propOr([], "thingSouls", params)
     )
-  )
-);
+  ));
 
 export const singleThingData = query((scope, { thingId }) =>
   scope
@@ -188,17 +193,19 @@ export const singleTopic = query((scope, params) => {
     if (params.topic === "all") itemMax = itemMax * 10;
   }
 
-  return all(
-    map(
-      soul => scope.get(soul).souls(),
-      getTopicSouls({ ...params, topics: [params.topic] })
-    )
-  ).then(
-    reduce(
-      (souls, more) => (souls.length < itemMax ? [...souls, ...more] : souls),
-      []
-    )
-  );
+  let souls = [];
+  const topicSouls = getTopicSouls({ ...params, topics: [params.topic] });
+
+  const fetchMore = () => {
+    const topicSoul = topicSouls.pop();
+    if ((souls.length > itemMax) || !topicSoul) return resolve(souls);
+    return scope.get(topicSoul).souls().then(more => {
+      souls = [...souls, ...more];
+      return fetchMore();
+    });
+  };
+
+  return fetchMore();
 });
 
 export const singleSubmission = query((scope, params) =>

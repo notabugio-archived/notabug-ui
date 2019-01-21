@@ -41,8 +41,9 @@ export const initServer = ({ port, host, render, ...options }) => {
 
   nab = init({
     ...options,
+    disableValidation: options.pistol ? true : options.disableValidation,
     web: options.pistol ? undefined : web,
-    peers: (options.pistol ? [`http://${host}:${port}/gun`] : options.peers || [])
+    peers: (options.pistol ? options.redis ? [] : [`http://${host}:${port}/gun`] : options.peers || [])
   });
   if (options.pistol)
     require("./receiver").default({
