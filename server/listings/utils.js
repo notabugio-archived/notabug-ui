@@ -41,7 +41,7 @@ export const curate = query((scope, authorIds, submissionOnly = false) =>
     multiAuthor(scope, {
       type: "submitted",
       authorIds
-    }).then(map(soul => routes.Thing.match(soul).thingid))
+    }).then(map(soul => routes.Thing.match(soul).thingId))
   ]).then(([ids1, ids2]) => uniq([...ids1, ...ids2]))
 );
 

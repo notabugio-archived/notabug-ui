@@ -13,7 +13,8 @@ export const NestedContent = React.memo(
       contentData,
       listingData
     } = useNestedListingContext(ListingContext);
-    const { opId, listingParams } = listingData;
+    const { opId, listingParams, ids } = listingData;
+
 
     return (
       <ErrorBoundary>
@@ -22,13 +23,13 @@ export const NestedContent = React.memo(
           <div className="content" role="main">
             <div className="spacer">
               <div className="sitetable linklisting" id="siteTable">
-                <Thing
+                {ids.includes(opId) ? <Thing
                   {...{ ListingContext }}
                   id={opId}
                   Loading={Submission}
                   isVisible
                   isDetail
-                />
+                /> : null}
               </div>
               <div className="commentarea">
                 <CommentAreaTitle />

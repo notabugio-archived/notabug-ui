@@ -5334,8 +5334,8 @@ gud@^1.0.0:
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
 "gun-cleric-scope@https://github.com/notabugio/gun-cleric-scope.git":
-  version "0.2.1"
-  resolved "https://github.com/notabugio/gun-cleric-scope.git#40e4861481d81b9747d0b64c4014eac0e8df3aec"
+  version "0.2.3"
+  resolved "https://github.com/notabugio/gun-cleric-scope.git#fa3f21f826d941e3ce0c17ad1b7414d01169c0a5"
 
 "gun-cleric@https://github.com/notabugio/gun-cleric.git":
   version "0.1.0"
@@ -5350,8 +5350,8 @@ gud@^1.0.0:
   resolved "https://github.com/notabugio/gun-redis.git#21f7873165bdadcbf48e35475187b4ed09888ec9"
 
 "gun-scope@https://github.com/notabugio/gun-scope.git":
-  version "0.1.0"
-  resolved "https://github.com/notabugio/gun-scope.git#37ced900fb753e1a7fb9a6e74eaa7c1f61e94760"
+  version "0.1.2"
+  resolved "https://github.com/notabugio/gun-scope.git#4c78a53c597ba0afeeb8c22edff6acd87e5691ab"
 
 "gun-suppressor-sear@https://github.com/notabugio/gun-suppressor-sear.git":
   version "0.0.7"
