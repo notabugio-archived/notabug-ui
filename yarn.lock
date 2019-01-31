@@ -5618,12 +5618,12 @@ gud@^1.0.0:
   resolved "https://github.com/notabugio/gun-cleric.git#b573ebda638469684cf1b5354fb902a4c74eea19"
 
 "gun-receiver@https://github.com/notabugio/gun-receiver.git":
-  version "0.2.0"
-  resolved "https://github.com/notabugio/gun-receiver.git#595283ea75f90662f8c207549c090fb830a97833"
+  version "0.3.0"
+  resolved "https://github.com/notabugio/gun-receiver.git#427e4a80950407c337b64c64796fab1c34c30278"
 
 "gun-redis@https://github.com/notabugio/gun-redis.git":
-  version "0.1.5"
-  resolved "https://github.com/notabugio/gun-redis.git#21f7873165bdadcbf48e35475187b4ed09888ec9"
+  version "0.2.0"
+  resolved "https://github.com/notabugio/gun-redis.git#08f17d12039bf64c77669cf83d02c653de280958"
 
 "gun-scope@https://github.com/notabugio/gun-scope.git":
   version "0.1.2"
