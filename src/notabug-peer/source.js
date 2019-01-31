@@ -1,7 +1,8 @@
 import { compose, lte, gte, path, trim, assocPath, keysIn } from "ramda";
+import * as R from "ramda";
 import { parse as parseURI } from "uri-js";
-
 import { tabulator as defaultIndexer } from "../config.json";
+import { COMMAND_RE } from "./constants";
 
 const potentialSources = [
   "replies",
@@ -35,6 +36,7 @@ export const toListingObject = (source, ownerId = null, spaceName = null) => {
   obj.uniqueByContent = !!isPresent("unique by content");
   obj.curators = getValues("curator");
   obj.censors = getValues("censor");
+  obj.moderators = getValues("mod");
   obj.includeRanks = !!isPresent("show ranks");
   obj.stickyIds = getValues("sticky");
   obj.isIdSticky = id => !!parsedSource.isPresent(["sticky", id]);
@@ -115,6 +117,13 @@ export const toFilters = obj => {
     addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
   if (filters.allow.kinds.length)
     addFilter(kind => !!isPresent(["kind", kind]), path(["data", "kind"]));
+  if (filters.allow.type === "commands")
+    addFilter(
+      R.compose(
+        R.test(COMMAND_RE),
+        path(["data", "body"])
+      )
+    );
 
   if (filters.deny.aliases.length)
     addFilter(

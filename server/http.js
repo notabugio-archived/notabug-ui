@@ -43,7 +43,7 @@ export const initServer = ({ port, host, render, ...options }) => {
     ...options,
     disableValidation: options.pistol ? true : options.disableValidation,
     web: options.pistol ? undefined : web,
-    peers: (options.pistol ? options.redis ? [] : [`http://${host}:${port}/gun`] : options.peers || [])
+    peers: options.pistol ? [] : options.peers || []
   });
   if (options.pistol)
     require("./receiver").default({

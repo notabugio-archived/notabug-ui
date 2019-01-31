@@ -1,3 +1,4 @@
+import * as R from "ramda";
 import { query } from "gun-scope";
 import { oracle } from "gun-cleric";
 import { basic } from "gun-cleric-scope";
@@ -176,9 +177,7 @@ export default oracle({
       checkMatch: ({ sort, type, authorId }) =>
         sort in sorts &&
         authorId &&
-        type &&
-        type.toLowerCase() == type &&
-        (type === "overview" || type === "submitted" || type === "comments"),
+        R.includes(type, ["overview", "submitted", "comments", "commands"]),
       query: query((scope, { match: { authorId, type, sort, indexer } }) =>
         listingFromPage(
           scope,
@@ -188,7 +187,7 @@ export default oracle({
             `type ${type}`,
             `sort ${sort}`,
             `author ${authorId}`,
-            ...["overview", "comments", "submitted"].map(
+            ...["overview", "comments", "submitted", "commands"].map(
               tab => `tab ${tab} /user/${authorId}/${tab}`
             )
           ].join("\n")

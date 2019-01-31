@@ -1,3 +1,4 @@
+export const COMMAND_RE = /^ {4}~/;
 export const PREFIX = "nab";
 export const SOUL_DELIMETER = "|~~|";
 

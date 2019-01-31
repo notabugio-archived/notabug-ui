@@ -1,37 +1,16 @@
-import {
-  compose,
-  map,
-  reduce,
-  prop,
-  propOr,
-  pathOr,
-  sortBy,
-  path,
-  isNil,
-  filter,
-  union,
-  keysIn
-} from "ramda";
+import * as R from "ramda";
 import { query, all, resolve } from "gun-scope";
 import { getDayStr, PREFIX } from "./notabug-peer";
 import { routes } from "./notabug-peer/json-schema";
 
-const emptyPromise = resolve(null);
-const unionArrays = reduce(union, []);
-
-export const mergeObjects = objList => {
-  const res = {};
-  objList.forEach(obj =>
-    keysIn(obj || {}).forEach(key => (res[key] = obj[key]))
-  );
-  return res;
-};
-
 const LISTING_SIZE = 1000;
+const emptyPromise = resolve(null);
+const unionArrays = R.reduce(R.union, []);
+export const mergeObjects = R.reduce(R.mergeDeepRight, {});
 
 export const getTopicSouls = params => {
   const { topics = ["all"] } = params || {};
-  const days = propOr(365, "days", params) || 90;
+  const days = R.propOr(365, "days", params) || 90;
   const dayStrings = [];
   const oneDay = 1000 * 60 * 60 * 24;
   const start = new Date().getTime() - oneDay * parseInt(days, 10);
@@ -40,13 +19,10 @@ export const getTopicSouls = params => {
   return Object.keys(
     topics.reduce(
       (result, topicName) =>
-        dayStrings.reduce(
-          (res, ds) => {
-            res[`${PREFIX}/topics/${topicName}/days/${ds}`] = true;
-            return res;
-          },
-          result
-        ),
+        dayStrings.reduce((res, ds) => {
+          res[`${PREFIX}/topics/${topicName}/days/${ds}`] = true;
+          return res;
+        }, result),
       {}
     )
   );
@@ -70,8 +46,8 @@ export const thing = query((scope, thingSoul) =>
   scope.get(thingSoul).then(meta => {
     if (!meta || !meta.id) return null;
     const result = { id: meta.id, timestamp: parseFloat(meta.timestamp, 10) };
-    const replyToSoul = path(["replyTo", "#"], meta);
-    const opSoul = path(["op", "#"], meta);
+    const replyToSoul = R.path(["replyTo", "#"], meta);
+    const opSoul = R.path(["op", "#"], meta);
     const opId = opSoul ? routes.Thing.match(opSoul).thingid : null;
     const replyToId = replyToSoul
       ? routes.Thing.match(replyToSoul).thingid
@@ -114,9 +90,10 @@ export const thingMeta = query(
 export const listingIds = query(
   (scope, soul) =>
     scope.get(soul).then(
-      compose(
-        ids => (ids || "").split("+").filter(x => !!x),
-        prop("ids")
+      R.compose(
+        R.filter(R.identity),
+        R.split("+"),
+        R.prop("ids")
       )
     ),
   "listingIds"
@@ -124,16 +101,17 @@ export const listingIds = query(
 
 export const multiThingMeta = query((scope, params) =>
   all(
-    reduce(
+    R.reduce(
       (promises, thingSoul) => {
         if (!thingSoul) return promises;
         promises.push(thingMeta(scope, { ...params, thingSoul }));
         return promises;
       },
       [],
-      propOr([], "thingSouls", params)
+      R.propOr([], "thingSouls", params)
     )
-  ));
+  )
+);
 
 export const singleThingData = query((scope, { thingId }) =>
   scope
@@ -153,7 +131,10 @@ export const singleAuthor = query((scope, params) =>
           .get(params.authorId)
           .get("submissions")
           .souls(),
-    params.type && params.type !== "comments" && params.type !== "overview"
+    params.type &&
+    params.type !== "comments" &&
+    params.type !== "overview" &&
+    params.type !== "commands"
       ? resolve([])
       : scope
           .get(params.authorId)
@@ -183,26 +164,27 @@ export const singleUrl = query((scope, { url }) =>
 );
 
 export const singleTopic = query((scope, params) => {
+  const topicSouls = getTopicSouls({ ...params, topics: [params.topic] });
+  let souls = [];
   let itemMax = LISTING_SIZE;
+
   if (params.sort === "new") {
     itemMax = LISTING_SIZE;
   } else {
-    if (params.sort === "top") {
-      itemMax = itemMax * 5;
-    }
+    if (params.sort === "top") itemMax = itemMax * 5;
     if (params.topic === "all") itemMax = itemMax * 10;
   }
 
-  let souls = [];
-  const topicSouls = getTopicSouls({ ...params, topics: [params.topic] });
-
   const fetchMore = () => {
     const topicSoul = topicSouls.pop();
-    if ((souls.length > itemMax) || !topicSoul) return resolve(souls);
-    return scope.get(topicSoul).souls().then(more => {
-      souls = [...souls, ...more];
-      return fetchMore();
-    });
+    if (souls.length > itemMax || !topicSoul) return resolve(souls);
+    return scope
+      .get(topicSoul)
+      .souls()
+      .then(more => {
+        souls = [...souls, ...more];
+        return fetchMore();
+      });
   };
 
   return fetchMore();
@@ -211,23 +193,20 @@ export const singleTopic = query((scope, params) => {
 export const singleSubmission = query((scope, params) =>
   scope
     .get(routes.ThingAllComments.reverse({ thingId: params.submissionId }))
-    .souls(souls => [
-      routes.Thing.reverse({ thingId: params.submissionId }),
-      ...souls
-    ])
+    .souls(R.prepend(routes.Thing.reverse({ thingId: params.submissionId })))
 );
 
 const multiQuery = (singleQuery, plural, single, collate = unionArrays) =>
-  query((scope, params) =>
-    isNil(prop(plural, params))
-      ? emptyPromise
-      : all(
-          map(
-            val => singleQuery(scope, { ...params, [single]: val }),
-            propOr([], plural, params)
-          )
-        ).then(collate)
-  );
+  query((scope, params) => {
+    const items = R.prop(plural, params);
+    if (R.isNil(items)) return emptyPromise;
+    return all(
+      R.map(
+        val => singleQuery(scope, { ...params, [single]: val }),
+        R.propOr([], plural, params)
+      )
+    ).then(collate);
+  });
 
 export const multiThingData = multiQuery(
   singleThingData,
@@ -245,61 +224,56 @@ export const multiSubmission = multiQuery(
   "submissionId"
 );
 
-/*
-export const multiLens = multiQuery(singleLens, "lenses", "lens");
-export const multiSpace = multiQuery(singleSpace, "spaces", "space");
-*/
-
 const voteSort = fn => (scope, params) =>
   multiThingMeta(scope, { ...params, scores: true }).then(
-    compose(
-      sortBy(fn),
-      filter(x => !!x)
+    R.compose(
+      R.sortBy(fn),
+      R.filter(R.identity)
     )
   );
 
 const timeSort = fn => (scope, params) =>
   multiThingMeta(scope, params).then(
-    compose(
-      sortBy(fn),
-      filter(x => !!x)
+    R.compose(
+      R.sortBy(fn),
+      R.filter(R.identity)
     )
   );
 
 export const sorts = {
   new: timeSort(
-    compose(
-      x => -1 * x,
-      prop("timestamp")
+    R.compose(
+      R.multiply(-1),
+      R.prop("timestamp")
     )
   ),
-  old: timeSort(prop("timestamp")),
+  old: timeSort(R.prop("timestamp")),
   active: voteSort(
     ({ timestamp, lastActive }) => -1 * (lastActive || timestamp)
   ),
   top: voteSort(
-    compose(
+    R.compose(
       x => -1 * parseInt(x, 10),
-      pathOr(0, ["votes", "score"])
+      R.pathOr(0, ["votes", "score"])
     )
   ),
   comments: voteSort(
-    compose(
+    R.compose(
       x => -1 * parseFloat(x, 10),
-      pathOr(0, ["votes", "comment"])
+      R.pathOr(0, ["votes", "comment"])
     )
   ),
   discussed: voteSort(thing => {
-    const timestamp = prop("timestamp", thing);
-    const score = parseInt(pathOr(0, ["votes", "comment"], thing), 10);
+    const timestamp = R.prop("timestamp", thing);
+    const score = parseInt(R.pathOr(0, ["votes", "comment"], thing), 10);
     const seconds = timestamp / 1000 - 1134028003;
     const order = Math.log10(Math.max(Math.abs(score), 1));
     if (!score) return 1000000000 - seconds;
     return -1 * (order + seconds / 45000);
   }),
   hot: voteSort(thing => {
-    const timestamp = prop("timestamp", thing);
-    const score = parseInt(pathOr(0, ["votes", "score"], thing), 10);
+    const timestamp = R.prop("timestamp", thing);
+    const score = parseInt(R.pathOr(0, ["votes", "score"], thing), 10);
     const seconds = timestamp / 1000 - 1134028003;
     const order = Math.log10(Math.max(Math.abs(score), 1));
     let sign = 0;
@@ -311,8 +285,8 @@ export const sorts = {
     return -1 * (sign * order + seconds / 45000);
   }),
   best: voteSort(thing => {
-    const ups = parseInt(pathOr(0, ["votes", "up"], thing), 10);
-    const downs = parseInt(pathOr(0, ["votes", "down"], thing), 10);
+    const ups = parseInt(R.pathOr(0, ["votes", "up"], thing), 10);
+    const downs = parseInt(R.pathOr(0, ["votes", "down"], thing), 10);
     const n = ups + downs;
     if (n === 0) return 0;
     const z = 1.281551565545; // 80% confidence
@@ -323,8 +297,8 @@ export const sorts = {
     return -1 * ((left - right) / under);
   }),
   controversial: voteSort(thing => {
-    const ups = parseInt(pathOr(0, ["votes", "up"], thing), 10);
-    const downs = parseInt(pathOr(0, ["votes", "down"], thing), 10);
+    const ups = parseInt(R.pathOr(0, ["votes", "up"], thing), 10);
+    const downs = parseInt(R.pathOr(0, ["votes", "down"], thing), 10);
     if (ups <= 0 || downs <= 0) return 0;
     const magnitude = ups + downs;
     const balance = ups > downs ? downs / ups : ups / downs;
@@ -337,26 +311,19 @@ export const sortThings = (scope, params) =>
 
 export const filterThings = (scope, things, fn) =>
   all(
-    things
-      .filter(thing => thing && thing.id)
-      .map(thing =>
-        scope
-          .get(routes.Thing.reverse({ thingId: thing.id }))
-          .get("data")
-          .then(data => ({
-            ...thing,
-            data
-          }))
-          .then(thingWithData => {
-            if (!thingWithData.data) return thingWithData;
-            if (!thingWithData.data.opId) return thingWithData;
-            return scope
-              .get(routes.Thing.reverse({ thingId: thingWithData.data.opId }))
-              .get("data")
-              .then(opData => ({
-                ...thingWithData,
-                opData
-              }));
-          })
-      )
-  ).then(filter(fn));
+    R.map(thing => {
+      if (!thing || !thing.id) return resolve();
+      return scope
+        .get(routes.Thing.reverse({ thingId: thing.id }))
+        .get("data")
+        .then(R.assoc("data", R.__, thing))
+        .then(thingWithData => {
+          const thingId = R.path(["data", "opId"], thingWithData);
+          if (!thingId) return thingWithData;
+          return scope
+            .get(routes.Thing.reverse({ thingId }))
+            .get("data")
+            .then(R.assoc("opData", R.__, thingWithData));
+        });
+    }, things)
+  ).then(R.filter(R.allPass([R.identity, fn])));
