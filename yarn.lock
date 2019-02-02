@@ -2589,6 +2589,14 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
+bee-queue@^1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/bee-queue/-/bee-queue-1.2.2.tgz#ad82226de14f42fed4b86b066b18c4829ffd3600"
+  integrity sha512-Nw6VXHkAdfnMEp5bdffTSZEBnHuZSoRLjwmurfaQp6xmcxP+XsaqKClH1/XLmoAkrOuW40j9mLGlsLR/25ljwQ==
+  dependencies:
+    promise-callbacks "^3.0.0"
+    redis "^2.7.1"
+
 better-queue-memory@^1.0.1, better-queue-memory@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/better-queue-memory/-/better-queue-memory-1.0.3.tgz#4e71fbb5f5976188656e0c5610da7b411af41493"
@@ -5609,21 +5617,25 @@ gud@^1.0.0:
   resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
+"gun-cleric-bee-queue@https://github.com/notabugio/gun-cleric-bee-queue.git":
+  version "0.0.1"
+  resolved "https://github.com/notabugio/gun-cleric-bee-queue.git#4a11ee45ca61e7a45a42dccc2daa4d9cc81d358b"
+
 "gun-cleric-scope@https://github.com/notabugio/gun-cleric-scope.git":
-  version "0.2.3"
-  resolved "https://github.com/notabugio/gun-cleric-scope.git#fa3f21f826d941e3ce0c17ad1b7414d01169c0a5"
+  version "0.3.0"
+  resolved "https://github.com/notabugio/gun-cleric-scope.git#ccf6da43336134d8fde8db94425ba947b03746a2"
 
 "gun-cleric@https://github.com/notabugio/gun-cleric.git":
-  version "0.1.0"
-  resolved "https://github.com/notabugio/gun-cleric.git#b573ebda638469684cf1b5354fb902a4c74eea19"
+  version "0.2.0"
+  resolved "https://github.com/notabugio/gun-cleric.git#d0e7cb8c0dba671daaf1dc836757b9e48d81a36d"
 
 "gun-receiver@https://github.com/notabugio/gun-receiver.git":
-  version "0.3.0"
-  resolved "https://github.com/notabugio/gun-receiver.git#427e4a80950407c337b64c64796fab1c34c30278"
+  version "0.3.2"
+  resolved "https://github.com/notabugio/gun-receiver.git#7e46be2104c367e1b4c58ff1d67661db1a262c38"
 
 "gun-redis@https://github.com/notabugio/gun-redis.git":
-  version "0.2.0"
-  resolved "https://github.com/notabugio/gun-redis.git#08f17d12039bf64c77669cf83d02c653de280958"
+  version "0.3.0"
+  resolved "https://github.com/notabugio/gun-redis.git#262931028e41039a1c45935f5b16d93800aaa080"
 
 "gun-scope@https://github.com/notabugio/gun-scope.git":
   version "0.1.2"
@@ -8233,7 +8245,7 @@ object.assign@^4.1.0:
     has-symbols "^1.0.0"
     object-keys "^1.0.11"
 
-object.getownpropertydescriptors@^2.0.3:
+object.getownpropertydescriptors@2.0.3, object.getownpropertydescriptors@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/object.getownpropertydescriptors/-/object.getownpropertydescriptors-2.0.3.tgz#8758c846f5b407adab0f236e0986f14b051caa16"
   integrity sha1-h1jIRvW0B62rDyNuCYbxSwUcqhY=
@@ -9549,6 +9561,13 @@ progress@^2.0.0:
   resolved "https://registry.yarnpkg.com/progress/-/progress-2.0.1.tgz#c9242169342b1c29d275889c95734621b1952e31"
   integrity sha512-OE+a6vzqazc+K6LxJrX5UPyKFvGnL5CYmq2jFGNIBWHpc4QyE49/YOumcrpQFJpfejmvRtbJzgO1zPmMCqlbBg==
 
+promise-callbacks@^3.0.0:
+  version "3.2.2"
+  resolved "https://registry.yarnpkg.com/promise-callbacks/-/promise-callbacks-3.2.2.tgz#7075bdebbdf8e2392e77261d22102adb4cdacabd"
+  integrity sha512-jnxB9py4PkjSzS2PxXUarBgtN2I0ASK2y3PaSBXjeqINFVPAWInuau8R51Ef31/ps9lcdYnsknXyhXEe6TLTAw==
+  dependencies:
+    object.getownpropertydescriptors "2.0.3"
+
 promise-inflight@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/promise-inflight/-/promise-inflight-1.0.1.tgz#98472870bf228132fcbdd868129bad12c3c029e3"
@@ -10193,7 +10212,7 @@ redis-parser@^2.6.0:
   resolved "https://registry.yarnpkg.com/redis-parser/-/redis-parser-2.6.0.tgz#52ed09dacac108f1a631c07e9b69941e7a19504b"
   integrity sha1-Uu0J2srBCPGmMcB+m2mUHnoZUEs=
 
-redis@^2.4.2, redis@^2.8.0:
+redis@^2.4.2, redis@^2.7.1, redis@^2.8.0:
   version "2.8.0"
   resolved "https://registry.yarnpkg.com/redis/-/redis-2.8.0.tgz#202288e3f58c49f6079d97af7a10e1303ae14b02"
   integrity sha512-M1OkonEQwtRmZv4tEWF2VgpG0JWJ8Fv1PhlgT5+B+uNq2cA3Rt1Yt/ryoR+vQNOQcIEgdCdfH0jr3bDpihAw1A==
