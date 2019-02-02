@@ -1,4 +1,5 @@
 import * as R from "ramda";
+import { curate } from "./utils";
 import {
   sortThings,
   multiAuthor,
