@@ -212,6 +212,7 @@ export const definitions = {
         additionalProperties: false,
         description: "Self verifying can be updated in isolation",
         properties: {
+          id: { $ref: "#/definitions/thingId" },
           comments: { thingRelatedEdge: "ThingComments" },
           allcomments: { thingRelatedEdge: "ThingAllComments" },
           votesup: { thingRelatedEdge: "ThingVotesUp" },

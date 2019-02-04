@@ -5618,8 +5618,8 @@ gud@^1.0.0:
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
 "gun-cleric-bee-queue@https://github.com/notabugio/gun-cleric-bee-queue.git":
-  version "0.1.0"
-  resolved "https://github.com/notabugio/gun-cleric-bee-queue.git#68b56d6538f1be857158de8c91882d57e49c8548"
+  version "0.1.1"
+  resolved "https://github.com/notabugio/gun-cleric-bee-queue.git#5df4fb6ee5684095ae2b84380f554fa7f338370c"
 
 "gun-cleric-scope@https://github.com/notabugio/gun-cleric-scope.git":
   version "0.4.0"

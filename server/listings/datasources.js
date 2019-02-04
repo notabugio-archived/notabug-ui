@@ -1,4 +1,5 @@
 import * as R from "ramda";
+import { routes } from "../notabug-peer/json-schema";
 import { curate } from "./utils";
 import {
   sortThings,
@@ -25,7 +26,7 @@ export const itemSources = {
     const curators = R.prop("curators", parsed) || [];
     if (!curators.length) return itemSources.topic();
     return curate(scope, curators.map(id => `~${id}`), true).then(ids =>
-      ids.map(thingId => souls.Thing.reverse({ thingId }))
+      ids.map(thingId => routes.Thing.reverse({ thingId }))
     );
   },
   author: (scope, parsed) => {
