@@ -2,7 +2,7 @@ import commandLineArgs from "command-line-args";
 import { pick } from "ramda";
 // import { gunCleric } from "gun-cleric";
 // import { gunClericSharedScope as gunCleric } from "gun-cleric-scope";
-import { gunCleric, oracleState } from "gun-cleric-bee-queue";
+import { gunCleric, oracleState, createWorker } from "gun-cleric-bee-queue";
 import indexerOracle from "./oracles/indexer";
 import spaceIndexerOracle from "./oracles/space-indexer";
 import tabulatorOracle from "./oracles/tabulator";
@@ -65,18 +65,42 @@ const oracles = [
 
 if (oracles.length) {
   const { username, password } = require("../server-config.json");
-  const state = oracleState({
-    db: 2
-  });
   nab.login(username, password).then(({ pub }) => {
     console.log("logged in", username, pub);
+    const state = oracleState({
+      db: 2
+    });
+    const worker = createWorker(oracles, {
+      queue: require("./worker").cleric
+    });
     oracles.forEach(oracle =>
       oracle.config({
         pub,
         state,
+        worker,
         write: (soul, node) => nab.gun.get(soul).put(node)
       })
     );
     gunCleric(nab.gun, oracles);
+    if (nab.receiver) {
+      nab.receiver.onIn(msg => {
+        if (msg.fromCluster) return;
+        if (msg.json.get) {
+          oracles.forEach(orc => orc.onMsg(msg.json));
+        }
+      });
+    }
+  });
+}
+if (options.redis) {
+  Gun.redis.onChange(soul => {
+    require("./worker")
+      .cleric.createJob({
+        soul,
+        method: "onChange",
+        latest: new Date().getTime()
+      })
+      .save();
+    console.log("onChange", soul);
   });
 }

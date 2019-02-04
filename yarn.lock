@@ -5618,24 +5618,24 @@ gud@^1.0.0:
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
 "gun-cleric-bee-queue@https://github.com/notabugio/gun-cleric-bee-queue.git":
-  version "0.0.1"
-  resolved "https://github.com/notabugio/gun-cleric-bee-queue.git#4a11ee45ca61e7a45a42dccc2daa4d9cc81d358b"
+  version "0.1.0"
+  resolved "https://github.com/notabugio/gun-cleric-bee-queue.git#68b56d6538f1be857158de8c91882d57e49c8548"
 
 "gun-cleric-scope@https://github.com/notabugio/gun-cleric-scope.git":
-  version "0.3.0"
-  resolved "https://github.com/notabugio/gun-cleric-scope.git#ccf6da43336134d8fde8db94425ba947b03746a2"
+  version "0.4.0"
+  resolved "https://github.com/notabugio/gun-cleric-scope.git#de7caaa3f07908f56a4064378e493978807178c7"
 
 "gun-cleric@https://github.com/notabugio/gun-cleric.git":
-  version "0.2.0"
-  resolved "https://github.com/notabugio/gun-cleric.git#d0e7cb8c0dba671daaf1dc836757b9e48d81a36d"
+  version "0.2.1"
+  resolved "https://github.com/notabugio/gun-cleric.git#27e637749844a55bd333a06df179820adef74818"
 
 "gun-receiver@https://github.com/notabugio/gun-receiver.git":
-  version "0.3.2"
-  resolved "https://github.com/notabugio/gun-receiver.git#7e46be2104c367e1b4c58ff1d67661db1a262c38"
+  version "0.4.0"
+  resolved "https://github.com/notabugio/gun-receiver.git#33cb15223eab79645dc06472a4167ed10eabb4b8"
 
 "gun-redis@https://github.com/notabugio/gun-redis.git":
-  version "0.3.0"
-  resolved "https://github.com/notabugio/gun-redis.git#262931028e41039a1c45935f5b16d93800aaa080"
+  version "0.4.0"
+  resolved "https://github.com/notabugio/gun-redis.git#cd733030e0e8a5f4394915929933c068122c64f9"
 
 "gun-scope@https://github.com/notabugio/gun-scope.git":
   version "0.1.2"

@@ -18,7 +18,12 @@ export default function notabug(config = {}) {
     if (cfg.storeFn) cfg.store = cfg.storeFn(cfg); // for indexeddb
     peer.gun = Gun(cfg);
     if (cfg.localStorage) peer.gun.on("localStorage:error", a => a.retry({}));
-    if (leech) peer.gun._.on("out", { leech: true });
+    if (leech) {
+      // Gun doesn't tell when it reconnects so have to do this lameness:
+      const sendLeech = () => peer.gun._.on("out", { leech: true });
+      setInterval(sendLeech, 5*60*1000);
+      sendLeech();
+    }
   }
 
   const fns = { queries, newScope, ...write, ...auth };

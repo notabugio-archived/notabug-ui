@@ -43,10 +43,15 @@ export const initServer = ({ port, host, render, ...options }) => {
     ...options,
     disableValidation: options.pistol ? true : options.disableValidation,
     web: options.pistol ? undefined : web,
-    peers: options.pistol ? [] : options.peers || []
+    leech: options.pistol ? true : options.leech,
+    peers: options.pistol
+      ? port
+        ? [`http://${host}:${port}/gun`]
+        : []
+      : options.peers
   });
   if (options.pistol)
-    require("./receiver").default({
+    nab.receiver = require("./receiver").default({
       redis: options.redis,
       peers: options.peers,
       web

@@ -23,7 +23,8 @@ pm2.connect(err => {
       instances: "max",
       script: "server.js",
       env: { NODE_ENV: "production" },
-      args: ["--port", options.port, "--redis", "--pistol", "--render"]
+      // args: ["--port", options.port, "--redis", "--pistol", "--render"]
+      args: ["--port", options.port, "--redis", "--pistol", "--render", "--listings", "--spaces", "--tabulate"]
     })
   );
   /*
@@ -38,6 +39,7 @@ pm2.connect(err => {
     })
   );
   */
+  /*
   promises.push(
     start({
       name: "oracles",
@@ -55,6 +57,7 @@ pm2.connect(err => {
       ]
     })
   );
+  */
   options.peer &&
     options.peer.length &&
     promises.push(

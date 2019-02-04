@@ -2,7 +2,6 @@
 import { equals, pipe, identity, keys, without } from "ramda";
 import {
   chainInterface,
-  // preventConflicts,
   Receiver,
   deduplicateMessages,
   allowLeech,
@@ -24,8 +23,8 @@ const validateMessage = ({ json, skipValidation, ...msg }) => {
 
 const redisSupport = pipe(
   redis.respondToGets(Gun),
-  chainInterface
-  //  preventConflicts
+  chainInterface,
+  redis.acceptWrites(Gun)
 );
 
 const skipValidatingKnownData = db => {
@@ -34,8 +33,7 @@ const skipValidatingKnownData = db => {
       msg.skipValidation ||
       !db.get ||
       !msg.json ||
-      !msg.json.put ||
-      !Gun.redis
+      !msg.json.put
     )
       return msg;
     const souls = keys(msg.json.put);
@@ -45,7 +43,7 @@ const skipValidatingKnownData = db => {
       souls.map(soul =>
         soul.indexOf("~") === -1
           ? Promise.resolve(true)
-          : Gun.redis.get(soul).then(existing => {
+          : db.get(soul, { noRelay: true }).then(existing => {
               const updated = msg.json.put[soul];
 
               if (!existing || !updated) return true;
