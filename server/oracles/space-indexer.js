@@ -10,15 +10,10 @@ import { spaceSourceWithDefaults } from "../notabug-peer/source";
 const spaceConfig = sort => ({
   path: `${PREFIX}/user/:authorId/spaces/:name/${sort}@~:indexer.`,
   priority: 20,
-  checkMatch: ({ name, authorId }) =>
-    authorId && name,
+  checkMatch: ({ name, authorId }) => authorId && name,
   query: query((scope, { match: { authorId, name } }) =>
-    listingFromPage(
-      scope,
-      authorId,
-      `space:${name}`,
-      `sort ${sort}`,
-      source => spaceSourceWithDefaults({ source, owner: authorId, name: name })
+    listingFromPage(scope, authorId, `space:${name}`, `sort ${sort}`, source =>
+      spaceSourceWithDefaults({ source, owner: authorId, name: name })
     )
   )
 });
@@ -26,6 +21,7 @@ const spaceConfig = sort => ({
 const throttledSpaceConfig = sort => ({
   ...spaceConfig(sort),
   priority: 10,
+  throttleGet: 60 * 1000,
   onPut: R.always(Promise.resolve())
 });
 

@@ -40,6 +40,7 @@ const topicConfig = sort => ({
 const throttledTopicConfig = sort => ({
   ...topicConfig(sort),
   priority: 10,
+  throttleGet: 60 * 1000,
   onPut: R.always(Promise.resolve())
 });
 
