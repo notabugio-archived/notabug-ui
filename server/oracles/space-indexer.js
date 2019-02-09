@@ -1,3 +1,4 @@
+import * as R from "ramda";
 import { query } from "gun-scope";
 import { oracle } from "gun-cleric";
 import { basic } from "gun-cleric-scope";
@@ -6,24 +7,36 @@ import { sorts } from "../queries";
 import { listingFromPage } from "../listings/declarative";
 import { spaceSourceWithDefaults } from "../notabug-peer/source";
 
+const spaceConfig = sort => ({
+  path: `${PREFIX}/user/:authorId/spaces/:name/${sort}@~:indexer.`,
+  priority: 20,
+  checkMatch: ({ name, authorId }) =>
+    authorId && name,
+  query: query((scope, { match: { authorId, name } }) =>
+    listingFromPage(
+      scope,
+      authorId,
+      `space:${name}`,
+      `sort ${sort}`,
+      source => spaceSourceWithDefaults({ source, owner: authorId, name: name })
+    )
+  )
+});
+
+const throttledSpaceConfig = sort => ({
+  ...spaceConfig(sort),
+  priority: 10,
+  onPut: R.always(Promise.resolve())
+});
+
 export default oracle({
   name: "space-indexer",
   concurrent: 1,
   routes: [
-    basic({
-      path: `${PREFIX}/user/:authorId/spaces/:name/:sort@~:indexer.`,
-      priority: 20,
-      checkMatch: ({ sort, name, authorId }) =>
-        sort in sorts && authorId && name,
-      query: query((scope, { match: { authorId, name, sort } }) =>
-        listingFromPage(
-          scope,
-          authorId,
-          `space:${name}`,
-          `sort ${sort}`,
-          source => spaceSourceWithDefaults({ source, owner: authorId, name: name })
-        )
-      )
-    })
+    basic(spaceConfig("new")),
+    basic(throttledSpaceConfig("hot")),
+    basic(throttledSpaceConfig("top")),
+    basic(throttledSpaceConfig("controversial")),
+    basic(throttledSpaceConfig("discussed"))
   ]
 });

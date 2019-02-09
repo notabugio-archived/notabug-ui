@@ -85,9 +85,8 @@ if (oracles.length) {
     if (nab.receiver) {
       nab.receiver.onIn(msg => {
         if (msg.fromCluster) return;
-        if (msg.json.get) {
-          oracles.forEach(orc => orc.onMsg(msg.json));
-        }
+        if (msg.json.get) oracles.forEach(orc => orc.onMsg(msg.json));
+        return msg;
       });
     }
   });

@@ -10,6 +10,7 @@ export default oracle({
     basic({
       path: `${PREFIX}/things/:thingId/votecounts@~:tab1.:tab2.`,
       priority: 10,
+      throttleGet: 1000*60*60*4,
       checkMatch: ({ thingId }) => !!thingId,
       query: query((scope, route) => {
         const thingSoul = routes.Thing.reverse(route.match);

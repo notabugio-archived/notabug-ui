@@ -10,7 +10,7 @@ export const mergeObjects = R.reduce(R.mergeDeepRight, {});
 
 export const getTopicSouls = params => {
   const { topics = ["all"] } = params || {};
-  const days = R.propOr(365, "days", params) || 90;
+  const days = R.propOr(90, "days", params) || 90;
   const dayStrings = [];
   const oneDay = 1000 * 60 * 60 * 24;
   const start = new Date().getTime() - oneDay * parseInt(days, 10);
@@ -171,8 +171,8 @@ export const singleTopic = query((scope, params) => {
   if (params.sort === "new") {
     itemMax = LISTING_SIZE;
   } else {
-    if (params.sort === "top") itemMax = itemMax * 5;
-    if (params.topic === "all") itemMax = itemMax * 10;
+    if (params.sort === "top") itemMax = itemMax * 3;
+    if (params.topic === "all") itemMax = itemMax * 3;
   }
 
   const fetchMore = () => {

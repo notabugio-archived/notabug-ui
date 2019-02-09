@@ -5622,8 +5622,8 @@ gud@^1.0.0:
   resolved "https://github.com/notabugio/gun-cleric-bee-queue.git#5df4fb6ee5684095ae2b84380f554fa7f338370c"
 
 "gun-cleric-scope@https://github.com/notabugio/gun-cleric-scope.git":
-  version "0.4.0"
-  resolved "https://github.com/notabugio/gun-cleric-scope.git#de7caaa3f07908f56a4064378e493978807178c7"
+  version "0.5.0"
+  resolved "https://github.com/notabugio/gun-cleric-scope.git#0ce14f404ab9ea0dc8b0cb792a2d9653d7983c0b"
 
 "gun-cleric@https://github.com/notabugio/gun-cleric.git":
   version "0.2.1"
@@ -5634,8 +5634,8 @@ gud@^1.0.0:
   resolved "https://github.com/notabugio/gun-receiver.git#33cb15223eab79645dc06472a4167ed10eabb4b8"
 
 "gun-redis@https://github.com/notabugio/gun-redis.git":
-  version "0.4.0"
-  resolved "https://github.com/notabugio/gun-redis.git#cd733030e0e8a5f4394915929933c068122c64f9"
+  version "0.4.1"
+  resolved "https://github.com/notabugio/gun-redis.git#0b199a9489cb56fa664be919d247f9d323f4c363"
 
 "gun-scope@https://github.com/notabugio/gun-scope.git":
   version "0.1.2"

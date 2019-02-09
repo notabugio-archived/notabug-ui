@@ -6,44 +6,59 @@ import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
 import { listingFromPage } from "../listings/declarative";
 
+const topicConfig = sort => ({
+  path: `${PREFIX}/t/:topic/${sort}@~:indexer.`,
+  priority: 60,
+  checkMatch: ({ topic }) =>
+    sort in sorts && topic && topic.toLowerCase() === topic,
+  query: query((scope, { match: { topic, indexer } }) => {
+    const topics = topic.split("+");
+    const submitTo = topics[0] === "all" ? "whatever" : topics[0];
+    return listingFromPage(
+      scope,
+      indexer,
+      "listing:topic",
+      [
+        `name ${topic}`,
+        ...topics.map(tp => `topic ${tp}`),
+        `submit to ${submitTo}`,
+        topic.indexOf(":") === -1 ? "kind submission" : "",
+        `sort ${sort}`,
+        ...[
+          "hot",
+          "new",
+          "discussed",
+          "controversial",
+          "top",
+          "firehose"
+        ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
+      ].join("\n")
+    );
+  })
+});
+
+const throttledTopicConfig = sort => ({
+  ...topicConfig(sort),
+  priority: 10,
+  onPut: R.always(Promise.resolve())
+});
+
 export default oracle({
   name: "indexer",
   concurrent: 1,
   routes: [
     basic({
-      path: `${PREFIX}/t/:topic/firehose@~:indexer.`,
-      priority: 75,
-      checkMatch: ({ topic }) =>
-        topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
-      query: query((scope, { match: { topic, indexer } }) => {
-        const normalTopics = topic.split("+");
-        const submitTopic =
-          topic === "all" ? "whatever" : normalTopics[0] || "whatever";
-        const topics = normalTopics.reduce(
-          (res, topic) => [...res, topic, `chat:${topic}`, `comments:${topic}`],
-          []
-        );
-        return listingFromPage(
+      path: `${PREFIX}/things/:thingid/comments/:sort@~:indexer.`,
+      checkMatch: ({ sort }) => sort in sorts,
+      priority: 85,
+      query: query((scope, { match: { thingid, sort, indexer } }) =>
+        listingFromPage(
           scope,
           indexer,
-          "listing:firehose",
-          [
-            `name ${topic}`,
-            "sort new",
-            `submit to ${submitTopic}`,
-            `chat in ${submitTopic}`,
-            ...topics.map(t => `topic ${t}`),
-            ...[
-              "hot",
-              "new",
-              "discussed",
-              "controversial",
-              "top",
-              "firehose"
-            ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
-          ].join("\n")
-        ).then(serialized => ({ ...serialized, isChat: true }));
-      })
+          "listing:comments",
+          [`sort ${sort}`, `op ${thingid}`].join("\n")
+        )
+      )
     }),
 
     basic({
@@ -81,18 +96,46 @@ export default oracle({
     }),
 
     basic({
-      path: `${PREFIX}/things/:thingid/comments/:sort@~:indexer.`,
-      checkMatch: ({ sort }) => sort in sorts,
-      priority: 85,
-      query: query((scope, { match: { thingid, sort, indexer } }) =>
-        listingFromPage(
+      path: `${PREFIX}/t/:topic/firehose@~:indexer.`,
+      priority: 75,
+      checkMatch: ({ topic }) =>
+        topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
+      query: query((scope, { match: { topic, indexer } }) => {
+        const normalTopics = topic.split("+");
+        const submitTopic =
+          topic === "all" ? "whatever" : normalTopics[0] || "whatever";
+        const topics = normalTopics.reduce(
+          (res, topic) => [...res, topic, `chat:${topic}`, `comments:${topic}`],
+          []
+        );
+        return listingFromPage(
           scope,
           indexer,
-          "listing:comments",
-          [`sort ${sort}`, `op ${thingid}`].join("\n")
-        )
-      )
+          "listing:firehose",
+          [
+            `name ${topic}`,
+            "sort new",
+            `submit to ${submitTopic}`,
+            `chat in ${submitTopic}`,
+            ...topics.map(t => `topic ${t}`),
+            ...[
+              "hot",
+              "new",
+              "discussed",
+              "controversial",
+              "top",
+              "firehose"
+            ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
+          ].join("\n")
+        ).then(serialized => ({ ...serialized, isChat: true }));
+      })
     }),
+
+    basic(topicConfig("new")),
+    basic(throttledTopicConfig("hot")),
+    basic(throttledTopicConfig("top")),
+    basic(throttledTopicConfig("controversial")),
+    basic(throttledTopicConfig("discussed")),
 
     basic({
       path: `${PREFIX}/domain/:domain/:sort@~:indexer.`,
@@ -115,37 +158,6 @@ export default oracle({
           ].join("\n")
         )
       )
-    }),
-
-    basic({
-      path: `${PREFIX}/t/:topic/:sort@~:indexer.`,
-      priority: 60,
-      checkMatch: ({ sort, topic }) =>
-        sort in sorts && topic && topic.toLowerCase() === topic,
-      query: query((scope, { match: { topic, sort, indexer } }) => {
-        const topics = topic.split("+");
-        const submitTo = topics[0] === "all" ? "whatever" : topics[0];
-        return listingFromPage(
-          scope,
-          indexer,
-          "listing:topic",
-          [
-            `name ${topic}`,
-            ...topics.map(tp => `topic ${tp}`),
-            `submit to ${submitTo}`,
-            topic.indexOf(":") === -1 ? "kind submission" : "",
-            `sort ${sort}`,
-            ...[
-              "hot",
-              "new",
-              "discussed",
-              "controversial",
-              "top",
-              "firehose"
-            ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
-          ].join("\n")
-        );
-      })
     }),
 
     basic({
