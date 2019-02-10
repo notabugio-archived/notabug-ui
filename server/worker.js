@@ -84,6 +84,10 @@ function setupOracles(nab, activeOracles) {
     allOracles.forEach(oracle => {
       const isWorker = activeOracles.includes(oracle);
       const worker = createWorker(oracle, { redis, isWorker });
+      const getter = soul => {
+        nab.msgWorker.onMsg({ get: { "#": soul } });
+        return nab.gun.redis.read(soul);
+      };
       oracle.config({
         pub,
         state,
@@ -93,7 +97,7 @@ function setupOracles(nab, activeOracles) {
           scope({
             gun: nab.gun,
             noGun: true,
-            getter: R.path(["gun", "redis", "read"], nab)
+            getter
           })
       });
       if (isWorker) worker.process();
@@ -108,7 +112,7 @@ export function init(Gun, nab, options) {
     ...(options.spaces ? [spaceIndexerOracle] : [])
   ];
   const isWorker = active.length > 0;
-  const msgWorker = createMsgWorker({ redis, isWorker });
+  const msgWorker = (nab.msgWorker = createMsgWorker({ redis, isWorker }));
 
   if (options.workers) {
     if (nab.receiver) {

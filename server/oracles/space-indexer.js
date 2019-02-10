@@ -12,9 +12,10 @@ const spaceConfig = sort => ({
   priority: 20,
   checkMatch: ({ name, authorId }) => authorId && name,
   query: query((scope, { match: { authorId, name } }) =>
-    listingFromPage(scope, authorId, `space:${name}`, `sort ${sort}`, source =>
-      spaceSourceWithDefaults({ source, owner: authorId, name: name })
-    )
+    listingFromPage(scope, authorId, `space:${name}`, `sort ${sort}`, {
+      transform: source =>
+        spaceSourceWithDefaults({ source, owner: authorId, name: name })
+    })
   )
 });
 

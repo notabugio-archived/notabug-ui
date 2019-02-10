@@ -32,7 +32,10 @@ const topicConfig = sort => ({
           "top",
           "firehose"
         ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
-      ].join("\n")
+      ].join("\n"),
+      {
+        useListing: false
+      }
     );
   })
 });
@@ -57,7 +60,8 @@ export default oracle({
           scope,
           indexer,
           "listing:comments",
-          [`sort ${sort}`, `op ${thingid}`].join("\n")
+          [`sort ${sort}`, `op ${thingid}`].join("\n"),
+          { useListing: false }
         )
       )
     }),
@@ -91,7 +95,8 @@ export default oracle({
               "top",
               "firehose"
             ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
-          ].join("\n")
+          ].join("\n"),
+          { useListing: false }
         ).then(serialized => ({ ...serialized, isChat: true }));
       })
     }),
@@ -156,7 +161,8 @@ export default oracle({
             ...["hot", "new", "discussed", "controversial", "top"].map(
               tab => `tab ${tab} /domain/${domain}/${tab}`
             )
-          ].join("\n")
+          ].join("\n"),
+          { useListing: false }
         )
       )
     }),
@@ -203,7 +209,8 @@ export default oracle({
             ...["overview", "comments", "submitted", "commands"].map(
               tab => `tab ${tab} /user/${authorId}/${tab}`
             )
-          ].join("\n")
+          ].join("\n"),
+          { useListing: false }
         ).then(serialized => ({ ...serialized, userId: authorId }))
       )
     })

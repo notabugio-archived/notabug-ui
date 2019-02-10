@@ -87,18 +87,6 @@ export const thingMeta = query(
     })
 );
 
-export const listingIds = query(
-  (scope, soul) =>
-    scope.get(soul).then(
-      R.compose(
-        R.filter(R.identity),
-        R.split("+"),
-        R.prop("ids")
-      )
-    ),
-  "listingIds"
-);
-
 export const multiThingMeta = query((scope, params) =>
   all(
     R.reduce(
@@ -121,6 +109,24 @@ export const singleThingData = query((scope, { thingId }) =>
       const { _, ...actual } = data || {}; // eslint-disable-line no-unused-vars
       return { [thingId]: data ? actual : data };
     })
+);
+
+export const listingIds = query(
+  (scope, soul) =>
+    scope.get(soul).then(
+      R.compose(
+        R.filter(R.identity),
+        R.split("+"),
+        R.propOr("", "ids")
+      )
+    ),
+  "listingIds"
+);
+
+export const singleListing = query((scope, { listing, sort, indexer }) =>
+  listingIds(scope, `${PREFIX}${listing}/${sort}@~${indexer}.`).then(
+    R.map(thingId => routes.Thing.reverse({ thingId }))
+  )
 );
 
 export const singleAuthor = query((scope, params) =>
@@ -218,6 +224,7 @@ export const multiAuthor = multiQuery(singleAuthor, "authorIds", "authorId");
 export const multiDomain = multiQuery(singleDomain, "domains", "domain");
 export const multiUrl = multiQuery(singleUrl, "urls", "url");
 export const multiTopic = multiQuery(singleTopic, "topics", "topic");
+export const multiListing = multiQuery(singleListing, "listings", "listing");
 export const multiSubmission = multiQuery(
   singleSubmission,
   "submissionIds",

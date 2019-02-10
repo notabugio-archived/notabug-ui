@@ -7,10 +7,20 @@ import {
   multiTopic,
   multiDomain,
   multiSubmission,
+  multiListing,
   repliesToAuthor
 } from "../queries";
 
 export const itemSources = {
+  listing: (scope, parsed) => {
+    const listings = R.path(["filters", "allow", "listings"], parsed) || [];
+    if (!listings.length) return itemSources.topic();
+    return multiListing(scope, {
+      listings,
+      indexer: parsed.indexer,
+      sort: parsed.sort || "new"
+    });
+  },
   replies: (scope, parsed) => {
     const id = R.path(["filters", "allow", "repliesTo"], parsed);
     const type = R.path(["filters", "allow", "type"], parsed);
@@ -36,20 +46,34 @@ export const itemSources = {
     if (!authorIds.length) return itemSources.topic();
     return multiAuthor(scope, { type, authorIds });
   },
-  domain: (scope, parsed) => {
+  domain: (scope, parsed, useListing = true) => {
     const domains = R.path(["filters", "allow", "domains"], parsed) || [];
     if (!domains.length) return itemSources.topic();
+    if (useListing) {
+      return multiListing(scope, {
+        listings: domains.map(domain => `/domain/${domain}`),
+        indexer: parsed.indexer,
+        sort: parsed.sort || "new"
+      });
+    }
     return multiDomain(scope, { domains });
   },
-  topic: (scope, parsed) => {
+  topic: (scope, parsed, useListing = true) => {
     const topics = R.path(["filters", "allow", "topics"], parsed) || [];
     if (!topics.length) topics.push("all");
+    if (useListing) {
+      return multiListing(scope, {
+        listings: topics.map(topic => `/t/${topic}`),
+        indexer: parsed.indexer,
+        sort: parsed.sort || "new"
+      });
+    }
     return multiTopic(scope, { topics, sort: parsed.sort || "new" });
   }
 };
 
-export const fetchData = (scope, parsed) =>
-  itemSources[parsed.itemSource](scope, parsed).then(thingSouls =>
+export const fetchData = (scope, parsed, useListing = true) =>
+  itemSources[parsed.itemSource](scope, parsed, useListing).then(thingSouls =>
     sortThings(scope, {
       thingSouls,
       sort: parsed.sort,

@@ -5,6 +5,7 @@ import { tabulator as defaultIndexer } from "../config.json";
 import { COMMAND_RE } from "./constants";
 
 const potentialSources = [
+  "listing",
   "replies",
   "op",
   "curator",
@@ -65,6 +66,7 @@ export const toListingObject = (source, ownerId = null, spaceName = null) => {
       authors: getValues("author"),
       domains: getValues("domain"),
       topics: getValues("topic"),
+      listings: getValues("listing"),
       kinds: getValues("kind"),
       anon: !isPresent("require signed"),
       signed: !isPresent("require anon")

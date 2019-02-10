@@ -13,14 +13,14 @@ import {
 } from "./utils";
 import { fetchData } from "./datasources";
 
-export const declarativeListing = query((scope, source) => {
+export const declarativeListing = query((scope, source, useListing) => {
   const definition = toFilters(source);
   const { censors, moderators, stickyIds } = definition;
   let { displayName: name } = definition;
   let submitTopic = definition.submitTopics[0] || "";
 
   return Promise.all([
-    fetchData(scope, definition),
+    fetchData(scope, definition, useListing),
     (() => {
       const opId = definition.filters.allow.ops[0];
       const author = definition.filters.allow.authors[0];
@@ -59,7 +59,7 @@ export const declarativeListing = query((scope, source) => {
 });
 
 export const listingFromPage = query(
-  (scope, authorId, name, extra = "", transform = R.identity) =>
+  (scope, authorId, name, extra = "", { transform = R.identity, useListing = true } = {}) =>
     getWikiPage(scope, authorId, name).then(
       R.compose(
         body =>
@@ -70,7 +70,8 @@ ${transform(body)}
 # added by indexer
 ${extra || ""}
 sourced from page ${authorId} ${name}
-            `
+            `,
+            useListing
           ),
         R.propOr("", "body")
       )
