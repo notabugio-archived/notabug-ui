@@ -1,5 +1,5 @@
 /* globals Promise */
-import { equals, pipe, identity, keys, without } from "ramda";
+import * as R from "ramda";
 import {
   chainInterface,
   Receiver,
@@ -21,7 +21,7 @@ const validateMessage = ({ json, skipValidation, ...msg }) => {
   });
 };
 
-const redisSupport = pipe(
+const redisSupport = R.pipe(
   redis.respondToGets(Gun),
   chainInterface,
   redis.acceptWrites(Gun)
@@ -29,31 +29,23 @@ const redisSupport = pipe(
 
 const skipValidatingKnownData = db => {
   db.onIn(msg => {
-    if (
-      msg.skipValidation ||
-      !db.get ||
-      !msg.json ||
-      !msg.json.put
-    )
-      return msg;
-    const souls = keys(msg.json.put);
+    if (msg.skipValidation || !db.get || !msg.json || !msg.json.put) return msg;
+    const souls = R.keys(msg.json.put);
 
     if (!souls.length) return msg;
     return Promise.all(
       souls.map(soul =>
-        soul.indexOf("~") === -1
-          ? Promise.resolve(true)
-          : db.get(soul, { noRelay: true }).then(existing => {
-              const updated = msg.json.put[soul];
+        db.get(soul, { noRelay: true }).then(existing => {
+          const updated = msg.json.put[soul];
 
-              if (!existing || !updated) return true;
-              const propNames = without(["_"], keys(updated));
-              const modifiedKey = propNames.find(
-                name => !equals(existing[name], updated[name])
-              );
+          if (!existing || !updated) return true;
+          const propNames = R.without(["_"], R.keys(updated));
+          const modifiedKey = propNames.find(
+            name => !R.equals(existing[name], updated[name])
+          );
 
-              return modifiedKey;
-            })
+          return modifiedKey;
+        })
       )
     ).then(hasChanges => {
       if (!hasChanges.length || hasChanges.find(x => x)) return msg;
@@ -65,16 +57,16 @@ const skipValidatingKnownData = db => {
 };
 
 export default opts =>
-  pipe(
+  R.pipe(
     Receiver,
     skipValidatingKnownData,
     db => db.onIn(validateMessage) && db,
     deduplicateMessages,
     allowLeech,
-    opts.redis ? redisSupport : identity,
+    opts.redis ? redisSupport : R.identity,
     relayMessages,
     cluster,
     // db => db.onOut(validateMessage) && db,
-    opts.port || opts.web ? websocketTransport.server(opts) : identity,
+    opts.port || opts.web ? websocketTransport.server(opts) : R.identity,
     ...opts.peers.map(peer => websocketTransport.client(peer))
   )(opts);
