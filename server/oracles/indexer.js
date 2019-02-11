@@ -155,6 +155,22 @@ const domainConfig = sort => ({
   )
 });
 
+const submissionConfig = sort => ({
+  path: `${PREFIX}/things/:thingid/comments/${sort}@~:indexer.`,
+  priority: 85,
+  throttleGet: 1000 * 60 * 60,
+  onPut: onPutHandler(sort),
+  query: query((scope, { match: { thingid, indexer } }) =>
+    listingFromPage(
+      scope,
+      indexer,
+      "listing:comments",
+      [`sort ${sort}`, `op ${thingid}`].join("\n"),
+      { useListing: false }
+    )
+  )
+});
+
 const throttledTopicConfig = sort => ({
   ...topicConfig(sort),
   priority: 10
@@ -164,26 +180,18 @@ export default oracle({
   name: "indexer",
   concurrent: 1,
   routes: [
-    basic({
-      path: `${PREFIX}/things/:thingid/comments/:sort@~:indexer.`,
-      checkMatch: ({ sort }) => sort in sorts,
-      priority: 85,
-      query: query((scope, { match: { thingid, sort, indexer } }) =>
-        listingFromPage(
-          scope,
-          indexer,
-          "listing:comments",
-          [`sort ${sort}`, `op ${thingid}`].join("\n"),
-          { useListing: false }
-        )
-      )
-    }),
+    basic(submissionConfig("best")),
+    basic(submissionConfig("new")),
+    basic(submissionConfig("top")),
+    basic(submissionConfig("hot")),
+    basic(submissionConfig("controversial")),
 
     basic({
       path: `${PREFIX}/t/:topic/chat@~:indexer.`,
       priority: 80,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
+      throttleGet: 1000 * 60 * 60,
       onPut: onPutHandler("new"),
       query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics = topic.split("+");
@@ -220,7 +228,6 @@ export default oracle({
       priority: 75,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
-      onPut: onPutHandler("new"),
       query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics = topic.split("+");
         const submitTopic =
@@ -247,8 +254,7 @@ export default oracle({
               "top",
               "firehose"
             ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
-          ].join("\n"),
-          { useListing: false }
+          ].join("\n")
         ).then(serialized => ({ ...serialized, isChat: true }));
       })
     }),
