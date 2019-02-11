@@ -33,10 +33,10 @@ const getOrcAndRoute = soul =>
 const processMsgJob = job =>
   new Promise((ok, fail) => {
     try {
-      const { soul, type, latest } = job.data || {};
+      const { soul, type, diff, latest } = job.data || {};
 
       if (type === "put") {
-        allOracles.forEach(orc => orc.onSoulModified(soul, latest));
+        allOracles.forEach(orc => orc.onSoulModified(soul, diff, latest));
         return ok();
       }
 

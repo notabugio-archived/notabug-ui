@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.45.0",
+  "version": "0.46.0",
   "dependencies": {
     "@babel/cli": "7.2.3",
     "@babel/core": "^7.1.5",
@@ -12,6 +12,7 @@
     "@babel/preset-react": "^7.0.0",
     "@babel/preset-stage-0": "^7.0.0",
     "@babel/register": "^7.0.0",
+    "@babel/runtime": "^7.3.1",
     "@trust/webcrypto": "^0.9.2",
     "ajv": "6.9.1",
     "argon2": "0.20.1",
@@ -96,6 +97,7 @@
     "test": "NODE_PATH=src/ react-app-rewired test --env=jsdom"
   },
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.2.0",
     "babel-eslint": "9.0.0",
     "eslint": "5.6.0",
     "eslint-loader": "2.1.2",

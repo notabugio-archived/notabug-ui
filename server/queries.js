@@ -231,21 +231,38 @@ export const multiSubmission = multiQuery(
   "submissionId"
 );
 
-const voteSort = fn => (scope, params) =>
-  multiThingMeta(scope, { ...params, scores: true }).then(
-    R.compose(
-      R.sortBy(fn),
-      R.filter(R.identity)
-    )
-  );
+const voteSort = fn => {
+  const resultFn = (scope, params) =>
+    multiThingMeta(scope, { ...params, scores: true }).then(
+      R.compose(
+        R.sortBy(fn),
+        R.filter(R.identity)
+      )
+    );
+  const getValueForId = (scope, thingId, params) => thingMeta(scope, {
+    ...params,
+    scores: true,
+    thingSoul: routes.Thing.reverse({ thingId })
+  }).then(fn);
+  resultFn.getValueForId = getValueForId;
+  return resultFn;
+};
 
-const timeSort = fn => (scope, params) =>
-  multiThingMeta(scope, params).then(
-    R.compose(
-      R.sortBy(fn),
-      R.filter(R.identity)
-    )
-  );
+const timeSort = fn => {
+  const resultFn = (scope, params) =>
+    multiThingMeta(scope, params).then(
+      R.compose(
+        R.sortBy(fn),
+        R.filter(R.identity)
+      )
+    );
+  const getValueForId = (scope, thingId, params) => thingMeta(scope, {
+    ...params,
+    thingSoul: routes.Thing.reverse({ thingId })
+  }).then(fn);
+  resultFn.getValueForId = getValueForId;
+  return resultFn;
+};
 
 export const sorts = {
   new: timeSort(
