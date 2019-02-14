@@ -26,7 +26,7 @@ const binarySearch = async (ids, id, getSortVal) => {
     }
   }
   if (m === 0) return 0;
-  if (m >= ids.length - 1) return -1;
+  //if (m >= ids.length - 1) return -1;
   return m - 1;
 };
 
@@ -157,7 +157,7 @@ const domainConfig = sort => ({
 const submissionConfig = sort => ({
   path: `${PREFIX}/things/:thingid/comments/${sort}@~:indexer.`,
   priority: 85,
-  throttleGet: 1000 * 60 * 60,
+  throttleGet: 1000 * 60, // * 60,
   onPut: onPutHandler(sort),
   query: query((scope, { match: { thingid, indexer } }) =>
     listingFromPage(

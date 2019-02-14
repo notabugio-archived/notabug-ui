@@ -10,7 +10,7 @@ export const mergeObjects = R.reduce(R.mergeDeepRight, {});
 
 export const getTopicSouls = params => {
   const { topics = ["all"] } = params || {};
-  const days = R.propOr(90, "days", params) || 90;
+  const days = R.propOr(365, "days", params) || 365;
   const dayStrings = [];
   const oneDay = 1000 * 60 * 60 * 24;
   const start = new Date().getTime() - oneDay * parseInt(days, 10);

@@ -50,6 +50,11 @@ export const Comment = ({
   const item = propItem || { body: "..." };
   const { topic } = item || topicProp;
   const parentItem = propParentItem || (fetchParent ? { title: "..." } : null);
+  let body = propOr("", "body", item) || "";
+  if (!body.split) {
+    console.log("wtf", body);
+    body = JSON.stringify(body);
+  }
   let parentParams = {};
 
   const parentPermalink = useMemo(
@@ -108,7 +113,7 @@ export const Comment = ({
       Markdown={propItem ? Markdown : MarkdownLoading}
       NestedListing={disableChildren ? () => null : NestedListing}
       opId={item.opId}
-      body={item.body ? item.body.slice(0, MAX_THING_BODY_SIZE) : item.body}
+      body={body ? body.slice(0, MAX_THING_BODY_SIZE) : body}
       author={item.author}
       author_fullname={item.authorId}
       siteprefix="t"

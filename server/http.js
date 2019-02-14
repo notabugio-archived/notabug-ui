@@ -46,7 +46,7 @@ export const initServer = ({ port, host, render, ...options }) => {
     leech: options.pistol ? true : options.leech,
     peers: options.pistol
       ? port
-        ? [`http://${host}:${port}/gun`]
+        ? [] // [`http://${host}:${port}/gun`]
         : []
       : options.peers
   });

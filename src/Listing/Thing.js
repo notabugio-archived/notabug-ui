@@ -69,7 +69,11 @@ export const Thing = React.memo(
       id
     });
 
-    const body = propOr("", "body", item) || "";
+    let body = propOr("", "body", item) || "";
+    if (!body.split) {
+      console.log("wtf", body);
+      body = JSON.stringify(body);
+    }
     const lineCount = body.length / 100 + body.split("\n").length - 1;
     const collapseThreshold = lineCount / 3.0 - 4;
 
