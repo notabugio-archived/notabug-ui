@@ -22,7 +22,7 @@ const spaceConfig = sort => ({
 const throttledSpaceConfig = sort => ({
   ...spaceConfig(sort),
   priority: 10,
-  throttleGet: 60 * 1000,
+  throttleGet: 2 * 60 * 1000,
   onPut: R.always(Promise.resolve())
 });
 

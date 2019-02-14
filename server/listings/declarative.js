@@ -5,7 +5,6 @@ import { routes as souls } from "../notabug-peer/json-schema";
 import { getWikiPage } from "../notabug-peer/listings";
 import { toFilters } from "../notabug-peer/source";
 import {
-  LISTING_SIZE,
   censor,
   moderate,
   serialize,
@@ -20,7 +19,15 @@ export const declarativeListing = query((scope, source, useListing) => {
   let submitTopic = definition.submitTopics[0] || "";
 
   return Promise.all([
-    fetchData(scope, definition, useListing),
+    fetchData(scope, definition, useListing)
+      .then(
+        R.cond([
+          [R.always(definition.uniqueByContent), uniqueByContent],
+          [R.always(true), R.identity]
+        ])
+      )
+      .then(moderate(scope, moderators.map(id => `~${id}`)))
+      .then(censor(scope, censors.map(id => `~${id}`))),
     (() => {
       const opId = definition.filters.allow.ops[0];
       const author = definition.filters.allow.authors[0];
@@ -41,20 +48,7 @@ export const declarativeListing = query((scope, source, useListing) => {
       return Promise.resolve();
     })()
   ])
-    .then(
-      R.compose(
-        R.cond([
-          [R.always(definition.uniqueByContent), uniqueByContent],
-          [R.always(true), R.identity]
-        ]),
-        R.filter(definition.thingFilter),
-        R.prop(0)
-      )
-    )
-    .then(moderate(scope, moderators.map(id => `~${id}`)))
-    .then(censor(scope, censors.map(id => `~${id}`)))
-    .then(R.slice(0, LISTING_SIZE))
-    .then(things => serialize({ name, things, stickyIds }))
+    .then(([things]) => serialize({ name, things, stickyIds }))
     .then(R.mergeDeepLeft({ source, submitTopic }));
 });
 

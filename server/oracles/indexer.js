@@ -132,8 +132,7 @@ const topicConfig = sort => ({
 const domainConfig = sort => ({
   path: `${PREFIX}/domain/:domain/${sort}@~:indexer.`,
   priority: 25,
-  checkMatch: ({ sort, domain }) =>
-    sort in sorts && domain && domain.toLowerCase() === domain,
+  checkMatch: ({ domain }) => domain && domain.toLowerCase() === domain,
   throttleGet: 1000 * 60 * 60,
   onPut: onPutHandler(sort),
   query: query((scope, { match: { domain, indexer } }) =>
