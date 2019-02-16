@@ -526,27 +526,6 @@ export const definitions = {
         anyOf: [{ $ref: "schema.json#/definitions/ThingEdge" }]
       }
     }
-  },
-
-  GenericSignedData: {
-    // XXX: deprecated
-    title: "Generic SEA Node",
-    description:
-      "Older user thing lists did not have deterministic souls, still migrating",
-    soul: {
-      pattern: "*path~:authorId.",
-      properties: {
-        path: { type: "string" },
-        authorId: { $ref: "schema.json#/definitions/seaAuthorId" }
-      },
-      required: ["path", "authorId"]
-    },
-    additionalProperties: {
-      sea: {
-        edgeMatchesKey: true,
-        anyOf: [{ $ref: "schema.json#/definitions/ThingEdge" }]
-      }
-    }
   }
 };
 
