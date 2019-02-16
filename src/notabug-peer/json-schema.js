@@ -347,7 +347,9 @@ export const definitions = {
       },
 
       // XXX: rest are deprecated in favor of source
-      name: { sea: { type: ["string", "null"], maxLength: consts.MAX_TOPIC_SIZE } },
+      name: {
+        sea: { type: ["string", "null"], maxLength: consts.MAX_TOPIC_SIZE }
+      },
       submitTopic: {
         sea: { type: "string", maxLength: consts.MAX_TOPIC_SIZE }
       },
@@ -378,7 +380,8 @@ export const definitions = {
       "hot",
       "best",
       "controversial",
-      "random"
+      "random",
+      "firehose"
     ]
   },
 

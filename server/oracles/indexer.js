@@ -6,101 +6,7 @@ import { basic } from "gun-cleric-scope";
 import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
 import { listingFromPage } from "../listings/declarative";
-
-const binarySearch = async (ids, id, getSortVal) => {
-  // based on https://stackoverflow.com/a/29018745
-  const insertVal = await getSortVal(id);
-
-  let m = 0;
-  let n = ids.length - 1;
-  while (m <= n) {
-    const k = (n + m) >> 1;
-    const compareVal = await getSortVal(ids[k]);
-
-    if (insertVal > compareVal) {
-      m = k + 1;
-    } else if (insertVal < compareVal) {
-      n = k - 1;
-    } else {
-      return k;
-    }
-  }
-  if (m === 0) return 0;
-  //if (m >= ids.length - 1) return -1;
-  return m - 1;
-};
-
-const sortId = (orc, route, sort, thingId) =>
-  orc
-    .newScope()
-    .get(route.soul)
-    .then(existing => {
-      const scope = orc.newScope();
-      const ids = R.without(
-        [route.match.thingId],
-        R.propOr("", "ids", existing).split("+")
-      );
-      const existingIndex = ids.indexOf(thingId);
-      const tabulator = `~${orc.pub}`;
-
-      if (existingIndex !== -1) ids.splice(existingIndex, 1);
-      return binarySearch(ids, thingId, id =>
-        sorts[sort].getValueForId(scope, id, { tabulator })
-      )
-        .then(bsIndex => {
-          if (bsIndex < 0 || bsIndex === existingIndex) return;
-          console.log(
-            "MOVE",
-            sort,
-            route.soul,
-            thingId,
-            existingIndex,
-            bsIndex
-          );
-          ids.splice(bsIndex, 0, thingId);
-          if (route.match.thingId) ids.splice(0, 0, route.match.thingId);
-          route.write({ ids: ids.join("+") });
-        })
-        .then(() => {
-          for (const key in scope.getAccesses()) orc.listen(key, route.soul);
-        })
-        .catch(e => console.error("error sorting id", e.stack || e));
-    });
-
-const onPutHandler = sort => (orc, route, { soul, updatedSoul, diff }) => {
-  let thingIds = [];
-  try {
-    const startedAt = new Date().getTime();
-    const scope = orc.newScope();
-    const voteCountsMatch = routes.ThingVoteCounts.match(updatedSoul);
-    if (voteCountsMatch) thingIds.push(voteCountsMatch.thingId);
-
-    thingIds = thingIds.concat(
-      R.compose(
-        R.filter(R.identity),
-        R.map(
-          R.compose(
-            R.prop("thingId"),
-            soul => routes.Thing.match(soul)
-          )
-        ),
-        R.keys
-      )(diff)
-    );
-
-    const sortNextId = () => {
-      const nextId = thingIds.pop();
-      if (!nextId) return Promise.resolve();
-      return sortId(orc, route, sort, nextId).then(sortNextId);
-    };
-    return sortNextId().then(() => {
-      const endedAt = new Date().getTime();
-      const duration = (endedAt - startedAt) / 1000;
-    });
-  } catch (e) {
-    console.error("onPutHandler error", e.stack || e);
-  }
-};
+import { onPutListingHandler as onPutHandler } from "../listings/insertion";
 
 const topicConfig = sort => ({
   path: `${PREFIX}/t/:topic/${sort}@~:indexer.`,
@@ -174,9 +80,30 @@ const submissionConfig = sort => ({
   )
 });
 
-const throttledTopicConfig = sort => ({
-  ...topicConfig(sort),
-  priority: 10
+const userConfig = sort => ({
+  path: `${PREFIX}/user/:authorId/:type/${sort}@~:indexer.`,
+  priority: 30,
+  checkMatch: ({ type, authorId }) =>
+    authorId &&
+    R.includes(type, ["overview", "submitted", "comments", "commands"]),
+  throttleGet: 1000 * 60 * 60,
+  onPut: onPutHandler(sort),
+  query: query((scope, { match: { authorId, type, indexer } }) =>
+    listingFromPage(
+      scope,
+      indexer,
+      "listing:user",
+      [
+        `type ${type}`,
+        `sort ${sort}`,
+        `author ${authorId}`,
+        ...["overview", "comments", "submitted", "commands"].map(
+          tab => `tab ${tab} /user/${authorId}/${tab}`
+        )
+      ].join("\n"),
+      { useListing: false }
+    ).then(serialized => ({ ...serialized, userId: authorId }))
+  )
 });
 
 export default oracle({
@@ -263,10 +190,10 @@ export default oracle({
     }),
 
     basic(topicConfig("new")),
-    basic(throttledTopicConfig("hot")),
-    basic(throttledTopicConfig("top")),
-    basic(throttledTopicConfig("controversial")),
-    basic(throttledTopicConfig("discussed")),
+    basic(topicConfig("hot")),
+    basic(topicConfig("top")),
+    basic(topicConfig("controversial")),
+    basic(topicConfig("discussed")),
     basic(domainConfig("new")),
     basic(domainConfig("hot")),
     basic(domainConfig("top")),
@@ -296,29 +223,10 @@ export default oracle({
       )
     }),
 
-    basic({
-      path: `${PREFIX}/user/:authorId/:type/:sort@~:indexer.`,
-      priority: 30,
-      checkMatch: ({ sort, type, authorId }) =>
-        sort in sorts &&
-        authorId &&
-        R.includes(type, ["overview", "submitted", "comments", "commands"]),
-      query: query((scope, { match: { authorId, type, sort, indexer } }) =>
-        listingFromPage(
-          scope,
-          indexer,
-          "listing:user",
-          [
-            `type ${type}`,
-            `sort ${sort}`,
-            `author ${authorId}`,
-            ...["overview", "comments", "submitted", "commands"].map(
-              tab => `tab ${tab} /user/${authorId}/${tab}`
-            )
-          ].join("\n"),
-          { useListing: false }
-        ).then(serialized => ({ ...serialized, userId: authorId }))
-      )
-    })
+    basic(userConfig("new")),
+    basic(userConfig("hot")),
+    basic(userConfig("top")),
+    basic(userConfig("controversial")),
+    basic(userConfig("discussed"))
   ]
 });
