@@ -80,6 +80,7 @@ const fetchSortedSouls = async (scope, parsed, sortedListsOfSouls) => {
 
   const getNextItem = async () => {
     const topItem = R.path([0, "topItem"], soulLists);
+    if (!soulLists.length) return null;
     const [item, soulList] = await soulLists[0].pop();
     soulLists[0] = soulList;
     soulLists = sortSoulLists(soulLists);
