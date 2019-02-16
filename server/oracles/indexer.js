@@ -36,7 +36,10 @@ const sortId = (orc, route, sort, thingId) =>
     .get(route.soul)
     .then(existing => {
       const scope = orc.newScope();
-      const ids = R.propOr("", "ids", existing).split("+");
+      const ids = R.without(
+        [route.match.thingId],
+        R.propOr("", "ids", existing).split("+")
+      );
       const existingIndex = ids.indexOf(thingId);
       const tabulator = `~${orc.pub}`;
 
@@ -55,6 +58,7 @@ const sortId = (orc, route, sort, thingId) =>
             bsIndex
           );
           ids.splice(bsIndex, 0, thingId);
+          if (route.match.thingId) ids.splice(0, 0, route.match.thingId);
           route.write({ ids: ids.join("+") });
         })
         .then(() => {
@@ -155,16 +159,16 @@ const domainConfig = sort => ({
 });
 
 const submissionConfig = sort => ({
-  path: `${PREFIX}/things/:thingid/comments/${sort}@~:indexer.`,
+  path: `${PREFIX}/things/:thingId/comments/${sort}@~:indexer.`,
   priority: 85,
-  throttleGet: 1000 * 60, // * 60,
+  throttleGet: 1000 * 60 * 60,
   onPut: onPutHandler(sort),
-  query: query((scope, { match: { thingid, indexer } }) =>
+  query: query((scope, { match: { thingId, indexer } }) =>
     listingFromPage(
       scope,
       indexer,
       "listing:comments",
-      [`sort ${sort}`, `op ${thingid}`].join("\n"),
+      [`sort ${sort}`, `op ${thingId}`].join("\n"),
       { useListing: false }
     )
   )
