@@ -1,5 +1,7 @@
 import * as R from "ramda";
 import { sorts } from "../queries";
+import { getWikiPage } from "../notabug-peer/listings";
+import { toListingObject } from "../notabug-peer/source";
 import { routes } from "../notabug-peer/json-schema";
 
 const getListingIds = R.compose(
@@ -89,12 +91,65 @@ export const onPutListingHandler = sort => async (
     .get(route.soul)
     .then(getListingIds);
   const isSticky = R.equals(route.match.thingId || null);
-  const { stickyIds = [], ids: initialIds = [] } = groupBySticky(isSticky, existing);
+  const { stickyIds = [], ids: initialIds = [] } = groupBySticky(
+    isSticky,
+    existing
+  );
   let ids = initialIds;
   while ((nextId = updatedThingIds.pop())) {
     if (isSticky(nextId)) continue;
     ids = await sortId(orc, route, scope, sort, ids, nextId);
   }
   for (const key in scope.getAccesses()) orc.listen(key, route.soul);
-  if (ids !== initialIds) route.write({ ids: R.uniq(stickyIds.concat(ids)).join("+") });
+  if (ids !== initialIds)
+    route.write({ ids: R.uniq(stickyIds.concat(ids)).join("+") });
+};
+
+export const onPutSpaceHandler = sort => async (
+  orc,
+  route,
+  { updatedSoul, diff, latest = 0 }
+) => {
+  let updatedThingIds = [];
+  const now = new Date().getTime();
+  const scope = orc.newScope();
+  const spaceMatch = routes.SpaceListing.match(route.soul);
+  const voteCountsMatch = routes.ThingVoteCounts.match(updatedSoul);
+  if (!spaceMatch) return console.error("no space match", route);
+  const { authorId, name } = spaceMatch || {};
+  const page = await getWikiPage(scope, authorId, name);
+  const source = toListingObject(R.propOr("", "body", page));
+
+  if (voteCountsMatch) {
+    const { thingId } = voteCountsMatch;
+    const existing = await orc
+      .newScope()
+      .get(route.soul)
+      .then(getListingIds);
+    if (R.includes(thingId, existing)) {
+      // For now only use insertion sort to update position of existing items
+      const isSticky = source.isIdSticky;
+      const { stickyIds = [], ids: initialIds = [] } = groupBySticky(
+        isSticky,
+        existing
+      );
+      if (isSticky(thingId)) return;
+      const ids = await sortId(orc, route, scope, sort, initialIds, thingId);
+      for (const key in scope.getAccesses()) orc.listen(key, route.soul);
+      if (ids !== initialIds)
+        route.write({ ids: R.uniq(stickyIds.concat(ids)).join("+") });
+      return;
+    }
+  }
+
+  // base logic from gun-cleric-scope needs to be encapsualted better?
+  const knownTimestamp = await orc.timestamp(route.soul);
+  if (latest && knownTimestamp >= latest) return;
+  return orc.work({
+    id: `update:${route.soul}:${latest}`,
+    soul: route.soul,
+    method: "doUpdate",
+    latest: latest || now,
+    priority: route.priority || 50
+  });
 };
