@@ -88,14 +88,13 @@ export const onPutListingHandler = sort => async (
     .newScope()
     .get(route.soul)
     .then(getListingIds);
-  const { stickyIds = [], ids: initialIds = [] } = groupBySticky(
-    R.equals(route.match.thingId),
-    existing
-  );
+  const isSticky = R.equals(route.match.thingId || null);
+  const { stickyIds = [], ids: initialIds = [] } = groupBySticky(isSticky, existing);
   let ids = initialIds;
   while ((nextId = updatedThingIds.pop())) {
+    if (isSticky(nextId)) continue;
     ids = await sortId(orc, route, scope, sort, ids, nextId);
   }
   for (const key in scope.getAccesses()) orc.listen(key, route.soul);
-  if (ids !== initialIds) route.write({ ids: stickyIds.concat(ids).join("+") });
+  if (ids !== initialIds) route.write({ ids: R.uniq(stickyIds.concat(ids)).join("+") });
 };
