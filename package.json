@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.47.1",
+  "version": "0.48.0",
   "dependencies": {
     "@babel/cli": "7.2.3",
     "@babel/core": "^7.1.5",
@@ -35,7 +35,7 @@
     "flat": "^4.1.0",
     "forever": "^0.15.3",
     "formidable": "^1.2.1",
-    "gun": "0.9.999997",
+    "gun": "^0.9.9999991",
     "gun-cleric": "https://github.com/notabugio/gun-cleric.git",
     "gun-cleric-bee-queue": "https://github.com/notabugio/gun-cleric-bee-queue.git",
     "gun-cleric-scope": "https://github.com/notabugio/gun-cleric-scope.git",
