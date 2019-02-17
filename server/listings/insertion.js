@@ -117,7 +117,7 @@ export const onPutSpaceHandler = sort => async (
   const voteCountsMatch = routes.ThingVoteCounts.match(updatedSoul);
   if (!spaceMatch) return console.error("no space match", route);
   const { authorId, name } = spaceMatch || {};
-  const page = await getWikiPage(scope, authorId, name);
+  const page = await getWikiPage(scope, authorId, `space:${name}`);
   const source = toListingObject(R.propOr("", "body", page));
 
   if (voteCountsMatch) {
