@@ -36,7 +36,6 @@ export const toListingObject = (source, ownerId = null, spaceName = null) => {
   obj.sort = getValue("sort");
   obj.uniqueByContent = !!isPresent("unique by content");
   obj.curators = getValues("curator");
-  obj.censors = getValues("censor");
   obj.moderators = getValues("mod");
   obj.includeRanks = !!isPresent("show ranks");
   obj.stickyIds = getValues("sticky");
@@ -77,10 +76,11 @@ export const toListingObject = (source, ownerId = null, spaceName = null) => {
       domains: getValues("ban domain"),
       topics: getValues("ban topic"),
       anon: !!isPresent("require signed"),
-      signed: !!isPresent("require anon")
+      signed: !!isPresent("require anon"),
+      tags: getPairs("can remove")
     }
   };
-
+  obj.censors = R.uniq(R.map(R.prop(1), obj.filters.deny.tags));
   obj.voteFilters = {
     functions: [],
     upsMin: parseInt(getValue("ups above")) || null,
@@ -173,6 +173,14 @@ export const toFilters = obj => {
     addVoteFilter(lte(voteFilters.scoreMin), intPath(["votes", "score"]));
   if (voteFilters.scoreMax !== null)
     addVoteFilter(gte(voteFilters.scoreMax), intPath(["votes", "score"]));
+
+  if (filters.deny.tags.length)
+    addVoteFilter(thing => {
+      const cmds = R.path(["votes", "commands"], thing) || {};
+      return !filters.deny.tags.find(
+        ([tagName, authorId]) => !!R.path([authorId, "tag", tagName], cmds)
+      );
+    });
 
   const contentFilter = thing => !filterFunctions.find(fn => !fn(thing));
   const voteFilter = thing => !voteFilterFunctions.find(fn => !fn(thing));

@@ -5,8 +5,6 @@ import { routes as souls } from "../notabug-peer/json-schema";
 import { getWikiPage } from "../notabug-peer/listings";
 import { toFilters } from "../notabug-peer/source";
 import {
-  censor,
-  moderate,
   serialize,
   uniqueByContent
 } from "./utils";
@@ -14,7 +12,7 @@ import { fetchData } from "./datasources";
 
 export const declarativeListing = query((scope, source, useListing) => {
   const definition = toFilters(source);
-  const { censors, moderators, stickyIds } = definition;
+  const { stickyIds } = definition;
   let { displayName: name } = definition;
   let submitTopic = definition.submitTopics[0] || "";
 
@@ -25,9 +23,7 @@ export const declarativeListing = query((scope, source, useListing) => {
           [R.always(definition.uniqueByContent), uniqueByContent],
           [R.always(true), R.identity]
         ])
-      )
-      .then(moderate(scope, moderators.map(id => `~${id}`)))
-      .then(censor(scope, censors.map(id => `~${id}`))),
+      ),
     (() => {
       const opId = definition.filters.allow.ops[0];
       const author = definition.filters.allow.authors[0];

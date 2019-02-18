@@ -1,8 +1,11 @@
 import * as R from "ramda";
-import { sorts } from "../queries";
+import { sorts, thingMeta } from "../queries";
+import { LISTING_SIZE } from "./utils";
 import { getWikiPage } from "../notabug-peer/listings";
-import { toListingObject } from "../notabug-peer/source";
+import { needsScores, needsData } from "./datasources";
+import { toFilters } from "../notabug-peer/source";
 import { routes } from "../notabug-peer/json-schema";
+const marky = require("marky");
 
 const getListingIds = R.compose(
   R.split("+"),
@@ -17,12 +20,8 @@ const getEdgeIds = R.compose(
       routes.Thing.match.bind(routes.Thing)
     )
   ),
-  R.keys
-  // This approach is more correct, but requires SEA read
-  /*
   R.map(R.prop("#")),
   R.values
-  */
 );
 
 const groupBySticky = (isSticky, allIds) =>
@@ -33,6 +32,20 @@ const groupBySticky = (isSticky, allIds) =>
     ),
     allIds
   );
+
+const readSEA = rawData => {
+  const data = rawData ? { ...rawData } : rawData;
+  const soul = R.path(["_", "#"], data);
+  if (!soul || !Gun.SEA || soul.indexOf("~") === -1) return rawData;
+  R.without(["_"], R.keys(data)).forEach(key => {
+    Gun.SEA.verify(
+      Gun.SEA.opt.pack(rawData[key], key, rawData, soul),
+      false,
+      res => (data[key] = Gun.SEA.opt.unpack(res, key, rawData))
+    );
+  });
+  return data;
+};
 
 export const binarySearch = async (ids, id, getSortVal) => {
   // based on https://stackoverflow.com/a/29018745
@@ -53,21 +66,39 @@ export const binarySearch = async (ids, id, getSortVal) => {
     }
   }
   if (m === 0) return 0;
-  //if (m >= ids.length - 1) return -1;
-  return m - 1;
+  return m;
 };
 
-export const sortId = async (orc, route, scope, sort, existingIds, thingId) => {
+export const sortId = async (
+  orc,
+  route,
+  scope,
+  sort,
+  existingIds,
+  thingId,
+  listingSource
+) => {
   let ids = existingIds.slice();
+  let bsIndex;
   const existingIndex = ids.indexOf(thingId);
   const tabulator = `~${orc.pub}`;
 
   if (existingIndex !== -1) ids.splice(existingIndex, 1);
-  const bsIndex = await binarySearch(ids, thingId, id =>
-    sorts[sort].getValueForId(scope, id, { tabulator })
-  );
-
-  if (bsIndex < 0 || bsIndex === existingIndex) return existingIds;
+  if (listingSource) {
+    const item = await thingMeta(scope, {
+      thingSoul: routes.Thing.reverse({ thingId }),
+      tabulator,
+      scores: needsScores(listingSource),
+      data: needsData(listingSource)
+    });
+    if (!listingSource.thingFilter(item)) return ids;
+  }
+  if (!bsIndex)
+    bsIndex = await binarySearch(ids, thingId, id =>
+      sorts[sort].getValueForId(scope, id, { tabulator })
+    );
+  if (bsIndex >= LISTING_SIZE) return existingIndex === -1 ? existingIds : ids;
+  if (bsIndex === existingIndex || bsIndex === -1) return existingIds;
   console.log("MOVE", sort, route.soul, thingId, existingIndex, bsIndex);
   ids.splice(bsIndex, 0, thingId);
   return ids;
@@ -84,7 +115,7 @@ export const onPutListingHandler = sort => async (
   const voteCountsMatch = routes.ThingVoteCounts.match(updatedSoul);
 
   if (voteCountsMatch) updatedThingIds.push(voteCountsMatch.thingId);
-  updatedThingIds = R.concat(updatedThingIds, getEdgeIds(diff));
+  updatedThingIds = R.concat(updatedThingIds, getEdgeIds(readSEA(diff)));
   if (!updatedThingIds.length) return;
   const existing = await orc
     .newScope()
@@ -108,41 +139,65 @@ export const onPutListingHandler = sort => async (
 export const onPutSpaceHandler = sort => async (
   orc,
   route,
-  { updatedSoul, diff, latest = 0 }
+  { updatedSoul, diff, original, latest = 0 }
 ) => {
-  let updatedThingIds = [];
+  marky.mark(`onPut:${route.soul}:${updatedSoul}`);
   const now = new Date().getTime();
+  let nextId;
+  let updatedThingIds = [];
   const scope = orc.newScope();
   const spaceMatch = routes.SpaceListing.match(route.soul);
   const voteCountsMatch = routes.ThingVoteCounts.match(updatedSoul);
-  if (!spaceMatch) return console.error("no space match", route);
   const { authorId, name } = spaceMatch || {};
-  const page = await getWikiPage(scope, authorId, `space:${name}`);
-  const source = toListingObject(R.propOr("", "body", page));
+  const page = spaceMatch
+    ? await getWikiPage(scope, authorId, `space:${name}`)
+    : null;
+  const source = toFilters(R.propOr("", "body", page));
+  const isSticky = source.isIdSticky;
+  const originalData = readSEA(original);
+  const diffData = readSEA(diff);
+  const existing = await orc
+    .newScope()
+    .get(route.soul)
+    .then(getListingIds);
+  const { stickyIds = [], ids: initialIds = [] } = groupBySticky(
+    isSticky,
+    existing
+  );
+  let ids = initialIds;
 
-  if (voteCountsMatch) {
-    const { thingId } = voteCountsMatch;
-    const existing = await orc
-      .newScope()
-      .get(route.soul)
-      .then(getListingIds);
-    if (R.includes(thingId, existing)) {
-      // For now only use insertion sort to update position of existing items
-      const isSticky = source.isIdSticky;
-      const { stickyIds = [], ids: initialIds = [] } = groupBySticky(
-        isSticky,
-        existing
-      );
-      if (isSticky(thingId)) return;
-      const ids = await sortId(orc, route, scope, sort, initialIds, thingId);
-      for (const key in scope.getAccesses()) orc.listen(key, route.soul);
-      if (ids !== initialIds)
-        route.write({ ids: R.uniq(stickyIds.concat(ids)).join("+") });
-      return;
-    }
+  if (voteCountsMatch) updatedThingIds.push(voteCountsMatch.thingId);
+  if (diffData.ids) {
+    const noSticky = R.filter(R.complement(isSticky));
+    const originalIds = getListingIds(originalData);
+    const modifiedIds = getListingIds(diffData);
+    const added = noSticky(R.difference(modifiedIds, originalIds));
+    const removed = noSticky(R.difference(originalIds, modifiedIds));
+    if (removed.length) ids = R.without(removed, ids);
+    if (added.length) updatedThingIds = R.concat(updatedThingIds, added);
+    if (added.length || removed.length)
+      console.log("ids changed", route.soul, updatedSoul, { added, removed });
   }
 
+  while ((nextId = updatedThingIds.pop())) {
+    if (isSticky(nextId)) continue;
+    ids = await sortId(orc, route, scope, sort, ids, nextId, source);
+  }
+
+  for (const key in scope.getAccesses()) orc.listen(key, route.soul);
+  if (ids !== initialIds)
+    route.write({ ids: R.uniq(stickyIds.concat(ids)).join("+") });
+
+  console.log(
+    "onPut",
+    route.soul,
+    updatedSoul,
+    marky.stop(`onPut:${route.soul}:${updatedSoul}`).duration
+  );
+  if (voteCountsMatch || diffData.ids) return;
+
   // base logic from gun-cleric-scope needs to be encapsualted better?
+  console.log("---STANDARD SPACE UPDATE---", route.soul, updatedSoul);
   const knownTimestamp = await orc.timestamp(route.soul);
   if (latest && knownTimestamp >= latest) return;
   return orc.work({

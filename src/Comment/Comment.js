@@ -52,7 +52,7 @@ export const Comment = ({
   const parentItem = propParentItem || (fetchParent ? { title: "..." } : null);
   let body = propOr("", "body", item) || "";
   if (!body.split) {
-    console.log("wtf", body);
+    // console.log("wtf", body);
     body = JSON.stringify(body);
   }
   let parentParams = {};

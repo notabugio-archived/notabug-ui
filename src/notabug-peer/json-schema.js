@@ -331,7 +331,8 @@ export const definitions = {
       up: { sea: { type: ["number", "string"] } },
       down: { sea: { type: ["number", "string"] } },
       comment: { sea: { type: ["number", "string"] } },
-      score: { sea: { type: ["number", "string"] } }
+      score: { sea: { type: ["number", "string"] } },
+      commands: { sea: { type: ["object", "string"] } }
     }
   },
 
@@ -381,7 +382,8 @@ export const definitions = {
       "best",
       "controversial",
       "random",
-      "firehose"
+      "firehose",
+      "chat"
     ]
   },
 
@@ -423,7 +425,7 @@ export const definitions = {
 
   userListingType: {
     type: "string",
-    enum: ["overview", "submitted", "comments"]
+    enum: ["overview", "submitted", "comments", "commented"]
   },
 
   AuthorRepliesListing: {

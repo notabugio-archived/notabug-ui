@@ -13,13 +13,14 @@ const options = commandLineArgs([
   { name: "port", alias: "p", type: Number, defaultValue: null },
   { name: "pistol", alias: "i", type: Boolean, defaultValue: false },
   { name: "host", alias: "h", type: String, defaultValue: "127.0.0.1" },
-  { name: "peer", alias: "c", multiple: true, type: String },
+  { name: "peer", multiple: true, type: String },
   { name: "leech", type: Boolean, defaultValue: false },
   { name: "until", alias: "u", type: Number, defaultValue: 1000 },
   { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "spaces", alias: "s", type: Boolean, defaultValue: false },
   { name: "tabulate", alias: "t", type: Boolean, defaultValue: false },
-  { name: "workers", alias: "w", type: Boolean, defaultValue: false }
+  { name: "workers", alias: "w", type: Boolean, defaultValue: false },
+  { name: "comments", alias: "c", type: Boolean, defaultValue: false }
 ]);
 
 const peerOptions = {
@@ -51,6 +52,6 @@ if (options.port) {
 }
 
 if (options.redis) nab.gun.redis = Gun.redis;
-if (options.workers || options.listings || options.tabulate || options.spaces) {
+if (options.workers || options.listings || options.tabulate || options.spaces || options.comments) {
   require("./worker").init(Gun, nab, options);
 }

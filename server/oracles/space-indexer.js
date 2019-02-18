@@ -15,7 +15,7 @@ const spaceConfig = sort => ({
   throttleGet: 1000 * 60 * 60,
   onPut: onPutSpaceHandler(sort),
   query: query((scope, { match: { authorId, name } }) =>
-    listingFromPage(scope, authorId, `space:${name}`, `sort ${sort}`, {
+    console.log("space", authorId, name) || listingFromPage(scope, authorId, `space:${name}`, `sort ${sort}`, {
       transform: source =>
         spaceSourceWithDefaults({ source, owner: authorId, name: name })
     })

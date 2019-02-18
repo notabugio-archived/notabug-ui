@@ -6,7 +6,7 @@ import { basic } from "gun-cleric-scope";
 import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
 import { listingFromPage } from "../listings/declarative";
-import { onPutListingHandler as onPutHandler } from "../listings/insertion";
+import { onPutSpaceHandler, onPutListingHandler as onPutHandler } from "../listings/insertion";
 
 const topicConfig = sort => ({
   path: `${PREFIX}/t/:topic/${sort}@~:indexer.`,
@@ -110,19 +110,13 @@ export default oracle({
   name: "indexer",
   concurrent: 1,
   routes: [
-    basic(submissionConfig("best")),
-    basic(submissionConfig("new")),
-    basic(submissionConfig("top")),
-    basic(submissionConfig("hot")),
-    basic(submissionConfig("controversial")),
-
     basic({
       path: `${PREFIX}/t/:topic/chat@~:indexer.`,
       priority: 80,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
       throttleGet: 1000 * 60 * 60,
-      onPut: onPutHandler("new"),
+      onPut: onPutSpaceHandler("new"),
       query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics = topic.split("+");
         const submitTopic =
@@ -147,8 +141,7 @@ export default oracle({
               "top",
               "firehose"
             ].map(tab => `tab ${tab} /t/${topic}/${tab}`)
-          ].join("\n"),
-          { useListing: false }
+          ].join("\n")
         ).then(serialized => ({ ...serialized, isChat: true }));
       })
     }),
@@ -158,6 +151,8 @@ export default oracle({
       priority: 75,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
+      throttleGet: 1000 * 60 * 60,
+      onPut: onPutSpaceHandler("new"),
       query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics = topic.split("+");
         const submitTopic =
@@ -219,6 +214,26 @@ export default oracle({
             `type ${type}`,
             `sort ${sort}`
           ].join("\n")
+        )
+      )
+    }),
+
+    basic({
+      path: `${PREFIX}/user/:authorId/commented/:sort@~:indexer.`,
+      priority: 20,
+      checkMatch: ({ sort, authorId }) =>
+        sort in sorts &&
+        authorId,
+      query: query((scope, { match: { authorId, type, sort, indexer } }) =>
+        listingFromPage(
+          scope,
+          indexer,
+          "listing:inbox",
+          [
+            `curator ${authorId}`,
+            `sort ${sort}`
+          ].join("\n"),
+          { useListing: false }
         )
       )
     }),

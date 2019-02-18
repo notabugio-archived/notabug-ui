@@ -7,11 +7,12 @@ import { oracleState, createWorker } from "gun-cleric-bee-queue";
 import indexerOracle from "./oracles/indexer";
 import spaceIndexerOracle from "./oracles/space-indexer";
 import tabulatorOracle from "./oracles/tabulator";
+import commentsOracle from "./oracles/comments";
 
 const DEFAULT_GET_THROTTLE = 1000 * 60;
 const redis = createClient({ db: 1 });
 const state = oracleState({ db: 2 });
-const allOracles = [indexerOracle, tabulatorOracle, spaceIndexerOracle];
+const allOracles = [indexerOracle, tabulatorOracle, spaceIndexerOracle, commentsOracle];
 const getOrcAndRoute = soul =>
   R.compose(
     R.defaultTo([null, null]),
@@ -33,10 +34,10 @@ const getOrcAndRoute = soul =>
 const processMsgJob = job =>
   new Promise((ok, fail) => {
     try {
-      const { soul, type, diff, latest } = job.data || {};
+      const { soul, type, diff, original, latest } = job.data || {};
 
       if (type === "put") {
-        allOracles.forEach(orc => orc.onSoulModified(soul, diff, latest));
+        allOracles.forEach(orc => orc.onSoulModified(soul, diff, original, latest));
         return ok();
       }
 
@@ -57,8 +58,8 @@ function createMsgWorker(config = {}) {
       removeOnFailure: true,
       ...config
     });
-  const onChange = (soul, diff) =>
-    queue.createJob({ type: "put", soul, diff }).save();
+  const onChange = (soul, diff, original) =>
+    queue.createJob({ type: "put", soul, diff, original }).save();
   const onMsg = msg => {
     const souls = R.without(["#"], R.keys(msg.get));
     const single = R.path(["get", "#"], msg);
@@ -108,6 +109,7 @@ function setupOracles(nab, activeOracles) {
 export function init(Gun, nab, options) {
   const active = [
     ...(options.listings ? [indexerOracle] : []),
+    ...(options.comments ? [commentsOracle] : []),
     ...(options.tabulate ? [tabulatorOracle] : []),
     ...(options.spaces ? [spaceIndexerOracle] : [])
   ];

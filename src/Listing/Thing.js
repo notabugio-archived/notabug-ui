@@ -70,10 +70,7 @@ export const Thing = React.memo(
     });
 
     let body = propOr("", "body", item) || "";
-    if (!body.split) {
-      console.log("wtf", body);
-      body = JSON.stringify(body);
-    }
+    if (!body.split) body = JSON.stringify(body);
     const lineCount = body.length / 100 + body.split("\n").length - 1;
     const collapseThreshold = lineCount / 3.0 - 4;
 
@@ -95,12 +92,9 @@ export const Thing = React.memo(
       setIsShowingReply(false);
     }, []);
 
-    useEffect(
-      () => {
-        onDidUpdate && onDidUpdate();
-      },
-      [item, parentItem]
-    );
+    useEffect(() => {
+      onDidUpdate && onDidUpdate();
+    }, [item, parentItem]);
 
     const score = parseInt(prop("score", scores)) || 0;
     const ThingComponent = item ? components[item.kind] : null;
@@ -117,12 +111,9 @@ export const Thing = React.memo(
     const [isEditing, setIsEditing] = useState(false);
     const [editedBody, setEditedBody] = useState(propOr("", "body", item));
 
-    useEffect(
-      () => {
-        setEditedBody(propOr("", "body", item));
-      },
-      [propOr("", "body", item)]
-    );
+    useEffect(() => {
+      setEditedBody(propOr("", "body", item));
+    }, [propOr("", "body", item)]);
 
     const onToggleEditing = useCallback(evt => {
       evt && evt.preventDefault();

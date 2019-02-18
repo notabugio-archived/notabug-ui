@@ -3,31 +3,70 @@
     {
       "name": "http",
       "exec_mode": "cluster",
-      "instances": 3,
+      "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
       "args": ["--port", "3333", "--redis", "--pistol", "--render", "--workers"]
-    }, {
+    },
+    {
       "name": "listings",
       "exec_mode": "cluster",
       "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
-      "args": ["--peer", "http://localhost:3333/gun", "--disableValidation", "--redis", "--leech", "--listings"]
-    }, {
+      "args": [
+        "--peer",
+        "http://localhost:3333/gun",
+        "--disableValidation",
+        "--redis",
+        "--leech",
+        "--listings"
+      ]
+    },
+    {
+      "name": "comments",
+      "exec_mode": "cluster",
+      "instances": 1,
+      "script": "./server.js",
+      "env": { "NODE_ENV": "production" },
+      "args": [
+        "--peer",
+        "http://localhost:3333/gun",
+        "--disableValidation",
+        "--redis",
+        "--leech",
+        "--comments"
+      ]
+    },
+    {
       "name": "tabulator",
       "exec_mode": "cluster",
       "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
-      "args": ["--peer", "http://localhost:3333/gun", "--disableValidation", "--redis", "--leech", "--tabulate"]
-    }, {
+      "args": [
+        "--peer",
+        "http://localhost:3333/gun",
+        "--disableValidation",
+        "--redis",
+        "--leech",
+        "--tabulate"
+      ]
+    },
+    {
       "name": "spaces",
       "exec_mode": "cluster",
       "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
-      "args": ["--peer", "http://localhost:3333/gun", "--disableValidation", "--redis", "--leech", "--spaces"]
+      "args": [
+        "--peer",
+        "http://localhost:3333/gun",
+        "--disableValidation",
+        "--redis",
+        "--leech",
+        "--spaces"
+      ]
     }
   ]
 }

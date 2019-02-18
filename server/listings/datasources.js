@@ -15,7 +15,7 @@ import {
 
 const sortSoulLists = R.sortWith([R.ascend(R.prop("sortValue"))]);
 
-const needsScores = parsed =>
+export const needsScores = parsed =>
   !![
     "sort hot",
     "sort top",
@@ -23,10 +23,11 @@ const needsScores = parsed =>
     "sort controversial",
     "ups",
     "downs",
-    "score"
+    "score",
+    "can remove"
   ].find(parsed.isPresent);
 
-const needsData = parsed =>
+export const needsData = parsed =>
   !![
     parsed.itemSource !== "topic" ? "topic" : null,
     parsed.itemSource !== "domain" ? "domain" : null,
@@ -148,18 +149,32 @@ export const itemSources = {
       fromSouls(scope, parsed)
     );
   },
-  curator: (scope, parsed) => {
+  curator: (scope, parsed, useListing = true) => {
     const curators = R.prop("curators", parsed) || [];
     if (!curators.length) return itemSources.topic();
+    if (useListing || curators.length > 1) {
+      return fromListings(
+        scope,
+        parsed,
+        curators.map(id => `/user/${id}/commented`)
+      );
+    }
     return curate(scope, curators.map(id => `~${id}`), true)
       .then(ids => ids.map(thingId => routes.Thing.reverse({ thingId })))
       .then(fromSouls(scope, parsed));
   },
-  author: (scope, parsed) => {
+  author: (scope, parsed, useListing = true) => {
     const authors = R.path(["filters", "allow", "authors"], parsed);
     const type = R.path(["filters", "allow", "type"], parsed);
+    if (!authors.length) return itemSources.topic();
+    if (useListing || authors.length > 1) {
+      return fromListings(
+        scope,
+        parsed,
+        authors.map(id => `/user/${id}/${type}`)
+      );
+    }
     const authorIds = authors.map(id => `~${id}`);
-    if (!authorIds.length) return itemSources.topic();
     return multiAuthor(scope, { type, authorIds }).then(
       fromSouls(scope, parsed)
     );
