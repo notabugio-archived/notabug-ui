@@ -183,7 +183,7 @@ export const itemSources = {
     const domains = R.path(["filters", "allow", "domains"], parsed) || [];
     if (!domains.length) return itemSources.topic();
     if (useListing || domains.length > 1) {
-      return fromListings(scope, parsed, domains.map(domain => `/t/${domain}`));
+      return fromListings(scope, parsed, domains.map(domain => `/domain/${domain}`));
     }
     return multiDomain(scope, { domains }).then(fromSouls(scope, parsed));
   },

@@ -425,7 +425,7 @@ export const definitions = {
 
   userListingType: {
     type: "string",
-    enum: ["overview", "submitted", "comments", "commented"]
+    enum: ["overview", "submitted", "comments", "commands", "commented"]
   },
 
   AuthorRepliesListing: {

@@ -27,7 +27,7 @@ const getUserPages = query(
   "userPages"
 );
 
-const getWikiPageId = query(
+export const getWikiPageId = query(
   (scope, authorId, name) =>
     scope
       .get(routes.AuthorPages.reverse({ authorId }))

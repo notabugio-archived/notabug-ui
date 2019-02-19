@@ -1,7 +1,7 @@
 import * as R from "ramda";
 import { sorts, thingMeta } from "../queries";
 import { LISTING_SIZE } from "./utils";
-import { getWikiPage } from "../notabug-peer/listings";
+import { getWikiPage, getWikiPageId } from "../notabug-peer/listings";
 import { needsScores, needsData } from "./datasources";
 import { toFilters } from "../notabug-peer/source";
 import { routes } from "../notabug-peer/json-schema";
@@ -78,11 +78,12 @@ export const sortId = async (
   thingId,
   listingSource
 ) => {
-  let ids = existingIds.slice();
+  let ids = existingIds.slice().filter(R.identity);
   let bsIndex;
   const existingIndex = ids.indexOf(thingId);
   const tabulator = `~${orc.pub}`;
 
+  if (!thingId) return existingIds;
   if (existingIndex !== -1) ids.splice(existingIndex, 1);
   if (listingSource) {
     const item = await thingMeta(scope, {
@@ -115,6 +116,7 @@ export const onPutListingHandler = sort => async (
   const voteCountsMatch = routes.ThingVoteCounts.match(updatedSoul);
 
   if (voteCountsMatch) updatedThingIds.push(voteCountsMatch.thingId);
+
   updatedThingIds = R.concat(updatedThingIds, getEdgeIds(readSEA(diff)));
   if (!updatedThingIds.length) return;
   const existing = await orc
@@ -148,7 +150,13 @@ export const onPutSpaceHandler = sort => async (
   const scope = orc.newScope();
   const spaceMatch = routes.SpaceListing.match(route.soul);
   const voteCountsMatch = routes.ThingVoteCounts.match(updatedSoul);
+  const thingMatch = routes.Thing.match(updatedSoul);
+  const signedThingDataMatch = routes.ThingDataSigned.match(updatedSoul);
+  const authorMatch = routes.SEAAuthor.match(updatedSoul);
   const { authorId, name } = spaceMatch || {};
+  const pageId = spaceMatch
+    ? await getWikiPageId(scope, authorId, `space:${name}`)
+    : null;
   const page = spaceMatch
     ? await getWikiPage(scope, authorId, `space:${name}`)
     : null;
@@ -167,6 +175,8 @@ export const onPutSpaceHandler = sort => async (
   let ids = initialIds;
 
   if (voteCountsMatch) updatedThingIds.push(voteCountsMatch.thingId);
+  if (thingMatch) updatedThingIds.push(thingMatch.thingId);
+  if (signedThingDataMatch && signedThingDataMatch.thingId !== pageId) updatedThingIds.push(signedThingDataMatch.thingId);
   if (diffData.ids) {
     const noSticky = R.filter(R.complement(isSticky));
     const originalIds = getListingIds(originalData);
@@ -188,13 +198,7 @@ export const onPutSpaceHandler = sort => async (
   if (ids !== initialIds)
     route.write({ ids: R.uniq(stickyIds.concat(ids)).join("+") });
 
-  console.log(
-    "onPut",
-    route.soul,
-    updatedSoul,
-    marky.stop(`onPut:${route.soul}:${updatedSoul}`).duration
-  );
-  if (voteCountsMatch || diffData.ids) return;
+  if (authorMatch || voteCountsMatch || thingMatch || (signedThingDataMatch && signedThingDataMatch.thingId !== pageId) || diffData.ids) return;
 
   // base logic from gun-cleric-scope needs to be encapsualted better?
   console.log("---STANDARD SPACE UPDATE---", route.soul, updatedSoul);
