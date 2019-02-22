@@ -1,5 +1,6 @@
 import Promise from "promise";
 import React from "react";
+import * as R from "ramda";
 import { prop, propOr, keysIn } from "ramda";
 import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
@@ -10,6 +11,8 @@ import { routes as souls } from "./notabug-peer/json-schema";
 import init from "./notabug-peer";
 import { PREFIX } from "./notabug-peer";
 import {
+  getRow,
+  getListingKeys,
   toListingObject,
   spaceSourceWithDefaults
 } from "./notabug-peer/source";
@@ -27,8 +30,18 @@ const preload = (nab, scope, params) => {
     nab.queries
       .listing(scope, soul)
       .then(listingData => {
-        const idString = propOr("", "ids", listingData);
-        const ids = (idString || "").split("+").filter(x => !!x);
+        const ids = R.compose(
+          R.map(R.prop(1)),
+          R.sortBy(
+            R.compose(
+              parseFloat,
+              R.prop(2)
+            )
+          ),
+          R.filter(R.identity),
+          R.map(getRow(listingData)),
+          getListingKeys
+        )(listingData);
         const source = propOr("", "source", listingData);
         const { getValueChain } = toListingObject(source);
         const [authorId, pageName] = getValueChain(["sourced", "from", "page"]);

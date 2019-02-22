@@ -14,6 +14,24 @@ const potentialSources = [
   "topic"
 ];
 
+export const getRow = R.curry((node, idx) =>
+  R.compose(
+    R.ifElse(R.prop("length"), R.insert(0, idx), R.always(null)),
+    R.map(R.trim),
+    R.split(","),
+    R.propOr("", `${idx}`)
+  )(node));
+
+export const getListingKeys = R.compose(
+  R.filter(
+    R.compose(
+      val => !!(val === 0 || val),
+      parseInt
+    )
+  ),
+  R.keys
+);
+
 export const toListingObject = (source, ownerId = null, spaceName = null) => {
   const parsedSource = parseListingSource(source);
   const obj = { ...parsedSource };
@@ -100,8 +118,8 @@ const intPath = p =>
     path(p)
   );
 
-export const toFilters = obj => {
-  if (typeof obj === "string") obj = toListingObject(obj);
+export const toFilters = (obj, ...args) => {
+  if (typeof obj === "string") obj = toListingObject(obj, ...args);
   const { filters, voteFilters, isPresent, itemSource } = obj;
   const filterFunctions = [];
   const voteFilterFunctions = [];

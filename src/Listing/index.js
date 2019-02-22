@@ -6,11 +6,12 @@ import {
   useEffect,
   useCallback
 } from "react";
+import * as R from "ramda";
 import { assoc, propOr, uniq, difference } from "ramda";
 import { ZalgoPromise as Promise } from "zalgo-promise";
 import { useNotabug } from "NabContext";
 import { useQuery, useScope } from "utils";
-import { toListingObject } from "notabug-peer/source";
+import { toListingObject, getRow, getListingKeys } from "notabug-peer/source";
 export { Thing } from "./Thing";
 
 const { all } = Promise;
@@ -32,13 +33,21 @@ const useListing = ({ listingParams }) => {
     isChatString !== "false" &&
     isChatString !== "0"
   );
-
   const canonicalIds = useMemo(
     () =>
-      propOr("", "ids", state)
-        .split("+")
-        .filter(x => !!x),
-    [propOr("", "ids", state)]
+      R.compose(
+        R.map(R.prop(1)),
+        R.sortBy(
+          R.compose(
+            parseFloat,
+            R.prop(2)
+          )
+        ),
+        R.filter(R.identity),
+        R.map(getRow(state)),
+        getListingKeys
+      )(state),
+    [state]
   );
 
   const source = propOr("", "source", state);
@@ -63,12 +72,9 @@ const useListing = ({ listingParams }) => {
     [speculativeIds]
   );
 
-  useEffect(
-    () => {
-      setSpeculativeIds(specIds => difference(specIds, canonicalIds));
-    },
-    [canonicalIds]
-  );
+  useEffect(() => {
+    setSpeculativeIds(specIds => difference(specIds, canonicalIds));
+  }, [canonicalIds]);
 
   return {
     ...(state || {}),
@@ -144,18 +150,15 @@ export const useListingContent = ({ ids }) => {
     [content]
   );
 
-  useEffect(
-    () => {
-      all(
-        ids.map(id =>
-          api.queries
-            .thingData(scope, id)
-            .then(data => setContent(assoc(id, data)))
-        )
-      );
-    },
-    [ids]
-  );
+  useEffect(() => {
+    all(
+      ids.map(id =>
+        api.queries
+          .thingData(scope, id)
+          .then(data => setContent(assoc(id, data)))
+      )
+    );
+  }, [ids]);
 
   return { replyTree, content };
 };

@@ -17,6 +17,11 @@ const getThingScores = query(
   "thingScores"
 );
 
+export const getThingReplies = query(
+  (scope, thingId) =>
+    scope.get(routes.ThingComments.reverse({ thingId })).then()
+);
+
 const getThingData = query(
   (scope, thingId) => scope.get(routes.Thing.reverse({ thingId })).get("data"),
   "thingData"

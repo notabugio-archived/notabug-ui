@@ -6,7 +6,7 @@ import { basic } from "gun-cleric-scope";
 import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
 import { listingFromPage } from "../listings/declarative";
-import { onPutSpaceHandler, onPutListingHandler as onPutHandler } from "../listings/insertion";
+import { onPutRepliesHandler, onPutSpaceHandler, onPutListingHandler as onPutHandler } from "../listings/changes";
 
 const topicConfig = sort => ({
   path: `${PREFIX}/t/:topic/${sort}@~:indexer.`,
@@ -196,14 +196,14 @@ export default oracle({
     basic(domainConfig("discussed")),
 
     basic({
-      path: `${PREFIX}/user/:authorId/replies/:type/:sort@~:indexer.`,
+      path: `${PREFIX}/user/:authorId/replies/:type/new@~:indexer.`,
       priority: 20,
-      checkMatch: ({ sort, type, authorId }) =>
-        sort in sorts &&
+      checkMatch: ({ type, authorId }) =>
         authorId &&
         type &&
         type.toLowerCase() == type &&
         (type === "overview" || type === "submitted" || type === "comments"),
+      onPut: onPutRepliesHandler("new"),
       query: query((scope, { match: { authorId, type, sort, indexer } }) =>
         listingFromPage(
           scope,
@@ -212,7 +212,7 @@ export default oracle({
           [
             `replies to author ${authorId}`,
             `type ${type}`,
-            `sort ${sort}`
+            "sort new"
           ].join("\n")
         )
       )

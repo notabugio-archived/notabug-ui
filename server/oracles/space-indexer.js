@@ -6,7 +6,7 @@ import { PREFIX } from "../notabug-peer";
 import { sorts } from "../queries";
 import { listingFromPage } from "../listings/declarative";
 import { spaceSourceWithDefaults } from "../notabug-peer/source";
-import { onPutSpaceHandler } from "../listings/insertion";
+import { onPutSpaceHandler } from "../listings/changes";
 
 const spaceConfig = sort => ({
   path: `${PREFIX}/user/:authorId/spaces/:name/${sort}@~:indexer.`,

@@ -1,14 +1,82 @@
+/* globals Gun */
 import { query, all, resolve } from "gun-scope";
 import { routes } from "../notabug-peer/json-schema";
 import { COMMAND_RE } from "../notabug-peer/constants";
-import { keys, prop, uniq, map, filter, compose } from "ramda";
+import { toFilters } from "../notabug-peer/source";
+import { getWikiPageId, getWikiPage } from "../notabug-peer/listings";
 import * as R from "ramda";
 import { filterThings, multiAuthor } from "../queries";
 
 export const LISTING_SIZE = 1000;
+
+export const readSEA = rawData => {
+  const data = rawData ? { ...rawData } : rawData;
+  const soul = R.path(["_", "#"], data);
+  if (!soul || !Gun.SEA || soul.indexOf("~") === -1) return rawData;
+  R.without(["_"], R.keys(data)).forEach(key => {
+    Gun.SEA.verify(
+      Gun.SEA.opt.pack(rawData[key], key, rawData, soul),
+      false,
+      res => (data[key] = Gun.SEA.opt.unpack(res, key, rawData))
+    );
+  });
+  return data;
+};
+
+export const spaceFromSoul = async (scope, soul) => {
+  const spaceMatch = routes.SpaceListing.match(soul);
+  const { authorId = null, name = null } = spaceMatch || {};
+  const space = { pageId: null, page: null, owner: authorId, name };
+
+  if (authorId && name) {
+    space.pageId = await getWikiPageId(scope, authorId, `space:${name}`);
+    space.page = await getWikiPage(scope, authorId, `space:${name}`);
+  }
+
+  space.def = toFilters(R.propOr("", "body", space.page), authorId, name);
+  return space;
+};
+
+export const getEdgeIds = R.compose(
+  R.filter(R.identity),
+  R.map(
+    R.compose(
+      R.prop("thingId"),
+      routes.Thing.match.bind(routes.Thing)
+    )
+  ),
+  R.map(R.prop("#")),
+  R.values
+);
+
+const reduce = R.addIndex(R.reduce);
 export const serialize = ({ name = "", things, stickyIds = [] }) => ({
   name,
-  ids: [...stickyIds, ...things.map(prop("id")).filter(id => !!id)].join("+")
+  size: things.length + stickyIds.length,
+  ids: "",
+  ...reduce(
+    (res, id, idx) => R.assoc(`${idx}`, R.join(",", [id, -Infinity]), res),
+    {},
+    stickyIds
+  ),
+  ...R.compose(
+    reduce(
+      (res, data, idx) =>
+        R.assoc(`${stickyIds.length + idx}`, R.join(",", data), res),
+      {}
+    ),
+    R.map(
+      R.compose(
+        R.ap([R.prop("id"), R.prop("sortValue")]),
+        R.of
+      )
+    )
+  )(things.slice(0, LISTING_SIZE))
+  /*
+    ids: [...stickyIds, ...things.map(R.prop("id")).filter(id => !!id)].join(
+      "+"
+    )
+    */
 });
 
 const fetchThingSoulsData = scope => souls =>
@@ -29,7 +97,7 @@ export const isCommand = R.compose(
   R.prop("body")
 );
 export const uniqueByContent = R.uniqBy(
-  compose(
+  R.compose(
     obj => JSON.stringify(obj),
     R.applySpec({
       author: R.path(["data", "author"]),
@@ -43,7 +111,7 @@ export const uniqueByContent = R.uniqBy(
 const processCommands = R.pipe(
   R.sortWith([
     R.ascend(
-      compose(
+      R.compose(
         parseInt,
         R.prop("timestamp")
       )
@@ -51,11 +119,11 @@ const processCommands = R.pipe(
   ]),
   R.filter(isCommand),
   R.map(
-    compose(
+    R.compose(
       ({ id, timestamp, command }) => [[command, id], timestamp],
       R.applySpec({
-        id: prop("replyToId"),
-        timestamp: compose(
+        id: R.prop("replyToId"),
+        timestamp: R.compose(
           parseInt,
           R.prop("timestamp")
         ),
@@ -115,16 +183,16 @@ export const curate = query((scope, authorIds, submissionOnly = false) =>
     })
       .then(fetchThingSoulsData(scope))
       .then(
-        compose(
-          map(submissionOnly ? prop("opId") : prop("replyToId")),
-          filter(prop("replyToId"))
+        R.compose(
+          R.map(submissionOnly ? R.prop("opId") : R.prop("replyToId")),
+          R.filter(R.prop("replyToId"))
         )
       ),
     multiAuthor(scope, {
       type: "submitted",
       authorIds
-    }).then(map(soul => routes.Thing.match(soul).thingId))
-  ]).then(([ids1, ids2]) => uniq([...ids1, ...ids2]))
+    }).then(R.map(soul => routes.Thing.match(soul).thingId))
+  ]).then(([ids1, ids2]) => R.uniq([...ids1, ...ids2]))
 );
 
 export const censor = R.curry((scope, censors, things) => {
@@ -132,7 +200,7 @@ export const censor = R.curry((scope, censors, things) => {
   return curate(scope, censors)
     .then(R.indexBy(R.identity))
     .then(badIds =>
-      keys(badIds).length
+      R.keys(badIds).length
         ? filterThings(scope, things, thing => {
             if (!thing.data) return false;
             if (badIds[thing.id]) return false;

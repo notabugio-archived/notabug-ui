@@ -48,7 +48,7 @@ const soulList = async (scope, parsed, allSouls) => {
   const tabulator = `~${parsed.tabulator}`;
   const remaining = allSouls.slice();
   const topSoul = remaining.splice(0, 1)[0];
-  const topItem = topSoul
+  const item = topSoul
     ? await thingMeta(scope, {
         thingSoul: topSoul,
         tabulator,
@@ -60,6 +60,8 @@ const soulList = async (scope, parsed, allSouls) => {
   const sortValue = thingId
     ? await sorts[parsed.sort].getValueForId(scope, thingId, { tabulator })
     : null;
+  const topItem = item ? R.assoc("sortValue", sortValue, item) : item;
+
   const pop = async () => {
     const nextList = await soulList(scope, parsed, remaining);
     return [topItem, nextList];

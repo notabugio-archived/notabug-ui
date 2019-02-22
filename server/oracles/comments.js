@@ -2,7 +2,7 @@ import { basic } from "gun-cleric-scope";
 import { oracle } from "gun-cleric";
 import { PREFIX } from "../notabug-peer";
 import { listingFromPage } from "../listings/declarative";
-import { onPutListingHandler as onPutHandler } from "../listings/insertion";
+import { onPutListingHandler as onPutHandler } from "../listings/changes";
 import { query } from "gun-scope";
 
 const submissionConfig = sort => ({

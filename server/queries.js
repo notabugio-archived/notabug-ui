@@ -1,6 +1,7 @@
 import * as R from "ramda";
 import { query, all, resolve } from "gun-scope";
 import { getDayStr, PREFIX } from "./notabug-peer";
+import { getRow, getListingKeys } from "./notabug-peer/source";
 import { routes } from "./notabug-peer/json-schema";
 
 const LISTING_SIZE = 1000;
@@ -114,11 +115,18 @@ export const singleThingData = query((scope, { thingId }) =>
 export const listingIds = query(
   (scope, soul) =>
     scope.get(soul).then(
-      R.compose(
+      state => R.compose(
+        R.map(R.prop(1)),
+        R.sortBy(
+          R.compose(
+            parseFloat,
+            R.prop(2)
+          )
+        ),
         R.filter(R.identity),
-        R.split("+"),
-        R.propOr("", "ids")
-      )
+        R.map(getRow(state)),
+        getListingKeys
+      )(state)
     ),
   "listingIds"
 );
@@ -235,7 +243,8 @@ const voteSort = fn => {
   const resultFn = (scope, params) =>
     multiThingMeta(scope, { ...params, scores: true }).then(
       R.compose(
-        R.sortBy(fn),
+        R.sortBy(R.prop("sortValue")),
+        R.map(item => R.assoc("sortValue", fn(item), item)),
         R.filter(R.identity)
       )
     );
@@ -252,7 +261,8 @@ const timeSort = fn => {
   const resultFn = (scope, params) =>
     multiThingMeta(scope, params).then(
       R.compose(
-        R.sortBy(fn),
+        R.sortBy(R.prop("sortValue")),
+        R.map(item => R.assoc("sortValue", fn(item), item)),
         R.filter(R.identity)
       )
     );

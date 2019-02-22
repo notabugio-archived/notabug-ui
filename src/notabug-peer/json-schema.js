@@ -341,6 +341,7 @@ export const definitions = {
     title: "Listing Node Data",
     description: "Shared description of listing properties",
     type: "object",
+    additionalProperties: true,
     properties: {
       ids: { sea: { type: "string", maxLength: consts.MAX_LISTING_IDS_SIZE } },
       source: {
@@ -366,6 +367,9 @@ export const definitions = {
       userId: { sea: { $ref: "schema.json#/definitions/seaAuthorId" } },
       opId: { sea: { $ref: "schema.json#/definitions/thingId" } },
       isChat: { sea: { type: ["boolean", "string"] } }
+    },
+    patternProperties: {
+      "^d+$": { sea: { type: "string" } }
     }
   },
 
