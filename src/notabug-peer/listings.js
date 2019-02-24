@@ -9,9 +9,9 @@ const listing = query(
 
 const getThingScores = query(
   (scope, tabulator, thingId) =>
-    tabulator
+    (tabulator && thingId)
       ? scope
-          .get(`${routes.Thing.reverse({ thingId })}/votecounts@~${tabulator}.`)
+          .get(routes.ThingVoteCounts.reverse({ thingId, tabulator }))
           .then()
       : resolve(),
   "thingScores"

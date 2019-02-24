@@ -321,10 +321,10 @@ export const definitions = {
     title: "Thing Vote Counts",
     description: "Aggregated counts from a tabulator",
     soul: {
-      pattern: `${consts.PREFIX}/things/:thingId/votecounts@~:tabulatorId.`,
+      pattern: `${consts.PREFIX}/things/:thingId/votecounts@~:tabulator.`,
       properties: {
         thingId: { $ref: "schema.json#/definitions/thingId" },
-        tabulatorId: { $ref: "schema.json#/definitions/seaAuthorId" }
+        tabulator: { $ref: "schema.json#/definitions/seaAuthorId" }
       }
     },
     properties: {

@@ -21,7 +21,7 @@ export default function notabug(config = {}) {
     if (leech) {
       // Gun doesn't tell when it reconnects so have to do this lameness:
       const sendLeech = () => peer.gun._.on("out", { leech: true });
-      setInterval(sendLeech, 5*60*1000);
+      // setInterval(sendLeech, 5*60*1000);
       sendLeech();
     }
   }

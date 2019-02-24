@@ -64,7 +64,7 @@ export const submit = curry((peer, data) => {
   const thing = peer.putThing({ ...data, timestamp, kind: "submission" });
 
   if (user) {
-    return upgradeSouls(peer)
+    upgradeSouls(peer)
       .then(() => {
         const thingsSoul = routes.AuthorThings.reverse({ authorId: user.pub });
         const submissionsSoul = routes.AuthorSubmissions.reverse({

@@ -43,11 +43,17 @@ export const Submission = ({
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
   const urlInfo = item.url ? parseURI(item.url) : {};
   const permalink = useMemo(
-    () =>
-      (space && space.useForComments
+    () => {
+      let title = item.title;
+      if (title && !title.split) {
+        title = JSON.stringify(title);
+      }
+      const base = (space && space.useForComments
         ? `/user/${space.owner}/spaces/${space.spaceName}/comments/${id}/`
-        : `/t/${item.topic || "all"}/comments/${id}/`) +
-      slugify((item.title || "").toLowerCase()),
+        : `/t/${item.topic || "all"}/comments/${id}/`);
+
+      return title ? slugify(title.toLowerCase()) : base;
+    },
     [item.topic, id, item.title]
   );
   const domain = item.url

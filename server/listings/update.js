@@ -61,6 +61,7 @@ export const updateListing = (
       if (existing[POS_VAL] !== value) {
         existing[POS_VAL] = value;
         updated[id] = true;
+        changes[`${existing[POS_IDX]}`] = [id, value].join(",");
       }
     } else {
       const row = [null, id, value];
@@ -109,7 +110,10 @@ export const updateListing = (
 
   while (toReplace.length) {
     const row = toReplace.pop();
-    if (row) changes[`${row[POS_IDX]}`] = null;
+    if (row) {
+      const idx = `${row[POS_IDX]}`;
+      if (changes[idx] !== null) changes[idx] = null;
+    }
   }
 
   return R.keys(changes).length ? changes : null;
@@ -161,6 +165,6 @@ export const updateThings = async (
     )
   );
   const changes = updateListing(node, updatedItems, removedIds);
-
+  if (changes) console.log("CHANGES", route.soul, changes);
   if (changes) route.write(changes);
 };
