@@ -52,7 +52,7 @@ export const Submission = ({
         ? `/user/${space.owner}/spaces/${space.spaceName}/comments/${id}/`
         : `/t/${item.topic || "all"}/comments/${id}/`);
 
-      return title ? slugify(title.toLowerCase()) : base;
+      return title ? base + slugify(title.toLowerCase()) : base;
     },
     [item.topic, id, item.title]
   );
