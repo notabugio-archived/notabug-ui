@@ -86,8 +86,8 @@ function setupOracles(nab, activeOracles) {
       const isWorker = activeOracles.includes(oracle);
       const worker = createWorker(oracle, { redis, isWorker });
       const getter = soul => {
-        nab.msgWorker.onMsg({ get: { "#": soul } });
-        return nab.gun.redis.read(soul);
+        return nab.gun.redis.read(soul).finally(() =>
+          nab.msgWorker.onMsg({ get: { "#": soul } }));
       };
       oracle.config({
         pub,

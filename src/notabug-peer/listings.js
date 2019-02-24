@@ -23,7 +23,7 @@ export const getThingReplies = query(
 );
 
 const getThingData = query(
-  (scope, thingId) => scope.get(routes.Thing.reverse({ thingId })).get("data"),
+  (scope, thingId) => thingId ? scope.get(routes.Thing.reverse({ thingId })).get("data") : resolve(null),
   "thingData"
 );
 

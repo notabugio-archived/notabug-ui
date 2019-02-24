@@ -37,17 +37,17 @@ export const updateListing = (
   );
   const updated = {};
 
-  let size = Math.min(1000, parseInt(R.prop("size", node)) || 0);
-
-  for (let i = 0; i < size; i++) {
-    const row = getRow(node, i) || [i, null, null];
+  R.keys(node).forEach(key => {
+    const parsed = parseInt(key);
+    if (!(parsed || parsed === 0)) return;
+    const row = getRow(node, key) || [parsed, null, null];
     const [idx, id = null, rawValue = null] = row;
     row[POS_VAL] = rawValue === null ? null : parseFloat(rawValue);
     if (id && removed[id]) row[POS_ID] = row[POS_VAL] = null;
     byIdx[idx] = row;
     if (id) byId[id] = row;
     rows.push(row);
-  }
+  });
 
   const existingRows = rows.slice();
 
@@ -83,26 +83,35 @@ export const updateListing = (
       if (idx !== null && updated[id]) changes[`${idx}`] = [id, val].join(",");
     } else {
       if (idx === null) continue;
-      const key = `${idx}`;
-      if (node[key] !== null) changes[key] = null;
+      toReplace.push(sorted[i]);
     }
   }
 
   const inserted = [];
 
+  const thingsAdded = [];
+  const thingsReplaced = [];
+
   while (added.length) {
     const row = added.pop();
-    let [idx] = toReplace.pop() || [null];
+    const replaced = toReplace.pop();
+    let [idx] = replaced || [null];
 
     if (idx === null) {
       idx = existingRows.length + inserted.length;
-      inserted.push(row);
+      inserted.push(idx);
     }
 
     changes[`${idx}`] = [row[POS_ID], row[POS_VAL]].join(",");
+    thingsAdded.push(row);
+    if (replaced) thingsReplaced.push(replaced);
   }
 
-  if (node.size !== sorted.length) changes.size = sorted.length;
+  while (toReplace.length) {
+    const row = toReplace.pop();
+    if (row) changes[`${row[POS_IDX]}`] = null;
+  }
+
   return R.keys(changes).length ? changes : null;
 };
 
@@ -118,7 +127,9 @@ export const updateThings = async (
 ) => {
   if (!ids.length && !removedIds.length) return;
   const tabulator = `~${orc.pub}`;
+
   const node = await orc.newScope().get(route.soul);
+
   const updatedItems = R.filter(
     R.identity,
     await Promise.all(
@@ -151,5 +162,5 @@ export const updateThings = async (
   );
   const changes = updateListing(node, updatedItems, removedIds);
 
-  if (changes) return route.write(changes);
+  if (changes) route.write(changes);
 };

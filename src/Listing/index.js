@@ -37,11 +37,15 @@ const useListing = ({ listingParams }) => {
     () =>
       R.compose(
         R.map(R.prop(1)),
-        R.sortBy(
-          R.compose(
-            parseFloat,
-            R.prop(2)
-          )
+        R.sortWith(
+          [
+            R.ascend(
+              R.compose(
+                parseFloat,
+                R.prop(2)
+              )
+            )
+          ]
         ),
         R.filter(R.identity),
         R.map(getRow(state)),
