@@ -54,8 +54,6 @@ export const updateListing = (
     if (idx > maxIdx) maxIdx = idx;
   });
 
-  const existingRows = rows.slice();
-
   for (let i = 0; i < updatedItems.length; i++) {
     const [id, value] = updatedItems[i] || [null, null];
 
@@ -94,7 +92,7 @@ export const updateListing = (
     let [idx] = replaced || [null];
 
     if (idx === null) {
-      idx = maxIdx + inserted.length + 1;
+      idx = parseInt(maxIdx) + inserted.length + 1;
       inserted.push(idx);
     }
 
@@ -105,7 +103,10 @@ export const updateListing = (
     const row = toReplace.pop();
     if (row) {
       const idx = `${row[POS_IDX]}`;
-      if (changes[idx] !== null) changes[idx] = null;
+      if (node[idx] !== null) {
+        changes[idx] = null;
+        console.log("nulling", idx, node[idx]);
+      }
     }
   }
 

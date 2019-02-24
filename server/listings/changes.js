@@ -104,12 +104,10 @@ export const onPutSpaceHandler = sort => async (
   console.log("---STANDARD SPACE UPDATE---", route.soul, updatedSoul);
   const knownTimestamp = await orc.timestamp(route.soul);
 
-  if (latest && knownTimestamp >= latest) return;
   return orc.work({
     id: `update:${route.soul}:${latest}`,
     soul: route.soul,
     method: "doUpdate",
-    latest: latest || now,
     priority: route.priority || 50
   });
 };

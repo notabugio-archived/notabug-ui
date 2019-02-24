@@ -133,7 +133,10 @@ export const listingIds = query(
 
 export const singleListing = query((scope, { listing, sort, indexer }) =>
   listingIds(scope, `${PREFIX}${listing}/${sort}@~${indexer}.`).then(
-    R.map(thingId => routes.Thing.reverse({ thingId }))
+    R.compose(
+      R.map(thingId => routes.Thing.reverse({ thingId })),
+      R.filter(R.identity)
+    )
   )
 );
 
