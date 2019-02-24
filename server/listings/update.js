@@ -6,11 +6,15 @@ import { needsScores, needsData } from "./datasources";
 import { sorts, thingMeta } from "../queries";
 
 const [POS_IDX, POS_ID, POS_VAL] = [0, 1, 2, 3]; // eslint-disable-line no-unused-vars
-const sortByVal = R.sortBy(
-  R.compose(
-    val => (val === null ? Infinity : val),
-    R.prop(POS_VAL)
-  )
+const sortByVal = R.sortWith(
+  [
+    R.ascend(
+      R.compose(
+        val => (val === null ? Infinity : val),
+        row => row[POS_VAL]
+      )
+    )
+  ]
 );
 
 export const updateListing = (

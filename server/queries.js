@@ -278,6 +278,7 @@ export const sorts = {
   new: timeSort(
     R.compose(
       R.multiply(-1),
+      val => val || (new Date()).getTime(),
       R.prop("timestamp")
     )
   ),
