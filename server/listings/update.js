@@ -25,7 +25,6 @@ export const updateListing = (
 ) => {
   const byId = {};
   const changes = {};
-  const byIdx = [];
   const rows = [];
   const removed = R.reduce(
     (res, id) => {
@@ -36,17 +35,23 @@ export const updateListing = (
     removeIds
   );
   const updated = {};
+  let toReplace = [];
+  let maxIdx = 0;
 
   R.keys(node).forEach(key => {
     const parsed = parseInt(key);
     if (!(parsed || parsed === 0)) return;
     const row = getRow(node, key) || [parsed, null, null];
-    const [idx, id = null, rawValue = null] = row;
+    const [idx, id = null, rawValue = null] = row; // eslint-disable-line no-unused-vars
     row[POS_VAL] = rawValue === null ? null : parseFloat(rawValue);
     if (id && removed[id]) row[POS_ID] = row[POS_VAL] = null;
-    byIdx[idx] = row;
     if (id) byId[id] = row;
-    rows.push(row);
+    if (row[POS_ID]) {
+      rows.push(row);
+    } else {
+      toReplace.push(row);
+    }
+    if (idx > maxIdx) maxIdx = idx;
   });
 
   const existingRows = rows.slice();
@@ -61,7 +66,6 @@ export const updateListing = (
       if (existing[POS_VAL] !== value) {
         existing[POS_VAL] = value;
         updated[id] = true;
-        changes[`${existing[POS_IDX]}`] = [id, value].join(",");
       }
     } else {
       const row = [null, id, value];
@@ -73,25 +77,16 @@ export const updateListing = (
   const sorted = maxSize ? allSorted.slice(0, maxSize) : allSorted;
   const missing = maxSize ? allSorted.slice(maxSize, allSorted.length) : [];
   const added = R.filter(row => row[POS_IDX] === null, sorted);
-  const toReplace = R.filter(row => row[POS_IDX] !== null, missing);
+  toReplace = toReplace.concat(R.filter(row => row[POS_IDX] !== null, missing)).reverse();
 
   for (let i = 0; i < sorted.length; i++) {
     const id = sorted[i][POS_ID];
     const idx = sorted[i][POS_IDX];
-
-    if (id) {
-      const val = sorted[i][POS_VAL];
-      if (idx !== null && updated[id]) changes[`${idx}`] = [id, val].join(",");
-    } else {
-      if (idx === null) continue;
-      toReplace.push(sorted[i]);
-    }
+    const val = sorted[i][POS_VAL];
+    if (idx !== null && updated[id]) changes[`${idx}`] = [id, val].join(",");
   }
 
   const inserted = [];
-
-  const thingsAdded = [];
-  const thingsReplaced = [];
 
   while (added.length) {
     const row = added.pop();
@@ -99,13 +94,11 @@ export const updateListing = (
     let [idx] = replaced || [null];
 
     if (idx === null) {
-      idx = existingRows.length + inserted.length;
+      idx = maxIdx + inserted.length + 1;
       inserted.push(idx);
     }
 
     changes[`${idx}`] = [row[POS_ID], row[POS_VAL]].join(",");
-    thingsAdded.push(row);
-    if (replaced) thingsReplaced.push(replaced);
   }
 
   while (toReplace.length) {
