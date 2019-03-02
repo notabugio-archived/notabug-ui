@@ -12,7 +12,7 @@ const spaceConfig = sort => ({
   path: `${PREFIX}/user/:authorId/spaces/:name/${sort}@~:indexer.`,
   priority: 20,
   checkMatch: ({ name, authorId }) => authorId && name,
-  throttleGet: 1000 * 60 * 60,
+  throttleGet: 1000 * 60 * 60 * 8,
   onPut: onPutSpaceHandler(sort),
   query: query((scope, { match: { authorId, name } }) =>
     console.log("space", authorId, name) || listingFromPage(scope, authorId, `space:${name}`, `sort ${sort}`, {

@@ -16,7 +16,7 @@ const potentialSources = [
 
 export const getRow = R.curry((node, idx) =>
   R.compose(
-    R.ifElse(R.prop("length"), R.insert(0, idx), R.always(null)),
+    R.ifElse(R.prop("length"), R.insert(0, parseInt(idx)), R.always(null)),
     R.map(R.trim),
     R.split(","),
     R.propOr("", `${idx}`)
@@ -118,6 +118,15 @@ const intPath = p =>
     path(p)
   );
 
+const getDomain = R.compose(
+  url => {
+    if (!url) return;
+    const parsed = parseURI(url);
+    return (parsed.host || parsed.scheme || "").replace(/^www\./, "");
+  },
+  path(["data", "url"])
+);
+
 export const toFilters = (obj, ...args) => {
   if (typeof obj === "string") obj = toListingObject(obj, ...args);
   const { filters, voteFilters, isPresent, itemSource } = obj;
@@ -129,12 +138,23 @@ export const toFilters = (obj, ...args) => {
 
   if (filters.allow.aliases.length)
     addFilter(t => !!isPresent(["alias", t]), path(["data", "author"]));
-  if (filters.allow.authors.length && itemSource !== "author")
+  if (filters.allow.authors.length)
     addFilter(t => !!isPresent(["author", t]), path(["data", "authorId"]));
-  if (filters.allow.domains.length && itemSource !== "domain")
-    addFilter(t => !!isPresent(["domain", t]), path(["data", "domain"]));
+  if (filters.allow.domains.length)
+    addFilter(t => !!isPresent(["domain", t]), getDomain);
   if (filters.allow.topics.length && itemSource !== "topic")
     addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
+
+  if (filters.allow.topics.length && !R.find(
+    R.compose(
+      R.identical("all"),
+      R.last,
+      R.split(":")
+    ),
+    filters.allow.topics
+  ))
+    addFilter(t => !!isPresent(["topic", t]), path(["data", "topic"]));
+
   if (filters.allow.kinds.length)
     addFilter(kind => !!isPresent(["kind", kind]), path(["data", "kind"]));
   if (filters.allow.type === "commands")
@@ -158,12 +178,7 @@ export const toFilters = (obj, ...args) => {
   if (filters.deny.domains.length)
     addFilter(
       domain => !domain || !isPresent(["ban", "domain", domain]),
-      url => {
-        if (!url) return;
-        const parsed = parseURI(url);
-        return (parsed.host || parsed.scheme || "").replace(/^www\./, "");
-      },
-      path(["data", "url"])
+      getDomain
     );
   if (filters.deny.topics.length)
     addFilter(

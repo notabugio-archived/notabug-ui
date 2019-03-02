@@ -45,13 +45,13 @@ export const onPutRepliesHandler = sort => async (
   { updatedSoul, diff }
 ) => {
   const scope = orc.newScope();
-  let updatedIds = getEdgeIds(readSEA(diff));
   const diffData = readSEA(diff);
+  let updatedIds = getEdgeIds(diffData);
   const [updatedAuthored] = categorizeListingDiff(diffData);
 
   for (var i = 0; i < updatedAuthored.length; i++) {
     const opId = updatedAuthored[i];
-    const replyIds = getEdgeIds(await getThingReplies(scope, opId));
+    const replyIds = getEdgeIds(await scope.get(routes.ThingComments.reverse({ thingId: opId })).then());
     updatedIds = updatedIds.concat(replyIds);
   }
 
@@ -67,6 +67,7 @@ export const onPutSpaceHandler = sort => async (
 ) => {
   const now = new Date().getTime();
   const scope = orc.newScope();
+
   const originalData = readSEA(original);
   const diffData = readSEA(diff);
   const [updatedIds, removedIds] = categorizeListingDiff(diffData);
@@ -101,11 +102,26 @@ export const onPutSpaceHandler = sort => async (
     return;
 
   // base logic from gun-cleric-scope needs to be encapsualted better?
+
   console.log("---STANDARD SPACE UPDATE---", route.soul, updatedSoul);
-  const knownTimestamp = await orc.timestamp(route.soul);
+
+  const node = await orc.newScope().get(route.soul);
+  const existingKeys = getListingKeys(node);
+  if (existingKeys.length) {
+    route.write({
+      size: 0,
+      ...existingKeys.reduce(
+        (diff, key) => {
+          diff[`${key}`] = null;
+          return diff;
+        },
+        {}
+      )
+    })
+  }
 
   return orc.work({
-    id: `update:${route.soul}:${latest}`,
+    id: `update:${route.soul}`,
     soul: route.soul,
     method: "doUpdate",
     priority: route.priority || 50

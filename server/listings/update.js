@@ -101,7 +101,7 @@ export const updateListing = (
 
   while (toReplace.length) {
     const row = toReplace.pop();
-    if (row) {
+    if (row && !row[POS_ID]) {
       const idx = `${row[POS_IDX]}`;
       if (node[idx] !== null) {
         changes[idx] = null;
@@ -125,7 +125,6 @@ export const updateThings = async (
 ) => {
   if (!ids.length && !removedIds.length) return;
   const tabulator = `~${orc.pub}`;
-
   const node = await orc.newScope().get(route.soul);
 
   const updatedItems = R.filter(

@@ -72,11 +72,6 @@ export const serialize = ({ name = "", things, stickyIds = [] }) => ({
       )
     )
   )(things.slice(0, LISTING_SIZE))
-  /*
-    ids: [...stickyIds, ...things.map(R.prop("id")).filter(id => !!id)].join(
-      "+"
-    )
-    */
 });
 
 const fetchThingSoulsData = scope => souls =>

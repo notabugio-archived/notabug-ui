@@ -161,15 +161,15 @@ export const singleAuthor = query((scope, params) =>
 );
 
 export const repliesToAuthor = query(
-  (scope, { repliesToAuthorId, ...params }) =>
-    singleAuthor(scope, { ...params, authorId: repliesToAuthorId }).then(
-      authoredSouls =>
+  (scope, { repliesToAuthorId, type="overview", ...params }) =>
+    singleListing(scope, { listing: `/user/${repliesToAuthorId}/${type}`, sort: "new", ...params })
+      .then( authoredSouls =>
         all(
           authoredSouls.map(authoredSoul =>
             scope.get(`${authoredSoul}/comments`).souls()
           )
         ).then(unionArrays)
-    )
+      )
 );
 
 export const singleDomain = query((scope, { domain }) =>

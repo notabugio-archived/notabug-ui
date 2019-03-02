@@ -11,7 +11,7 @@ import { onPutRepliesHandler, onPutSpaceHandler, onPutListingHandler as onPutHan
 const topicConfig = sort => ({
   path: `${PREFIX}/t/:topic/${sort}@~:indexer.`,
   priority: 60,
-  throttleGet: 1000 * 60 * 60,
+  throttleGet: 1000 * 60 * 60 * 8,
   onPut: onPutHandler(sort),
   checkMatch: ({ topic }) =>
     sort in sorts && topic && topic.toLowerCase() === topic,
@@ -43,7 +43,7 @@ const domainConfig = sort => ({
   path: `${PREFIX}/domain/:domain/${sort}@~:indexer.`,
   priority: 25,
   checkMatch: ({ domain }) => domain && domain.toLowerCase() === domain,
-  throttleGet: 1000 * 60 * 60,
+  throttleGet: 1000 * 60 * 60 * 8,
   onPut: onPutHandler(sort),
   query: query((scope, { match: { domain, indexer } }) =>
     listingFromPage(
@@ -67,7 +67,7 @@ const domainConfig = sort => ({
 const submissionConfig = sort => ({
   path: `${PREFIX}/things/:thingId/comments/${sort}@~:indexer.`,
   priority: 85,
-  throttleGet: 1000 * 60 * 60,
+  throttleGet: 1000 * 60 * 60 * 8,
   onPut: onPutHandler(sort),
   query: query((scope, { match: { thingId, indexer } }) =>
     listingFromPage(
@@ -86,7 +86,7 @@ const userConfig = sort => ({
   checkMatch: ({ type, authorId }) =>
     authorId &&
     R.includes(type, ["overview", "submitted", "comments", "commands"]),
-  throttleGet: 1000 * 60 * 60,
+  throttleGet: 1000 * 60 * 60 * 8,
   onPut: onPutHandler(sort),
   query: query((scope, { match: { authorId, type, indexer } }) =>
     listingFromPage(
@@ -115,7 +115,7 @@ export default oracle({
       priority: 80,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
-      throttleGet: 1000 * 60 * 60,
+      throttleGet: 1000 * 60 * 60 * 8,
       onPut: onPutSpaceHandler("new"),
       query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics = topic.split("+");
@@ -151,7 +151,7 @@ export default oracle({
       priority: 75,
       checkMatch: ({ topic }) =>
         topic && topic.toLowerCase() === topic && topic.indexOf(":") === -1,
-      throttleGet: 1000 * 60 * 60,
+      throttleGet: 1000 * 60 * 60 * 8,
       onPut: onPutSpaceHandler("new"),
       query: query((scope, { match: { topic, indexer } }) => {
         const normalTopics = topic.split("+");

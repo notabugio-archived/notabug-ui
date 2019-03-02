@@ -341,7 +341,6 @@ export const definitions = {
     title: "Listing Node Data",
     description: "Shared description of listing properties",
     type: "object",
-    additionalProperties: true,
     properties: {
       ids: { sea: { type: "string", maxLength: consts.MAX_LISTING_IDS_SIZE } },
       source: {

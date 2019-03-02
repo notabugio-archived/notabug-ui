@@ -15,6 +15,8 @@ import {
 
 const sortSoulLists = R.sortWith([R.ascend(R.prop("sortValue"))]);
 
+const marky = require("marky");
+
 export const needsScores = parsed =>
   !![
     "sort hot",
@@ -29,9 +31,9 @@ export const needsScores = parsed =>
 
 export const needsData = parsed =>
   !![
-    parsed.itemSource !== "topic" ? "topic" : null,
-    parsed.itemSource !== "domain" ? "domain" : null,
-    parsed.itemSource !== "author" ? "author" : null,
+    "topic",
+    "domain",
+    "author",
     "unique by content",
     "kind",
     "type",
@@ -95,17 +97,24 @@ const fetchSortedSouls = async (scope, parsed, sortedListsOfSouls) => {
     return item;
   };
 
+  const now = (new Date()).getTime();
+  marky.mark(`${now}`);
+
   let nextItem = await getNextItem();
   while (nextItem && result.length < LISTING_SIZE) {
     if (parsed.thingFilter(nextItem)) result.push(nextItem);
     if (result.length < LISTING_SIZE) nextItem = await getNextItem();
   }
 
+  console.log("fetchSortedSouls items", marky.stop(`${now}`).duration);
+
   return result;
 };
 
-const fromListings = (scope, parsed, listings) =>
-  Promise.all(
+const fromListings = async (scope, parsed, listings) => {
+  const now = (new Date()).getTime();
+  marky.mark(`${now}`);
+  const sortedListsOfSouls = await Promise.all(
     R.map(
       listing =>
         singleListing(scope, {
@@ -114,10 +123,11 @@ const fromListings = (scope, parsed, listings) =>
           sort: parsed.sort || "new"
         }),
       listings
-    )
-  ).then(sortedListsOfSouls =>
-    fetchSortedSouls(scope, parsed, sortedListsOfSouls)
+    ),
   );
+  console.log("fromListings", marky.stop(`${now}`).duration);
+  return fetchSortedSouls(scope, parsed, sortedListsOfSouls);
+};
 
 const fromSouls = (scope, parsed) => thingSouls =>
   sortThings(scope, {
@@ -140,7 +150,7 @@ export const itemSources = {
     const id = R.path(["filters", "allow", "repliesTo"], parsed);
     const type = R.path(["filters", "allow", "type"], parsed);
     if (!id) return itemSources.topic();
-    return repliesToAuthor(scope, { type, repliesToAuthorId: `~${id}` }).then(
+    return repliesToAuthor(scope, { type, repliesToAuthorId: id, indexer: parsed.indexer }).then(
       fromSouls(scope, parsed)
     );
   },
