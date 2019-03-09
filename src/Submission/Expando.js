@@ -75,7 +75,7 @@ export const getExpando = (item, rawDomain, urlInfo) => {
   } else if (domain === "hooktube.com") {
     reactPlayer = item.url.replace("hooktube", "youtube");
   } else if (domain === "invidio.us") {
-    reactPlayer = item.url.replace("invidio.us", "youtube.com");
+    // reactPlayer = item.url.replace("invidio.us", "youtube.com");
   }
 
   if (reactPlayer) {
@@ -102,6 +102,7 @@ export const getExpando = (item, rawDomain, urlInfo) => {
   } else {
     iframe = (domain === "bitchute.com" && item.url.indexOf("/video/") !== -1) ? "https://www.bitchute.com/embed/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
       : (domain === "d.tube") ? item.url.replace("d.tube/#!/v", "emb.d.tube/#!")
+      : (domain === "invidio.us") ? "https://invidio.us/embed/" + query.v
       : (domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1) ? "https://www.dailymotion.com/embed/video/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length)
       : (domain === "vevo.com" && item.url.indexOf("/watch/") !== -1) ? "https://embed.vevo.com?isrc=" + item.url.substring(item.url.lastIndexOf("/")+1, item.url.length)
       : (domain === "gfycat.com" && item.url.indexOf("/detail/") !== -1) ? "https://gfycat.com/ifr/" + item.url.substring(item.url.indexOf("/detail/")+8, item.url.length)
@@ -109,7 +110,8 @@ export const getExpando = (item, rawDomain, urlInfo) => {
       : (domain === "giphy.com" && item.url.indexOf("/html5") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("/gifs/")+6, item.url.length).replace("/html5","")
       : (domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1) ? "https://giphy.com/embed/" + item.url.substring(item.url.lastIndexOf("-")+1, item.url.length)
       : (domain === "pornhub.com" && query.viewkey) ? `https://www.pornhub.com/embed/${query.viewkey}`
-      : (domain === "liveleak.com") ? item.url.replace("/view", "/ll_embed") : null;
+      : (domain === "liveleak.com") ? item.url.replace("/view", "/ll_embed")
+      : (domain === "rutube.ru" && item.url.indexOf("/video/") !== -1) ? "https://rutube.ru/play/embed/" + item.url.substring(item.url.indexOf("/video/")+7, item.url.length) : null;
   }
 
   const image = (iframe || EmbedComponent) ? null : (item.url && matchesExt(imgExts, item.url)) ? item.url : null;
