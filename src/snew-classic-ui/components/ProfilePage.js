@@ -16,13 +16,13 @@ export const ProfilePage = ({
   username,
   profileuser_username,
   afterTitlebox,
-  post_karma=null,
-  comment_karma=null,
+  post_karma = null,
+  comment_karma = null,
   sendMsgUrl,
   created,
   created_utc,
-  userlabel="redditor for",
-  karmaname="karma",
+  userlabel = "redditor for",
+  karmaname = "karma",
   children,
   ...props
 }) => (

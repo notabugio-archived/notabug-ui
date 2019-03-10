@@ -7,6 +7,7 @@ export const Link = withRouter((
   { href, staticContext, children, location: { search }, ...props}
 ) => {
   const query = qs.parse(search, { ignoreQueryPrefix: true });
+
   props = Object.keys(props)
     .filter(key => key[0] === key[0].toLowerCase())
     .reduce((r, key) => {
@@ -21,6 +22,7 @@ export const Link = withRouter((
   if (href.indexOf("?") !== -1) {
     const parts = href.split("?");
     const destSearch = { ...(destQuery || {}), ...qs.parse(parts.pop() || "") };
+
     href = parts[0] + "?" + qs.stringify(destSearch);
   } else if (destQuery) {
     href = href + "?" + qs.stringify(destQuery);

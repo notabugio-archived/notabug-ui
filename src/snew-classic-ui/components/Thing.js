@@ -12,6 +12,7 @@ const Thing = ({
   ...props
 }) => {
   const Component = ({ t3: ThingLink, t1: ThingComment })[kind];
+
   return Component ? <Component expanded={expanded} {...{ ...props, ...data, rank }} /> : null;
 };
 

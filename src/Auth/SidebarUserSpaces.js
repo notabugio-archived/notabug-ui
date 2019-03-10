@@ -1,15 +1,10 @@
 import React from "react";
-import { keysIn, match, compose, prop, replace } from "ramda";
-import { useNotabug } from "NabContext";
+import { SpaceSpec } from "notabug-peer";
 import { Link, useQuery, useShowMore } from "utils";
 
 export const SidebarUserSpaces = ({ userId }) => {
-  const { api } = useNotabug();
-  const [pages] = useQuery(api.queries.userPages, [userId]);
-  const spaceNames = keysIn(pages)
-    .filter(compose(prop("length"), match(/^space:[^:]*$/)))
-    .map(replace(/^space:/, ""))
-    .sort();
+  console.log("userId", userId);
+  const [spaceNames = []] = useQuery(SpaceSpec.userSpaceNames, [userId]);
   const { visibleCount, moreCount, onShowMore } = useShowMore(spaceNames);
   const hasMore = moreCount > 0;
 

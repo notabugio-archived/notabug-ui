@@ -56,7 +56,7 @@ const UserInfo = ({
         <form className="logout hover" >
           <input name="uh" type="hidden" defaultValue={username} />
           <input name="top" type="hidden" defaultValue="off" />
-          <input name="dest" type="hidden" defaultValue={`/r/{subreddit}/`} />
+          <input name="dest" type="hidden" defaultValue={"/r/{subreddit}/"} />
           <a href={logoutUrl || ""} onClick={onLogout}>logout</a>
         </form>
       </Fragment>

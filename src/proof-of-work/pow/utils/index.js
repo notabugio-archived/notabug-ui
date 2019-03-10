@@ -12,6 +12,7 @@ if (!require("detect-node")) {
 
   module.exports.allocBuffer = function allocBuffer(size) {
     const res = new Array(size);
+
     for (var i = 0; i < res.length; i++)
       res[i] = 0;
     return res;
@@ -46,7 +47,7 @@ if (!require("detect-node")) {
     return readUInt32(buffer, off) * 0x100000000 + readUInt32(buffer, off + 4);
   };
 
-  module.exports.hash =  function hash(nonce, prefix) {
+  module.exports.hash = function hash(nonce, prefix) {
     const res = argon2.hashSync({
       pass: prefix,
       salt: nonce,
@@ -54,8 +55,9 @@ if (!require("detect-node")) {
       hashLen: hashLength,
       time: timeCost,
       mem: memoryCost,
-      parallelism,
+      parallelism
     });
+
     return res.hash;
   };
 

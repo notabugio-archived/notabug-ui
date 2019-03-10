@@ -12,3 +12,18 @@ export { injectHook } from "./injectHook";
 export { default as slugify } from "./slugify";
 export { interceptClicks } from "./interceptClicks";
 export * from "./hooks";
+
+// https://stackoverflow.com/questions/14555347
+export function isLocalStorageNameSupported() {
+  var testKey = "test",
+    storage = window.localStorage;
+
+  try {
+    storage.setItem(testKey, "1");
+    storage.removeItem(testKey);
+    return true;
+  } catch (error) {
+    console.warn("disabling local storage", error);
+    return false;
+  }
+}

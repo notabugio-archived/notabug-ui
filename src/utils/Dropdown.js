@@ -15,6 +15,7 @@ export class Dropdown extends PureComponent {
     const { value, children } = this.props;
     const { isOpen } = this.state;
     const { onOpen } = this;
+
     return (
       <Manager>
         <Reference>

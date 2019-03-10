@@ -10,7 +10,7 @@ const SiteTable = ({
   className,
   noNav,
   expanded,
-  rank=1,
+  rank = 1,
   onClick,
   ...props
 }) => (
@@ -25,7 +25,7 @@ const SiteTable = ({
           ...thing.data
         }
       }),
-      <div className="clearleft" key={(thing.data.id || "unknown") +"clear"} />
+      <div className="clearleft" key={(thing.data.id || "unknown") + "clear"} />
     ])}
     {noNav ? null : optional(NavButtons, { allChildren, ...props })}
   </div>

@@ -20,7 +20,7 @@ const LoginSignupPage = ({
           <LoginForm />
         </div>
       </div>
-      {/*<p className="login-disclaimer">
+      {/* <p className="login-disclaimer">
         By signing up, you agree to our{" "}
         <a href="/help/useragreement/">Terms</a> and that you
         have read our{" "}

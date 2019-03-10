@@ -3,7 +3,6 @@
 import React, { useContext } from "react";
 import qs from "query-string";
 import { Link, JavaScriptRequired } from "utils";
-import { useLimitedListing } from "Listing";
 import { Things } from "Listing/Things";
 import { ErrorBoundary, Loading as LoadingComponent } from "utils";
 
@@ -16,15 +15,10 @@ export const PagedContent = React.memo(
     ListingContext
   }) => {
     const { pathname, search } = location;
+    const { ids: limitedIds } = useContext(ListingContext);
     const query = qs.parse(search);
     const count = parseInt(query.count, 10) || 0;
     const limit = parseInt(query.limit, 10) || 25;
-    const { ids: allIds } = useContext(ListingContext);
-    const { ids: limitedIds } = useLimitedListing({
-      ids: allIds,
-      limit,
-      count
-    });
     const hasPrev = count - limit >= 0;
     const hasNext = limitedIds.length >= limit;
 

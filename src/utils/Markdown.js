@@ -4,6 +4,7 @@ import { withRouter } from "react-router-dom";
 import { interceptClicks } from "./interceptClicks";
 
 const rendererState = Snudown.defaultRenderState();
+
 rendererState.nofollow = 1;
 rendererState.target = "_blank";
 rendererState.flags = Snudown.DEFAULT_BODY_FLAGS;
@@ -14,6 +15,7 @@ const parser = Snudown.getParser(renderer);
 export const useEditText = ({ value: valueProp = "", isRequired = true, maxLength = 10000 } = {}) => {
   const [value, setValue] = useState(valueProp);
   let error = null;
+
   if (isRequired && !value.trim()) error = "this field is required";
   if (maxLength && value.length > maxLength) error = `must be less than ${maxLength} characters`;
 

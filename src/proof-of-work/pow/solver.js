@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 
 // NOTE: We want `require('proof-of-work/lib/pow/solver')` for browser code
-const utils = require('./utils');
+const utils = require("./utils");
 
 const MIN_NONCE_SIZE = 8;
 const NONCE_SIZE = MIN_NONCE_SIZE + 8;

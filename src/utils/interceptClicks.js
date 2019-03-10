@@ -10,6 +10,7 @@ export const interceptClicks = (
     const onClick = useCallback(
       e => {
         let el = e.target;
+
         if (
           e.defaultPrevented ||
           e.metaKey ||
@@ -27,6 +28,7 @@ export const interceptClicks = (
           url.path +
           (url.query ? `?${url.query}` : "") +
           (url.fragment ? `#${url.fragment}` : "");
+
         if (
           url.host !== windowURL.host &&
           !domainsToIntercept.find(equals(url.host.toLowerCase()))

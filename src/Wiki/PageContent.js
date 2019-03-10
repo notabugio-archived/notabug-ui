@@ -16,8 +16,10 @@ export const WikiPageContent = ({
   onSubmitEdit
 }) => {
   let body = propOr("", "body", item);
+
   if (asSource) {
-    const lines = body ? body.split("\n").map(compose( s => `    ${s}`, trim)) : [];
+    const lines = body ? body.split("\n").map(compose(s => `    ${s}`, trim)) : [];
+
     body = lines.join("\n");
   }
 

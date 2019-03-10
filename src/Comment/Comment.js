@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { propOr } from "ramda";
 import Spinner from "react-spinkit";
-import { MAX_THING_BODY_SIZE } from "notabug-peer";
+import { Constants } from "notabug-peer";
 import { ThingComment } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify } from "utils";
 import { NestedListing } from "Comment/NestedListing";
@@ -51,19 +51,16 @@ export const Comment = ({
   const { topic } = item || topicProp;
   const parentItem = propParentItem || (fetchParent ? { title: "..." } : null);
   let body = propOr("", "body", item) || "";
+
   if (!body.split) {
-    // console.log("wtf", body);
     body = JSON.stringify(body);
   }
   let parentParams = {};
 
-  const parentPermalink = useMemo(
-    () => {
-      if (!item.opId || !topic || !parentItem || !parentItem.title) return;
-      return `/t/${topic}/comments/${item.opId}/${slugify(parentItem.title)}`;
-    },
-    [topic, item.opId, parentItem]
-  );
+  const parentPermalink = useMemo(() => {
+    if (!item.opId || !topic || !parentItem || !parentItem.title) return "";
+    return `/t/${topic}/comments/${item.opId}/${slugify(parentItem.title)}`;
+  }, [topic, item.opId, parentItem]);
 
   if (fetchParent) {
     parentParams = {
@@ -113,7 +110,7 @@ export const Comment = ({
       Markdown={propItem ? Markdown : MarkdownLoading}
       NestedListing={disableChildren ? () => null : NestedListing}
       opId={item.opId}
-      body={body ? body.slice(0, MAX_THING_BODY_SIZE) : body}
+      body={body ? body.slice(0, Constants.MAX_THING_BODY_SIZE) : body}
       author={item.author}
       author_fullname={item.authorId}
       siteprefix="t"

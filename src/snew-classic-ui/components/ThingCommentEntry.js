@@ -17,8 +17,8 @@ const ThingCommentEntry = ({
   author_flair_text,
   author_flair_css_class,
   subreddit,
-  siteprefix="r",
-  score=null,
+  siteprefix = "r",
+  score = null,
   downs,
   score_hidden,
   likes,
@@ -38,8 +38,8 @@ const ThingCommentEntry = ({
   link_author_fullname,
   link_title,
   link_permalink,
-  showLink=false,
-  replyCount=null,
+  showLink = false,
+  replyCount = null,
   preTagline,
   postTagline,
   afterAuthor,
@@ -54,7 +54,7 @@ const ThingCommentEntry = ({
   onToggleExpand,
   onVoteUp,
   onVoteDown,
-  onShowReply,
+  onShowReply
 }) => (
   <Fragment>
     <p className="parent">
@@ -140,7 +140,7 @@ const ThingCommentEntry = ({
           <span className="score likes" key="likes" title={scoreTooltip}>{ups} points</span>
         ] : null}{" "}
         <Timestamp {...{ created, created_utc }} />
-        {edited ?  <Timestamp {...{ edited }} /> : null}
+        {edited ? <Timestamp {...{ edited }} /> : null}
         {stickied && (<span className="stickied-tagline" title="stickied">stickied comment</span>)}
         {replyCount !== null ? (
           <a className="numchildren" >

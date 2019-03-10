@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import React from "react";
+import { usePageContext } from "NabContext";
 import { PageName, PageTabs } from "Page/Tabs";
 import { PageHeader } from "Page/Header";
 import {
@@ -11,22 +12,19 @@ import { SidebarChat } from "Chat/SidebarChat";
 import { SidebarUserList } from "Auth/SidebarUserList";
 import { TopicList } from "Page/TopicList";
 import { SidebarSource } from "Page/SidebarSource";
-import { useSpace } from "Space";
 
 export const PageTemplate = ({
-  ListingContext,
   children,
   name: nameProp,
-  hideLogin,
-  match: { params: { identifier = "all" } = {} } = {}
+  hideLogin
 }) => {
-  const listingData = useContext(ListingContext || {});
-  const space = useSpace();
-  const { listingParams, userId, name: listingName } = listingData || {};
+  const { spec } = usePageContext();
   const {
-    path,
+    profileId,
+    name: listingName,
+    basePath,
     displayName,
-    submitTopic,
+    submitPath = null,
     chatTopic,
     tabs,
     curators,
@@ -35,35 +33,26 @@ export const PageTemplate = ({
     filters: { allow: { topics } = {} } = {},
     fromPageAuthor: ownerId,
     fromPageName: pageName
-  } = space || listingData || {};
+  } = spec || {};
   const name = nameProp || listingName || displayName;
-  const submitPath =
-    (submitTopic && space && path && `${path}/submit`) ||
-    (submitTopic && `/t/${submitTopic}/submit`) ||
-    null;
 
   return (
     <React.Fragment>
       <PageHeader>
-        <PageName
-          path={
-            path ||
-            `/${(listingParams && listingParams.prefix) || "t"}/${identifier}`
-          }
-          name={displayName || name}
-        />
-        <PageTabs {...{ listingParams, tabs }} />
+        <PageName path={basePath} name={displayName || name} />
+        <PageTabs {...{ tabs }} />
       </PageHeader>
 
-      <PageSidebar {...{ userId, name, hideLogin }}>
-        <SubmitLinkBtn href={submitPath || null} />
+      <PageSidebar {...{ profileId, name, hideLogin }}>
+        <SubmitLinkBtn href={submitPath} />
         <SubmitTextBtn
           href={submitPath ? `${submitPath}?selftext=true` : null}
         />
 
         <SidebarTitlebox
-          path={path || ""}
-          displayName={userId ? null : displayName}
+          basePath={basePath}
+          profileId={profileId}
+          displayName={displayName}
           identifier={ownerId}
           pageName={`${pageName}:sidebar`}
           owner={ownerId}
@@ -74,7 +63,7 @@ export const PageTemplate = ({
         <SidebarUserList title="CURATORS" ids={curators} />
         <SidebarUserList title="CENSORS" ids={censors} />
         <SidebarSource identifier={ownerId} name={pageName} />
-        <SidebarChat topic={chatTopic} />
+        {chatTopic && <SidebarChat topic={chatTopic} />}
       </PageSidebar>
 
       {children}

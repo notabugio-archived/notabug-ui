@@ -7,121 +7,73 @@ import {
   useCallback
 } from "react";
 import * as R from "ramda";
-import { assoc, propOr, uniq, difference } from "ramda";
-import { ZalgoPromise as Promise } from "zalgo-promise";
 import { useNotabug } from "NabContext";
 import { useQuery, useScope } from "utils";
-import { toListingObject, getRow, getListingKeys } from "notabug-peer/source";
+import { Promise } from "notabug-peer";
 export { Thing } from "./Thing";
 
 const { all } = Promise;
 
-const useListing = ({ listingParams }) => {
-  const { api } = useNotabug();
-  const { soul } = listingParams;
+const useListing = ({
+  idsQuery,
+  specQuery,
+  limit: limitProp = 0,
+  count = 0
+}) => {
   const [speculativeIds, setSpeculativeIds] = useState([]);
-  const [state] = useQuery(api.queries.listing, [soul]);
-  const createdAt = parseInt(propOr("", "createdAt", state));
-  const includeRanksString = propOr("", "includeRanks", state);
-  const isChatString = propOr("", "isChat", state);
-  const includeRanks =
-    includeRanksString &&
-    includeRanksString !== "false" &&
-    includeRanksString !== "0";
-  const isChat = !!(
-    isChatString &&
-    isChatString !== "false" &&
-    isChatString !== "0"
-  );
-  const canonicalIds = useMemo(
-    () =>
-      R.compose(
-        R.map(R.prop(1)),
-        R.sortWith(
-          [
-            R.ascend(
-              R.compose(
-                parseFloat,
-                R.prop(2)
-              )
-            )
-          ]
-        ),
-        R.filter(R.identity),
-        R.map(getRow(state)),
-        getListingKeys
-      )(state),
-    [state]
-  );
+  const [limit, setLimit] = useState(limitProp);
 
-  const source = propOr("", "source", state);
-  const parsedSource = useMemo(() => toListingObject(source), [source, state]);
+  const query = useMemo(() => {
+    const res = {};
 
-  const opId = parsedSource.filters.allow.ops[0];
-  const ids = useMemo(() => uniq([...speculativeIds, ...canonicalIds]), [
-    canonicalIds,
-    speculativeIds
-  ]);
+    if (count) res.count = count;
+    if (limit) res.limit = limit;
+    return res;
+  }, [limit, count]);
+
+  const [canonicalIds = []] = useQuery(idsQuery, [query], "useListingIds");
+  const [spec = {}] = useQuery(specQuery, []);
+  const opId = R.path(["filters", "allow", "ops", 0], spec);
+
+  const ids = useMemo(
+    () => R.uniq([...speculativeIds, ...(canonicalIds || [])]),
+    [canonicalIds, speculativeIds]
+  );
 
   const addSpeculativeId = useCallback(
-    id => setSpeculativeIds(specIds => uniq([id, ...specIds])),
+    id =>
+      setSpeculativeIds(specIds =>
+        R.without(canonicalIds, R.uniq([id, ...specIds]))
+      ),
     []
   );
 
   const speculativeIdsMap = useMemo(
-    () =>
-      speculativeIds.reduce((res, id) => ({ ...res, [id]: true }), {
-        foo: "bar"
-      }),
+    () => speculativeIds.reduce((res, id) => ({ ...res, [id]: true }), {}),
     [speculativeIds]
   );
 
   useEffect(() => {
-    setSpeculativeIds(specIds => difference(specIds, canonicalIds));
-  }, [canonicalIds]);
+    setSpeculativeIds(specIds => R.difference(specIds, canonicalIds));
+  }, [canonicalIds.join(",")]);
 
   return {
-    ...(state || {}),
-    ...parsedSource,
+    ...spec,
     ids,
+    idsQuery,
     opId,
-    includeRanks,
-    isChat,
-    createdAt,
+    limit,
+    setLimit,
     speculativeIds: speculativeIdsMap,
-    listingParams,
     addSpeculativeId
   };
 };
 
-export const useLimitedListing = ({ ids: allIds, limit, count = 0 }) => {
-  const { api } = useNotabug();
-  const ids = useMemo(() => allIds.slice(count, count + limit), [
-    allIds,
-    limit,
-    count
-  ]);
-  const scope = api.scope;
+export const useLimitedListing = ({ idsQuery, limit, count = 0 }) => {
+  const query = useMemo(() => ({ limit, count }), [limit, count]);
+  const [ids = []] = useQuery(idsQuery, [query], "useLimitedListingIds");
 
-  const fetchNextPage = useCallback(
-    extraItems => {
-      const start = count + limit;
-      const end = start + extraItems;
-      const nextIds = allIds.slice(start, end);
-      if (!nextIds.length) return Promise.resolve();
-      return Promise.all(
-        nextIds.map(id =>
-          api.queries.thingData(scope, id).then(res => {
-            const { opId } = res || {};
-            return opId && api.queries.thingData(scope, opId);
-          })
-        )
-      ).then(() => new Promise(resolve => setTimeout(resolve, 50)));
-    },
-    [allIds, count, limit]
-  );
-
-  return { ids, limit, count, fetchNextPage };
+  return { ids, limit, count };
 };
 
 export const useListingContent = ({ ids }) => {
@@ -146,8 +98,10 @@ export const useListingContent = ({ ids }) => {
         const data = content[id];
         const { replyToId, opId } = data || {};
         const parentId = replyToId || opId;
+
         if (!parentId) return r;
         const replies = (r[parentId] = r[parentId] || {});
+
         replies[id] = data;
         return r;
       }, {}),
@@ -159,7 +113,7 @@ export const useListingContent = ({ ids }) => {
       ids.map(id =>
         api.queries
           .thingData(scope, id)
-          .then(data => setContent(assoc(id, data)))
+          .then(data => setContent(R.assoc(id, data)))
       )
     );
   }, [ids]);
@@ -167,20 +121,20 @@ export const useListingContent = ({ ids }) => {
   return { replyTree, content };
 };
 
-export const useListingContext = ({ listingParams }) => {
+export const useListingContext = ({ idsQuery, specQuery }) => {
   const ListingContext = useMemo(() => createContext(), []);
   const ContentContext = useMemo(() => createContext(), []);
-  const listingProps = useListing({ listingParams });
-  const listingData = useMemo(() => ({ ...listingProps, ContentContext }), [
-    JSON.stringify(listingProps)
-  ]);
+  const listingProps = useListing({ idsQuery, specQuery });
+  const listingData = { ...listingProps, ContentContext };
+
   return { ListingContext, ContentContext, listingData };
 };
 
 export const useNestedListingContext = ListingContext => {
   const listingData = useContext(ListingContext);
-  const { ContentContext, ids, listingParams } = listingData;
-  const contentProps = useListingContent({ ids, listingParams });
+  const { ContentContext, ids } = listingData;
+  const contentProps = useListingContent({ ids });
   const contentData = useMemo(() => contentProps, Object.values(contentProps));
+
   return { ContentContext, listingData, contentData };
 };

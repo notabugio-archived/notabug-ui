@@ -5,8 +5,9 @@ import { WikiPageContent } from "Wiki";
 import { PageTemplate, PageFooter } from "Page";
 
 export { Reddit } from "./Reddit";
+export { Banned } from "./Banned";
 
-export const StaticPage = ({ match: { params: { name  }} }) => (
+export const StaticPage = ({ match: { params: { name }} }) => (
   <PageTemplate name={name}>
     <Helmet>
       <body className="wiki-page" />

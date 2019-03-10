@@ -1,7 +1,7 @@
 import React, { useContext, useState, useCallback } from "react";
 import { path } from "ramda";
 import { useNotabug } from "NabContext";
-import { MAX_THING_BODY_SIZE } from "notabug-peer";
+import { Constants, Query } from "notabug-peer";
 import { CommentForm as SnewCommentForm } from "snew-classic-ui";
 import { JavaScriptRequired, useQuery } from "utils";
 
@@ -10,18 +10,19 @@ export const CommentForm = ({
   replyToId: replyToIdProp,
   onHideReply
 }) => {
-  const { opId, submitTopic, addSpeculativeId } = useContext(
-    ListingContext
-  );
+  const { opId, submitTopic, addSpeculativeId } = useContext(ListingContext);
   const { api, onMarkMine } = useNotabug();
-  const topic = submitTopic || path([0, "topic"], useQuery(api.queries.thingData, [opId])) || "whatever";
+  const topic =
+    submitTopic ||
+    path([0, "topic"], useQuery(Query.thingData, [opId])) ||
+    "whatever";
   const [body, setBody] = useState("");
   const [isSaving, setIsSaving] = useState(false);
   const replyToId = replyToIdProp || opId;
   let commentError = null;
 
-  if (body.length > MAX_THING_BODY_SIZE)
-    commentError = `this is too long (max: ${MAX_THING_BODY_SIZE})`;
+  if (body.length > Constants.MAX_THING_BODY_SIZE)
+    commentError = `this is too long (max: ${Constants.MAX_THING_BODY_SIZE})`;
   if (!body.trim().length) commentError = "a body is required";
 
   const onChangeBody = useCallback(evt => setBody(evt.target.value), []);
@@ -31,7 +32,7 @@ export const CommentForm = ({
       evt && evt.preventDefault();
       if (isSaving || commentError) return;
       setIsSaving(true);
-      return api.comment({ body, opId, topic, replyToId }).then(({ id }) => {
+      api.comment({ body, opId, topic, replyToId }).then(({ id }) => {
         onMarkMine(id);
         addSpeculativeId && addSpeculativeId(id);
         setBody("");

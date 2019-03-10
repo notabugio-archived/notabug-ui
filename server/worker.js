@@ -1,18 +1,19 @@
-/* globals Promise */
 import * as R from "ramda";
 import Queue from "bee-queue";
 import { createClient } from "redis";
 import { scope } from "gun-scope";
 import { oracleState, createWorker } from "gun-cleric-bee-queue";
-import indexerOracle from "./oracles/indexer";
-import spaceIndexerOracle from "./oracles/space-indexer";
-import tabulatorOracle from "./oracles/tabulator";
-import commentsOracle from "./oracles/comments";
+import { Listing } from "notabug-peer";
+import { tabulator, indexer, comments, spaces } from "./oracles";
+
+const createIndexer = R.always({
+  update: (soul, ...args) => Listing.ListingNode.diff(...args)
+});
 
 const DEFAULT_GET_THROTTLE = 1000 * 60;
 const redis = createClient({ db: 1 });
 const state = oracleState({ db: 2 });
-const allOracles = [indexerOracle, tabulatorOracle, spaceIndexerOracle, commentsOracle];
+const allOracles = [indexer, tabulator, spaces, comments];
 const getOrcAndRoute = soul =>
   R.compose(
     R.defaultTo([null, null]),
@@ -37,11 +38,14 @@ const processMsgJob = job =>
       const { soul, type, diff, original, latest } = job.data || {};
 
       if (type === "put") {
-        allOracles.forEach(orc => orc.onSoulModified(soul, diff, original, latest));
+        allOracles.forEach(orc =>
+          orc.onSoulModified(soul, diff, original, latest)
+        );
         return ok();
       }
 
       const [orc, route] = getOrcAndRoute(soul);
+
       if (!route || !orc) return ok();
       return Promise.resolve(route.onGet(orc, route, job.data)).then(ok);
     } catch (e) {
@@ -85,14 +89,19 @@ function setupOracles(nab, activeOracles) {
     allOracles.forEach(oracle => {
       const isWorker = activeOracles.includes(oracle);
       const worker = createWorker(oracle, { redis, isWorker });
+      const indexer = createIndexer();
       const getter = soul => {
-        return nab.gun.redis.read(soul).finally(() =>
-          nab.msgWorker.onMsg({ get: { "#": soul } }));
+        // nab.gun.get(soul).on(R.identity);
+        return nab.gun.redis
+          .read(soul)
+          .finally(() => nab.msgWorker.onMsg({ get: { "#": soul } }));
       };
+
       oracle.config({
         pub,
         state,
         worker,
+        indexer,
         write: (soul, node) => nab.gun.get(soul).put(node),
         newScope: () =>
           scope({
@@ -108,10 +117,10 @@ function setupOracles(nab, activeOracles) {
 
 export function init(Gun, nab, options) {
   const active = [
-    ...(options.listings ? [indexerOracle] : []),
-    ...(options.comments ? [commentsOracle] : []),
-    ...(options.tabulate ? [tabulatorOracle] : []),
-    ...(options.spaces ? [spaceIndexerOracle] : [])
+    ...(options.listings ? [indexer] : []),
+    ...(options.comments ? [comments] : []),
+    ...(options.tabulate ? [tabulator] : []),
+    ...(options.spaces ? [spaces] : [])
   ];
   const isWorker = active.length > 0;
   const msgWorker = (nab.msgWorker = createMsgWorker({ redis, isWorker }));

@@ -56,6 +56,7 @@ Verifier.prototype.reset = function reset() {
 
   // Swap filters
   const tmp = this.blooms[0];
+
   this.blooms[0] = this.blooms[1];
   this.blooms[1] = tmp;
 };

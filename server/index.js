@@ -1,5 +1,9 @@
 import * as R from "ramda";
 import commandLineArgs from "command-line-args";
+import { Config } from "notabug-peer";
+import { owner, tabulator, indexer } from "../ui-config";
+
+Config.update({ owner, tabulator, indexer });
 const Gun = (global.Gun = require("gun/gun"));
 
 let nab;
@@ -47,11 +51,17 @@ if (options.port) {
     ...R.pick(["pistol", "render", "redis", "host", "port"], options)
   });
 } else {
-  nab = require("./notabug-peer").default(peerOptions);
+  nab = require("notabug-peer").default(Gun, peerOptions);
   nab.gun.get("~@").once(() => null);
 }
 
 if (options.redis) nab.gun.redis = Gun.redis;
-if (options.workers || options.listings || options.tabulate || options.spaces || options.comments) {
+if (
+  options.workers ||
+  options.listings ||
+  options.tabulate ||
+  options.spaces ||
+  options.comments
+) {
   require("./worker").init(Gun, nab, options);
 }

@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { ZalgoPromise as Promise } from "zalgo-promise";
+import { Promise } from "notabug-peer";
 import { useNotabug } from "NabContext";
 import Spinner from "react-spinkit";
 import { RegisterForm as SnewRegisterForm } from "snew-classic-ui";

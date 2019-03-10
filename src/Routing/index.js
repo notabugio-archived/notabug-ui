@@ -1,13 +1,16 @@
 import React from "react";
+import * as R from "ramda";
 import { Route, Switch, Redirect } from "react-router-dom";
-//import { Helmet } from "react-helmet";
+// import { Helmet } from "react-helmet";
 import { ScrollToTop } from "utils";
-import { routes } from "./routes";
-export { routes } from "./routes";
+import { toRoute } from "./Route";
+import { paths } from "./paths";
+
+export const routes = R.map(toRoute, paths);
 
 export const Routing = () => (
   <React.Fragment>
-    {/*<Helmet>
+    {/* <Helmet>
       <title>notabug: the back page of the internet</title>
       <body class="loggedin subscriber" />
     </Helmet>*/}

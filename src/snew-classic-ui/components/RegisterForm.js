@@ -9,7 +9,7 @@ const RegisterForm = ({
   passwd2,
   passwd2Error,
   email,
-  usernamePlaceholder="choose a username",
+  usernamePlaceholder = "choose a username",
   rememberMe = false,
   buttonText = "sign up",
   rememberMeText = "remember me",

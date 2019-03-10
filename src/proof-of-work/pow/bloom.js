@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-/*!
+/* !
  * bloom.js - bloom filter for bcoin
  * Copyright (c) 2014-2015, Fedor Indutny (MIT License)
  * Copyright (c) 2014-2016, Christopher Jeffrey (MIT License).
@@ -95,10 +95,10 @@ function murmur(data, seed) {
   var i, w, r, j;
 
   for (i = 0; i + 4 <= data.length; i += 4) {
-    w = data[i]
-      | (data[i + 1] << 8)
-      | (data[i + 2] << 16)
-      | (data[i + 3] << 24);
+    w = data[i] |
+      (data[i + 1] << 8) |
+      (data[i + 2] << 16) |
+      (data[i + 3] << 24);
 
     w = mul32(w, c1);
     w = rotl32(w, r1);

@@ -4,10 +4,10 @@ import Spinner from "react-spinkit";
 import { JavaScriptRequired } from "./JavaScriptRequired";
 
 export const Loading = ({
-  message="waiting for data",
-  isVisible=true,
-  color="#cee3f8",
-  name="ball-grid-pulse"
+  message = "waiting for data",
+  isVisible = true,
+  color = "#cee3f8",
+  name = "ball-grid-pulse"
 }) => (
   <JavaScriptRequired>
     <div className="thing link" >

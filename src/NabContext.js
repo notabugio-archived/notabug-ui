@@ -7,23 +7,22 @@ import React, {
   useEffect,
   useMemo
 } from "react";
-import { ZalgoPromise as Promise } from "zalgo-promise";
 import { assoc } from "ramda";
 import { withRouter } from "react-router-dom";
+import { isLocalStorageNameSupported } from "utils";
 import isNode from "detect-node";
 // import fetch from "isomorphic-fetch";
-import notabugPeer from "notabug-peer";
+import notabugPeer, { Promise } from "notabug-peer";
 const Gun = require("gun/gun");
 
 let INDEXEDDB = false;
 let LOCAL_STORAGE = false;
-let FORCE_REALTIME = false;
 
 global.Gun = global.Gun || Gun;
 if (!isNode) {
+  // INDEXEDDB = !!window.indexedDB && !/noindexeddb/.test(window.location.search);
   INDEXEDDB = !!window.indexedDB && !!/indexeddb/.test(window.location.search);
   LOCAL_STORAGE = !INDEXEDDB && !!/localStorage/.test(window.location.search);
-  FORCE_REALTIME = !/norealtime/.test(window.location.search);
   if (LOCAL_STORAGE) INDEXEDDB = false;
   if (INDEXEDDB) console.log("using indexeddb");
   if (LOCAL_STORAGE) console.log("using localstorage");
@@ -38,35 +37,39 @@ if (!isNode) {
 
 export const NabContext = createContext();
 export const useNotabug = () => useContext(NabContext);
+export const PageContext = createContext();
+export const usePageContext = () => useContext(PageContext);
 
 export const useNabGlobals = ({ notabugApi, history }) => {
   let hasLocalStorage = false;
-  const api = useMemo(
-    () => {
-      if (notabugApi) return notabugApi;
-      hasLocalStorage = isLocalStorageNameSupported();
-      const nab = notabugPeer({
-        noGun: isNode ? true : false,
-        localStorage: LOCAL_STORAGE && hasLocalStorage,
-        persist: INDEXEDDB,
-        disableValidation: true,
-        storeFn: INDEXEDDB ? RindexedDB : null,
-        leech: true,
-        super: false,
-        peers: isNode ? [] : [window.location.origin + "/gun"]
+  const api = useMemo(() => {
+    if (notabugApi) return notabugApi;
+    hasLocalStorage = isLocalStorageNameSupported();
+    const nab = notabugPeer(Gun, {
+      noGun: !!isNode,
+      localStorage: LOCAL_STORAGE && hasLocalStorage,
+      persist: INDEXEDDB,
+      disableValidation: true,
+      storeFn: INDEXEDDB ? RindexedDB : null,
+      leech: true,
+      super: false,
+      // peers: isNode ? [] : ["https://notabug.io/gun"]
+      peers:
+        isNode || !!/nopeer/.test(window.location.search)
+          ? []
+          : [window.location.origin + "/gun"]
+    });
+
+    if (!isNode && !nab.scope) {
+      nab.scope = nab.newScope({
+        cache: window.initNabState,
+        onlyCache: false,
+        isCached: true,
+        isCacheing: false
       });
-      if (!isNode && !nab.scope) {
-        nab.scope = nab.newScope({
-          cache: window.initNabState,
-          onlyCache: !FORCE_REALTIME,
-          isCached: true, //!FORCE_REALTIME,
-          isCacheing: !FORCE_REALTIME
-        });
-      }
-      return nab;
-    },
-    [notabugApi]
-  );
+    }
+    return nab;
+  }, [notabugApi]);
   const [me, setUser] = useState(null);
   const [myContent, setMyContent] = useState({});
   const [hasAttributedReddit, setHasAttributedReddit] = useState(false);
@@ -86,12 +89,11 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     [api]
   );
 
-  const onFetchCache = useCallback(
-    (/*pathname, search*/) => {
-      try {
-        // if (FORCE_REALTIME) return Promise.resolve();
-        return Promise.resolve();
-        /*
+  const onFetchCache = useCallback((/* pathname, search*/) => {
+    try {
+      // if (FORCE_REALTIME) return Promise.resolve();
+      return Promise.resolve();
+      /*
       return fetch(`/api${pathname}.json${search}`, []) // eslint-disable-line no-unreachable
         .then(response => {
           if (response.status !== 200)
@@ -100,28 +102,24 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         })
         .then(api.scope.loadCachedResults);
       */
-      } catch (e) {
-        return Promise.reject(e);
-      }
-    },
-    []
-  );
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }, []);
 
   const onMarkMine = useCallback(id => setMyContent(assoc(id, true)), []);
 
-  useEffect(
-    () => {
-      if (!isNode && api.gun) window.notabug = api;
-      api.onLogin(didLogin);
-      const alias = localStorage.getItem("nabAlias") || "";
-      const password = localStorage.getItem("nabPassword") || "";
-      if (alias && password)
-        api.login(alias, password).catch(err => {
-          console.error("autologin failed", err);
-        });
-    },
-    [api]
-  );
+  useEffect(() => {
+    if (!isNode && api.gun) window.notabug = api;
+    api.onLogin(didLogin);
+    const alias = localStorage.getItem("nabAlias") || "";
+    const password = localStorage.getItem("nabPassword") || "";
+
+    if (alias && password)
+      api.login(alias, password).catch(err => {
+        console.error("autologin failed", err);
+      });
+  }, [api]);
 
   return useMemo(
     () => ({
@@ -156,17 +154,3 @@ export const NabProvider = withRouter(({ history, notabugApi, children }) => (
     {children}
   </NabContext.Provider>
 ));
-
-// https://stackoverflow.com/questions/14555347/html5-localstorage-error-with-safari-quota-exceeded-err-dom-exception-22-an
-function isLocalStorageNameSupported() {
-  var testKey = "test",
-    storage = window.localStorage;
-  try {
-    storage.setItem(testKey, "1");
-    storage.removeItem(testKey);
-    return true;
-  } catch (error) {
-    console.warn("disabling local storage", error);
-    return false;
-  }
-}

@@ -12,6 +12,7 @@ export const SidebarVotingStatus = React.memo(({ color = "#FF8B60" }) => {
     onResetQueue
   } = useContext(VotingQueueContext);
   const votingCount = Object.keys(voteQueue).length;
+
   if (!votingCount) return null;
   const [isVisible, setIsVisible] = useState(true);
 

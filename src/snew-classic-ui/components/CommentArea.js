@@ -9,9 +9,9 @@ const CommentArea = ({
   NestedListing = NestedListingComponent,
   CommentAreaTitle = CommentAreaTitleComponent,
   SortSelector = SortSelectorComponent,
-  hideSortOptions="true",
-  currentSort="best",
-  sortOptions=[
+  hideSortOptions = "true",
+  currentSort = "best",
+  sortOptions = [
     "best",
     "top",
     "new",

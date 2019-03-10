@@ -5,20 +5,20 @@ import MarkdownHelpComponent from "./MarkdownHelp";
 import LinkComponent from "./Link";
 
 const SubmitPage = ({
-  MarkdownHelp=MarkdownHelpComponent,
+  MarkdownHelp = MarkdownHelpComponent,
   Link = LinkComponent,
   subreddit,
-  siteprefix="r",
-  sitename="reddit",
-  subname="subreddit",
-  title="",
-  url="",
-  text="",
-  is_self=false,
-  isShowingMarkdownHelp=false,
+  siteprefix = "r",
+  sitename = "reddit",
+  subname = "subreddit",
+  title = "",
+  url = "",
+  text = "",
+  is_self = false,
+  isShowingMarkdownHelp = false,
   contentPolicyUrl,
   reddiquetteUrl,
-  reddiquetteName="reddiquette",
+  reddiquetteName = "reddiquette",
   subscribedSubreddits,
   urlError,
   titleError,
@@ -245,7 +245,7 @@ const SubmitPage = ({
                   <ul>
                     {subscribedSubreddits.map((name, idx) => (
                       <li key={name}>
-                        <a tabIndex={100+idx} >{sitename}</a>
+                        <a tabIndex={100 + idx} >{sitename}</a>
                       </li>
                     ))}
                   </ul>

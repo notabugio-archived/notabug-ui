@@ -18,8 +18,8 @@ const getDupesLink = (listings) => getPermalink(listings) && getPermalink(listin
 const HeaderBottomLeft = ({
   Link = LinkComponent,
   NavTab = NavTabComponent,
-  subreddit="all",
-  siteprefix="r",
+  subreddit = "all",
+  siteprefix = "r",
   subredditData,
   useStyle,
   listings,

@@ -37,7 +37,7 @@ export const PageFooter = () => {
         {" and "}
         <Link href="/help/privacypolicy">Privacy Policy</Link>
       </p>
-      {/*<!-- SEE http://code.reddit.com/LICENSE see Exhibit B -->*/}
+      {/* <!-- SEE http://code.reddit.com/LICENSE see Exhibit B -->*/}
       <VisibilitySensor onChange={onChangeVisibility}>
         {() =>
           !displayRedditAttribution ? null : (

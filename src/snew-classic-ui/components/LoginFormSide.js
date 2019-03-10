@@ -3,13 +3,13 @@ import LinkComponent from "./Link";
 
 const LoginFormSide = ({
   Link = LinkComponent,
-  formAction="/post/login",
+  formAction = "/post/login",
   username,
   passwd,
   passwdError,
   rememberMe,
   resetPasswordUrl,
-  usernamePlaceholder="username",
+  usernamePlaceholder = "username",
   onChangeRememberMe,
   onChangeUsername,
   onChangePasswd,

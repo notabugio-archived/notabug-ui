@@ -25,14 +25,14 @@ const Content = ({
   CommentArea = CommentAreaComponent,
   Loading = LoadingComponent,
   Markdown = MarkdownComponent,
-  bodyClassName="listing-page",
+  bodyClassName = "listing-page",
   isLoading,
   listings,
   ...props
 }) =>
   isLoading ? <Loading /> : (
     <div className="content" role="main" >
-      {/*(isCommentsPage(listings) && [
+      {/* (isCommentsPage(listings) && [
         <ReactBody className="single-page comments-page" key="comments-page" />,
         flairClass(listings) && (
           <ReactBody className={`post-linkflair-${flairClass(listings)}`} key="comments-page-flair" />
@@ -65,10 +65,10 @@ const Content = ({
             ...props,
             ...listings[0]
           })
-        ): null}
+        ) : null}
         {(listings || [])[1] ? (
           optional(CommentArea, { ...props, linkListing: listings[0], ...listings[1], locked: isLocked(listings) })
-        ): null}
+        ) : null}
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ const SidebarTitlebox = ({
   Link = LinkComponent,
   Markdown = MarkdownComponent,
   Timestamp = ({ created_utc }) => created_utc || null,
-  siteprefix="r",
+  siteprefix = "r",
   subreddit,
   description,
   description_html,
@@ -18,7 +18,7 @@ const SidebarTitlebox = ({
   accounts_active,
   created_by,
   created_utc,
-  bottom=null,
+  bottom = null,
   isShowingCustomStyleOption,
   setStyleEnabled,
   setStyleDisabled,
@@ -32,7 +32,7 @@ const SidebarTitlebox = ({
           <Link className="hover" href={`/${siteprefix}/${subreddit}/`}>{subreddit}</Link>
         </h1>
       )}
-      {subreddit && subreddit !== "all"  && (onSubscribe || onUnsubscribe) ? (
+      {subreddit && subreddit !== "all" && (onSubscribe || onUnsubscribe) ? (
         <span
           className="fancy-toggle-button subscribe-button toggle"
           data-sr_name={subreddit}
@@ -49,7 +49,7 @@ const SidebarTitlebox = ({
             subscribe
           </a>
         </span>
-      ): null}
+      ) : null}
       {subscribers ? (
         <span className="subscribers">
           <span className="number">{subscribers}</span> <span className="word">readers</span>
@@ -81,7 +81,7 @@ const SidebarTitlebox = ({
           </label>
         </form>
       ) : null}
-      {/*<div className="tagline">
+      {/* <div className="tagline">
         <a
           className="author may-blank"
         >

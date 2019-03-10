@@ -33,7 +33,7 @@ const SrHeaderArea = ({
               all
             </Link>
           </li>
-          {/*<li>
+          {/* <li>
             <span className="separator">-</span>
             <a className="random choice" href="/r/random/">
               random

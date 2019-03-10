@@ -4,8 +4,10 @@ import { JavaScriptRequired, Link, useToggle } from "utils";
 
 export const SidebarSource = ({ name, identifier }) => {
   const [isSourceExpanded, onToggleSourceExpanded] = useToggle(false);
+
   if (!name || !identifier) return null;
   const path = `/user/${identifier}/pages/${name}`;
+
   return (
     <JavaScriptRequired silent>
       <div className="spacer">

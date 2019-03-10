@@ -9,7 +9,7 @@ const LoginForm = ({
   passwd,
   passwdError,
   rememberMe,
-  usernamePlaceholder="username",
+  usernamePlaceholder = "username",
   resetPasswordUrl,
   onChangeRememberMe,
   onChangeUsername,

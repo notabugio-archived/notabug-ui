@@ -7,8 +7,8 @@ const getChildComments = replies => ((replies && replies.data && replies.data.ch
 const ThingComment = ({
   NestedListing = NestedListingComponent,
   ThingCommentEntry = ThingCommentEntryComponent,
-  collapsed=false,
-  replyCount=null,
+  collapsed = false,
+  replyCount = null,
   ...props
 }) => (
   <div

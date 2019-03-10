@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { ThingWikiPage } from "snew-classic-ui/components/ThingWikiPage";
 import { useEditText } from "utils/Markdown";
 import { useNotabug } from "NabContext";
-import { MAX_THING_BODY_SIZE } from "notabug-peer";
+import { Constants } from "notabug-peer";
 
 export const WikiPageCreate = ({ name }) => {
   const { api, me } = useNotabug();
@@ -12,17 +12,14 @@ export const WikiPageCreate = ({ name }) => {
     value: editedBody,
     onChange: onChangeEditedBody,
     error
-  } = useEditText({ maxLength: MAX_THING_BODY_SIZE });
+  } = useEditText({ maxLength: Constants });
 
   const onSubmitEdit = useCallback(
     evt => {
       evt && evt.preventDefault();
       if (error) return;
       setIsSaving(true);
-      api.writePage(name, editedBody)
-        .then(() => {
-          setIsSaving(false);
-        });
+      api.writePage(name, editedBody).then(() => setIsSaving(false));
     },
     [api, editedBody, name, error]
   );
@@ -34,7 +31,9 @@ export const WikiPageCreate = ({ name }) => {
   return (
     <React.Fragment>
       <div className="new-wikipage-banner reddit-infobar md-container-small">
-        <div className="md"><p>creating a new page</p></div>
+        <div className="md">
+          <p>creating a new page</p>
+        </div>
       </div>
       <ThingWikiPage
         isEditing

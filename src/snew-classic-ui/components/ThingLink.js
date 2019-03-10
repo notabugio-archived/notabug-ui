@@ -130,15 +130,15 @@ const ThingLink = ({
     </div>
     {thumbnail &&
     !["image", "default", "nsfw", "self"].find(sub => sub === thumbnail) ? (
-      <Link
-        className="thumbnail may-blank loggedin"
-        href={url}
-        rel={nofollow && !is_self ? "nofollow noopener" : "noopener"}
-        target={is_self ? null : linkTarget}
-      >
-        <img alt="Thumb" height={70} src={thumbnail} width={70} />
-      </Link>
-    ) : null}
+        <Link
+          className="thumbnail may-blank loggedin"
+          href={url}
+          rel={nofollow && !is_self ? "nofollow noopener" : "noopener"}
+          target={is_self ? null : linkTarget}
+        >
+          <img alt="Thumb" height={70} src={thumbnail} width={70} />
+        </Link>
+      ) : null}
     {thumbnail === "self" ? (
       <Link className="thumbnail may-blank loggedin self" />
     ) : null}
@@ -208,12 +208,12 @@ const ThingLink = ({
       </p>
       {isDetail && selftext
         ? optional(Expando, {
-            ...props,
-            expanded,
-            is_self,
-            selftext,
-            selftext_html
-          })
+          ...props,
+          expanded,
+          is_self,
+          selftext,
+          selftext_html
+        })
         : null}
       <ul className="flat-list buttons">
         {over_18 ? (
@@ -322,12 +322,12 @@ const ThingLink = ({
       {isDetail && selftext
         ? null
         : optional(Expando, {
-            ...props,
-            expanded,
-            is_self,
-            selftext,
-            selftext_html
-          })}
+          ...props,
+          expanded,
+          is_self,
+          selftext,
+          selftext_html
+        })}
       <div className="reportform" />
     </div>
     <div className="child" />

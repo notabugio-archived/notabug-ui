@@ -1,14 +1,12 @@
 import React, {
   useState,
   useContext,
-  useMemo,
   useCallback,
   useEffect
 } from "react";
-import { prop, propOr, path } from "ramda";
+import * as R from "ramda";
 import { Loading, useQuery } from "utils";
-import { query, resolve } from "gun-scope";
-import { routes as souls } from "notabug-peer/json-schema";
+import { Config, Query, Schema } from "notabug-peer";
 import { useNotabug } from "NabContext";
 import { Submission } from "Submission";
 import { Comment } from "Comment";
@@ -39,28 +37,13 @@ export const Thing = React.memo(
     onDidUpdate
   }) => {
     const { api, me, myContent } = useNotabug();
-    const { listingParams: { indexer, tabulator } = {}, speculativeIds = {} } =
+    const { indexer = Config.indexer, tabulator = Config.tabulator, speculativeIds = {} } =
       useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];
-
-    const [scores] = useQuery(api.queries.thingScores, [
-      tabulator || indexer,
-      id
-    ]);
-
-    const [item] = useQuery(api.queries.thingData, [id]);
-    const [parentItem] = useQuery(
-      useMemo(
-        () =>
-          query((scope, parentId, shouldFetch) =>
-            parentId && shouldFetch
-              ? api.queries.thingData(scope, parentId)
-              : resolve(null)
-          ),
-        []
-      ),
-      [propOr(null, "opId", item), fetchParent]
-    );
+    const [scores] = useQuery(Query.thingScores, [tabulator || indexer, id]);
+    const [item] = useQuery(Query.thingData, [id]);
+    const parentId = R.propOr(null, "opId", item);
+    const [parentItem] = useQuery(Query.thingData, [parentId]);
 
     const isMine = !!myContent[id];
     const [isShowingReply, setIsShowingReply] = useState(false);
@@ -69,10 +52,11 @@ export const Thing = React.memo(
       id
     });
 
-    let body = propOr("", "body", item) || "";
+    let body = R.propOr("", "body", item) || "";
+
     if (!body.split) body = JSON.stringify(body);
     const lineCount = body.length / 100 + body.split("\n").length - 1;
-    const collapseThreshold = lineCount / 3.0 - 4;
+    const collapseThreshold = lineCount / 10.0 - 4;
 
     const onToggleExpando = useCallback(
       evt => {
@@ -96,24 +80,24 @@ export const Thing = React.memo(
       onDidUpdate && onDidUpdate();
     }, [item, parentItem]);
 
-    const score = parseInt(prop("score", scores)) || 0;
+    const score = parseInt(R.prop("score", scores), 10) || 0;
     const ThingComponent = item ? components[item.kind] : null;
     const collapsed =
       !isMine && !!(collapseThreshold !== null && score < collapseThreshold);
-    const tsts = path(["_", ">", "timestamp"], item);
-    const bodyts = path(["_", ">", "body"], item);
+    const tsts = R.path(["_", ">", "timestamp"], item);
+    const bodyts = R.path(["_", ">", "body"], item);
     const edited = tsts !== bodyts && bodyts;
 
-    const soul = path(["_", "#"], item);
-    const signedMatch = souls.ThingDataSigned.match(soul);
+    const soul = R.path(["_", "#"], item);
+    const signedMatch = Schema.ThingDataSigned.route.match(soul);
     const canEdit =
       me && signedMatch && me.pub === `${signedMatch.authorId}` && soul;
     const [isEditing, setIsEditing] = useState(false);
-    const [editedBody, setEditedBody] = useState(propOr("", "body", item));
+    const [editedBody, setEditedBody] = useState(R.propOr("", "body", item));
 
     useEffect(() => {
-      setEditedBody(propOr("", "body", item));
-    }, [propOr("", "body", item)]);
+      setEditedBody(R.propOr("", "body", item));
+    }, [R.propOr("", "body", item)]);
 
     const onToggleEditing = useCallback(evt => {
       evt && evt.preventDefault();
@@ -141,10 +125,10 @@ export const Thing = React.memo(
 
     const thingProps = {
       ListingContext,
-      ups: propOr(0, "up", scores),
-      downs: propOr(0, "down", scores),
-      score: propOr(0, "score", scores),
-      comments: propOr(0, "comment", scores),
+      ups: R.propOr(0, "up", scores),
+      downs: R.propOr(0, "down", scores),
+      score: R.propOr(0, "score", scores),
+      comments: R.propOr(0, "comment", scores),
       edited,
       canEdit,
       isEditing,
@@ -182,6 +166,7 @@ export const Thing = React.memo(
       ) : (
         <ThingComponent {...{ ...thingProps, isVisible }} />
       );
+
     return renderComponent({ isVisible: true });
   }
 );

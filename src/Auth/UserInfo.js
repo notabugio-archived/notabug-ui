@@ -6,6 +6,7 @@ import { AuthorLink } from "./AuthorLink";
 
 export const UserInfo = props => {
   const { me, onLogout } = useNotabug();
+
   return me ? (
     <SnewUserInfo
       {...{ ...props, Link, AuthorLink }}

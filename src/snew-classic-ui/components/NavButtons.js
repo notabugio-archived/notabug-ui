@@ -1,6 +1,6 @@
 import React from "react";
 const serialize = obj => Object.keys(obj).reduce(
-  (a,k) => (obj[k] && a.push(k+'='+encodeURIComponent(obj[k])) && a) || a, []).join('&');
+  (a, k) => (obj[k] && a.push(k + "=" + encodeURIComponent(obj[k])) && a) || a, []).join("&");
 
 const NavButtons = ({ Link, params, path, after, before, count, limit }) => (after || before) ? (
   <div className="nav-buttons">

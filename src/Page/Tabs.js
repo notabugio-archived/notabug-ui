@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "utils";
 import { NavTab } from "snew-classic-ui";
+import { usePageContext } from "NabContext";
 
 export const PageName = ({ path, name }) => {
   if (!name) return null;
@@ -11,19 +12,23 @@ export const PageName = ({ path, name }) => {
   );
 };
 
-export const PageTab = ({ name, path, listingParams }) => (
-  <NavTab
-    {...{ Link, href: path }}
-    className={listingParams && listingParams.soul.match(path) ? "selected" : ""}
-  >
-    {name}
-  </NavTab>
-);
+export const PageTab = ({ name, path }) => {
+  const { spec: { path: current } } = usePageContext();
 
-export const PageTabs = ({ tabs, listingParams }) => (
+  return (
+    <NavTab
+      {...{ Link, href: path }}
+      className={current.match(path) ? "selected" : ""}
+    >
+      {name}
+    </NavTab>
+  );
+};
+
+export const PageTabs = ({ tabs }) => (
   <ul className="tabmenu">
     {(tabs || []).map(([name, path]) => (
-      <PageTab key={name} {...{ path, name, listingParams }} />
+      <PageTab key={name} {...{ path, name }} />
     ))}
   </ul>
 );

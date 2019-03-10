@@ -3,7 +3,7 @@ import LinkComponent from "./Link";
 
 const SubmitTextSidebox = ({
   Link = LinkComponent,
-  siteprefix="r",
+  siteprefix = "r",
   subreddit
 }) => (
   <div className="spacer">

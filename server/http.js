@@ -2,9 +2,11 @@ import path from "path";
 import express from "express";
 import expressStaticGzip from "express-static-gzip";
 import expires from "express-cache-headers";
-import init from "./notabug-peer";
+import init from "notabug-peer";
 
+const Gun = (global.Gun = require("gun/gun"));
 const staticMedia = express.Router();
+
 staticMedia.use(
   "/media",
   expires({ ttl: 60 * 60 * 24 }),
@@ -12,6 +14,7 @@ staticMedia.use(
     index: false
   })
 );
+
 staticMedia.use(
   "/static",
   expires({ ttl: 60 * 60 * 24 }),
@@ -19,6 +22,7 @@ staticMedia.use(
     index: false
   })
 );
+
 staticMedia.use(
   express.static(path.join(__dirname, "..", "htdocs"), { index: false })
 );
@@ -34,12 +38,13 @@ export const initServer = ({ port, host, render, ...options }) => {
       presets: ["@babel/preset-env", "@babel/preset-react"]
     });
     const renderer = require("./renderer").default;
+
     app.get("*", expires(60), (...args) => renderer(nab, ...args));
   }
 
   const web = app.listen(port, host);
 
-  nab = init({
+  nab = init(Gun, {
     ...options,
     disableValidation: options.pistol ? true : options.disableValidation,
     web: options.pistol ? undefined : web,

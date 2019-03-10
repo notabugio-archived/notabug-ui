@@ -1,17 +1,11 @@
 import React, { useState, useCallback, useMemo } from "react";
-import { useNotabug } from "NabContext";
+import { useNotabug, usePageContext } from "NabContext";
 import { withRouter } from "react-router-dom";
-import { ZalgoPromise as Promise } from "zalgo-promise";
 import qs from "query-string";
 import slugify from "utils/slugify";
 import { parse as parseURI } from "uri-js";
-import {
-  MAX_TOPIC_SIZE,
-  MAX_THING_BODY_SIZE,
-  MAX_THING_TITLE_SIZE
-} from "notabug-peer";
+import { Constants, Promise } from "notabug-peer";
 import { SubmitPage } from "snew-classic-ui";
-import { useSpace } from "Space";
 import { PageTemplate, PageFooter } from "Page";
 import { Link, JavaScriptRequired } from "utils";
 
@@ -28,7 +22,7 @@ export const SubmissionForm = withRouter(
     }
   }) => {
     const { api, history, onMarkMine } = useNotabug();
-    const space = useSpace();
+    const { spec: space } = usePageContext();
     const query = qs.parse(search);
     const [topic, setTopic] = useState(
       (space && space.submitTopics[0]) || initialTopic || "whatever"
@@ -38,19 +32,17 @@ export const SubmissionForm = withRouter(
     const [url, setUrl] = useState(query.url || "");
     const [isSelf, setIsSelf] = useState(!!/selftext=true/.test(search));
 
-    const isBodyInvalid = body.length > MAX_THING_BODY_SIZE;
-    const isTitleInvalid = title.length > MAX_THING_TITLE_SIZE;
-    const isTopicInvalid = !topic || topic.length > MAX_TOPIC_SIZE;
-    const isUrlInvalid = useMemo(
-      () => {
-        if (isSelf) return false;
-        if (!url) return true;
-        const { host, scheme } = parseURI(url) || {};
-        if ((host || scheme)) return false;
-        return true;
-      },
-      [isSelf, url]
-    );
+    const isBodyInvalid = body.length > Constants.MAX_THING_BODY_SIZE;
+    const isTitleInvalid = title.length > Constants.MAX_THING_TITLE_SIZE;
+    const isTopicInvalid = !topic || topic.length > Constants.MAX_TOPIC_SIZE;
+    const isUrlInvalid = useMemo(() => {
+      if (isSelf) return false;
+      if (!url) return true;
+      const { host, scheme } = parseURI(url) || {};
+
+      if (host || scheme) return false;
+      return true;
+    }, [isSelf, url]);
     const isInvalid =
       isBodyInvalid || isTitleInvalid || isTopicInvalid || isUrlInvalid;
 
@@ -73,22 +65,19 @@ export const SubmissionForm = withRouter(
     const onChangeIsSelf = useCallback(isSelf => setIsSelf(!!isSelf), []);
 
     const onSubmitSubmission = useCallback(
-      preventDefault(
-        () => {
-          if (isInvalid) return Promise.resolve();
-          return api
-            .submit({ title, body, topic, url: isSelf ? null : url })
-            .then(({ id }) => {
-              onMarkMine(id);
-              history.replace(
-                space
-                  ? `${space.path}/comments/${id}/${slugify(title)}`
-                  : `/t/${topic}/comments/${id}/${slugify(title)}`
-              );
-            });
-        },
-        [topic, title, body, url, isSelf, isInvalid, space && space.path]
-      )
+      preventDefault(() => {
+        if (isInvalid) return Promise.resolve();
+        return api
+          .submit({ title, body, topic, url: isSelf ? null : url })
+          .then(({ id }) => {
+            onMarkMine(id);
+            history.replace(
+              space
+                ? `${space.basePath}/comments/${id}/${slugify(title)}`
+                : `/t/${topic}/comments/${id}/${slugify(title)}`
+            );
+          });
+      }, [topic, title, body, url, isSelf, isInvalid, space && space.path])
     );
 
     return (
@@ -107,20 +96,20 @@ export const SubmissionForm = withRouter(
             contentPolicyUrl="/rules"
             textError={
               isBodyInvalid
-                ? `this is too long (max: ${MAX_THING_BODY_SIZE})`
+                ? `this is too long (max: ${Constants.MAX_THING_BODY_SIZE})`
                 : null
             }
             titleError={
               isTitleInvalid
                 ? title
-                  ? `this is too long (max: ${MAX_THING_TITLE_SIZE})`
+                  ? `this is too long (max: ${Constants.MAX_THING_TITLE_SIZE})`
                   : "a title is required"
                 : null
             }
             subredditError={
               isTopicInvalid
                 ? topic
-                  ? `this is too long (max: ${MAX_TOPIC_SIZE})`
+                  ? `this is too long (max: ${Constants.MAX_TOPIC_SIZE})`
                   : "a topic is required"
                 : null
             }

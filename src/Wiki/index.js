@@ -2,6 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import Helmet from "react-helmet";
+import { Query } from "notabug-peer";
 import { useNotabug } from "NabContext";
 import { PageTemplate } from "Page";
 import { Thing } from "Listing";
@@ -14,8 +15,9 @@ export const WikiPageContent = ({
   asSource,
   identifier
 }) => {
-  const { api, me } = useNotabug();
-  const [id] = useQuery(api.queries.wikiPageId, [identifier, name]);
+  const { me } = useNotabug();
+  const [id] = useQuery(Query.wikiPageId, [identifier, name]);
+
   if (!id && me && identifier === me.pub) return <WikiPageCreate name={name} />;
   if (!id) return emptyContent;
   return <Thing key={id} id={id} isDetail {...{ asSource, name }} />;

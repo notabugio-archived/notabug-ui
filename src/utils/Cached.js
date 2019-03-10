@@ -5,6 +5,7 @@ import { locationKey } from "./locationKey";
 
 let hasBooted = false;
 let renderedLocation = null;
+
 if (!isNode) renderedLocation = window.initNabState && window.location;
 
 const Cached = ({ location: { pathname, search }, Wrapped, ...props }) => {

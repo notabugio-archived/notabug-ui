@@ -7,7 +7,7 @@ const CommentForm = ({
   Link = LinkComponent,
   MarkdownHelp = MarkdownHelpComponent,
   body,
-  isShowingHelp=false,
+  isShowingHelp = false,
   autoFocus,
   contentPolicyUrl,
   commentError,

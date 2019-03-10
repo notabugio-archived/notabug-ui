@@ -1,5 +1,6 @@
 import React, { Fragment, useMemo } from "react";
 // import { Helmet } from "react-helmet";
+import { usePageContext } from "NabContext";
 import { always } from "ramda";
 import { withRouter } from "react-router-dom";
 import { parse as parseURI } from "uri-js";
@@ -7,11 +8,9 @@ import { ThingLink } from "snew-classic-ui";
 import { Markdown, Timestamp, Link, slugify, interceptClicks } from "utils";
 import { Expando, getExpando } from "./Expando";
 import { AuthorLink } from "Auth";
-import { useSpace } from "Space";
 // import { SaveThingButton } from "SaveThing";
 
 const nsfwRe = /(nsfw|porn|hentai|ecchi|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
-
 const ThingLinkComponent = withRouter(interceptClicks(ThingLink));
 
 export const Submission = ({
@@ -36,26 +35,26 @@ export const Submission = ({
   onVoteUp,
   onVoteDown
 }) => {
-  const space = useSpace();
-  const { isIdSticky = always(false) } = useSpace() || {};
+  const { spec: space } = usePageContext();
+  const { isIdSticky = always(false) } = space || {};
   let scoreDisp = null;
+
   if (score || score === 0) scoreDisp = ups - downs || 0;
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
   const urlInfo = item.url ? parseURI(item.url) : {};
-  const permalink = useMemo(
-    () => {
-      let title = item.title;
-      if (title && !title.split) {
-        title = JSON.stringify(title);
-      }
-      const base = (space && space.useForComments
-        ? `/user/${space.owner}/spaces/${space.spaceName}/comments/${id}/`
-        : `/t/${item.topic || "all"}/comments/${id}/`);
+  const permalink = useMemo(() => {
+    let title = item.title;
 
-      return title ? base + slugify(title.toLowerCase()) : base;
-    },
-    [item.topic, id, item.title]
-  );
+    if (title && !title.split) {
+      title = JSON.stringify(title);
+    }
+    const base =
+      space && space.useForComments
+        ? `/user/${space.owner}/spaces/${space.spaceName}/comments/${id}/`
+        : `/t/${item.topic || "all"}/comments/${id}/`;
+
+    return title ? base + slugify(title.toLowerCase()) : base;
+  }, [item.topic, id, item.title]);
   const domain = item.url
     ? (urlInfo.host || urlInfo.scheme || "").replace(/^www\./, "")
     : item.topic
@@ -69,7 +68,7 @@ export const Submission = ({
 
   return (
     <Fragment>
-      {/*isViewing ? (
+      {/* isViewing ? (
         <Helmet>
           <title>{item.title}</title>
         </Helmet>
