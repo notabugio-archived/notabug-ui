@@ -4,17 +4,18 @@ import Spinner from "react-spinkit";
 import VisibilitySensor from "react-visibility-sensor";
 
 export const SidebarVotingStatus = React.memo(({ color = "#FF8B60" }) => {
+  const ctx = useContext(VotingQueueContext);
   const {
     voteQueue,
     currentVote,
     onPauseQueue,
     onResumeQueue,
     onResetQueue
-  } = useContext(VotingQueueContext);
-  const votingCount = Object.keys(voteQueue).length;
-
-  if (!votingCount) return null;
+  } = ctx || {};
+  const votingCount = Object.keys(voteQueue || {}).length;
   const [isVisible, setIsVisible] = useState(true);
+
+  if (!votingCount || !ctx) return null;
 
   const content = (
     <React.Fragment>
@@ -60,9 +61,9 @@ export const SidebarVotingStatus = React.memo(({ color = "#FF8B60" }) => {
   return (
     <VisibilitySensor onChange={setIsVisible}>
       <div className="spacer">
-        <div className="sidecontentbox">{content}</div>
+        <div className="sidecontentbox vote-status">{content}</div>
         {isVisible ? null : (
-          <div className="sidecontentbox vote-status-fixed">{content}</div>
+          <div className="sidecontentbox vote-status vote-status-fixed">{content}</div>
         )}
       </div>
     </VisibilitySensor>

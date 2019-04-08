@@ -8223,8 +8223,8 @@ normalize-url@^3.0.0:
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.12.0"
-  resolved "https://github.com/notabugio/notabug-peer.git#866a2c2b8dad65818a8db328e390d7fcaec128d4"
+  version "0.12.3"
+  resolved "https://github.com/notabugio/notabug-peer.git#1effb34c018dfde1b814ad676a1dd9c2811c78c3"
   dependencies:
     "@babel/polyfill" "^7.0.0-beta.51"
 

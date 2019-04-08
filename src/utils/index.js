@@ -1,3 +1,4 @@
+import isNode from "detect-node";
 export { cached } from "./Cached";
 export { locationKey } from "./locationKey";
 export { JavaScriptRequired } from "./JavaScriptRequired";
@@ -15,7 +16,8 @@ export * from "./hooks";
 
 // https://stackoverflow.com/questions/14555347
 export function isLocalStorageNameSupported() {
-  var testKey = "test",
+  if (isNode) return false;
+  let testKey = "test",
     storage = window.localStorage;
 
   try {

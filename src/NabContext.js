@@ -1,5 +1,5 @@
 /* globals RindexedDB */
-import React, {
+import {
   createContext,
   useContext,
   useState,
@@ -8,7 +8,6 @@ import React, {
   useMemo
 } from "react";
 import { assoc } from "ramda";
-import { withRouter } from "react-router-dom";
 import { isLocalStorageNameSupported } from "utils";
 import isNode from "detect-node";
 // import fetch from "isomorphic-fetch";
@@ -35,16 +34,15 @@ if (!isNode) {
   if (!/nosea/.test(window.location.search)) require("gun/sea");
 }
 
-export const NabContext = createContext();
+export const NabContext = createContext({});
 export const useNotabug = () => useContext(NabContext);
-export const PageContext = createContext();
+export const PageContext = createContext({});
 export const usePageContext = () => useContext(PageContext);
 
 export const useNabGlobals = ({ notabugApi, history }) => {
-  let hasLocalStorage = false;
+  let hasLocalStorage = useMemo(isLocalStorageNameSupported, []);
   const api = useMemo(() => {
     if (notabugApi) return notabugApi;
-    hasLocalStorage = isLocalStorageNameSupported();
     const nab = notabugPeer(Gun, {
       noGun: !!isNode,
       localStorage: LOCAL_STORAGE && hasLocalStorage,
@@ -70,6 +68,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     }
     return nab;
   }, [notabugApi]);
+
   const [me, setUser] = useState(null);
   const [myContent, setMyContent] = useState({});
   const [hasAttributedReddit, setHasAttributedReddit] = useState(false);
@@ -109,22 +108,36 @@ export const useNabGlobals = ({ notabugApi, history }) => {
 
   const onMarkMine = useCallback(id => setMyContent(assoc(id, true)), []);
 
+  const [alias, password] = useMemo(
+    () => [
+      (hasLocalStorage && localStorage.getItem("nabAlias")) || "",
+      (hasLocalStorage && localStorage.getItem("nabPassword")) || ""
+    ],
+    []
+  );
+
+  const [isLoggingIn, setIsLoggingIn] = useState(!!(alias && password));
+
   useEffect(() => {
     if (!isNode && api.gun) window.notabug = api;
     api.onLogin(didLogin);
-    const alias = localStorage.getItem("nabAlias") || "";
-    const password = localStorage.getItem("nabPassword") || "";
 
     if (alias && password)
-      api.login(alias, password).catch(err => {
-        console.error("autologin failed", err);
-      });
+      api
+        .login(alias, password)
+        .catch(err => {
+          console.error("autologin failed", err);
+        })
+        .finally(() => {
+          setIsLoggingIn(false);
+        });
   }, [api]);
 
   return useMemo(
     () => ({
       api,
       me,
+      isLoggingIn,
       history,
       myContent,
       onFetchCache,
@@ -137,6 +150,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     [
       api,
       me,
+      isLoggingIn,
       history,
       myContent,
       onFetchCache,
@@ -148,9 +162,3 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     ]
   );
 };
-
-export const NabProvider = withRouter(({ history, notabugApi, children }) => (
-  <NabContext.Provider value={useNabGlobals({ notabugApi, history })}>
-    {children}
-  </NabContext.Provider>
-));
