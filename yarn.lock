@@ -5731,8 +5731,8 @@ gud@^1.0.0:
   resolved "https://github.com/notabugio/gun-redis.git#e017947521308d61aa53e996081840d3adf8f200"
 
 "gun-scope@https://github.com/notabugio/gun-scope.git":
-  version "0.2.0"
-  resolved "https://github.com/notabugio/gun-scope.git#2ce21bc6f37dda5ec1d05063808f86a54d2cf303"
+  version "0.3.0"
+  resolved "https://github.com/notabugio/gun-scope.git#388eacd027e677517e1b3f706724bf71fe3cdb8c"
 
 "gun-suppressor-sear@https://github.com/notabugio/gun-suppressor-sear.git":
   version "0.0.7"
@@ -8223,8 +8223,8 @@ normalize-url@^3.0.0:
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.12.3"
-  resolved "https://github.com/notabugio/notabug-peer.git#1effb34c018dfde1b814ad676a1dd9c2811c78c3"
+  version "0.12.4"
+  resolved "https://github.com/notabugio/notabug-peer.git#f8453e4c49da4915999c1ab2a38d39b5e3f441de"
   dependencies:
     "@babel/polyfill" "^7.0.0-beta.51"
 
