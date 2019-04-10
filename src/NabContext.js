@@ -16,12 +16,14 @@ const Gun = require("gun/gun");
 
 let INDEXEDDB = false;
 let LOCAL_STORAGE = false;
+let DISABLE_CACHE = false;
 
 global.Gun = global.Gun || Gun;
 if (!isNode) {
   // INDEXEDDB = !!window.indexedDB && !/noindexeddb/.test(window.location.search);
   INDEXEDDB = !!window.indexedDB && !!/indexeddb/.test(window.location.search);
   LOCAL_STORAGE = !INDEXEDDB && !!/localStorage/.test(window.location.search);
+  DISABLE_CACHE = !!/disablecache/.test(window.location.search);
   if (LOCAL_STORAGE) INDEXEDDB = false;
   if (INDEXEDDB) console.log("using indexeddb");
   if (LOCAL_STORAGE) console.log("using localstorage");
@@ -59,10 +61,11 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     });
 
     if (!isNode && !nab.scope) {
+      if (DISABLE_CACHE) console.log("CACHE DISABLED");
       nab.scope = nab.newScope({
-        cache: window.initNabState,
+        cache: DISABLE_CACHE ? {} : window.initNabState,
         onlyCache: false,
-        isCached: true,
+        isCached: !DISABLE_CACHE,
         isCacheing: false
       });
     }

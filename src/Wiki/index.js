@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import Helmet from "react-helmet";
-import { Query } from "notabug-peer";
+import { Query, Config } from "notabug-peer";
 import { useNotabug } from "NabContext";
 import { PageTemplate } from "Page";
 import { Thing } from "Listing";
@@ -25,7 +25,7 @@ export const WikiPageContent = ({
 
 export const WikiPage = ({
   match: {
-    params: { name = "index", identifier }
+    params: { name = "index", identifier = Config.owner }
   }
 }) => (
   <PageTemplate name={name}>
