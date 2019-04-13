@@ -11,7 +11,7 @@ import { assoc } from "ramda";
 import { isLocalStorageNameSupported } from "utils";
 import isNode from "detect-node";
 // import fetch from "isomorphic-fetch";
-import notabugPeer, { Promise } from "notabug-peer";
+import notabugPeer from "notabug-peer";
 const Gun = require("gun/gun");
 
 let INDEXEDDB = false;

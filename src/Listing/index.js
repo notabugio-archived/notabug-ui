@@ -9,10 +9,7 @@ import {
 import * as R from "ramda";
 import { useNotabug } from "NabContext";
 import { useQuery, useScope } from "utils";
-import { Promise } from "notabug-peer";
 export { Thing } from "./Thing";
-
-const { all } = Promise;
 
 const useListing = ({
   idsQuery,
@@ -109,7 +106,7 @@ export const useListingContent = ({ ids }) => {
   );
 
   useEffect(() => {
-    all(
+    Promise.all(
       ids.map(id =>
         api.queries
           .thingData(scope, id)

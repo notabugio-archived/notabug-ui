@@ -2,7 +2,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext, useState, useCallback, useRef } from "react";
 import { add } from "ramda";
-import { Promise } from "notabug-peer";
 import ChatView from "react-chatview";
 import { ChatMsg, ChatInput } from "Chat";
 import { useLimitedListing } from "Listing";

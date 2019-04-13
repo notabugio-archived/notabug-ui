@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from "react";
-import { Promise } from "notabug-peer";
 import { useNotabug } from "NabContext";
 import Spinner from "react-spinkit";
 import { RegisterForm as SnewRegisterForm } from "snew-classic-ui";

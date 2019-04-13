@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import qs from "query-string";
 import slugify from "utils/slugify";
 import { parse as parseURI } from "uri-js";
-import { Constants, Promise } from "notabug-peer";
+import { Constants } from "notabug-peer";
 import { SubmitPage } from "snew-classic-ui";
 import { PageTemplate, PageFooter } from "Page";
 import { Link, JavaScriptRequired } from "utils";
