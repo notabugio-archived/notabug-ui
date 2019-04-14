@@ -22,15 +22,13 @@ export const NestedContent = React.memo(
           <div className="content" role="main">
             <div className="spacer">
               <div className="sitetable linklisting" id="siteTable">
-                {ids.includes(opId) ? (
-                  <Thing
-                    {...{ ListingContext }}
-                    id={opId}
-                    Loading={Submission}
-                    isVisible
-                    isDetail
-                  />
-                ) : null}
+                <Thing
+                  {...{ ListingContext }}
+                  id={opId}
+                  Loading={Submission}
+                  isVisible
+                  isDetail
+                />
               </div>
               <div className="commentarea">
                 <CommentAreaTitle />

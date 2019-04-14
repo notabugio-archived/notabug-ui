@@ -1,9 +1,4 @@
-import React, {
-  useState,
-  useContext,
-  useCallback,
-  useEffect
-} from "react";
+import React, { useState, useContext, useCallback, useEffect } from "react";
 import * as R from "ramda";
 import { Loading, useQuery } from "utils";
 import { Config, Query, Schema } from "notabug-peer";
@@ -37,10 +32,13 @@ export const Thing = React.memo(
     onDidUpdate
   }) => {
     const { api, me, myContent } = useNotabug();
-    const { indexer = Config.indexer, tabulator = Config.tabulator, speculativeIds = {} } =
-      useContext(ListingContext || {}) || {};
+    const {
+      indexer = Config.indexer,
+      tabulator = Config.tabulator,
+      speculativeIds = {}
+    } = useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];
-    const [scores] = useQuery(Query.thingScores, [tabulator || indexer, id]);
+    const [scores] = useQuery(Query.thingScores, [id, tabulator || indexer]);
     const [item] = useQuery(Query.thingData, [id]);
     const parentId = R.propOr(null, "opId", item);
     const [parentItem] = useQuery(Query.thingData, [parentId]);

@@ -23,9 +23,9 @@ const validateMessage = ({ json, skipValidation, ...msg }) => {
 };
 
 const redisSupport = R.pipe(
-  redis.respondToGets(Gun, { disableRelay: true }),
+  redis.respondToGets(Gun, { disableRelay: false }),
   chainInterface,
-  redis.acceptWrites(Gun, { disableRelay: true })
+  redis.acceptWrites(Gun, { disableRelay: false })
 );
 
 const skipValidatingKnownData = db => {

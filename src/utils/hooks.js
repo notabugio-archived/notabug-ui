@@ -60,7 +60,7 @@ export const useQuery = (query, args = [], name = "unknown") => {
   );
 
   useEffect(() => {
-    const update = debounce(doUpdate, 100);
+    const update = debounce(doUpdate, 100, { trailing: true, maxWait: 500 });
 
     setHasResponse(false);
     update();

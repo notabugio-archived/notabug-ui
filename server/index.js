@@ -20,10 +20,10 @@ const options = commandLineArgs([
   { name: "peer", multiple: true, type: String },
   { name: "leech", type: Boolean, defaultValue: false },
   { name: "until", alias: "u", type: Number, defaultValue: 1000 },
+  { name: "index", type: Boolean, defaultValue: false },
   { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "spaces", alias: "s", type: Boolean, defaultValue: false },
   { name: "tabulate", alias: "t", type: Boolean, defaultValue: false },
-  { name: "workers", alias: "w", type: Boolean, defaultValue: false },
   { name: "comments", alias: "c", type: Boolean, defaultValue: false }
 ]);
 
@@ -56,12 +56,22 @@ if (options.port) {
 }
 
 if (options.redis) nab.gun.redis = Gun.redis;
-if (
-  options.workers ||
-  options.listings ||
-  options.tabulate ||
-  options.spaces ||
-  options.comments
-) {
-  require("./worker").init(Gun, nab, options);
+
+if (options.index || options.tabulate) {
+  const { username, password } = require("../server-config.json");
+
+  nab.login(username, password).then(() => {
+    let scopeParams;
+
+    if (options.redis)
+      scopeParams = {
+        getter: soul => {
+          nab.gun.get(soul).on(R.identity);
+          return nab.gun.redis.read(soul);
+        }
+      };
+
+    if (options.index) nab.index(scopeParams);
+    if (options.tabulate) nab.tabulate(scopeParams);
+  });
 }

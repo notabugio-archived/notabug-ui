@@ -6,10 +6,10 @@
       "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
-      "args": ["--port", "3333", "--redis", "--pistol", "--render", "--workers"]
+      "args": ["--port", "3333", "--redis", "--pistol", "--render"]
     },
     {
-      "name": "listings",
+      "name": "index",
       "exec_mode": "cluster",
       "instances": 1,
       "script": "./server.js",
@@ -19,53 +19,8 @@
         "http://localhost:3333/gun",
         "--disableValidation",
         "--redis",
-        "--leech",
-        "--listings"
-      ]
-    },
-    {
-      "name": "comments",
-      "exec_mode": "cluster",
-      "instances": 1,
-      "script": "./server.js",
-      "env": { "NODE_ENV": "production" },
-      "args": [
-        "--peer",
-        "http://localhost:3333/gun",
-        "--disableValidation",
-        "--redis",
-        "--leech",
-        "--comments"
-      ]
-    },
-    {
-      "name": "tabulator",
-      "exec_mode": "cluster",
-      "instances": 1,
-      "script": "./server.js",
-      "env": { "NODE_ENV": "production" },
-      "args": [
-        "--peer",
-        "http://localhost:3333/gun",
-        "--disableValidation",
-        "--redis",
-        "--leech",
-        "--tabulate"
-      ]
-    },
-    {
-      "name": "spaces",
-      "exec_mode": "cluster",
-      "instances": 1,
-      "script": "./server.js",
-      "env": { "NODE_ENV": "production" },
-      "args": [
-        "--peer",
-        "http://localhost:3333/gun",
-        "--disableValidation",
-        "--redis",
-        "--leech",
-        "--spaces"
+        "--tabulate",
+        "--index"
       ]
     }
   ]
