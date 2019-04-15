@@ -25,7 +25,7 @@ export const WikiPageContent = ({
 
 export const WikiPage = ({
   match: {
-    params: { name = "index", identifier = Config.owner }
+    params: { name = "index", authorId = Config.owner }
   }
 }) => (
   <PageTemplate name={name}>
@@ -35,7 +35,7 @@ export const WikiPage = ({
     <a name="content" key="anchor" />
     <div className="content" role="main">
       <WikiPageContent
-        {...{ name, identifier }}
+        {...{ name, identifier: authorId || Config.owner }}
         emptyContent="nothing to see here"
       />
     </div>
