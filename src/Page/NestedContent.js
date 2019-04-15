@@ -13,7 +13,7 @@ export const NestedContent = React.memo(
       contentData,
       listingData
     } = useNestedListingContext(ListingContext);
-    const { opId, sort, ids } = listingData;
+    const { opId, sort } = listingData;
 
     return (
       <ErrorBoundary>

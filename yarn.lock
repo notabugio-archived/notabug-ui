@@ -8223,8 +8223,8 @@ normalize-url@^3.0.0:
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.15.2"
-  resolved "https://github.com/notabugio/notabug-peer.git#e178cfbcffd040ab268edc893b685e0a2217ddad"
+  version "0.15.3"
+  resolved "https://github.com/notabugio/notabug-peer.git#59b47dcb1112a41d5259606fa978d70b35319ef4"
   dependencies:
     argon2 "^0.21.0"
     gun-scope "git+https://github.com/notabugio/gun-scope.git"
