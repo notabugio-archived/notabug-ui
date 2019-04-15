@@ -42,7 +42,7 @@ export const useScope = (deps = [], opts = {}) => {
 };
 
 export const useQuery = (query, args = [], name = "unknown") => {
-  const scope = useScope([query, ...args], { timeout: 60000 });
+  const scope = useScope([query, ...args], { timeout: 10000 });
   const [hasResponseState, setHasResponse] = useState(false);
   const [result, setResult] = useState(
     useMemo(() => query && query.now && query.now(scope, ...args), [])

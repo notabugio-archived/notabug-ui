@@ -65,8 +65,9 @@ if (options.index || options.tabulate) {
 
     if (options.redis)
       scopeParams = {
+        noGun: true,
         getter: soul => {
-          nab.gun.get(soul).on(R.identity);
+          // nab.gun.get(soul).on(R.identity);
           return nab.gun.redis.read(soul);
         }
       };

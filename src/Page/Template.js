@@ -63,7 +63,7 @@ export const PageTemplate = ({
         <SidebarUserList title="CURATORS" ids={curators} />
         <SidebarUserList title="CENSORS" ids={censors} />
         <SidebarSource identifier={ownerId} name={pageName} />
-        {chatTopic && <SidebarChat topic={chatTopic} />}
+        {chatTopic ? <SidebarChat topic={chatTopic} /> : null}
       </PageSidebar>
 
       {children}

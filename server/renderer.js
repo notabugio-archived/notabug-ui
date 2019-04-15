@@ -68,7 +68,7 @@ export default (nab, req, res) =>
 
         return res.send(result);
       } catch (e) {
-        console.error("error generating page", (e && e.stack) || e);
+        console.error("error generating page", url, (e && e.stack) || e);
         return res.send(
           htmlData.replace(
             "!!!CONTENT!!!",

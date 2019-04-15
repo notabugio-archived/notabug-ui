@@ -18,4 +18,4 @@ Unfortunately for now you must enable JavaScript to use this.
       </div>
     </div>
   </noscript>
-) : <Fragment>{children}</Fragment>;
+) : <Fragment>{children | null}</Fragment>;

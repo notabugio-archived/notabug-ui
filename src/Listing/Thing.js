@@ -31,7 +31,7 @@ export const Thing = React.memo(
     asSource,
     onDidUpdate
   }) => {
-    const { api, me, myContent } = useNotabug();
+    const { api, me, myContent, isNode } = useNotabug();
     const {
       indexer = Config.indexer,
       tabulator = Config.tabulator,
@@ -164,6 +164,8 @@ export const Thing = React.memo(
       ) : (
         <ThingComponent {...{ ...thingProps, isVisible }} />
       );
+
+    if (isNode && !item) return null;
 
     return renderComponent({ isVisible: true });
   }

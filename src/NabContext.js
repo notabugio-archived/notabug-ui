@@ -138,6 +138,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
 
   return useMemo(
     () => ({
+      isNode,
       api,
       me,
       isLoggingIn,
@@ -151,6 +152,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       setHasAttributedReddit
     }),
     [
+      isNode,
       api,
       me,
       isLoggingIn,

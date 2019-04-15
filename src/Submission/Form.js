@@ -1,4 +1,5 @@
 import React, { useState, useCallback, useMemo } from "react";
+import * as R from "ramda";
 import { useNotabug, usePageContext } from "NabContext";
 import { withRouter } from "react-router-dom";
 import qs from "query-string";
@@ -25,7 +26,7 @@ export const SubmissionForm = withRouter(
     const { spec: space } = usePageContext();
     const query = qs.parse(search);
     const [topic, setTopic] = useState(
-      (space && space.submitTopics[0]) || initialTopic || "whatever"
+      R.pathOr(initialTopic || "whatever", ["submitTopics", 0], space)
     );
     const [title, setTitle] = useState(query.title || "");
     const [body, setBody] = useState(query.body || "");
