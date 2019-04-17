@@ -5740,9 +5740,9 @@ gud@^1.0.0:
   version "0.7.2"
   resolved "https://github.com/notabugio/gun-redis.git#d2c67dd1e9418000ee2c5eee316306b6fa9af2fa"
 
-"gun-scope@git+https://github.com/notabugio/gun-scope.git":
-  version "0.3.1"
-  resolved "git+https://github.com/notabugio/gun-scope.git#f0af0407fae81456d52a16b8cc6e7b1749b135a1"
+"gun-scope@https://github.com/notabugio/gun-scope.git":
+  version "0.3.2"
+  resolved "https://github.com/notabugio/gun-scope.git#fbe0e9ec3efff62b38733cef4ae5ed8bf461f5b5"
 
 "gun-suppressor-sear@git+https://github.com/notabugio/gun-suppressor-sear.git":
   version "0.0.7"
@@ -8233,12 +8233,12 @@ normalize-url@^3.0.0:
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.17.4"
-  resolved "https://github.com/notabugio/notabug-peer.git#fe1eb2e78fa236f279eb7f5e25c533599c4d8b9c"
+  version "0.17.5"
+  resolved "https://github.com/notabugio/notabug-peer.git#a94decd1c8a7fe5e874897435cf5f3a2504d02e8"
   dependencies:
     argon2 "^0.21.0"
     fast-memoize "^2.5.1"
-    gun-scope "git+https://github.com/notabugio/gun-scope.git"
+    gun-scope "https://github.com/notabugio/gun-scope.git"
     gun-suppressor "git+https://github.com/notabugio/gun-suppressor.git"
     gun-suppressor-sear "git+https://github.com/notabugio/gun-suppressor-sear.git"
     object-hash "^1.3.1"
