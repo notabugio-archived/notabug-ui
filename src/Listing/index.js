@@ -66,7 +66,7 @@ const useListing = ({
   };
 };
 
-export const useListingContent = ({ ids }) => {
+export const useListingContent = ({ ids, indexer }) => {
   const { api } = useNotabug();
   const scope = useScope();
   const initialContent = useMemo(
@@ -74,7 +74,10 @@ export const useListingContent = ({ ids }) => {
       ids.reduce(
         (res, id) => ({
           ...res,
-          [id]: api.queries.thingData.now(scope, id)
+          [id]: R.prop(
+            "data",
+            api.queries.thingForDisplay.now(scope, id, indexer)
+          )
         }),
         {}
       ),
@@ -102,8 +105,8 @@ export const useListingContent = ({ ids }) => {
     Promise.all(
       ids.map(id =>
         api.queries
-          .thingData(scope, id)
-          .then(data => setContent(R.assoc(id, data)))
+          .thingForDisplay(scope, id, indexer)
+          .then(thing => setContent(R.assoc(id, R.prop("data", thing))))
       )
     );
   }, [ids]);
@@ -122,8 +125,8 @@ export const useListingContext = ({ idsQuery, specQuery }) => {
 
 export const useNestedListingContext = ListingContext => {
   const listingData = useContext(ListingContext);
-  const { ContentContext, ids } = listingData;
-  const contentProps = useListingContent({ ids });
+  const { ContentContext, ids, indexer } = listingData;
+  const contentProps = useListingContent({ ids, indexer });
   const contentData = useMemo(() => contentProps, Object.values(contentProps));
 
   return { ContentContext, listingData, contentData };

@@ -39,7 +39,7 @@ export const InfiniteContent = React.memo(
 
         if (now - lastScrollTime > 5000 && scrollable && scrollable.current)
           scrollable.current.scrollTop = scrollable.current.scrollHeight;
-      }, 100);
+      }, 300);
     }, [scrollable.current, lastScrollTime]);
 
     const loadMore = useCallback(() => {
@@ -47,14 +47,22 @@ export const InfiniteContent = React.memo(
       setLastScrollTime(new Date().getTime());
     }, []);
 
-    const onLoadMore = useCallback(() => Promise.resolve(loadMore()), [
-      isChat,
-      loadMore
-    ]);
+    const onLoadMore = useCallback(
+      () =>
+        new Promise(ok => {
+          loadMore();
+          setTimeout(ok, 1000);
+        }),
+      [loadMore]
+    );
 
     useEffect(() => {
       if (isChat) scrollToBottom();
     }, [firstId, isChat]);
+
+    useEffect(() => {
+      if (isChat) setTimeout(scrollToBottom, 300);
+    }, [isChat]);
 
     return (
       <ErrorBoundary>
