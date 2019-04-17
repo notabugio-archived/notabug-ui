@@ -66,13 +66,6 @@ const useListing = ({
   };
 };
 
-export const useLimitedListing = ({ idsQuery, limit, count = 0 }) => {
-  const query = useMemo(() => ({ limit, count }), [limit, count]);
-  const [ids = []] = useQuery(idsQuery, [query], "useLimitedListingIds");
-
-  return { ids, limit, count };
-};
-
 export const useListingContent = ({ ids }) => {
   const { api } = useNotabug();
   const scope = useScope();

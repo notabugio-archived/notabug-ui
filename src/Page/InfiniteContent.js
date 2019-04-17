@@ -1,10 +1,15 @@
 /* eslint-disable jsx-a11y/anchor-has-content */
 /* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useContext, useState, useCallback, useRef } from "react";
-import { add } from "ramda";
+import React, {
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+  useEffect
+} from "react";
+import * as R from "ramda";
 import ChatView from "react-chatview";
 import { ChatMsg, ChatInput } from "Chat";
-import { useLimitedListing } from "Listing";
 import { Things } from "Listing/Things";
 import { ErrorBoundary, Loading as LoadingComponent } from "utils";
 
@@ -18,7 +23,15 @@ export const InfiniteContent = React.memo(
   }) => {
     const [lastScrollTime, setLastScrollTime] = useState(0);
     const scrollable = useRef(null);
-    const { ids: limitedIds, idsQuery, isChat, limit, count, setLimit } = useContext(ListingContext);
+    const {
+      ids: limitedIds,
+      idsQuery,
+      isChat,
+      limit,
+      count,
+      setLimit
+    } = useContext(ListingContext);
+    const firstId = R.nth(0, limitedIds) || "";
 
     const scrollToBottom = useCallback(() => {
       setTimeout(() => {
@@ -30,7 +43,7 @@ export const InfiniteContent = React.memo(
     }, [scrollable.current, lastScrollTime]);
 
     const loadMore = useCallback(() => {
-      setLimit(add(PAGE_SIZE));
+      setLimit(R.add(PAGE_SIZE));
       setLastScrollTime(new Date().getTime());
     }, []);
 
@@ -38,6 +51,10 @@ export const InfiniteContent = React.memo(
       isChat,
       loadMore
     ]);
+
+    useEffect(() => {
+      if (isChat) scrollToBottom();
+    }, [firstId, isChat]);
 
     return (
       <ErrorBoundary>
@@ -49,7 +66,6 @@ export const InfiniteContent = React.memo(
               ListingContext,
               limit,
               ids: limitedIds,
-              onDidUpdate: isChat ? scrollToBottom : null,
               fetchParent: true,
               disableChildren: true
             }}
