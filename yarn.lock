@@ -8233,8 +8233,8 @@ normalize-url@^3.0.0:
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.15.5"
-  resolved "https://github.com/notabugio/notabug-peer.git#31db7726c52f098c7c3b0988ba4b7c94ea7ceeb4"
+  version "0.16.1"
+  resolved "https://github.com/notabugio/notabug-peer.git#9ce8ae921034d925535ebb4f88709ed06c528dd3"
   dependencies:
     argon2 "^0.21.0"
     fast-memoize "^2.5.1"
