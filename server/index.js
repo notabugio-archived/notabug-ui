@@ -1,6 +1,6 @@
 import * as R from "ramda";
 import commandLineArgs from "command-line-args";
-import { Config } from "notabug-peer";
+import { Schema, Config } from "notabug-peer";
 import { owner, tabulator, indexer } from "../ui-config";
 
 Config.update({ owner, tabulator, indexer });
@@ -21,6 +21,7 @@ const options = commandLineArgs([
   { name: "leech", type: Boolean, defaultValue: false },
   { name: "until", alias: "u", type: Number, defaultValue: 1000 },
   { name: "index", type: Boolean, defaultValue: false },
+  { name: "backindex", type: Boolean, defaultValue: false },
   { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "spaces", alias: "s", type: Boolean, defaultValue: false },
   { name: "tabulate", alias: "t", type: Boolean, defaultValue: false },
@@ -57,7 +58,7 @@ if (options.port) {
 
 if (options.redis) nab.gun.redis = Gun.redis;
 
-if (options.index || options.tabulate) {
+if (options.index || options.tabulate || options.backindex) {
   const { username, password } = require("../server-config.json");
 
   nab.login(username, password).then(() => {
@@ -74,5 +75,28 @@ if (options.index || options.tabulate) {
 
     if (options.index) nab.index(scopeParams);
     if (options.tabulate) nab.tabulate(scopeParams);
+    if (options.backindex) {
+      nab.tabulate(scopeParams);
+      nab.index(scopeParams);
+
+      const indexThingSet = (obj) => {
+        const keys = R.keysIn(obj);
+
+        console.log("got obj", keys.length);
+        keys.forEach(soul => {
+          const thingId = R.propOr("", "thingId", Schema.Thing.route.match(soul));
+
+          if (!thingId) return;
+          nab.oracle().features.forEach(feature => feature.enqueue(thingId));
+        });
+      };
+
+      nab.gun.redis.read("nab/topics/all").then(obj => {
+        indexThingSet(obj);
+        nab.gun.redis.read("nab/topics/comments:all").then(obj => {
+          indexThingSet(obj);
+        });
+      });
+    }
   });
 }
