@@ -14,6 +14,8 @@ import isNode from "detect-node";
 import notabugPeer from "notabug-peer";
 const Gun = require("gun/gun");
 
+require("gun/lib/not");
+
 let INDEXEDDB = false;
 let LOCAL_STORAGE = false;
 let DISABLE_CACHE = false;
