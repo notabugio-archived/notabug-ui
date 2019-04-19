@@ -40,6 +40,7 @@
     "gun": "^0.2019.413",
     "gun-receiver": "https://github.com/notabugio/gun-receiver.git",
     "gun-redis": "https://github.com/notabugio/gun-redis.git",
+    "gun-scope": "https://github.com/notabugio/gun-scope.git",
     "ignore-styles": "^5.0.1",
     "isomorphic-fetch": "^2.2.1",
     "jdenticon": "2.1.1",

@@ -71,19 +71,23 @@ export const useLoginSignup = () => {
       if (isWorking) return Promise.reject("Already working");
       if (!isSignupValid) return Promise.resolve();
       setIsWorking(true);
-      return Promise.resolve(api.signup(username, password))
+      return Promise.resolve(api.signup(username, password, {}))
         .then(() => {
-          setIsWorking(false);
-          if (hasLocalStorage) {
-            if (rememberMe) {
-              localStorage.setItem("nabAlias", username);
-              localStorage.setItem("nabPassword", password);
-            } else {
-              localStorage.setItem("nabAlias", "");
-              localStorage.setItem("nabPassword", "");
+          try {
+            setIsWorking(false);
+            if (hasLocalStorage) {
+              if (rememberMe) {
+                localStorage.setItem("nabAlias", username);
+                localStorage.setItem("nabPassword", password);
+              } else {
+                localStorage.setItem("nabAlias", "");
+                localStorage.setItem("nabPassword", "");
+              }
             }
+            history.replace("/");
+          } catch (e) {
+            console.error(e.stack || e);
           }
-          history.replace("/");
         })
         .catch(signupError => {
           console.error("signupError", signupError.stack || signupError);
@@ -139,7 +143,8 @@ export const RegisterForm = injectHook(useLoginSignup)(
     ...props
   }) => {
     if (!canLogin || me) return null;
-    if (isWorking) return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
+    if (isWorking)
+      return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
     return (
       <SnewRegisterForm
         {...props}
@@ -179,7 +184,8 @@ export const LoginForm = injectHook(useLoginSignup)(
     ...props
   }) => {
     if (!canLogin || me) return null;
-    if (isWorking) return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
+    if (isWorking)
+      return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
     return (
       <SnewLoginForm
         {...props}
@@ -210,7 +216,8 @@ export const LoginFormSide = injectHook(useLoginSignup)(
     ...props
   }) => {
     if (!canLogin || me) return null;
-    if (isWorking) return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
+    if (isWorking)
+      return <Spinner fadeIn="none" name="ball-beat" color="#cee3f8" />;
     return (
       <SnewLoginFormSide
         {...props}
