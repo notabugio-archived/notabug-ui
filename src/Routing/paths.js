@@ -1,14 +1,13 @@
 import { Page } from "notabug-peer";
 import { cached } from "utils";
 import { Page as PageComponent } from "Page";
-import { Reddit, Banned } from "static";
-import { isBanActive } from "static/Banned";
+import { Reddit } from "static";
 import { LoginSignupPage } from "Auth";
 import { SubmissionForm } from "Submission/Form";
 import { WikiPage } from "Wiki";
 
-const CachedPage = cached(PageComponent);
-const SubmitPage = cached(SubmissionForm);
+const CachedPage = PageComponent || cached(PageComponent);
+const SubmitPage = SubmissionForm || cached(SubmissionForm);
 
 export const paths = [
   ["/help/:name", Page.wikiPage({ component: WikiPage })],
@@ -26,14 +25,17 @@ export const paths = [
     Page.thingComments({ component: CachedPage })
   ],
   ["/user/:authorId/pages/:name", Page.wikiPage({ component: WikiPage })],
-  ["/user/:authorId/spaces/:name/submit", Page.spaceListing({ component: SubmitPage })],
+  [
+    "/user/:authorId/spaces/:name/submit",
+    Page.spaceListing({ component: SubmitPage })
+  ],
   [
     "/user/:authorId/spaces/:name/comments/:opId/:slug",
-    Page.thingComments({ component: CachedPage })
+    Page.spaceThingComments({ component: CachedPage })
   ],
   [
     "/user/:authorId/spaces/:name/comments/:opId",
-    Page.thingComments({ component: CachedPage })
+    Page.spaceThingComments({ component: CachedPage })
   ],
   [
     "/user/:authorId/spaces/:name/:sort",
@@ -49,10 +51,7 @@ export const paths = [
   ["/:prefix/:identifier/:sort", Page.listing({ component: CachedPage })],
   ["/:prefix/:identifier", Page.listing({ component: PageComponent })],
   ["/:sort", Page.spaceListing({ name: "frontpage", component: CachedPage })],
-  isBanActive() ? [
-    "/",
-    { component: Banned }
-  ] : [
+  [
     "/",
     Page.spaceListing({
       exact: true,

@@ -13,11 +13,7 @@ import { SidebarUserList } from "Auth/SidebarUserList";
 import { TopicList } from "Page/TopicList";
 import { SidebarSource } from "Page/SidebarSource";
 
-export const PageTemplate = ({
-  children,
-  name: nameProp,
-  hideLogin
-}) => {
+export const PageTemplate = ({ children, name: nameProp, hideLogin }) => {
   const { spec } = usePageContext();
   const {
     profileId,

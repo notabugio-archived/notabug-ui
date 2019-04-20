@@ -23,14 +23,9 @@ export const InfiniteContent = React.memo(
   }) => {
     const [lastScrollTime, setLastScrollTime] = useState(0);
     const scrollable = useRef(null);
-    const {
-      ids: limitedIds,
-      idsQuery,
-      isChat,
-      limit,
-      count,
-      setLimit
-    } = useContext(ListingContext);
+    const { ids: limitedIds, isChat, limit, setLimit } = useContext(
+      ListingContext
+    );
     const firstId = R.nth(0, limitedIds) || "";
 
     const scrollToBottom = useCallback(() => {

@@ -13,17 +13,19 @@ import { receiver as redis } from "gun-redis";
 import { Validation } from "notabug-peer";
 const Gun = require("gun/gun");
 
+const suppressor = Validation.createSuppressor();
+
 const validateMessage = ({ json, skipValidation, ...msg }) => {
   if (skipValidation) return { ...msg, json };
-  return Validation.suppressor.validate(json).then(validated => {
-    if (!validated)
-      return console.error(Validation.suppressor.validate.errors, json);
+
+  return suppressor.validate(json).then(validated => {
+    if (!validated) return console.error(suppressor.validate.errors, json);
     return { ...msg, json: validated };
   });
 };
 
 const redisSupport = R.pipe(
-  redis.respondToGets(Gun, { disableRelay: true }),
+  redis.respondToGets(Gun, { disableRelay: false }),
   chainInterface,
   redis.acceptWrites(Gun, { disableRelay: false })
 );

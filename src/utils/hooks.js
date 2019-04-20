@@ -20,6 +20,7 @@ export const useScope = (deps = [], opts = {}) => {
   const { api } = useNotabug();
   const scope = useMemo(() => {
     if (isNode) return api.scope;
+
     return api.newScope({
       ...opts,
       cache: api.scope.getCache(),
@@ -44,7 +45,7 @@ export const useScope = (deps = [], opts = {}) => {
 };
 
 export const useQuery = (query, args = [], name = "unknown") => {
-  const scope = useScope([query, ...args], { timeout: 30000 });
+  const scope = useScope([query, ...args], { timeout: 90000 });
   const [hasResponseState, setHasResponse] = useState(false);
   const [result, setResult] = useState(
     useMemo(() => query && query.now && query.now(scope, ...args), [])
@@ -62,12 +63,15 @@ export const useQuery = (query, args = [], name = "unknown") => {
   );
 
   useEffect(() => {
-    const update = debounce(doUpdate, 100, { trailing: true, maxWait: 500 });
+    const debounced = debounce(doUpdate, 300, { trailing: true, maxWait: 500 });
+    const update = (...args) => debounced();
 
-    setHasResponse(false);
     update();
     scope.on(update);
-    return () => scope.off(update);
+
+    return () => {
+      scope.off(update);
+    };
   }, [doUpdate]);
 
   return [result, hasResponse];

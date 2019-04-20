@@ -1,62 +1,45 @@
-import React from "react";
-import { assocPath } from "ramda";
+import React, { forwardRef } from "react";
 import { Identicon } from "./Identicon";
 import { Link, ErrorBoundary } from "utils";
-import TooltipTrigger from "react-popper-tooltip";
+import Tippy from "@tippy.js/react";
+
+const AuthorTooltip = forwardRef(({ author, author_fullname }, ref) => (
+  <div>
+    <h1 className="user-hover-info">
+      <Identicon size={48} {...{ author, author_fullname }} />
+      {author}
+    </h1>
+  </div>
+));
+
+export const AuthorLinkWithoutToolTip = forwardRef(
+  (
+    { className = "author may-blank", iconSize = 16, author, author_fullname },
+    ref
+  ) =>
+    author && author_fullname ? (
+      <ErrorBoundary>
+        <Link href={`/user/${author_fullname}`} className={className}>
+          <span ref={ref}>
+            <Identicon size={iconSize} {...{ author, author_fullname }} />
+            {author.length > 20 ? `${author.slice(0, 20)}...` : author}
+          </span>
+        </Link>
+      </ErrorBoundary>
+    ) : null
+);
 
 export const AuthorLinkWithToolTip = ({
   className = "author may-blank",
   iconSize = 16,
-  author,
-  author_fullname
+  ...props
 }) =>
-  author && author_fullname ? (
+  props.author && props.author_fullname ? (
     <ErrorBoundary>
-      <TooltipTrigger
-        followCursor
-        tooltip={({ tooltipRef, getTooltipProps }) => (
-          <div
-            {...assocPath(
-              ["style", "opacity"],
-              1, // WTF is this stuck at 0 without this?
-              getTooltipProps({
-                ref: tooltipRef,
-                className: "tooltip-container"
-              })
-            )}
-          >
-            <h1 className="user-hover-info">
-              <Identicon size={48} {...{ author, author_fullname }} />
-              {author}
-            </h1>
-          </div>
-        )}
-      >
-        {({ getTriggerProps, triggerRef }) => (
-          <Link
-            href={`/user/${author_fullname}`}
-            {...getTriggerProps({ ref: triggerRef, className })}
-            className={className}
-          >
-            <Identicon size={iconSize} {...{ author, author_fullname }} />
-            {author.length > 20 ? `${author.slice(0, 20)}...` : author}
-          </Link>
-        )}
-      </TooltipTrigger>
+      <Tippy content={<AuthorTooltip {...props} />}>
+        <AuthorLinkWithoutToolTip {...props} />
+      </Tippy>
     </ErrorBoundary>
   ) : null;
 
-export const AuthorLink = ({
-  className = "author may-blank",
-  iconSize = 16,
-  author,
-  author_fullname
-}) =>
-  author && author_fullname ? (
-    <ErrorBoundary>
-      <Link href={`/user/${author_fullname}`} className={className}>
-        <Identicon size={iconSize} {...{ author, author_fullname }} />
-        {author.length > 20 ? `${author.slice(0, 20)}...` : author}
-      </Link>
-    </ErrorBoundary>
-  ) : null;
+export const AuthorLink = AuthorLinkWithToolTip;

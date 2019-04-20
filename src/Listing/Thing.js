@@ -38,8 +38,10 @@ export const Thing = React.memo(
       speculativeIds = {}
     } = useContext(ListingContext || {}) || {};
     const isSpeculative = speculativeIds[id];
-    const [thing] = useQuery(Query.thingForDisplay, [id, tabulator || indexer]);
-    const { data: item, scores, opData: parentItem } = thing || {};
+    const [scores] = useQuery(Query.thingScores, [id, tabulator || indexer]);
+    const [item] = useQuery(Query.thingData, [id]);
+    const parentId = R.propOr(null, "opId", item);
+    const [parentItem] = useQuery(Query.thingData, [parentId]);
 
     const isMine = !!myContent[id];
     const [isShowingReply, setIsShowingReply] = useState(false);

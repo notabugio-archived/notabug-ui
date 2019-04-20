@@ -74,10 +74,7 @@ export const useListingContent = ({ ids, indexer }) => {
       ids.reduce(
         (res, id) => ({
           ...res,
-          [id]: R.prop(
-            "data",
-            api.queries.thingForDisplay.now(scope, id, indexer)
-          )
+          [id]: api.queries.thingData.now(scope, id)
         }),
         {}
       ),
@@ -105,8 +102,8 @@ export const useListingContent = ({ ids, indexer }) => {
     Promise.all(
       ids.map(id =>
         api.queries
-          .thingForDisplay(scope, id, indexer)
-          .then(thing => setContent(R.assoc(id, R.prop("data", thing))))
+          .thingData(scope, id)
+          .then(data => setContent(R.assoc(id, data)))
       )
     );
   }, [ids]);

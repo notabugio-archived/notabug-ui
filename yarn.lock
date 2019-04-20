@@ -903,12 +903,12 @@
   dependencies:
     regenerator-runtime "^0.12.0"
 
-"@babel/runtime@^7.3.4":
-  version "7.3.4"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.3.4.tgz#73d12ba819e365fcf7fd152aed56d6df97d21c83"
-  integrity sha512-IvfvnMdSaLBateu0jfsYIpZTxAc2cKEXEMiezGGN75QcBcecDUKd3PgLAncT0oOgxKy8dd8hrJKj9MfzgfZd6g==
+"@babel/runtime@^7.4.3":
+  version "7.4.3"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.3.tgz#79888e452034223ad9609187a0ad1fe0d2ad4bdc"
+  integrity sha512-9lsJwJLxDh/T3Q3SZszfWOTkk3pHbkmH+3KY+zwIDmsNlxsumuhS2TH3NIpktU4kNvfzy+k3eLT7aTJSPTo0OA==
   dependencies:
-    regenerator-runtime "^0.12.0"
+    regenerator-runtime "^0.13.2"
 
 "@babel/template@^7.1.0", "@babel/template@^7.1.2", "@babel/template@^7.2.2":
   version "7.2.2"
@@ -1220,6 +1220,14 @@
     "@svgr/plugin-jsx" "^4.1.0"
     "@svgr/plugin-svgo" "^4.0.3"
     loader-utils "^1.1.0"
+
+"@tippy.js/react@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@tippy.js/react/-/react-2.1.2.tgz#2f51a206d3b90ee2423574bf256c76e1cf2b3e53"
+  integrity sha512-5napcBju8l285PiNoNHlVj0rqVHevlwBV2ndXAzbvzUfFgtb3NxoMWUWT9vCBwx6hzK3ljAw8qqTtmkImYvVEg==
+  dependencies:
+    prop-types "^15.6.2"
+    tippy.js "^4.2.1"
 
 "@trust/keyto@^0.3.4":
   version "0.3.4"
@@ -5741,8 +5749,8 @@ gud@^1.0.0:
   resolved "https://github.com/notabugio/gun-redis.git#d2c67dd1e9418000ee2c5eee316306b6fa9af2fa"
 
 "gun-scope@https://github.com/notabugio/gun-scope.git":
-  version "0.4.0"
-  resolved "https://github.com/notabugio/gun-scope.git#26c97fd07bfa808f1d190e83cfb8d0a1803a634b"
+  version "0.4.1"
+  resolved "https://github.com/notabugio/gun-scope.git#da73111e3bc3f35f54e322bcd7842536f4adaa7b"
 
 "gun-suppressor-sear@git+https://github.com/notabugio/gun-suppressor-sear.git":
   version "0.0.7"
@@ -5752,14 +5760,14 @@ gud@^1.0.0:
   version "0.0.14"
   resolved "git+https://github.com/notabugio/gun-suppressor.git#664111ad29d5ce04d0ddf4f3eb2c6adbe258e2ed"
 
-gun@^0.2019.420:
-  version "0.2019.420"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.420.tgz#c39cefdccc2756d2d146036a6642b8b7d67b2e2e"
-  integrity sha512-jXrXv74CPzcAqHfweVgQ46+NCNmIpxA4CFuvtEg48ooqZjKqAxUN+OYNdezLKbpB0KhDFU2PFI9VBXuIHEW21g==
+gun@0.2019.413:
+  version "0.2019.413"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.413.tgz#4d6311f3714f8a3e3f32516dd01f3e9d5b1cff06"
+  integrity sha512-rPvbVhCdUdu4W4eet4S2m57P/veA5+abjHDggCMRnmbbp+6GT4uaqunznhLbKZvYkTM6FzAiL2PZ4v2H2wqvEg==
   dependencies:
-    ws "~>6.2.1"
+    ws "~>5.2.0"
   optionalDependencies:
-    node-webcrypto-ossl "^1.0.43"
+    node-webcrypto-ossl "^1.0.39"
     text-encoding "^0.7.0"
 
 gzip-size@5.0.0:
@@ -8187,7 +8195,7 @@ node-webcrypto-ossl@1.0.42:
     tslib "^1.9.3"
     webcrypto-core "^0.1.26"
 
-node-webcrypto-ossl@^1.0.43:
+node-webcrypto-ossl@^1.0.39:
   version "1.0.43"
   resolved "https://registry.yarnpkg.com/node-webcrypto-ossl/-/node-webcrypto-ossl-1.0.43.tgz#51ac6a411725d78eaf935fb727ec848b6478235b"
   integrity sha512-AavMGbUB2MaTzli0+swjSAr4aLqf9M5jHIrs5VP9EUDXyEaIOyyio3H1z3pZCxKpaDD9coKWD3bWAiaIBuN8wg==
@@ -8233,8 +8241,8 @@ normalize-url@^3.0.0:
   integrity sha512-U+JJi7duF1o+u2pynbp2zXDW2/PADgC30f0GsHZtRh+HOcXHnw137TrNlyxxRvWW5fjKd3bcLHPxofWuCjaeZg==
 
 "notabug-peer@https://github.com/notabugio/notabug-peer.git":
-  version "0.18.4"
-  resolved "https://github.com/notabugio/notabug-peer.git#db0d6cb280220ac3b24222551e602c6db50d5fc4"
+  version "0.19.0"
+  resolved "https://github.com/notabugio/notabug-peer.git#238a940f28a1651960c7da194e9150a42a100988"
   dependencies:
     argon2 "^0.21.0"
     fast-memoize "^2.5.1"
@@ -8983,6 +8991,11 @@ popper.js@^1.14.4:
   version "1.14.6"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.14.6.tgz#ab20dd4edf9288b8b3b6531c47c361107b60b4b0"
   integrity sha512-AGwHGQBKumlk/MDfrSOf0JHhJCImdDMcGNoqKmKkU+68GFazv3CQ6q9r7Ja1sKDZmYWTckY/uLyEznheTDycnA==
+
+popper.js@^1.14.7:
+  version "1.15.0"
+  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.15.0.tgz#5560b99bbad7647e9faa475c6b8056621f5a4ff2"
+  integrity sha512-w010cY1oCUmI+9KwwlWki+r5jxKfTFDVoadl7MSrIujHU5MJ5OR6HTDj6Xo8aoR/QsA56x8jKjA59qGH4ELtrA==
 
 portfinder@^1.0.9:
   version "1.0.19"
@@ -10081,15 +10094,7 @@ react-player@1.11.0:
     load-script "^1.0.0"
     prop-types "^15.5.6"
 
-react-popper-tooltip@2.8.1:
-  version "2.8.1"
-  resolved "https://registry.yarnpkg.com/react-popper-tooltip/-/react-popper-tooltip-2.8.1.tgz#bbaec88b729e3b7e9f26521857e7f908bccdecf3"
-  integrity sha512-eL0PT5yz9H9lkG934TMh7czZWwDlqFady7CcJKMP5RcmBxTFBY4U7k71FEyxNaHd07nhMhUwbk0/Fgf2yw3LEg==
-  dependencies:
-    "@babel/runtime" "^7.3.4"
-    react-popper "^1.3.3"
-
-react-popper@1.3.3, react-popper@^1.3.3:
+react-popper@1.3.3:
   version "1.3.3"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-1.3.3.tgz#2c6cef7515a991256b4f0536cd4bdcb58a7b6af6"
   integrity sha512-ynMZBPkXONPc5K4P5yFWgZx5JGAUIP3pGGLNs58cfAPgK67olx7fmLp+AdpZ0+GoQ+ieFDa/z4cdV6u7sioH6w==
@@ -10388,7 +10393,7 @@ regenerate@^1.2.1, regenerate@^1.4.0:
   resolved "https://registry.yarnpkg.com/regenerate/-/regenerate-1.4.0.tgz#4a856ec4b56e4077c557589cae85e7a4c8869a11"
   integrity sha512-1G6jJVDWrt0rK99kBjvEtziZNCICAuvIPkSiUFIQxVP06RCVpq3dmDo2oi6ABpYaDYaTRr67BEhL8r1wgEZZKg==
 
-regenerator-runtime@0.13.2:
+regenerator-runtime@0.13.2, regenerator-runtime@^0.13.2:
   version "0.13.2"
   resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.2.tgz#32e59c9a6fb9b1a4aff09b4930ca2d4477343447"
   integrity sha512-S/TQAZJO+D3m9xeN1WTI8dLKBBiRgXBlTJvbWjCThHWZj9EvHK70Ff50/tYj2J/fvBY6JtFVwRuazHN2E7M9BA==
@@ -11708,6 +11713,13 @@ tiny-warning@^1.0.0:
   resolved "https://registry.yarnpkg.com/tiny-warning/-/tiny-warning-1.0.2.tgz#1dfae771ee1a04396bdfde27a3adcebc6b648b28"
   integrity sha512-rru86D9CpQRLvsFG5XFdy0KdLAvjdQDyZCsRcuu60WtzFylDM3eAWSxEVz5kzL2Gp544XiUvPbVKtOA/txLi9Q==
 
+tippy.js@^4.2.1:
+  version "4.2.1"
+  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-4.2.1.tgz#9e4939d976465f77229b05a3cb233b5dc28cf850"
+  integrity sha512-xEE7zYNgQxCDdPcuT6T04f0frPh0wO7CcIqJKMFazU/NqusyjCgYSkLRosIHoiRkZMRzSPOudC8wRN5GjvAyOQ==
+  dependencies:
+    popper.js "^1.14.7"
+
 tmp@^0.0.33:
   version "0.0.33"
   resolved "https://registry.yarnpkg.com/tmp/-/tmp-0.0.33.tgz#6d34335889768d21b2bcda0aa277ced3b1bfadf9"
@@ -12612,7 +12624,7 @@ ws@^3.0.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^5.1.0, ws@^5.2.0:
+ws@^5.1.0, ws@^5.2.0, ws@~>5.2.0:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
   integrity sha512-jaHFD6PFv6UgoIVda6qZllptQsMlDEJkTQcybzzXDYM1XO9Y8em691FGMPmM46WGyLU4z9KMgQN+qrux/nhlHA==
@@ -12623,13 +12635,6 @@ ws@^6.0.0:
   version "6.1.3"
   resolved "https://registry.yarnpkg.com/ws/-/ws-6.1.3.tgz#d2d2e5f0e3c700ef2de89080ebc0ac6e1bf3a72d"
   integrity sha512-tbSxiT+qJI223AP4iLfQbkbxkwdFcneYinM2+x46Gx2wgvbaOMO36czfdfVUBRTHvzAMRhDd98sA5d/BuWbQdg==
-  dependencies:
-    async-limiter "~1.0.0"
-
-ws@~>6.2.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/ws/-/ws-6.2.1.tgz#442fdf0a47ed64f59b6a5d8ff130f4748ed524fb"
-  integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
   dependencies:
     async-limiter "~1.0.0"
 
@@ -12677,6 +12682,13 @@ yallist@^3.0.0, yallist@^3.0.2:
   version "3.0.3"
   resolved "https://registry.yarnpkg.com/yallist/-/yallist-3.0.3.tgz#b4b049e314be545e3ce802236d6cd22cd91c3de9"
   integrity sha512-S+Zk8DEWE6oKpV+vI3qWkaK+jSbIK86pCwe2IF/xwIpQ8jEuxpw9NyaGjmp9+BoJv5FV2piqCDcoCtStppiq2A==
+
+yaml@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.5.0.tgz#1d879dd069ce1036041c23229cb5d7ef47a58ec6"
+  integrity sha512-nKxSWOa7vxAP2pikrGxbkZsG/garQseRiLn9mIDjzwoQsyVy7ZWIpLoARejnINGGLA4fttuzRFFNxxbsztdJgw==
+  dependencies:
+    "@babel/runtime" "^7.4.3"
 
 yamljs@^0.3.0:
   version "0.3.0"

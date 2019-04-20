@@ -20,6 +20,7 @@ export const WikiPageContent = ({
 
   if (!id && me && identifier === me.pub) return <WikiPageCreate name={name} />;
   if (!id) return emptyContent;
+
   return <Thing key={id} id={id} isDetail {...{ asSource, name }} />;
 };
 
