@@ -29,6 +29,7 @@ export const useScope = (deps = [], opts = {}) => {
     });
   }, deps);
 
+  /*
   useEffect(() => {
     if (scope === api.scope) return null;
     const updateCache = soul => {
@@ -38,6 +39,7 @@ export const useScope = (deps = [], opts = {}) => {
     api.scope.on(updateCache);
     return () => api.scope.off(updateCache);
   }, [scope]);
+  */
   return scope;
 };
 

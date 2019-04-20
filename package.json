@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.55.3",
+  "version": "0.55.4",
   "dependencies": {
     "@babel/cli": "7.2.3",
     "@babel/core": "7.3.3",
@@ -37,7 +37,7 @@
     "flat": "^4.1.0",
     "forever": "^0.15.3",
     "formidable": "^1.2.1",
-    "gun": "^0.2019.413",
+    "gun": "^0.2019.420",
     "gun-receiver": "https://github.com/notabugio/gun-receiver.git",
     "gun-redis": "https://github.com/notabugio/gun-redis.git",
     "gun-scope": "https://github.com/notabugio/gun-scope.git",
@@ -71,7 +71,7 @@
     "redis": "^2.8.0",
     "regenerator-runtime": "0.13.2",
     "route-parser": "^0.0.5",
-    "serialize-javascript": "1.6.1",
+    "serialize-javascript": "1.7.0",
     "snuownd": "https://github.com/JordanMilne/snuownd.git",
     "text-encoding": "^0.7.0",
     "uri-js": "^4.2.2",
