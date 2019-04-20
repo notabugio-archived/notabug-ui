@@ -40,6 +40,8 @@ export const Submission = ({
   let scoreDisp = null;
 
   if (score || score === 0) scoreDisp = ups - downs || 0;
+
+  if (scoreDisp > 10000) scoreDisp = `${(scoreDisp / 1000).toFixed(1)}k`;
   item = item || { title: "...", timestamp: null }; // eslint-disable-line
   const urlInfo = item.url ? parseURI(item.url) : {};
   const permalink = useMemo(() => {

@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Config } from "notabug-peer";
+import qs from "query-string";
 import { NabContext, useNabGlobals } from "NabContext";
 import { withRouter } from "react-router-dom";
 import { Routing } from "Routing";
@@ -11,8 +12,19 @@ export { routes } from "Routing";
 
 Config.update({ owner, tabulator, indexer });
 
-export const NabProvider = withRouter(({ history, notabugApi, children }) => {
+export const NabProvider = withRouter(({
+  location: { pathname, search },
+  history, notabugApi, children
+}) => {
   const value = useNabGlobals({ notabugApi, history });
+  const query = qs.parse(search);
+
+  useEffect(() => {
+    if (query.indexer) {
+      console.log("update indexer", query.indexer);
+      Config.update({ indexer: query.indexer, tabulator: query.indexer });
+    }
+  }, [query.indexer]);
 
   if (value.isLoggingIn) {
     return (
@@ -21,6 +33,7 @@ export const NabProvider = withRouter(({ history, notabugApi, children }) => {
       </PageTemplate>
     );
   }
+
   return <NabContext.Provider value={value}>{children}</NabContext.Provider>;
 });
 
