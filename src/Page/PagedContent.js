@@ -2,9 +2,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React, { useContext } from "react";
 import qs from "query-string";
-import { Link, JavaScriptRequired } from "utils";
-import { Things } from "Listing/Things";
-import { ErrorBoundary, Loading as LoadingComponent } from "utils";
+import { Link, JavaScriptRequired } from "/utils";
+import { Things } from "/Listing/Things";
+import { ErrorBoundary, Loading as LoadingComponent } from "/utils";
 
 export const PagedContent = React.memo(
   ({

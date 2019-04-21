@@ -2,10 +2,10 @@ import React from "react";
 import * as R from "ramda";
 import { StaticRouter as Router, matchPath } from "react-router-dom";
 import { renderToString } from "react-dom/server";
-import { App } from "App";
-import { routes } from "Routing";
-import init from "notabug-peer";
+import init from "@notabug/peer";
 import serialize from "serialize-javascript";
+import { App } from "/App";
+import { routes } from "/Routing";
 
 const Gun = (global.Gun = require("gun/gun"));
 

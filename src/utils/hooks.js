@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
 import * as R from "ramda";
-import { useNotabug } from "NabContext";
+import { useNotabug } from "/NabContext";
 import isNode from "detect-node";
 import debounce from "lodash.debounce";
 

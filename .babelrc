@@ -1,26 +1,23 @@
 {
-  "presets": [
+  presets: [
     [
-      "@babel/preset-env",
+      '@babel/preset-env',
       {
-        "targets": {
-          "node": "current"
-        },
-        "useBuiltIns": "usage"
-      },
+        modules: false
+      }
     ],
-    "@babel/preset-react"
+    '@babel/preset-react'
   ],
   "plugins": [
-    "@babel/plugin-proposal-function-bind",
     "@babel/plugin-proposal-class-properties",
-    "@babel/plugin-proposal-object-rest-spread",
-    "@babel/plugin-transform-runtime",
-    ["module-resolver", { "root": ["./src"] }]
+    "@babel/plugin-transform-runtime"
   ],
   "env": {
-    "test": {
-      "plugins": ["transform-es2015-modules-commonjs"]
+    "server": {
+      "plugins": []
+    },
+    "client": {
+      "plugins": []
     }
   }
 }

@@ -1,15 +1,17 @@
 import React from "react";
 import * as R from "ramda";
-import { PageHeader } from "Page/Header";
-import { PageName } from "Page/Tabs";
-import { Timestamp } from "utils/Timestamp";
+import { PageHeader } from "/Page/Header";
+import { PageName } from "/Page/Tabs";
+import { Timestamp } from "/utils/Timestamp";
 import isNode from "detect-node";
-import { Link } from "utils";
+import { Link } from "/utils";
 
 export const START = 1554091200;
 export const END = 1554177600;
 export const isBanActive = R.compose(
-  (!isNode && !!/aftest/.test(window.location.search)) ? R.always(true) : R.identity,
+  !isNode && !!/aftest/.test(window.location.search)
+    ? R.always(true)
+    : R.identity,
   R.allPass([R.lte(START), R.gte(END)]),
   () => new Date().getTime() / 1000
 );

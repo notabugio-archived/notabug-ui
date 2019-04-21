@@ -2,7 +2,7 @@ import React from "react";
 import * as R from "ramda";
 import { Route, Switch, Redirect } from "react-router-dom";
 // import { Helmet } from "react-helmet";
-import { ScrollToTop } from "utils";
+import { ScrollToTop } from "/utils";
 import { toRoute } from "./Route";
 import { paths } from "./paths";
 

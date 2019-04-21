@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
 import { withRouter } from "react-router-dom";
-import { InfiniteContent } from "Page/InfiniteContent";
-import { Link, JavaScriptRequired } from "utils";
-import { useListingContext } from "Listing";
+import { InfiniteContent } from "/Page/InfiniteContent";
+import { Link, JavaScriptRequired } from "/utils";
+import { useListingContext } from "/Listing";
 
 export const Chat = withRouter(
   ({

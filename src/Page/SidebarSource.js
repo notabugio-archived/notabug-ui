@@ -1,6 +1,6 @@
 import React from "react";
-import { WikiPageContent } from "Wiki";
-import { JavaScriptRequired, Link, useToggle } from "utils";
+import { WikiPageContent } from "/Wiki";
+import { JavaScriptRequired, Link, useToggle } from "/utils";
 
 export const SidebarSource = ({ name, identifier }) => {
   const [isSourceExpanded, onToggleSourceExpanded] = useToggle(false);
@@ -15,9 +15,7 @@ export const SidebarSource = ({ name, identifier }) => {
           {isSourceExpanded ? (
             <div className="title">
               <h1>
-                <Link href={path}>
-                  listing source
-                </Link>
+                <Link href={path}>listing source</Link>
               </h1>
             </div>
           ) : null}

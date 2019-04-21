@@ -2,7 +2,7 @@ import React from "react";
 import qs from "query-string";
 import ReactPlayer from "react-player";
 import InstagramEmbed from "react-instagram-embed";
-import { Markdown } from "utils";
+import { Markdown } from "/utils";
 
 export const Expando = ({
   expanded,
@@ -121,50 +121,50 @@ export const getExpando = (item, rawDomain, urlInfo) => {
         ? "https://www.bitchute.com/embed/" +
           item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
         : domain === "d.tube"
-        ? item.url.replace("d.tube/#!/v", "emb.d.tube/#!")
-        : domain === "invidio.us"
-        ? "https://invidio.us/embed/" + query.v
-        : domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1
-        ? "https://www.dailymotion.com/embed/video/" +
+          ? item.url.replace("d.tube/#!/v", "emb.d.tube/#!")
+          : domain === "invidio.us"
+            ? "https://invidio.us/embed/" + query.v
+            : domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1
+              ? "https://www.dailymotion.com/embed/video/" +
           item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
-        : domain === "vevo.com" && item.url.indexOf("/watch/") !== -1
-        ? "https://embed.vevo.com?isrc=" +
+              : domain === "vevo.com" && item.url.indexOf("/watch/") !== -1
+                ? "https://embed.vevo.com?isrc=" +
           item.url.substring(item.url.lastIndexOf("/") + 1, item.url.length)
-        : domain === "gfycat.com" && item.url.indexOf("/detail/") !== -1
-        ? "https://gfycat.com/ifr/" +
+                : domain === "gfycat.com" && item.url.indexOf("/detail/") !== -1
+                  ? "https://gfycat.com/ifr/" +
           item.url.substring(item.url.indexOf("/detail/") + 8, item.url.length)
-        : domain === "gfycat.com" && item.url.indexOf(".com/") !== -1
-        ? "https://gfycat.com/ifr/" +
+                  : domain === "gfycat.com" && item.url.indexOf(".com/") !== -1
+                    ? "https://gfycat.com/ifr/" +
           item.url.substring(item.url.indexOf(".com/") + 5, item.url.length)
-        : domain === "giphy.com" && item.url.indexOf("/html5") !== -1
-        ? "https://giphy.com/embed/" +
+                    : domain === "giphy.com" && item.url.indexOf("/html5") !== -1
+                      ? "https://giphy.com/embed/" +
           item.url
             .substring(item.url.lastIndexOf("/gifs/") + 6, item.url.length)
             .replace("/html5", "")
-        : domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1
-        ? "https://giphy.com/embed/" +
+                      : domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1
+                        ? "https://giphy.com/embed/" +
           item.url.substring(item.url.lastIndexOf("-") + 1, item.url.length)
-        : domain === "pornhub.com" && query.viewkey
-        ? `https://www.pornhub.com/embed/${query.viewkey}`
-        : domain === "liveleak.com"
-        ? item.url.replace("/view", "/ll_embed")
-        : domain === "rutube.ru" && item.url.indexOf("/video/") !== -1
-        ? "https://rutube.ru/play/embed/" +
+                        : domain === "pornhub.com" && query.viewkey
+                          ? `https://www.pornhub.com/embed/${query.viewkey}`
+                          : domain === "liveleak.com"
+                            ? item.url.replace("/view", "/ll_embed")
+                            : domain === "rutube.ru" && item.url.indexOf("/video/") !== -1
+                              ? "https://rutube.ru/play/embed/" +
           item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
-        : null;
+                              : null;
   }
 
   const image =
     iframe || EmbedComponent
       ? null
       : item.url && matchesExt(imgExts, item.url)
-      ? item.url
-      : null;
+        ? item.url
+        : null;
   const expandoType = item.body
     ? "selftext"
     : image || EmbedComponent || iframe
-    ? "video"
-    : null;
+      ? "video"
+      : null;
 
   return { expandoType, image, iframe, reactPlayer, EmbedComponent };
 };

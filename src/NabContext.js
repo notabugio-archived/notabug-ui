@@ -8,10 +8,10 @@ import {
   useMemo
 } from "react";
 import { assoc } from "ramda";
-import { isLocalStorageNameSupported } from "utils";
+import { isLocalStorageNameSupported } from "/utils";
 import isNode from "detect-node";
 // import fetch from "isomorphic-fetch";
-import notabugPeer from "notabug-peer";
+import notabugPeer from "@notabug/peer";
 const Gun = require("gun/gun");
 
 require("gun/lib/not");

@@ -1,7 +1,7 @@
 import React, { Fragment, useContext } from "react";
 import { keysIn } from "ramda";
-import { CommentForm } from "Comment/Form";
-import { Things } from "Listing/Things";
+import { CommentForm } from "/Comment/Form";
+import { Things } from "/Listing/Things";
 
 export const NestedListing = ({
   id,

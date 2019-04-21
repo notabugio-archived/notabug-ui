@@ -1,26 +1,37 @@
 "use strict";
-// import argon2 from "argon2-browser";
+import { argon2 } from "argon2-browser";
 if (!require("detect-node")) {
-  const argon2 = require("argon2-browser");
-  const { hashLength, timeCost, memoryCost, parallelism } = require("work-config.json");
+  // const argon2 = require("/vendor/argon2-browser");
+  const {
+    hashLength,
+    timeCost,
+    memoryCost,
+    parallelism
+  } = require("/work-config.json");
   const distPath = "/static/js";
 
-  argon2.load && argon2.load({ distPath })
-    .catch(error => console.error(error.stack || error));
+  argon2.load &&
+    argon2
+      .load({ distPath })
+      .catch(error => console.error(error.stack || error));
 
   module.exports.EMPTY_BUFFER = [];
 
   module.exports.allocBuffer = function allocBuffer(size) {
     const res = new Array(size);
 
-    for (var i = 0; i < res.length; i++)
-      res[i] = 0;
+    for (var i = 0; i < res.length; i++) res[i] = 0;
     return res;
   };
 
   function readUInt32(buffer, off) {
-    return ((buffer[off] << 24) | (buffer[off + 1] << 16) |
-            (buffer[off + 2] << 8) | buffer[off + 3]) >>> 0;
+    return (
+      ((buffer[off] << 24) |
+        (buffer[off + 1] << 16) |
+        (buffer[off + 2] << 8) |
+        buffer[off + 3]) >>>
+      0
+    );
   }
 
   function writeUInt32(buffer, value, off) {
@@ -48,17 +59,17 @@ if (!require("detect-node")) {
   };
 
   module.exports.hash = function hash(nonce, prefix) {
-    const res = argon2.hashSync({
-      pass: prefix,
-      salt: nonce,
-      distPath: distPath,
-      hashLen: hashLength,
-      time: timeCost,
-      mem: memoryCost,
-      parallelism
-    });
-
-    return res.hash;
+    return argon2
+      .hash({
+        distPath: "/argon2",
+        pass: prefix,
+        salt: nonce,
+        hashLen: hashLength,
+        time: timeCost,
+        mem: memoryCost,
+        parallelism
+      })
+      .then(res => res.hash);
   };
 
   module.exports.checkComplexity = require("./common").checkComplexity;

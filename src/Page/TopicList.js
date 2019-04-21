@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from "react";
-import { Link, JavaScriptRequired } from "utils";
+import { Link, JavaScriptRequired } from "/utils";
 
 export const TopicList = React.memo(({ topics }) => {
   if (!topics || topics.length <= 1) return null;
@@ -19,11 +19,13 @@ export const TopicList = React.memo(({ topics }) => {
             </div>
           ) : null}
           <ul className={isOpen ? "content" : ""}>
-            {isOpen ? topics.map(topic => (
-              <li key={topic}>
-                <Link href={`/t/${topic}`}>{topic}</Link>
-              </li>
-            )) : null}
+            {isOpen
+              ? topics.map(topic => (
+                <li key={topic}>
+                  <Link href={`/t/${topic}`}>{topic}</Link>
+                </li>
+              ))
+              : null}
             <li className="more">
               <button onClick={toggleOpen}>
                 {isOpen ? "hide" : "show"} {topics.length} topics

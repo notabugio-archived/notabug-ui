@@ -2,11 +2,11 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import Helmet from "react-helmet";
-import { Query, Config } from "notabug-peer";
-import { useNotabug } from "NabContext";
-import { PageTemplate } from "Page";
-import { Thing } from "Listing";
-import { useQuery } from "utils";
+import { Query, Config } from "@notabug/peer";
+import { useNotabug } from "/NabContext";
+import { PageTemplate } from "/Page";
+import { Thing } from "/Listing";
+import { useQuery } from "/utils";
 import { WikiPageCreate } from "./PageCreate";
 
 export const WikiPageContent = ({

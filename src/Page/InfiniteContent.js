@@ -9,9 +9,9 @@ import React, {
 } from "react";
 import * as R from "ramda";
 import ChatView from "react-chatview";
-import { ChatMsg, ChatInput } from "Chat";
-import { Things } from "Listing/Things";
-import { ErrorBoundary, Loading as LoadingComponent } from "utils";
+import { ChatMsg, ChatInput } from "/Chat";
+import { Things } from "/Listing/Things";
+import { ErrorBoundary, Loading as LoadingComponent } from "/utils";
 
 const PAGE_SIZE = 25;
 

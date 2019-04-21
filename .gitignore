@@ -1,15 +1,17 @@
+/build
+/node_modules
+/.cache
+/server-build
+server-config.json
+
 # See https://help.github.com/ignore-files/ for more about ignoring files.
 
 # dependencies
 /node_modules
 
-# testing
-/coverage
-
 # production
 /build
 /server-build
-/build-lib
 /htdocs
 /server-config.json
 /data.json

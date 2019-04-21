@@ -1,13 +1,12 @@
-import "@babel/polyfill";
 import React from "react";
 import ReactDOM from "react-dom";
 import { BrowserRouter } from "react-router-dom";
-import "snew-classic-ui/static/css/minimal.css";
-import "snew-classic-ui/static/css/wiki.css";
-import "styles/index.css";
-import { App } from "App";
-import { ErrorBoundary } from "utils";
-import { unregister } from "utils/registerServiceWorker";
+import "/vendor/snew-classic-ui/static/css/minimal.css";
+import "/vendor/snew-classic-ui/static/css/wiki.css";
+import "/styles/index.css";
+import { App } from "/App";
+import { ErrorBoundary } from "/utils";
+import { unregister } from "/utils/registerServiceWorker";
 
 try {
   localStorage.removeItem("gun/");

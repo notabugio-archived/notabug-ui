@@ -7,8 +7,8 @@ import React, {
   useMemo
 } from "react";
 import { identity, assoc, dissoc, prop } from "ramda";
-import { Constants } from "notabug-peer";
-import { useNotabug } from "NabContext";
+import { Constants } from "@notabug/peer";
+import { useNotabug } from "/NabContext";
 import { doWork } from "./pow";
 
 export const VotingQueueContext = createContext();

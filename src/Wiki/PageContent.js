@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
 import { compose, trim } from "ramda";
-import { Link, Markdown } from "utils";
+import { Link, Markdown } from "/utils";
 import { propOr } from "ramda";
-import { ThingWikiPage } from "snew-classic-ui/components/ThingWikiPage";
+import { ThingWikiPage } from "/vendor/snew-classic-ui/components/ThingWikiPage";
 
 export const WikiPageContent = ({
   isEditing,
@@ -18,7 +18,14 @@ export const WikiPageContent = ({
   let body = propOr("", "body", item);
 
   if (asSource) {
-    const lines = body ? body.split("\n").map(compose(s => `    ${s}`, trim)) : [];
+    const lines = body
+      ? body.split("\n").map(
+        compose(
+          s => `    ${s}`,
+          trim
+        )
+      )
+      : [];
 
     body = lines.join("\n");
   }

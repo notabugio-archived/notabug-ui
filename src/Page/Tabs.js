@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "utils";
-import { NavTab } from "snew-classic-ui";
-import { usePageContext } from "NabContext";
+import { Link } from "/utils";
+import { NavTab } from "/vendor/snew-classic-ui";
+import { usePageContext } from "/NabContext";
 
 export const PageName = ({ path, name }) => {
   if (!name) return null;
@@ -13,7 +13,9 @@ export const PageName = ({ path, name }) => {
 };
 
 export const PageTab = ({ name, path }) => {
-  const { spec: { path: current } } = usePageContext();
+  const {
+    spec: { path: current }
+  } = usePageContext();
 
   return (
     <NavTab

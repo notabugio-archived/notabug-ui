@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { propOr } from "ramda";
-import Spinner from "react-spinkit";
-import { Constants } from "notabug-peer";
-import { ThingComment } from "snew-classic-ui";
-import { Markdown, Timestamp, Link, slugify } from "utils";
-import { NestedListing } from "Comment/NestedListing";
+import { Spinner } from "/utils/Spinner";
+import { Constants } from "@notabug/peer";
+import { ThingComment } from "/vendor/snew-classic-ui";
+import { Markdown, Timestamp, Link, slugify } from "/utils";
+import { NestedListing } from "/Comment/NestedListing";
 import { ThingCommentEntry as Entry } from "./Entry";
 
 const MarkdownLoading = () => (

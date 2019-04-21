@@ -8,9 +8,9 @@ import {
   relayMessages,
   cluster,
   websocketTransport
-} from "gun-receiver";
-import { receiver as redis } from "gun-redis";
-import { Validation } from "notabug-peer";
+} from "@notabug/gun-receiver";
+import { receiver as redis } from "@notabug/gun-redis";
+import { Validation } from "@notabug/peer";
 const Gun = require("gun/gun");
 
 const suppressor = Validation.createSuppressor();
@@ -25,7 +25,7 @@ const validateMessage = ({ json, skipValidation, ...msg }) => {
 };
 
 const redisSupport = R.pipe(
-  redis.respondToGets(Gun, { disableRelay: false }),
+  redis.respondToGets(Gun, { disableRelay: true }),
   chainInterface,
   redis.acceptWrites(Gun, { disableRelay: false })
 );

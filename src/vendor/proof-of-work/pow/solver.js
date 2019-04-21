@@ -6,8 +6,7 @@ const utils = require("./utils");
 const MIN_NONCE_SIZE = 8;
 const NONCE_SIZE = MIN_NONCE_SIZE + 8;
 
-function Solver() {
-}
+function Solver() {}
 module.exports = Solver;
 
 Solver.prototype._genNonce = function _genNonce(buf) {
@@ -21,11 +20,10 @@ Solver.prototype._genNonce = function _genNonce(buf) {
     utils.writeUInt32(buf, (Math.random() * 0x100000000) >>> 0, off);
 
   // Slower writes
-  for (; off < buf.length; off++)
-    buf[off] = (Math.random() * 0x100) >>> 0;
+  for (; off < buf.length; off++) buf[off] = (Math.random() * 0x100) >>> 0;
 };
 
-Solver.prototype.solve = function solve(complexity, prefix) {
+Solver.prototype.solve = async function solve(complexity, prefix) {
   // 64 bits of entropy should be enough for each millisecond to avoid
   // collisions
   const nonce = utils.allocBuffer(NONCE_SIZE);
@@ -33,7 +31,7 @@ Solver.prototype.solve = function solve(complexity, prefix) {
   for (;;) {
     this._genNonce(nonce);
 
-    const hash = utils.hash(nonce, prefix);
+    const hash = await utils.hash(nonce, prefix);
 
     if (utils.checkComplexity(hash, complexity)) {
       return nonce;
