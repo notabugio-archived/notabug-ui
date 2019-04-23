@@ -13,7 +13,7 @@ import { receiver as redis } from "@notabug/gun-redis";
 import { Validation } from "@notabug/peer";
 const Gun = require("gun/gun");
 
-const suppressor = Validation.createSuppressor();
+const suppressor = Validation.createSuppressor(Gun);
 
 const validateMessage = ({ json, skipValidation, ...msg }) => {
   if (skipValidation) return { ...msg, json };

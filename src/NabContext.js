@@ -127,7 +127,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     if (!isNode && api.gun) window.notabug = api;
     api.onLogin(didLogin);
 
-    if (alias && password)
+    if (alias && password) {
       api
         .login(alias, password)
         .catch(err => {
@@ -136,6 +136,14 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         .finally(() => {
           setIsLoggingIn(false);
         });
+      setTimeout(() => {
+        if (!api.isLoggedIn()) {
+          setIsLoggingIn(false)
+          localStorage.setItem("nabAlias", "");
+          localStorage.setItem("nabPassword", "");
+        }
+      }, 5000);
+    }
   }, [api]);
 
   return useMemo(

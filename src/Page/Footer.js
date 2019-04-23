@@ -5,9 +5,7 @@ import { Link } from "/utils";
 import { useNotabug } from "/NabContext";
 
 const sitename = isNode ? "this peer" : window.location.hostname; // eslint-disable-line
-const version = isNode
-  ? require("../../package.json").version
-  : process.env.REACT_APP_VERSION;
+const version = require("../../package.json").version;
 
 export const PageFooter = () => {
   const { hasAttributedReddit, setHasAttributedReddit } = useNotabug();
