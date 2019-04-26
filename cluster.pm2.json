@@ -17,6 +17,7 @@
       "args": [
         "--peer",
         "http://localhost:3333/gun",
+        "--evict",
         "--disableValidation",
         "--tabulate",
         "--index"

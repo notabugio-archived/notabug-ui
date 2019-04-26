@@ -932,10 +932,10 @@
   resolved "https://registry.yarnpkg.com/@notabug/gun-suppressor/-/gun-suppressor-0.1.0.tgz#d3e4e9bb44b1058a0b56a201117b24cee80de7e7"
   integrity sha512-p2sPTl+cvxxWGlKSFg5B8TEbDMd6jbtD8XHBKB8SCBZSjdwH/E9VG/opeM+0luF90kYoHKsAlUY2eP7NtVoyUw==
 
-"@notabug/peer@^0.21.7":
-  version "0.21.7"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.21.7.tgz#37043de7f59ac76a21955242ff10c481c85ff2eb"
-  integrity sha512-DrLlW7phQCaewaz0qTktaFEuM7gIufK0UAuU/BrPYcdCnXrffYjK4upU+sPMBGYo6puNmew0aC7MWkz6RiS4nQ==
+"@notabug/peer@^0.21.10":
+  version "0.21.10"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.21.10.tgz#f1d954e20d73850cf54a21688fafa6a44a444aaa"
+  integrity sha512-qdbdV6c5AYaIgqFipbM4XADHLmMZxlIOxk7m/gsrbLU1knePzlMyWC/f8G9pTeNjKEfe+JsFKbVeRbK9JnDeTA==
   dependencies:
     "@notabug/gun-scope" "^0.5.0"
     "@notabug/gun-suppressor" "^0.1.0"
@@ -3338,14 +3338,14 @@ gud@^1.0.0:
   resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
-gun@0.2019.413:
-  version "0.2019.413"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.413.tgz#4d6311f3714f8a3e3f32516dd01f3e9d5b1cff06"
-  integrity sha512-rPvbVhCdUdu4W4eet4S2m57P/veA5+abjHDggCMRnmbbp+6GT4uaqunznhLbKZvYkTM6FzAiL2PZ4v2H2wqvEg==
+gun@^0.2019.425:
+  version "0.2019.425"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.425.tgz#839f1abf9fd8dd46d8f5ecbb23c7da0f355293b4"
+  integrity sha512-2eaUygwGPXmhloiA5+32WA1MGzcfTSSt6afXZoLRiThaZgaSfxdZsV1DVFsuNndqMsnrToka6aJ+bPTAV1k2eA==
   dependencies:
-    ws "~>5.2.0"
+    ws "~>6.2.1"
   optionalDependencies:
-    node-webcrypto-ossl "^1.0.39"
+    node-webcrypto-ossl "^1.0.43"
     text-encoding "^0.7.0"
 
 har-schema@^2.0.0:
@@ -4644,7 +4644,7 @@ node-releases@^1.1.14:
   dependencies:
     semver "^5.3.0"
 
-node-webcrypto-ossl@^1.0.39, node-webcrypto-ossl@^1.0.43:
+node-webcrypto-ossl@^1.0.43:
   version "1.0.43"
   resolved "https://registry.yarnpkg.com/node-webcrypto-ossl/-/node-webcrypto-ossl-1.0.43.tgz#51ac6a411725d78eaf935fb727ec848b6478235b"
   integrity sha512-AavMGbUB2MaTzli0+swjSAr4aLqf9M5jHIrs5VP9EUDXyEaIOyyio3H1z3pZCxKpaDD9coKWD3bWAiaIBuN8wg==
@@ -7464,14 +7464,14 @@ ws@^3.0.0:
     safe-buffer "~5.1.0"
     ultron "~1.1.0"
 
-ws@^5.1.0, ws@^5.1.1, ws@^5.2.0, ws@~>5.2.0:
+ws@^5.1.0, ws@^5.1.1, ws@^5.2.0:
   version "5.2.2"
   resolved "https://registry.yarnpkg.com/ws/-/ws-5.2.2.tgz#dffef14866b8e8dc9133582514d1befaf96e980f"
   integrity sha512-jaHFD6PFv6UgoIVda6qZllptQsMlDEJkTQcybzzXDYM1XO9Y8em691FGMPmM46WGyLU4z9KMgQN+qrux/nhlHA==
   dependencies:
     async-limiter "~1.0.0"
 
-ws@^6.0.0:
+ws@^6.0.0, ws@~>6.2.1:
   version "6.2.1"
   resolved "https://registry.yarnpkg.com/ws/-/ws-6.2.1.tgz#442fdf0a47ed64f59b6a5d8ff130f4748ed524fb"
   integrity sha512-GIyAXC2cB7LjvpgMt9EKS2ldqr0MTrORaleiOno6TweZ6r3TKtoFQWay/2PceJ3RuBasOHzXNn5Lrw1X0bEjqA==
