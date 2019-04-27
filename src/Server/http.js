@@ -48,6 +48,7 @@ export const initServer = ({ port, host, render, ...options }) => {
   if (options.pistol)
     nab.receiver = require("./receiver").default({
       redis: options.redis,
+      lmdb: options.lmdb,
       peers: options.peers,
       web
     });

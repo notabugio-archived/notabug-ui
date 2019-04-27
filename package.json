@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.57.4",
+  "version": "0.58.0",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -25,6 +25,7 @@
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
+    "@notabug/gun-lmdb": "^0.1.0",
     "@notabug/gun-receiver": "^0.5.0",
     "@notabug/gun-redis": "^0.9.0",
     "@notabug/peer": "^0.22.3",

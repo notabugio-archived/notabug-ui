@@ -38,9 +38,12 @@ export default (nab, req, res) =>
         localStorage: false,
         disableValidation: true
       });
+      let getter;
+      if (nab.gun.redis) getter = nab.gun.redis.read;
+      if (nab.gun.lmdb) getter = nab.gun.lmdb.read.bind(nab.gun.lmdb);
       const scope = (notabugApi.scope = nab.newScope({
         noGun: !!nab.gun.redis,
-        getter: nab.gun.redis ? nab.gun.redis.read : undefined,
+        getter,
         timeout: 1000,
         isCached: true,
         isCacheing: true

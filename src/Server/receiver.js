@@ -10,7 +10,10 @@ import {
   websocketTransport
 } from "@notabug/gun-receiver";
 import { receiver as redis } from "@notabug/gun-redis";
+import { receiver as lmdb } from "@notabug/gun-lmdb";
 import { Validation } from "@notabug/peer";
+import { options } from "./options";
+
 const Gun = require("gun/gun");
 
 const suppressor = Validation.createSuppressor(Gun);
@@ -28,6 +31,14 @@ const redisSupport = R.pipe(
   redis.respondToGets(Gun, { disableRelay: true }),
   chainInterface,
   redis.acceptWrites(Gun, { disableRelay: false })
+);
+
+const lmdbConf = { path: options.lmdbpath, mapSize: options.lmdbmapsize };
+
+const lmdbSupport = R.pipe(
+  lmdb.respondToGets(Gun, { disableRelay: true }, lmdbConf),
+  chainInterface,
+  lmdb.acceptWrites(Gun, { disableRelay: false }, lmdbConf)
 );
 
 const skipValidatingKnownData = db => {
@@ -67,6 +78,7 @@ export default opts =>
     deduplicateMessages,
     allowLeech,
     opts.redis ? redisSupport : R.identity,
+    opts.lmdb ? lmdbSupport : R.identity,
     relayMessages,
     cluster,
     // db => db.onOut(validateMessage) && db,

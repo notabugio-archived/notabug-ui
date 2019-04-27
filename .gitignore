@@ -16,6 +16,7 @@ server-config.json
 /server-config.json
 /data.json
 /data.json6
+/lmdbdata
 /radata
 /radata*
 
