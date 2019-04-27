@@ -63,50 +63,49 @@ if (options.redis) nab.gun.redis = Gun.redis;
 if (options.index || options.tabulate || options.backindex) {
   const { username, password } = require("../../server-config.json");
 
-  // This timeout should be unnnecessary but gun is broken
-  // See: https://github.com/amark/gun/issues/742
-  setTimeout(() => {
-    nab.login(username, password).then(() => {
-      let scopeParams;
+  nab.login(username, password).then(() => {
+    let scopeParams;
 
-      if (options.redis)
-        scopeParams = {
-          noGun: true,
-          getter: soul => {
-            // nab.gun.get(soul).on(R.identity);
-            return nab.gun.redis.read(soul);
-          }
-        };
+    if (options.redis)
+      scopeParams = {
+        noGun: true,
+        getter: soul => {
+          // nab.gun.get(soul).on(R.identity);
+          return nab.gun.redis.read(soul);
+        }
+      };
 
-      if (options.index) nab.index(scopeParams);
-      if (options.tabulate) nab.tabulate(scopeParams);
-      if (options.backindex) {
-        nab.tabulate(scopeParams);
-        nab.index(scopeParams);
+    if (options.index) nab.index(scopeParams);
+    if (options.tabulate) nab.tabulate(scopeParams);
+    if (options.backindex) {
+      nab.tabulate(scopeParams);
+      nab.index(scopeParams);
 
-        const indexThingSet = obj => {
-          const keys = R.keysIn(obj);
+      const indexThingSet = obj => {
+        const keys = R.keysIn(obj);
 
-          console.log("got obj", keys.length);
-          keys.forEach(soul => {
-            const thingId = R.propOr(
-              "",
-              "thingId",
-              Schema.Thing.route.match(soul)
-            );
+        console.log("got obj", keys.length);
+        keys.forEach(soul => {
+          const thingId = R.propOr(
+            "",
+            "thingId",
+            Schema.Thing.route.match(soul)
+          );
 
-            if (!thingId) return;
-            nab.oracle().features.forEach(feature => feature.enqueue(thingId));
-          });
-        };
-
-        nab.gun.get("nab/topics/all").once(obj => {
-          indexThingSet(obj);
-          nab.gun.get("nab/topics/comments:all").once(obj => {
-            indexThingSet(obj);
-          });
+          if (!thingId) return;
+          nab.oracle().features.forEach(feature => feature.enqueue(thingId));
         });
-      }
-    });
-  }, 1000);
+      };
+
+      nab.gun.get("nab/topics/all/days/2019/4/27").once(obj => {
+        indexThingSet(obj);
+        nab.gun.get("nab/topics/comments:all/days/2019/4/27").once(obj => {
+          indexThingSet(obj);
+        });
+        nab.gun.get("nab/topics/chat:all/days/2019/4/27").once(obj => {
+          indexThingSet(obj);
+        });
+      });
+    }
+  });
 }

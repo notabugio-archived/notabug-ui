@@ -6,7 +6,7 @@ import "/vendor/snew-classic-ui/static/css/wiki.css";
 import "/styles/index.css";
 import { App } from "/App";
 import { ErrorBoundary } from "/utils";
-import { unregister } from "/utils/registerServiceWorker";
+// import { unregister } from "/utils/registerServiceWorker";
 
 try {
   localStorage.removeItem("gun/");
@@ -37,4 +37,4 @@ try {
   ReactDOM.render(jsx, document.body);
 }
 
-unregister();
+// unregister();
