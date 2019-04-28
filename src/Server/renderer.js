@@ -6,6 +6,7 @@ import init from "@notabug/peer";
 import serialize from "serialize-javascript";
 import { App } from "/App";
 import { routes } from "/Routing";
+import { options } from "./options";
 
 const Gun = (global.Gun = require("gun/gun"));
 
@@ -42,10 +43,11 @@ export default (nab, req, res) =>
       if (nab.gun.redis) getter = nab.gun.redis.read;
       if (nab.gun.lmdb) getter = nab.gun.lmdb.read.bind(nab.gun.lmdb);
       const scope = (notabugApi.scope = nab.newScope({
-        noGun: !!nab.gun.redis,
+        noGun: !!options.redis || options.lmdb,
+        onlyOnce: true,
         getter,
         timeout: 1000,
-        isCached: true,
+        isCached: false,
         isCacheing: true
       }));
 

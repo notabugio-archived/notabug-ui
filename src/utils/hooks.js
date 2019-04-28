@@ -47,8 +47,11 @@ export const useScope = (deps = [], opts = {}) => {
 export const useQuery = (query, args = [], name = "unknown") => {
   const scope = useScope([query, ...args], { timeout: 90000 });
   const [hasResponseState, setHasResponse] = useState(false);
-  const [result, setResult] = useState(
-    useMemo(() => query && query.now && query.now(scope, ...args), [])
+  const [{ result }, setResult] = useState(
+    useMemo(
+      () => ({ result: query && query.now && query.now(scope, ...args) }),
+      []
+    )
   );
   const hasResponse = typeof result !== "undefined" || hasResponseState;
 
@@ -56,7 +59,7 @@ export const useQuery = (query, args = [], name = "unknown") => {
     (soul, node) =>
       query &&
       query(scope, ...args).then(res => {
-        res && !R.equals(res, result) && setResult(res);
+        res && setResult({ result: res });
         setHasResponse(true);
       }),
     [scope, query, ...args]

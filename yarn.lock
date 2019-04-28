@@ -895,10 +895,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/gun-lmdb@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.1.0.tgz#d3e521fc5ccdeea261600faf351dc36107d9f41f"
-  integrity sha512-ubdbSRMvhDr/DlBTK3O1r7v/sKCeZmuKYeKbFwGKFhfWD7rbEyFwBgtu+Ip6zL4prxwCRi37lNp5WTCTntd1AQ==
+"@notabug/gun-lmdb@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.1.1.tgz#05c40ae5cef4603a4a142ab49d230df7cc5e914b"
+  integrity sha512-rZxXVCstBUQQDLJOT2nf/tpy8ttlivY5qp9owfIoojdNPsIJcpINIanz3Cj8K3mFJQjpaHgaiyGF4llrn88XSA==
   dependencies:
     node-lmdb "^0.6.2"
 
@@ -942,10 +942,10 @@
     ramda "^0.26.1"
     route-parser "^0.0.5"
 
-"@notabug/peer@^0.22.3":
-  version "0.22.3"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.22.3.tgz#1766e02cffc11632285a192b40e15b7fec9cd3b3"
-  integrity sha512-oPBBc820V3rany6vF4+EwcczMQsSh6lv/PVzENlzsEVsNyLMjq3L516Y7jOesuK8RnIS4fQJDGSO/tyCux9Aow==
+"@notabug/peer@^0.22.4":
+  version "0.22.4"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.22.4.tgz#279cb2b093e785ba401e9772c7d7c2bfb15546a5"
+  integrity sha512-OrmnjQv/c8Xn+8+EKMH2bPjRZ9fc4am2nRsrfWyebBE+xH991jIXcRMQgOTHyJ96e82qb3aw3t/ge82pm53y9g==
   dependencies:
     "@notabug/gun-scope" "^0.9.0"
     "@notabug/gun-suppressor" "^0.2.2"

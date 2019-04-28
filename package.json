@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.58.0",
+  "version": "0.58.1",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -14,21 +14,30 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "clean": "rimraf build && rimraf server-build",
-    "start": "parcel src/index.html",
+    "mirror": "node server.js --lmdb --port 3333 --peer https://notabug.io/gun --render",
+    "uidev": "node server.js --dev --lmdb --port 3333 --peer https://notabug.io/gun --render",
+    "start": "pm2 start cluster.lmdb.pm2.json",
+    "restart": "pm2 restart http && pm2 restart index",
+    "stop": "pm2 stop http && pm2 stop index && pm2 stop relay",
+    "logs": "pm2 logs",
+    "monit": "pm2 monit",
+    "relay": "pm2 start relay.pm2.json",
+    "updatepm2": "pm2 update",
+    "dev": "node server.js --lmdb --port 3333 --peer https://notabug.io/gun --render --index --tabulate",
     "build": "yarn buildui && yarn buildserver",
     "buildui": "cross-env-shell BABEL_ENV=client \"rimraf build && parcel build -d build src/index.html\" && yarn tohtdocs",
-    "tohtdocs": "copyfiles --up 1 build/* build/**/* htdocs",
-    "buildserver": "cross-env-shell BABEL_ENV=server \"rimraf server-build && parcel build -d server-build -o index.js -t node --no-minify src/server-peer.js\""
+    "buildserver": "cross-env-shell BABEL_ENV=server \"rimraf server-build && parcel build -d server-build -o index.js -t node --no-minify src/server-peer.js\"",
+    "clean": "rimraf build && rimraf server-build",
+    "tohtdocs": "copyfiles --up 1 build/* build/**/* htdocs"
   },
   "alias": {
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
-    "@notabug/gun-lmdb": "^0.1.0",
+    "@notabug/gun-lmdb": "^0.1.1",
     "@notabug/gun-receiver": "^0.5.0",
     "@notabug/gun-redis": "^0.9.0",
-    "@notabug/peer": "^0.22.3",
+    "@notabug/peer": "^0.22.4",
     "@tippy.js/react": "^2.1.2",
     "argon2-browser": "^1.5.3",
     "command-line-args": "^5.1.1",
@@ -75,10 +84,5 @@
     "parcel-bundler": "^1.12.3",
     "rimraf": "^2.6.3"
   },
-  "browserslist": [
-    ">0.05%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.05%", "not dead", "not ie <= 11", "not op_mini all"]
 }

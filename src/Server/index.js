@@ -34,7 +34,10 @@ if (options.lmdb)
 if (options.port) {
   nab = require("./http").initServer({
     ...peerOptions,
-    ...R.pick(["pistol", "render", "redis", "host", "port", "dev"], options)
+    ...R.pick(
+      ["pistol", "render", "redis", "lmdb", "host", "port", "dev"],
+      options
+    )
   });
 } else {
   nab = require("@notabug/peer").default(Gun, peerOptions);
@@ -49,6 +52,7 @@ if (options.index || options.tabulate || options.backindex) {
 
   nab.login(username, password).then(() => {
     let scopeParams;
+    const { pub } = nab.isLoggedIn();
 
     if (options.redis)
       scopeParams = {
