@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import { Config, Schema } from "@notabug/peer";
+import { ThingSet, Config, Schema } from "@notabug/peer";
 import { options } from "./options";
 import { owner, tabulator, indexer } from "/config";
 
@@ -69,7 +69,7 @@ if (options.index || options.tabulate || options.backindex) {
       nab.index(scopeParams);
       nab.tabulate(scopeParams);
 
-      const dayStr = "";
+      const dayStr = "/days/" + ThingSet.dayStr();
       const souls = [
         "nab/topics/all",
         "nab/topics/comments:all",
@@ -80,16 +80,17 @@ if (options.index || options.tabulate || options.backindex) {
       souls.forEach(soul =>
         nab.gun
           .get(soul)
-          .map()
           .once(node => {
-            const soul = R.pathOr("", ["_", "#"], node);
-            const thingId = R.propOr(
-              "",
-              "thingId",
-              Schema.Thing.route.match(soul)
-            );
-            if (!thingId) return;
-            features.forEach(feature => feature.enqueue(thingId));
+            const souls = R.keys(node);
+            souls.forEach(soul => {
+              const thingId = R.propOr(
+                "",
+                "thingId",
+                Schema.Thing.route.match(soul)
+              );
+              if (!thingId) return;
+              features.forEach(feature => feature.enqueue(thingId));
+            });
           })
       );
     } else {

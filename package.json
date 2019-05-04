@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.59.0",
+  "version": "0.59.1",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -21,7 +21,7 @@
     "reload": "pm2 reload http && pm2 reload index",
     "stop": "pm2 stop http && pm2 stop index && pm2 stop relay",
     "sync": "node server.js --lmdb --sync --peer https://notabug.io/gun",
-    "backindex": "node server.js --lmdb --backindex",
+    "backindex": "node --max-old-space-size=8192 server.js --evict --lmdb --backindex",
     "logs": "pm2 logs",
     "monit": "pm2 monit",
     "relay": "pm2 start relay.pm2.json",

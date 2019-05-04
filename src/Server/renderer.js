@@ -47,7 +47,7 @@ export default (nab, req, res) =>
         onlyOnce: true,
         getter,
         timeout: 1000,
-        isCached: false,
+        isCached: true,
         isCacheing: true
       }));
 
