@@ -895,10 +895,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/gun-lmdb@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.1.1.tgz#05c40ae5cef4603a4a142ab49d230df7cc5e914b"
-  integrity sha512-rZxXVCstBUQQDLJOT2nf/tpy8ttlivY5qp9owfIoojdNPsIJcpINIanz3Cj8K3mFJQjpaHgaiyGF4llrn88XSA==
+"@notabug/gun-lmdb@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.2.0.tgz#7524d128e47f409484427fd95b8611278fd93555"
+  integrity sha512-6PSYKi2X8iuaePoz9DMvoKertaLQcRphA6C/O3mTi+Sxl/LNvtpqoNOvTHIungHAuEWO+R00VU5pzpPF1lDwiw==
   dependencies:
     node-lmdb "^0.6.2"
 
@@ -907,19 +907,19 @@
   resolved "https://registry.yarnpkg.com/@notabug/gun-receiver/-/gun-receiver-0.5.0.tgz#e71bf8038479e6ff96e2381205d68d3acba56988"
   integrity sha512-fgYKDWkaAZqWTZ8f9Uagxeg/YzyUAyAQUClfowfwyrA8XP+ezw/pdCTZjKKulcK3eutlvsWrx8Ohd0cdNlT9HQ==
 
-"@notabug/gun-redis@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-redis/-/gun-redis-0.9.0.tgz#f667be11d069c1e51ce6c8c7cfc31ec48e6d91fe"
-  integrity sha512-xMb08UAn3SfDmwUozKG1Fzl7MQM1ffrmoDJvwI3rgEMpFwCiBGm0QnEwLHLRjFwX6o2Vb+u/CMbJb7U1gLLd7Q==
+"@notabug/gun-redis@^0.10.0":
+  version "0.10.0"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-redis/-/gun-redis-0.10.0.tgz#1d828fe9e13951915c96be48898aafafcbdcc04e"
+  integrity sha512-teN7vcI12rHPSDwZBZXCGKzcI5em08neGAuvpTUv1hrxMkjKr5jfJ5tb19PvrZP69ryaZPZJAET4Jw2HwAO16A==
   dependencies:
     flat "^4.1.0"
     ramda "^0.26.1"
     redis "^2.8.0"
 
-"@notabug/gun-scope@^0.9.0":
-  version "0.9.0"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-scope/-/gun-scope-0.9.0.tgz#503a0c8fc9188f28bbeb5fd4e8c961c724a78b3d"
-  integrity sha512-G2jB0tMAGMGmAcNuL839udsInt3KLVW58SM7ZDCysFQ3BRJrnwMXdVgzPfVIz/Sh5nJ2sULfB6F3MQN7NbaKXQ==
+"@notabug/gun-scope@^0.9.1":
+  version "0.9.1"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-scope/-/gun-scope-0.9.1.tgz#860bed371fb5dc0bb570989277c3b3ce899cfde6"
+  integrity sha512-MfB+8DtLxvt32SDY2CJtm7hpN+K+Sjc4JLs640wRNjJRj2niiKMaOMf5lnuOo1tcFPjhEheDjsiwVucJUHZrZg==
   dependencies:
     ramda "^0.26.1"
     zalgo-promise "1.0.28"
@@ -942,12 +942,12 @@
     ramda "^0.26.1"
     route-parser "^0.0.5"
 
-"@notabug/peer@^0.22.4":
-  version "0.22.4"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.22.4.tgz#279cb2b093e785ba401e9772c7d7c2bfb15546a5"
-  integrity sha512-OrmnjQv/c8Xn+8+EKMH2bPjRZ9fc4am2nRsrfWyebBE+xH991jIXcRMQgOTHyJ96e82qb3aw3t/ge82pm53y9g==
+"@notabug/peer@^0.23.1":
+  version "0.23.1"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.23.1.tgz#0dd4b7d0a26bf10bfe80c1ebfbf430649321e1d7"
+  integrity sha512-OJheBNmjrLYod0shqSy1uzpIkmgQQg0gk7K3gaXQfTMfvrISbFrshoiFOPbpMm4cp/3105QiBGsgiazTRgchfQ==
   dependencies:
-    "@notabug/gun-scope" "^0.9.0"
+    "@notabug/gun-scope" "^0.9.1"
     "@notabug/gun-suppressor" "^0.2.2"
     "@notabug/gun-suppressor-sear" "^0.3.1"
     argon2 "^0.21.0"

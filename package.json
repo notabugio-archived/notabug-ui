@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.58.1",
+  "version": "0.59.0",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -18,7 +18,10 @@
     "uidev": "node server.js --dev --lmdb --port 3333 --peer https://notabug.io/gun --render",
     "start": "pm2 start cluster.lmdb.pm2.json",
     "restart": "pm2 restart http && pm2 restart index",
+    "reload": "pm2 reload http && pm2 reload index",
     "stop": "pm2 stop http && pm2 stop index && pm2 stop relay",
+    "sync": "node server.js --lmdb --sync --peer https://notabug.io/gun",
+    "backindex": "node server.js --lmdb --backindex",
     "logs": "pm2 logs",
     "monit": "pm2 monit",
     "relay": "pm2 start relay.pm2.json",
@@ -34,10 +37,10 @@
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
-    "@notabug/gun-lmdb": "^0.1.1",
+    "@notabug/gun-lmdb": "^0.2.0",
     "@notabug/gun-receiver": "^0.5.0",
-    "@notabug/gun-redis": "^0.9.0",
-    "@notabug/peer": "^0.22.4",
+    "@notabug/gun-redis": "^0.10.0",
+    "@notabug/peer": "^0.23.1",
     "@tippy.js/react": "^2.1.2",
     "argon2-browser": "^1.5.3",
     "command-line-args": "^5.1.1",
@@ -84,5 +87,10 @@
     "parcel-bundler": "^1.12.3",
     "rimraf": "^2.6.3"
   },
-  "browserslist": [">0.05%", "not dead", "not ie <= 11", "not op_mini all"]
+  "browserslist": [
+    ">0.05%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }

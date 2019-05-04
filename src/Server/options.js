@@ -22,6 +22,7 @@ export const options = commandLineArgs([
   { name: "leech", type: Boolean, defaultValue: false },
   { name: "until", alias: "u", type: Number, defaultValue: 1000 },
   { name: "index", type: Boolean, defaultValue: false },
+  { name: "sync", type: Boolean, defaultValue: false },
   { name: "backindex", type: Boolean, defaultValue: false },
   { name: "listings", alias: "v", type: Boolean, defaultValue: false },
   { name: "spaces", alias: "s", type: Boolean, defaultValue: false },

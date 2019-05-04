@@ -1,5 +1,5 @@
 import * as R from "ramda";
-import { Schema, Config, ThingSet } from "@notabug/peer";
+import { Config, Schema } from "@notabug/peer";
 import { options } from "./options";
 import { owner, tabulator, indexer } from "/config";
 
@@ -47,13 +47,12 @@ if (options.port) {
 if (options.redis) nab.gun.redis = Gun.redis;
 if (options.lmdb) nab.gun.lmdb = Gun.lmdb;
 
+if (options.sync) nab.synchronize();
 if (options.index || options.tabulate || options.backindex) {
   const { username, password } = require("../../server-config.json");
 
   nab.login(username, password).then(() => {
     let scopeParams;
-    const { pub } = nab.isLoggedIn();
-
     if (options.redis)
       scopeParams = {
         noGun: true,
@@ -66,39 +65,36 @@ if (options.index || options.tabulate || options.backindex) {
         getter: soul => nab.gun.lmdb.read(soul)
       };
 
-    if (options.index) nab.index(scopeParams);
-    if (options.tabulate) nab.tabulate(scopeParams);
     if (options.backindex) {
-      nab.tabulate(scopeParams);
       nab.index(scopeParams);
+      nab.tabulate(scopeParams);
 
-      const indexThingSet = obj => {
-        const keys = R.keysIn(obj);
+      const dayStr = "";
+      const souls = [
+        "nab/topics/all",
+        "nab/topics/comments:all",
+        "nab/topics/chat:all"
+      ].map(soul => soul + dayStr);
+      const features = nab.oracle().features;
 
-        console.log("got obj", keys.length);
-        keys.forEach(soul => {
-          const thingId = R.propOr(
-            "",
-            "thingId",
-            Schema.Thing.route.match(soul)
-          );
-
-          if (!thingId) return;
-          nab.oracle().features.forEach(feature => feature.enqueue(thingId));
-        });
-      };
-
-      const dayStr = ThingSet.dayStr();
-
-      nab.gun.get(`nab/topics/all/days/${dayStr}`).once(obj => {
-        indexThingSet(obj);
-        nab.gun.get(`nab/topics/comments:all/days/${dayStr}`).once(obj => {
-          indexThingSet(obj);
-        });
-        nab.gun.get(`nab/topics/chat:all/days/${dayStr}`).once(obj => {
-          indexThingSet(obj);
-        });
-      });
+      souls.forEach(soul =>
+        nab.gun
+          .get(soul)
+          .map()
+          .once(node => {
+            const soul = R.pathOr("", ["_", "#"], node);
+            const thingId = R.propOr(
+              "",
+              "thingId",
+              Schema.Thing.route.match(soul)
+            );
+            if (!thingId) return;
+            features.forEach(feature => feature.enqueue(thingId));
+          })
+      );
+    } else {
+      if (options.index) nab.index(scopeParams);
+      if (options.tabulate) nab.tabulate(scopeParams);
     }
   });
 }
