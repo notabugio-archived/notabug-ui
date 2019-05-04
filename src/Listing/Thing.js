@@ -1,13 +1,13 @@
 import React, { useState, useContext, useCallback, useEffect } from "react";
 import * as R from "ramda";
-import { Loading, useQuery } from "utils";
-import { Config, Query, Schema } from "notabug-peer";
-import { useNotabug } from "NabContext";
-import { Submission } from "Submission";
-import { Comment } from "Comment";
-import { ChatMsg } from "Chat/ChatMsg";
-import { WikiPageContent } from "Wiki/PageContent";
-import { useVotable } from "Voting";
+import { Config, Query, Schema } from "@notabug/peer";
+import { Loading, useQuery } from "/utils";
+import { useNotabug } from "/NabContext";
+import { Submission } from "/Submission";
+import { Comment } from "/Comment";
+import { ChatMsg } from "/Chat/ChatMsg";
+import { WikiPageContent } from "/Wiki/PageContent";
+import { useVotable } from "/Voting";
 
 const components = {
   submission: Submission,

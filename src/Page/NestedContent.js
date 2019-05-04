@@ -1,10 +1,10 @@
 import React from "react";
-import { Dropdown, Link, ErrorBoundary } from "utils";
-import { NestedListing } from "Comment";
-import { Thing } from "Listing/Thing";
-import { default as Submission } from "Submission/Submission";
-import { SortSelector, CommentAreaTitle } from "snew-classic-ui";
-import { useNestedListingContext } from "Listing";
+import { SortSelector, CommentAreaTitle } from "/vendor/snew-classic-ui";
+import { Dropdown, Link, ErrorBoundary } from "/utils";
+import { NestedListing } from "/Comment";
+import { Thing } from "/Listing/Thing";
+import { default as Submission } from "/Submission/Submission";
+import { useNestedListingContext } from "/Listing";
 
 export const NestedContent = React.memo(
   ({ location: { pathname }, ListingContext }) => {

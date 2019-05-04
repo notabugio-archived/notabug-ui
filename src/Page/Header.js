@@ -1,7 +1,7 @@
 import React from "react";
-import { Link } from "utils";
-import { UserInfo } from "Auth";
-import { TopBar } from "Page/TopBar";
+import { Link } from "/utils";
+import { UserInfo } from "/Auth";
+import { TopBar } from "/Page/TopBar";
 
 export const PageHeader = ({ children }) => (
   <div id="header" role="banner">

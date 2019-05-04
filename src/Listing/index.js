@@ -7,8 +7,8 @@ import {
   useCallback
 } from "react";
 import * as R from "ramda";
-import { useNotabug } from "NabContext";
-import { useQuery, useScope } from "utils";
+import { useNotabug } from "/NabContext";
+import { useQuery, useScope } from "/utils";
 export { Thing } from "./Thing";
 
 const useListing = ({

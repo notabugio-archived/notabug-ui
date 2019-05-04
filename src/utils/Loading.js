@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/anchor-is-valid */
 import React from "react";
-import Spinner from "react-spinkit";
+import { Spinner } from "/utils/Spinner";
 import { JavaScriptRequired } from "./JavaScriptRequired";
 
 export const Loading = ({
@@ -10,22 +10,15 @@ export const Loading = ({
   name = "ball-grid-pulse"
 }) => (
   <JavaScriptRequired>
-    <div className="thing link" >
+    <div className="thing link">
       <a className="thumbnail">
-        {isVisible ? (
-          <Spinner
-            name={name}
-            color={color}
-          />
-        ) : null}
+        {isVisible ? <Spinner name={name} color={color} /> : null}
       </a>
       <div className="entry unvoted">
         <p className="title">
           <span>&nbsp;</span>
         </p>
-        <p className="tagline">
-          {message}
-        </p>
+        <p className="tagline">{message}</p>
         <ul className="flat-list buttons">
           <li className="first">
             <a href="">&nbsp;</a>

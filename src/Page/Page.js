@@ -1,9 +1,9 @@
 import React from "react";
-import { ErrorBoundary } from "utils";
-import { usePageContext } from "NabContext";
-import { PageTemplate } from "Page/Template";
-import { PageFooter } from "Page/Footer";
-import { ListingPage } from "Page/Listing";
+import { ErrorBoundary } from "/utils";
+import { usePageContext } from "/NabContext";
+import { PageTemplate } from "/Page/Template";
+import { PageFooter } from "/Page/Footer";
+import { ListingPage } from "/Page/Listing";
 
 export const Page = ({ listingParams, ...props }) => {
   const { idsQuery } = usePageContext();
@@ -14,7 +14,10 @@ export const Page = ({ listingParams, ...props }) => {
   return idsQuery ? (
     <PageTemplate {...props}>
       <ErrorBoundary>
-        <ListingPage {...{ ...props, listingParams }} key={`${pathname}?${search}`} />
+        <ListingPage
+          {...{ ...props, listingParams }}
+          key={`${pathname}?${search}`}
+        />
       </ErrorBoundary>
     </PageTemplate>
   ) : (

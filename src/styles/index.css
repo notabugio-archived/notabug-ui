@@ -90,6 +90,7 @@ body > .content .chat-listing .link .midcol,
 
 .sidebar-chat .content {
   position: relative;
+  padding-bottom: 1em;
 }
 
 .sidebar-chat .chat-input,

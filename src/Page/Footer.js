@@ -1,13 +1,11 @@
 import React, { useState, useCallback } from "react";
-import { Link } from "utils";
 import VisibilitySensor from "react-visibility-sensor";
 import isNode from "detect-node";
-import { useNotabug} from "NabContext";
+import { Link } from "/utils";
+import { useNotabug } from "/NabContext";
 
 const sitename = isNode ? "this peer" : window.location.hostname; // eslint-disable-line
-const version = isNode
-  ? require("../../package.json").version
-  : process.env.REACT_APP_VERSION;
+const version = require("../../package.json").version;
 
 export const PageFooter = () => {
   const { hasAttributedReddit, setHasAttributedReddit } = useNotabug();
@@ -53,7 +51,7 @@ export const PageFooter = () => {
               <h3>Interface Design</h3>
               <img
                 alt="Interface Design Powered by reddit."
-                src="/media/img/powered_by_reddit.png"
+                src={require("/media/img/powered_by_reddit.png")}
                 style={{
                   width: 140,
                   height: 47

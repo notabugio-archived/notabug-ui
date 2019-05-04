@@ -1,6 +1,6 @@
 import React, { forwardRef } from "react";
 import { Identicon } from "./Identicon";
-import { Link, ErrorBoundary } from "utils";
+import { Link, ErrorBoundary } from "/utils";
 import Tippy from "@tippy.js/react";
 
 const AuthorTooltip = forwardRef(({ author, author_fullname }, ref) => (

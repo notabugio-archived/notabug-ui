@@ -1,13 +1,13 @@
 import React, { Fragment, useMemo } from "react";
 // import { Helmet } from "react-helmet";
-import { usePageContext } from "NabContext";
+import { usePageContext } from "/NabContext";
 import { always } from "ramda";
 import { withRouter } from "react-router-dom";
 import { parse as parseURI } from "uri-js";
-import { ThingLink } from "snew-classic-ui";
-import { Markdown, Timestamp, Link, slugify, interceptClicks } from "utils";
+import { ThingLink } from "/vendor/snew-classic-ui";
+import { Markdown, Timestamp, Link, slugify, interceptClicks } from "/utils";
 import { Expando, getExpando } from "./Expando";
-import { AuthorLink } from "Auth";
+import { AuthorLink } from "/Auth";
 // import { SaveThingButton } from "SaveThing";
 
 const nsfwRe = /(nsfw|porn|hentai|ecchi|sex|jailbait|fuck|shit|piss|cunt|cock|penis|nigger|kike|nsfl)/i;
@@ -60,8 +60,8 @@ export const Submission = ({
   const domain = item.url
     ? (urlInfo.host || urlInfo.scheme || "").replace(/^www\./, "")
     : item.topic
-    ? `self.${item.topic}`
-    : null;
+      ? `self.${item.topic}`
+      : null;
   const { expandoType, image, video, iframe, EmbedComponent } = getExpando(
     item,
     domain,

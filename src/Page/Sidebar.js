@@ -1,9 +1,9 @@
 import React from "react";
-import { LoginFormSide, AuthorLink, SidebarUserSpaces } from "Auth";
-import { SidebarVotingStatus } from "Voting";
-import { WikiPageContent } from "Wiki";
-import { UserIdLink } from "Auth";
-import { Link } from "utils";
+import { LoginFormSide, AuthorLink, SidebarUserSpaces } from "/Auth";
+import { SidebarVotingStatus } from "/Voting";
+import { WikiPageContent } from "/Wiki";
+import { UserIdLink } from "/Auth";
+import { Link } from "/utils";
 
 export const PageSidebar = ({ profileId, name, hideLogin, children }) => (
   <div className="side">

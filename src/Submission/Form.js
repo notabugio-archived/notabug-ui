@@ -1,14 +1,14 @@
 import React, { useState, useCallback, useMemo } from "react";
 import * as R from "ramda";
-import { useNotabug, usePageContext } from "NabContext";
+import { useNotabug, usePageContext } from "/NabContext";
 import { withRouter } from "react-router-dom";
 import qs from "query-string";
-import slugify from "utils/slugify";
+import slugify from "/utils/slugify";
 import { parse as parseURI } from "uri-js";
-import { Constants } from "notabug-peer";
-import { SubmitPage } from "snew-classic-ui";
-import { PageTemplate, PageFooter } from "Page";
-import { Link, JavaScriptRequired } from "utils";
+import { Constants } from "@notabug/peer";
+import { SubmitPage } from "/vendor/snew-classic-ui";
+import { PageTemplate, PageFooter } from "/Page";
+import { Link, JavaScriptRequired } from "/utils";
 
 const preventDefault = fn => evt => {
   evt && evt.preventDefault();

@@ -1,9 +1,9 @@
 import React, { useContext, useState, useCallback } from "react";
 import { path } from "ramda";
-import { useNotabug } from "NabContext";
-import { Constants, Query } from "notabug-peer";
-import { CommentForm as SnewCommentForm } from "snew-classic-ui";
-import { JavaScriptRequired, useQuery } from "utils";
+import { Constants, Query } from "@notabug/peer";
+import { CommentForm as SnewCommentForm } from "/vendor/snew-classic-ui";
+import { useNotabug } from "/NabContext";
+import { JavaScriptRequired, useQuery } from "/utils";
 
 export const CommentForm = ({
   ListingContext,

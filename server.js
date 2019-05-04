@@ -1,3 +1,2 @@
-process.env.NODE_ENV = process.env.NODE_ENV || "production";
-require("ignore-styles");
-require("./server-build/index");
+process.env.REACT_SPINKIT_NO_STYLES = true;
+require("./server-build");

@@ -1,8 +1,8 @@
 import React, { useState, useCallback } from "react";
-import { ThingWikiPage } from "snew-classic-ui/components/ThingWikiPage";
-import { useEditText } from "utils/Markdown";
-import { useNotabug } from "NabContext";
-import { Constants } from "notabug-peer";
+import { ThingWikiPage } from "/vendor/snew-classic-ui/components/ThingWikiPage";
+import { useEditText } from "/utils/Markdown";
+import { useNotabug } from "/NabContext";
+import { Constants } from "@notabug/peer";
 
 export const WikiPageCreate = ({ name }) => {
   const { api, me } = useNotabug();

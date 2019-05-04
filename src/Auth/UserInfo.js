@@ -1,7 +1,7 @@
 import React from "react";
-import { useNotabug } from "NabContext";
-import { UserInfo as SnewUserInfo } from "snew-classic-ui";
-import { Link } from "utils";
+import { UserInfo as SnewUserInfo } from "/vendor/snew-classic-ui";
+import { useNotabug } from "/NabContext";
+import { Link } from "/utils";
 import { AuthorLink } from "./AuthorLink";
 
 export const UserInfo = props => {

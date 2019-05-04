@@ -1,10 +1,10 @@
-import { Page } from "notabug-peer";
-import { cached } from "utils";
-import { Page as PageComponent } from "Page";
-import { Reddit } from "static";
-import { LoginSignupPage } from "Auth";
-import { SubmissionForm } from "Submission/Form";
-import { WikiPage } from "Wiki";
+import { Page } from "@notabug/peer";
+import { cached } from "/utils";
+import { Page as PageComponent } from "/Page";
+import { Reddit } from "/static";
+import { LoginSignupPage } from "/Auth";
+import { SubmissionForm } from "/Submission/Form";
+import { WikiPage } from "/Wiki";
 
 const CachedPage = PageComponent || cached(PageComponent);
 const SubmitPage = SubmissionForm || cached(SubmissionForm);

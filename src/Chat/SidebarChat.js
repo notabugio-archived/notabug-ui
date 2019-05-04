@@ -1,8 +1,8 @@
 import React, { useMemo } from "react";
-import { Page, Constants } from "notabug-peer";
-import { Link, Markdown } from "utils";
-import { useListingContext } from "Listing";
-import { InfiniteContent } from "Page/InfiniteContent";
+import { Page, Constants } from "@notabug/peer";
+import { Link, Markdown } from "/utils";
+import { useListingContext } from "/Listing";
+import { InfiniteContent } from "/Page/InfiniteContent";
 
 const ChatLoading = () => (
   <div className="thing comment">
@@ -16,11 +16,9 @@ const ChatLoading = () => (
 );
 
 export const SidebarChat = ({ topic }) => {
-  const queries = useMemo(
-    () =>
-      Page.withListingMatch(`/t/${topic}/chat`),
-    [topic]
-  );
+  const queries = useMemo(() => Page.withListingMatch(`/t/${topic}/chat`), [
+    topic
+  ]);
   const { ids: idsQuery, space: specQuery } = queries;
   const { ListingContext, listingData } = useListingContext({
     idsQuery,

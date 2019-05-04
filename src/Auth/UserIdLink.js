@@ -1,6 +1,6 @@
 import React from "react";
-import { Query } from "notabug-peer";
-import { useQuery } from "utils";
+import { Query } from "@notabug/peer";
+import { useQuery } from "/utils";
 import { AuthorLink } from "./AuthorLink";
 
 export const UserIdLink = ({ userId }) => {

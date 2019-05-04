@@ -1,12 +1,13 @@
 import React, { useState, useCallback } from "react";
-import { useNotabug } from "NabContext";
-import Spinner from "react-spinkit";
-import { RegisterForm as SnewRegisterForm } from "snew-classic-ui";
-import { LoginForm as SnewLoginForm } from "snew-classic-ui";
-import { LoginFormSide as SnewLoginFormSide } from "snew-classic-ui";
-import { Page } from "Page";
-import { JavaScriptRequired } from "utils";
-import { Markdown, injectHook } from "utils";
+// import Spinner from "react-spinkit";
+import { Spinner } from "/utils/Spinner";
+import { useNotabug } from "/NabContext";
+import { RegisterForm as SnewRegisterForm } from "/vendor/snew-classic-ui";
+import { LoginForm as SnewLoginForm } from "/vendor/snew-classic-ui";
+import { LoginFormSide as SnewLoginFormSide } from "/vendor/snew-classic-ui";
+import { Page } from "/Page";
+import { JavaScriptRequired } from "/utils";
+import { Markdown, injectHook } from "/utils";
 
 export const useLoginSignup = () => {
   const { me, api, history, hasLocalStorage } = useNotabug();

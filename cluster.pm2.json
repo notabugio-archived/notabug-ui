@@ -6,7 +6,7 @@
       "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
-      "args": ["--port", "3333", "--redis", "--pistol", "--render"]
+      "args": ["--port", "3333", "--pistol", "--redis", "--render"]
     },
     {
       "name": "index",
@@ -17,8 +17,8 @@
       "args": [
         "--peer",
         "http://localhost:3333/gun",
+        "--evict",
         "--disableValidation",
-        "--redis",
         "--tabulate",
         "--index"
       ]

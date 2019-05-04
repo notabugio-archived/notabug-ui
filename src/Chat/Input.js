@@ -1,8 +1,8 @@
 import React, { Fragment, useContext, useState, useCallback } from "react";
 import { propOr } from "ramda";
 import isNode from "detect-node";
-import { Constants } from "notabug-peer";
-import { useNotabug } from "NabContext";
+import { Constants } from "@notabug/peer";
+import { useNotabug } from "/NabContext";
 
 export const ChatInput = ({ ListingContext }) => {
   const { me, api, onMarkMine } = useNotabug();
@@ -14,8 +14,9 @@ export const ChatInput = ({ ListingContext }) => {
   const onSend = useCallback(
     evt => {
       evt && evt.preventDefault();
-      if (!body || !body.trim() || body.length > Constants.MAX_THING_BODY_SIZE) return;
-      api.chat({ topic, body }).then((res) => {
+      if (!body || !body.trim() || body.length > Constants.MAX_THING_BODY_SIZE)
+        return;
+      api.chat({ topic, body }).then(res => {
         const id = res && res.id;
 
         if (!id) return;

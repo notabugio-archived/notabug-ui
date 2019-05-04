@@ -8,10 +8,10 @@ import {
   useMemo
 } from "react";
 import { assoc } from "ramda";
-import { isLocalStorageNameSupported } from "utils";
+import { isLocalStorageNameSupported } from "/utils";
 import isNode from "detect-node";
 // import fetch from "isomorphic-fetch";
-import notabugPeer from "notabug-peer";
+import notabugPeer from "@notabug/peer";
 const Gun = require("gun/gun");
 
 require("gun/lib/not");
@@ -127,7 +127,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     if (!isNode && api.gun) window.notabug = api;
     api.onLogin(didLogin);
 
-    if (alias && password)
+    if (alias && password) {
       api
         .login(alias, password)
         .catch(err => {
@@ -136,6 +136,14 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         .finally(() => {
           setIsLoggingIn(false);
         });
+      setTimeout(() => {
+        if (!api.isLoggedIn()) {
+          setIsLoggingIn(false)
+          localStorage.setItem("nabAlias", "");
+          localStorage.setItem("nabPassword", "");
+        }
+      }, 5000);
+    }
   }, [api]);
 
   return useMemo(

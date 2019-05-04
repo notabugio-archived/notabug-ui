@@ -1,6 +1,6 @@
 import React from "react";
-import { SpaceSpec } from "notabug-peer";
-import { Link, useQuery, useShowMore } from "utils";
+import { SpaceSpec } from "@notabug/peer";
+import { Link, useQuery, useShowMore } from "/utils";
 
 export const SidebarUserSpaces = ({ userId }) => {
   console.log("userId", userId);

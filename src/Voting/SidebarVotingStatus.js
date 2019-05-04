@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { VotingQueueContext } from "./hooks";
-import Spinner from "react-spinkit";
+import { Spinner } from "/utils/Spinner";
 import VisibilitySensor from "react-visibility-sensor";
 
 export const SidebarVotingStatus = React.memo(({ color = "#FF8B60" }) => {
