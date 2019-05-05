@@ -29,6 +29,7 @@ export const initServer = ({ port, host, render, ...options }) => {
     app.use(staticMedia);
     const renderer = require("./renderer").default;
 
+    app.get("/gun", (req, res) => res.end());
     app.get("*", expires(60), (...args) => renderer(nab, ...args));
   }
 

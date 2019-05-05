@@ -942,10 +942,10 @@
     ramda "^0.26.1"
     route-parser "^0.0.5"
 
-"@notabug/peer@^0.23.1":
-  version "0.23.1"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.23.1.tgz#0dd4b7d0a26bf10bfe80c1ebfbf430649321e1d7"
-  integrity sha512-OJheBNmjrLYod0shqSy1uzpIkmgQQg0gk7K3gaXQfTMfvrISbFrshoiFOPbpMm4cp/3105QiBGsgiazTRgchfQ==
+"@notabug/peer@^0.23.4":
+  version "0.23.4"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.23.4.tgz#7087e20b2eea8bd3494e714d6ff398c775d5a7bc"
+  integrity sha512-xKVDXntJ2M1UBwetZXpIQv9MN5j7U3BCwprFIccxLxplFdBAJov1/JR4oXMshUT14ggpuuTvLhluSRNakpcpwg==
   dependencies:
     "@notabug/gun-scope" "^0.9.1"
     "@notabug/gun-suppressor" "^0.2.2"
