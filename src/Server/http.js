@@ -2,14 +2,16 @@ import path from "path";
 import express from "express";
 import compression from "compression";
 import expires from "express-cache-headers";
+import fallback from "express-history-api-fallback";
 
 import init from "@notabug/peer";
 
 const Gun = (global.Gun = require("gun/gun"));
 const staticMedia = express.Router();
+const root = path.join(__dirname, "..", "htdocs");
 
 staticMedia.use(
-  express.static(path.join(__dirname, "..", "htdocs"), { index: false })
+  express.static(root, { index: false })
 );
 
 export const initServer = ({ port, host, render, ...options }) => {
@@ -17,20 +19,21 @@ export const initServer = ({ port, host, render, ...options }) => {
   let nab;
 
   app.use(compression());
+  app.use(staticMedia);
 
   if (options.dev) {
-    app.use(staticMedia);
     const Bundler = require("parcel-bundler");
     const bundler = new Bundler(
       path.join(__dirname, "..", "src", "index.html")
     );
     app.use(bundler.middleware());
   } else if (render) {
-    app.use(staticMedia);
     const renderer = require("./renderer").default;
 
     app.get("/gun", (req, res) => res.end());
     app.get("*", expires(60), (...args) => renderer(nab, ...args));
+  } else  {
+    app.use(fallback("index.html", { root }));
   }
 
   const web = app.listen(port, host);

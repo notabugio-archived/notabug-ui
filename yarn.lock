@@ -3181,6 +3181,11 @@ express-cache-headers@^0.1.4:
   resolved "https://registry.yarnpkg.com/express-cache-headers/-/express-cache-headers-0.1.4.tgz#097a7073a15d3e62d590b81a380e7457e0f6dacc"
   integrity sha512-dBYkl2mtb9slDlBIdCL2r8ORSUlhLs/o47498eCwx+s/z0fSfTdHWWo1Y1AyMDSzaw5LlYoGgggRYbT4GLdVPw==
 
+express-history-api-fallback@^2.2.1:
+  version "2.2.1"
+  resolved "https://registry.yarnpkg.com/express-history-api-fallback/-/express-history-api-fallback-2.2.1.tgz#3a2ad27f7bebc90fc533d110d7c6d83097bcd057"
+  integrity sha1-OirSf3vryQ/FM9EQ18bYMJe80Fc=
+
 express@^4.16.4:
   version "4.16.4"
   resolved "https://registry.yarnpkg.com/express/-/express-4.16.4.tgz#fddef61926109e24c515ea97fd2f1bdbf62df12e"
@@ -3605,10 +3610,10 @@ gud@^1.0.0:
   resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
-gun@^0.2019.426:
-  version "0.2019.426"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.426.tgz#b96d08f82e3da50d7b72f8b51bb560f8cc37e178"
-  integrity sha512-QYuVkUCLX5j+aYqF0iq4JoP35wyZ/+lua6qY5sYIxBHlSxwmfopVv7g4T/7H0AXVyOZdK4L6ZZE64XQrVlWyNw==
+gun@^0.2019.428:
+  version "0.2019.428"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.428.tgz#0531b57c60d6029743e79b2ed702bdfecf95f997"
+  integrity sha512-Rorky7/nSK7NsippcpO0K7jHtvNodIe9qCKQjCmdjFkXqsSHhjMbo2YK2/LB2xL+ckwAMbtUbusIGpcbngkPSA==
   dependencies:
     ws "~>6.2.1"
   optionalDependencies:

@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import Helmet from "react-helmet";
 import { Config } from "@notabug/peer";
 import qs from "query-string";
 import { NabContext, useNabGlobals } from "/NabContext";
@@ -39,6 +40,9 @@ export const NabProvider = withRouter(
 export const App = withRouter(
   React.memo(({ notabugApi, history }) => (
     <NabProvider {...{ notabugApi, history }}>
+      <Helmet>
+        <body className="loggedin subscriber" />
+      </Helmet>
       <ErrorBoundary>
         <VotingQueue>
           <Routing />
