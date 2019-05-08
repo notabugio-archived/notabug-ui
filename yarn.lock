@@ -895,17 +895,17 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/gun-lmdb@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.2.0.tgz#7524d128e47f409484427fd95b8611278fd93555"
-  integrity sha512-6PSYKi2X8iuaePoz9DMvoKertaLQcRphA6C/O3mTi+Sxl/LNvtpqoNOvTHIungHAuEWO+R00VU5pzpPF1lDwiw==
+"@notabug/gun-lmdb@^0.2.1":
+  version "0.2.1"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.2.1.tgz#232343081faa47273a0ded5cf1d0a3eab05e049a"
+  integrity sha512-Vw+gvlF9NbFLCLHXAscyC2B1TqdwvXY3PIxeQXakwvN7Sr3ULS0niLPTdc1lZi9SOdY4j4VtQBlDhhHx7NPzdQ==
   dependencies:
     node-lmdb "^0.6.2"
 
-"@notabug/gun-receiver@^0.5.0":
-  version "0.5.0"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-receiver/-/gun-receiver-0.5.0.tgz#e71bf8038479e6ff96e2381205d68d3acba56988"
-  integrity sha512-fgYKDWkaAZqWTZ8f9Uagxeg/YzyUAyAQUClfowfwyrA8XP+ezw/pdCTZjKKulcK3eutlvsWrx8Ohd0cdNlT9HQ==
+"@notabug/gun-receiver@^0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-receiver/-/gun-receiver-0.5.1.tgz#0b22e4c91905302608ba0da24e410380c2310e83"
+  integrity sha512-YSMalrX6/qJVJGTG5N9ugTfRAbMvZoTc/s3JAkZOPiV7S/zSkp0aADrfq1WZIj4yNLGUjNxcsvBFLSlZPHK1Jg==
 
 "@notabug/gun-redis@^0.10.0":
   version "0.10.0"
