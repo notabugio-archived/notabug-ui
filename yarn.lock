@@ -1157,6 +1157,14 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
+"@notabug/gun-http@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-http/-/gun-http-0.1.0.tgz#66836453306a0a968a21612ad156d121a5b7883e"
+  integrity sha512-GwgidRnEHiJPiT0ql4s3OYa6HObOJz1YJtYitemYb9inawDolX1EpFUMXrtBbVdcNmqsgDtTtwRnZfT+Odj+iA==
+  dependencies:
+    isomorphic-fetch "^2.2.1"
+    reconnecting-websocket "^4.1.10"
+
 "@notabug/gun-lmdb@^0.2.2":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.2.2.tgz#1f27167258cf10442604b05a6fe6c792c45c2c45"
@@ -4227,7 +4235,7 @@ isobject@^3.0.0, isobject@^3.0.1:
   resolved "https://registry.yarnpkg.com/isobject/-/isobject-3.0.1.tgz#4e431e92b11a9731636aa1f9c8d1ccbcfdab78df"
   integrity sha1-TkMekrEalzFjaqH5yNHMvP2reN8=
 
-isomorphic-fetch@^2.1.1:
+isomorphic-fetch@^2.1.1, isomorphic-fetch@^2.2.1:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/isomorphic-fetch/-/isomorphic-fetch-2.2.1.tgz#611ae1acf14f5e81f729507472819fe9733558a9"
   integrity sha1-YRrhrPFPXoH3KVB0coGf6XM1WKk=
@@ -6374,6 +6382,11 @@ rechoir@^0.6.2:
   integrity sha1-hSBLVNuoLVdC4oyWdW70OvUOM4Q=
   dependencies:
     resolve "^1.1.6"
+
+reconnecting-websocket@^4.1.10:
+  version "4.1.10"
+  resolved "https://registry.yarnpkg.com/reconnecting-websocket/-/reconnecting-websocket-4.1.10.tgz#15485b5c5266ab6dd99187e23e8da207d24c4270"
+  integrity sha512-x6vgqa8q9KRuJyFkOvBKH1TfyTmN5OWQUf1MIsblfOSY29VE+iI9cKqmIuPvg9TO/hUBxdmUIVutDkcdbqFwZg==
 
 redis-commands@^1.2.0:
   version "1.4.0"

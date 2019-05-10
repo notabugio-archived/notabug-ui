@@ -36,6 +36,10 @@ if (!isNode) {
     require("gun/lib/rindexed.js");
   }
   if (!/nosea/.test(window.location.search)) require("gun/sea");
+
+  require("@notabug/gun-http").attachToGun(Gun, {
+    peers: [window.location.origin.replace(/^http/, "ws") + "/gun"]
+  });
 }
 
 export const NabContext = createContext({});
@@ -54,12 +58,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       disableValidation: true,
       storeFn: INDEXEDDB ? RindexedDB : null,
       leech: true,
-      super: false,
-      // peers: isNode ? [] : ["https://notabug.io/gun"]
-      peers:
-        isNode || !!/nopeer/.test(window.location.search)
-          ? []
-          : [window.location.origin + "/gun"]
+      super: false
     });
 
     if (!isNode && !nab.scope) {
@@ -138,7 +137,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         });
       setTimeout(() => {
         if (!api.isLoggedIn()) {
-          setIsLoggingIn(false)
+          setIsLoggingIn(false);
           localStorage.setItem("nabAlias", "");
           localStorage.setItem("nabPassword", "");
         }

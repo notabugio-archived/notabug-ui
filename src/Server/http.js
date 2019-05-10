@@ -10,9 +10,7 @@ const Gun = (global.Gun = require("gun/gun"));
 const staticMedia = express.Router();
 const root = path.join(__dirname, "..", "htdocs");
 
-staticMedia.use(
-  express.static(root, { index: false })
-);
+staticMedia.use(express.static(root, { index: false }));
 
 export const initServer = ({ port, host, render, ...options }) => {
   const app = express();
@@ -20,6 +18,31 @@ export const initServer = ({ port, host, render, ...options }) => {
 
   app.use(compression());
   app.use(staticMedia);
+
+  if (options.lmdb) {
+    app.get("/gun/nodes/*", expires(60), async (req, res) => {
+      const soul = req.path.replace("/gun/nodes/", "");
+      const result = await nab.gun.lmdb.getRaw(soul);
+      if (!result) return res.status(404).end();
+      res.set("Content-Type", "application/json");
+      res.send(result || "");
+      res.end();
+    });
+  } else {
+    // This is untested, good luck.  LMDB really is the way to go
+    app.get("/gun/nodes/*", expires(60), async (req, res) => {
+      const soul = req.path.replace("/gun/nodes/", "");
+      const result = await new Promise((ok, fail) => {
+        gun
+          .get(soul)
+          .not(() => ok(null))
+          .once(ok);
+      });
+      if (!result) return res.status(404).end();
+      res.json(result);
+      res.end();
+    });
+  }
 
   if (options.dev) {
     const Bundler = require("parcel-bundler");
@@ -32,7 +55,7 @@ export const initServer = ({ port, host, render, ...options }) => {
 
     app.get("/gun", (req, res) => res.end());
     app.get("*", expires(60), (...args) => renderer(nab, ...args));
-  } else  {
+  } else {
     app.use(fallback("index.html", { root }));
   }
 
