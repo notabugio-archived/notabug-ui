@@ -23,11 +23,7 @@ export const initServer = ({ port, host, render, ...options }) => {
     app.get("/gun/nodes/*", expires(60), async (req, res) => {
       const soul = req.path.replace("/gun/nodes/", "");
       const result = await nab.gun.lmdb.getRaw(soul);
-      if (!result) {
-        nab.gun.get(soul).once(() => null);
-        return res.status(404).end();
-      }
-      nab.gun.get(soul)
+      if (!result) return res.status(404).end();
       res.set("Content-Type", "application/json");
       res.send(result || "");
       res.end();

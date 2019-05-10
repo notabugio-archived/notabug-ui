@@ -76,7 +76,14 @@ export default opts =>
     opts.redis ? skipValidatingKnownData : R.identity,
     db => db.onIn(validateMessage) && db,
     deduplicateMessages,
-    allowLeech,
+    db => {
+      db.onIn(msg => {
+        if (msg && msg.json && (msg.json.leech || msg.json.ping || msg.json.ok)) return;
+        return msg;
+      });
+      return db;
+    },
+    // allowLeech,
     opts.redis ? redisSupport : R.identity,
     opts.lmdb ? lmdbSupport : R.identity,
     relayMessages,
