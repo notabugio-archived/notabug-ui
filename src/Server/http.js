@@ -23,7 +23,11 @@ export const initServer = ({ port, host, render, ...options }) => {
     app.get("/gun/nodes/*", expires(60), async (req, res) => {
       const soul = req.path.replace("/gun/nodes/", "");
       const result = await nab.gun.lmdb.getRaw(soul);
-      if (!result) return res.status(404).end();
+      if (!result) {
+        nab.gun.get(soul).once(() => null);
+        return res.status(404).end();
+      }
+      nab.gun.get(soul)
       res.set("Content-Type", "application/json");
       res.send(result || "");
       res.end();
@@ -33,7 +37,7 @@ export const initServer = ({ port, host, render, ...options }) => {
     app.get("/gun/nodes/*", expires(60), async (req, res) => {
       const soul = req.path.replace("/gun/nodes/", "");
       const result = await new Promise((ok, fail) => {
-        gun
+        nab.gun
           .get(soul)
           .not(() => ok(null))
           .once(ok);
