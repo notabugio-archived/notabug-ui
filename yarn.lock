@@ -1172,6 +1172,13 @@
   dependencies:
     node-lmdb "^0.6.2"
 
+"@notabug/gun-openstack-swift@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-openstack-swift/-/gun-openstack-swift-0.1.0.tgz#d41fb29809fb9f93dbefac595736404e8ddb2173"
+  integrity sha512-r3J6WaB8+tIrEc+HunacuPuWQ7Ub5qHbio+SFNCyyZfZ6EHnE9n2P8dCKmTu+aVDztgvvksexaoqGtiCrHhnqw==
+  dependencies:
+    isomorphic-fetch "^2.2.1"
+
 "@notabug/gun-receiver@^0.5.1":
   version "0.5.1"
   resolved "https://registry.yarnpkg.com/@notabug/gun-receiver/-/gun-receiver-0.5.1.tgz#0b22e4c91905302608ba0da24e410380c2310e83"

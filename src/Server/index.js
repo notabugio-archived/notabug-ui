@@ -25,6 +25,13 @@ require("gun/lib/then");
 if (options.evict) require("gun/lib/les");
 if (options.debug) require("gun/lib/debug");
 if (options.redis) require("@notabug/gun-redis").attachToGun(Gun);
+if (options.openstack) {
+  const openStackOpts = {
+    url: options.openstack,
+    token: options.openstackToken
+  };
+  require("@notabug/gun-openstack-swift").attachToGun(Gun, openStackOpts);
+}
 if (options.lmdb)
   require("@notabug/gun-lmdb").attachToGun(Gun, {
     path: options.lmdbpath,
@@ -78,20 +85,18 @@ if (options.index || options.tabulate || options.backindex) {
       const features = nab.oracle().features;
 
       souls.forEach(soul =>
-        nab.gun
-          .get(soul)
-          .once(node => {
-            const souls = R.keys(node);
-            souls.forEach(soul => {
-              const thingId = R.propOr(
-                "",
-                "thingId",
-                Schema.Thing.route.match(soul)
-              );
-              if (!thingId) return;
-              features.forEach(feature => feature.enqueue(thingId));
-            });
-          })
+        nab.gun.get(soul).once(node => {
+          const souls = R.keys(node);
+          souls.forEach(soul => {
+            const thingId = R.propOr(
+              "",
+              "thingId",
+              Schema.Thing.route.match(soul)
+            );
+            if (!thingId) return;
+            features.forEach(feature => feature.enqueue(thingId));
+          });
+        })
       );
     } else {
       if (options.index) nab.index(scopeParams);
