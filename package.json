@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.60.3",
+  "version": "0.60.4",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -39,7 +39,7 @@
   "dependencies": {
     "@notabug/gun-http": "^0.1.1",
     "@notabug/gun-lmdb": "^0.2.2",
-    "@notabug/gun-openstack-swift": "^0.1.0",
+    "@notabug/gun-openstack-swift": "^0.1.1",
     "@notabug/gun-receiver": "^0.5.1",
     "@notabug/gun-redis": "^0.10.0",
     "@notabug/peer": "^0.23.4",
