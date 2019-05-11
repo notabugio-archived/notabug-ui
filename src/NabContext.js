@@ -37,6 +37,7 @@ if (!isNode) {
   }
   if (!/nosea/.test(window.location.search)) require("gun/sea");
 
+  if (!DISABLE_CACHE) require("@notabug/gun-localforage").attachToGun(Gun);
   require("@notabug/gun-http").attachToGun(Gun, {
     peers: [window.location.origin.replace(/^http/, "ws") + "/gun"]
   });

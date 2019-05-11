@@ -1157,10 +1157,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/gun-http@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-http/-/gun-http-0.1.1.tgz#5722c209f7d31d473930eeda397fab9be1bbcc62"
-  integrity sha512-kHTsg9EFTniiaqAJZGo+2hyYnVRO6Ue9GQQVHdgLk3s/Z5zaRaNW8xBhibyiNUEZ7N3ncIpnFOfX+OO8xl/Vkg==
+"@notabug/gun-http@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-http/-/gun-http-0.1.2.tgz#d5193da78d08c7ce40930e2835e0fb930e48e41e"
+  integrity sha512-G3ZqCC/GvHVG40OIku3j4FIIesV8a+i28813VixHx1OGQQndZjqPpNSwZU7BrdobaZLZCKg5QvoAoS6AGxICvw==
   dependencies:
     isomorphic-fetch "^2.2.1"
     reconnecting-websocket "^4.1.10"
@@ -1171,6 +1171,13 @@
   integrity sha512-VWgpIJMcBNiOu/O9I1m6ymBxmkwjap2845Hfl0yQ6xLxYt5SqEJojlYnhxRa6uwV3SF8Wb+Z/Lmizg3un3Bfew==
   dependencies:
     node-lmdb "^0.6.2"
+
+"@notabug/gun-localforage@^0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-localforage/-/gun-localforage-0.1.0.tgz#7da03b0bf586261a58068c6d711a96f4127bac94"
+  integrity sha512-kUKHTBPD0uhVIEn9ujDh40IUI/rT0U+B6VkciXrX/d5GTrDPlzYS6V1dvTyoJRvg6WzRuCam2VOsANu+HZ1YMw==
+  dependencies:
+    localforage "^1.7.3"
 
 "@notabug/gun-openstack-swift@^0.1.1":
   version "0.1.1"
@@ -3917,6 +3924,11 @@ image-size@~0.5.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.5.5.tgz#09dfd4ab9d20e29eb1c3e80b8990378df9e3cb9c"
   integrity sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=
 
+immediate@~3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
+  integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
+
 import-fresh@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
@@ -4464,6 +4476,13 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
+lie@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  integrity sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=
+  dependencies:
+    immediate "~3.0.5"
+
 load-script@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/load-script/-/load-script-1.0.0.tgz#0491939e0bee5643ee494a7e3da3d2bac70c6ca4"
@@ -4473,6 +4492,13 @@ loaders.css@^0.1.2:
   version "0.1.2"
   resolved "https://registry.yarnpkg.com/loaders.css/-/loaders.css-0.1.2.tgz#3a9fb43726c73334a38142af9d0629019b658743"
   integrity sha1-Op+0NybHMzSjgUKvnQYpAZtlh0M=
+
+localforage@^1.7.3:
+  version "1.7.3"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.7.3.tgz#0082b3ca9734679e1bd534995bdd3b24cf10f204"
+  integrity sha512-1TulyYfc4udS7ECSBT2vwJksWbkwwTX8BzeUIiq8Y07Riy7bDAAnxDaPU/tWyOVmQAcWJIEIFP9lPfBGqVoPgQ==
+  dependencies:
+    lie "3.1.1"
 
 locate-path@^2.0.0:
   version "2.0.0"
