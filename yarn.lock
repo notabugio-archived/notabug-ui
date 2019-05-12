@@ -1172,10 +1172,10 @@
   dependencies:
     node-lmdb "^0.6.2"
 
-"@notabug/gun-localforage@^0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-localforage/-/gun-localforage-0.1.0.tgz#7da03b0bf586261a58068c6d711a96f4127bac94"
-  integrity sha512-kUKHTBPD0uhVIEn9ujDh40IUI/rT0U+B6VkciXrX/d5GTrDPlzYS6V1dvTyoJRvg6WzRuCam2VOsANu+HZ1YMw==
+"@notabug/gun-localforage@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-localforage/-/gun-localforage-0.1.1.tgz#19811da0b500445c14cb9e52b2fd92d11a1fcbff"
+  integrity sha512-cOL1kcfDlolJv8kKJzUx9+/OLacmNDNe/wRq4Sdr3qlSlkmqF9J37wlE80qHWcKy63n93d1genMXeMi0hu+sEA==
   dependencies:
     localforage "^1.7.3"
 
