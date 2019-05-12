@@ -1179,10 +1179,10 @@
   dependencies:
     localforage "^1.7.3"
 
-"@notabug/gun-openstack-swift@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-openstack-swift/-/gun-openstack-swift-0.1.1.tgz#3888a70d21abdb2f776dea1e8ca1af03b1d116f5"
-  integrity sha512-vmgaiNHVnycJbOzF88gK/mjhB41+ZwTeuos/YUvwSEG4fNQ2Y+3XGNihkdfXEMtPtPmpnhoCKDOE1xkwvyQB1Q==
+"@notabug/gun-openstack-swift@^0.2.0":
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-openstack-swift/-/gun-openstack-swift-0.2.0.tgz#ada762f8bc44ec0cceec665e42c20302e51b56ff"
+  integrity sha512-SOId8txkp05MGQIjR8FA6UWsStEB3H9MIeO/RfMqcyUP5DJ6/qYrsSCP6ksnGxYo2caUUHd5PXwVXxhFdMvTaQ==
   dependencies:
     isomorphic-fetch "^2.2.1"
 

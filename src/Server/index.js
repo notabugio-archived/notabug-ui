@@ -27,8 +27,7 @@ if (options.debug) require("gun/lib/debug");
 if (options.redis) require("@notabug/gun-redis").attachToGun(Gun);
 if (options.openstack) {
   const openStackOpts = {
-    url: options.openstack,
-    token: options.openstackToken
+    url: options.openstack
   };
   require("@notabug/gun-openstack-swift").attachToGun(Gun, openStackOpts);
 }

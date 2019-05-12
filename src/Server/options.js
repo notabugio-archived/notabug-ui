@@ -88,6 +88,5 @@ export const options = commandLineArgs([
     type: Boolean,
     defaultValue: false
   },
-  { name: "openstack", type: String },
-  { name: "openstackToken", type: String }
+  { name: "openstack", type: String }
 ]);
