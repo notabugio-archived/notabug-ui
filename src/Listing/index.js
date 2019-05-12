@@ -4,9 +4,11 @@ import {
   useMemo,
   useContext,
   useEffect,
-  useCallback
+  useCallback,
+  useRef
 } from "react";
 import * as R from "ramda";
+import { Schema } from "@notabug/peer";
 import { useNotabug } from "/NabContext";
 import { useQuery, useScope } from "/utils";
 export { Thing } from "./Thing";
@@ -98,15 +100,23 @@ export const useListingContent = ({ ids, indexer }) => {
     [content]
   );
 
+  const chains = useRef({});
+
   useEffect(() => {
-    Promise.all(
-      ids.map(id =>
-        api.queries
-          .thingData(scope, id)
-          .then(data => setContent(R.assoc(id, data)))
-      )
-    );
+    for (let thingId of ids) {
+      if (thingId in chains.current) continue;
+      chains.current[thingId] = api.gun
+        .get(Schema.Thing.route.reverse({ thingId }))
+        .get("data")
+        .on(result => result && setContent(R.assoc(thingId, result)));
+    }
   }, [ids]);
+
+  useEffect(
+    () => () =>
+      Object.values(chains.current).forEach(chain => chain && chain.off()),
+    []
+  );
 
   return { replyTree, content };
 };

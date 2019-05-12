@@ -1179,10 +1179,10 @@
   dependencies:
     localforage "^1.7.3"
 
-"@notabug/gun-openstack-swift@^0.2.1":
-  version "0.2.1"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-openstack-swift/-/gun-openstack-swift-0.2.1.tgz#471fa0ef7bde6a819e212307a3b3e0ee19de21ab"
-  integrity sha512-JBMzHL6iyrZ38q/WugLtyX0Y4ZJU/+TY6WczMFUBq9u77xYnXrFIzRDWlZfFHOqqXjkonf44uGUzlL3EuGtW0Q==
+"@notabug/gun-openstack-swift@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-openstack-swift/-/gun-openstack-swift-0.2.2.tgz#77dda3c751b533b18085dec76214d0a265216288"
+  integrity sha512-tWu7Huzr1gir+eVo/F6k0Gu2TiTHMJfgqSy42slI5rV3UPrsbWEcP4ywwud4M1GSiO54huAkXejA8h3kIdbuxA==
   dependencies:
     isomorphic-fetch "^2.2.1"
 
@@ -1226,10 +1226,10 @@
     ramda "^0.26.1"
     route-parser "^0.0.5"
 
-"@notabug/peer@^0.23.4":
-  version "0.23.4"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.23.4.tgz#7087e20b2eea8bd3494e714d6ff398c775d5a7bc"
-  integrity sha512-xKVDXntJ2M1UBwetZXpIQv9MN5j7U3BCwprFIccxLxplFdBAJov1/JR4oXMshUT14ggpuuTvLhluSRNakpcpwg==
+"@notabug/peer@^0.23.5":
+  version "0.23.5"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.23.5.tgz#f287f8fd5f4dfe3ded8f32d2404433e564d011d1"
+  integrity sha512-fE+s+moS2gV6cVSRQD9nrz2BtzGvEvPZqoXiUUQ0VGuyrIfYL8lpme2bgk76k1hY49xWGrFuxiO1o/OtbaaNsw==
   dependencies:
     "@notabug/gun-scope" "^0.9.1"
     "@notabug/gun-suppressor" "^0.2.2"
