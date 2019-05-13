@@ -46,9 +46,7 @@ export default (nab, req, res) =>
         noGun: !!options.redis || options.lmdb,
         onlyOnce: true,
         getter,
-        timeout: 1000,
-        isCached: true,
-        isCacheing: true
+        timeout: 1000
       }));
 
       try {
@@ -57,7 +55,7 @@ export default (nab, req, res) =>
             .withMatch(R.assoc("query", req.query, routeMatch))
             .preload(scope);
         }
-        const data = scope.getCache();
+        const data = scope.getGraph();
         const props = { context: {}, location: url };
         const html = renderToString(
           <Router {...props}>

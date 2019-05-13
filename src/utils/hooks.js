@@ -18,30 +18,13 @@ export const useToggle = (defaultState = false) => {
 
 export const useScope = (deps = [], opts = {}) => {
   const { api } = useNotabug();
-  const scope = useMemo(() => {
+  return useMemo(() => {
     if (isNode) return api.scope;
-
     return api.newScope({
       ...opts,
-      cache: api.scope.getCache(),
-      onlyCache: false,
-      isCached: true,
-      isCacheing: false
+      graph: api.scope.getGraph()
     });
   }, deps);
-
-  /*
-  useEffect(() => {
-    if (scope === api.scope) return null;
-    const updateCache = soul => {
-      if (!soul) scope.loadCachedResults(api.scope.getCache());
-    };
-
-    api.scope.on(updateCache);
-    return () => api.scope.off(updateCache);
-  }, [scope]);
-  */
-  return scope;
 };
 
 export const useQuery = (query, args = [], name = "unknown") => {

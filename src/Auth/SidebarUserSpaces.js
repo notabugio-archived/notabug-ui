@@ -3,7 +3,6 @@ import { SpaceSpec } from "@notabug/peer";
 import { Link, useQuery, useShowMore } from "/utils";
 
 export const SidebarUserSpaces = ({ userId }) => {
-  console.log("userId", userId);
   const [spaceNames = []] = useQuery(SpaceSpec.userSpaceNames, [userId]);
   const { visibleCount, moreCount, onShowMore } = useShowMore(spaceNames);
   const hasMore = moreCount > 0;

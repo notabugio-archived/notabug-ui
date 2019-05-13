@@ -65,9 +65,9 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     if (!isNode && !nab.scope) {
       if (DISABLE_CACHE) console.log("CACHE DISABLED");
       nab.scope = nab.newScope({
-        cache: DISABLE_CACHE ? {} : window.initNabState,
+        graph: DISABLE_CACHE ? {} : window.initNabState,
         onlyCache: false,
-        isCached: !DISABLE_CACHE,
+        isCached: false,
         isCacheing: false
       });
     }
