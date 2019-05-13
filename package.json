@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.61.6",
+  "version": "0.61.7",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -43,7 +43,7 @@
     "@notabug/gun-openstack-swift": "^0.2.2",
     "@notabug/gun-receiver": "^0.5.1",
     "@notabug/gun-redis": "^0.10.0",
-    "@notabug/peer": "^0.24.2",
+    "@notabug/peer": "^0.24.3",
     "@tippy.js/react": "^2.1.2",
     "argon2-browser": "^1.5.3",
     "command-line-args": "^5.1.1",
