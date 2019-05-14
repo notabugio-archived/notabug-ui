@@ -54,6 +54,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     if (notabugApi) return notabugApi;
     const nab = notabugPeer(Gun, {
       noGun: !!isNode,
+      faith: true,
       localStorage: LOCAL_STORAGE && hasLocalStorage,
       persist: INDEXEDDB,
       disableValidation: true,
