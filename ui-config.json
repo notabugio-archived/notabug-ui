@@ -1,7 +1,5 @@
 {
-  "dev_owner": "cTh9ZMX9seZnbUJNCdtZJTzNJa8TPjAvvYebRaPi9gs.YH0ImCG_2nKo21ZWxXqDOMsCLjjA0IFOBgR9CJ0-Yl0",
-  "dev_tabulator": "cTh9ZMX9seZnbUJNCdtZJTzNJa8TPjAvvYebRaPi9gs.YH0ImCG_2nKo21ZWxXqDOMsCLjjA0IFOBgR9CJ0-Yl0",
-  "dev_indexer": "cTh9ZMX9seZnbUJNCdtZJTzNJa8TPjAvvYebRaPi9gs.YH0ImCG_2nKo21ZWxXqDOMsCLjjA0IFOBgR9CJ0-Yl0",
+  "useHttpGets": false,
   "owner": "CEyKrDd1xyPXpWSV00MgvnZY2VJLHXgzCvhMeDwKTYA.yjSq0DyXzzhB_ZXr_DzfJgij3tXU0-3t0Q5bJAtZpj8",
   "tabulator": "CEyKrDd1xyPXpWSV00MgvnZY2VJLHXgzCvhMeDwKTYA.yjSq0DyXzzhB_ZXr_DzfJgij3tXU0-3t0Q5bJAtZpj8",
   "indexer": "CEyKrDd1xyPXpWSV00MgvnZY2VJLHXgzCvhMeDwKTYA.yjSq0DyXzzhB_ZXr_DzfJgij3tXU0-3t0Q5bJAtZpj8"

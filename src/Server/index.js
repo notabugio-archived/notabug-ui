@@ -75,7 +75,7 @@ if (options.index || options.tabulate || options.backindex) {
       nab.index(scopeParams);
       nab.tabulate(scopeParams);
 
-      const dayStr = "/days/" + ThingSet.dayStr();
+      const dayStr = ""; // "/days/" + ThingSet.dayStr();
       const souls = [
         "nab/topics/all",
         "nab/topics/comments:all",

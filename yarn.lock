@@ -1226,10 +1226,10 @@
     ramda "^0.26.1"
     route-parser "^0.0.5"
 
-"@notabug/peer@^0.25.6":
-  version "0.25.6"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.25.6.tgz#9cab25e8e1a5ef45e7ea41f9a4bed7f9f729d724"
-  integrity sha512-eNUF2gdeROy2bVBzAWZnWeHR42W9qPFRvGGZ4klrzZn1gv7orCImjeoCuHsUtwnWAC/ctqONhFLMUwyJqvvuTg==
+"@notabug/peer@^0.26.0":
+  version "0.26.0"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.26.0.tgz#f1dcab3a3591074ddd9f47b823b6a4417f383acf"
+  integrity sha512-j0dcaQg7PEzVdFNPwYMLiBrA0W6VcTyKrUR43k4Uj5wjBelllZo2jP5T5B2KQqQQOODeORq6ffqk7+0/ewrWAw==
   dependencies:
     "@notabug/gun-scope" "^0.10.0"
     "@notabug/gun-suppressor" "^0.2.2"

@@ -12,6 +12,7 @@ import { isLocalStorageNameSupported } from "/utils";
 import isNode from "detect-node";
 // import fetch from "isomorphic-fetch";
 import notabugPeer from "@notabug/peer";
+import { useHttp } from "/config";
 const Gun = require("gun/gun");
 
 require("gun/lib/not");
@@ -37,11 +38,17 @@ if (!isNode) {
   }
   if (!/nosea/.test(window.location.search)) require("gun/sea");
 
-  if (!DISABLE_CACHE) require("@notabug/gun-localforage").attachToGun(Gun);
-  require("@notabug/gun-http").attachToGun(Gun, {
-    peers: [window.location.origin.replace(/^http/, "ws") + "/gun"]
-  });
+  if (useHttp) {
+    if (!DISABLE_CACHE) require("@notabug/gun-localforage").attachToGun(Gun);
+
+    require("@notabug/gun-http").attachToGun(Gun, {
+      root: typeof useHttp === "string" ? useHttp : "/gun/nodes/",
+      peers: [window.location.origin.replace(/^http/, "ws") + "/gun"]
+    });
+  }
 }
+
+console.log({ useHttp });
 
 export const NabContext = createContext({});
 export const useNotabug = () => useContext(NabContext);
@@ -60,7 +67,8 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       disableValidation: true,
       storeFn: INDEXEDDB ? RindexedDB : null,
       leech: true,
-      super: false
+      super: false,
+      peers: useHttp || isNode ? [] : [`${window.location.origin}/gun`]
     });
 
     if (!isNode && !nab.scope) {
