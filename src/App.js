@@ -41,6 +41,7 @@ export const App = withRouter(
   React.memo(({ notabugApi, history }) => (
     <NabProvider {...{ notabugApi, history }}>
       <Helmet>
+        <title>notabug: the back page of the internet</title>
         <body className="loggedin subscriber" />
       </Helmet>
       <ErrorBoundary>

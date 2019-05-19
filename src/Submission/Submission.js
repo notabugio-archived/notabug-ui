@@ -1,5 +1,5 @@
 import React, { Fragment, useMemo } from "react";
-// import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet";
 import { usePageContext } from "/NabContext";
 import { always } from "ramda";
 import { withRouter } from "react-router-dom";
@@ -60,8 +60,8 @@ export const Submission = ({
   const domain = item.url
     ? (urlInfo.host || urlInfo.scheme || "").replace(/^www\./, "")
     : item.topic
-      ? `self.${item.topic}`
-      : null;
+    ? `self.${item.topic}`
+    : null;
   const { expandoType, image, video, iframe, EmbedComponent } = getExpando(
     item,
     domain,
@@ -70,11 +70,11 @@ export const Submission = ({
 
   return (
     <Fragment>
-      {/* isViewing ? (
+      {isDetail ? (
         <Helmet>
           <title>{item.title}</title>
         </Helmet>
-      ) : null*/}
+      ) : null}
       <ThingLinkComponent
         nofollow
         {...{
