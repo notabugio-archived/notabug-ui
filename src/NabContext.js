@@ -48,8 +48,6 @@ if (!isNode) {
   }
 }
 
-console.log({ useHttp });
-
 export const NabContext = createContext({});
 export const useNotabug = () => useContext(NabContext);
 export const PageContext = createContext({});
@@ -79,6 +77,20 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         isCached: false,
         isCacheing: false
       });
+
+      /*
+      if (!DISABLE_CACHE) {
+        const meta = function() {};
+        meta.faith = true;
+
+        db.on("in", {
+          put: window.initNabState || {},
+          from: "http",
+          err: null,
+          _: meta
+        });
+      }
+      */
     }
     return nab;
   }, [notabugApi]);
