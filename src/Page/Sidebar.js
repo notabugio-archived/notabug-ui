@@ -18,7 +18,10 @@ export const PageSidebar = ({ profileId, name, hideLogin, children }) => (
                 author_fullname={profileId}
               />
             </h1>
-            <WikiPageContent {...{ identifier: profileId, name: "profile" }} />
+            <WikiPageContent
+              key={profileId}
+              {...{ identifier: profileId, name: "profile" }}
+            />
           </div>
         </div>
         <SidebarUserSpaces userId={profileId} />
