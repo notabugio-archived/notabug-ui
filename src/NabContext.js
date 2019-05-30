@@ -154,7 +154,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         .catch(err => {
           console.error("autologin failed", err);
         })
-        .finally(() => {
+        .then(() => {
           setIsLoggingIn(false);
         });
       setTimeout(() => {
