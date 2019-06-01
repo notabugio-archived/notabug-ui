@@ -16,9 +16,9 @@
 
 ## Mirror
 
-    docker run --name=nab-mirror -p 3333:3333 notabug/nab --evict --lmdb --pistol --peer https://notabug.io/gun --render
+    docker run --name=nab-mirror -v `pwd`/lmdbdata:/notabug/lmdbdata -p 3333:3333 notabug/nab --evict --lmdb --peer https://notabug.io/gun --pistol --render
 
-notabug will then be available on localhost:3333
+notabug will then be available on localhost:3333 and will store its database at ./lmdbdata on your host
 
 ## Development
 
@@ -31,7 +31,9 @@ You must rebuild docker image for this to pick up any src changes for serverside
 
 ### UI Development
 
-    docker run --name=nab-uidev -v `pwd`/src:/notabug/src -p 3333:3333 nab --evict --lmdb --pistol --peer https://notabug.io/gun --dev
+    docker run --name=nab-uidev -v `pwd`/lmdbdata:/notabug/lmdbdata -v `pwd`/src:/notabug/src -p 3333:3333 nab --evict --lmdb --peer https://notabug.io/gun --dev
+
+notabug will then be available on localhost:3333  and will store its database at ./lmdbdata on your host
 
 This will not do SSR, it will rebuild the UI whenever src changes, useful for UI development
 
