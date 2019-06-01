@@ -12,25 +12,26 @@
  * mutable: edits are supported for authenticated content
  * PoW-based: **voting is slow/CPU heavy**
 
-## Docker Usage
+# Docker Usage
 
+## Mirror
+
+    docker run --name=nab-mirror -p 3333:3333 notabug/nab --evict --lmdb --pistol --peer https://notabug.io/gun --render
+
+notabug will then be available on localhost:3333
+
+## Development
 
 ### Build
 
     git clone https://github.com/notabugio/notabug.git && cd notabug
     docker build ./ -t nab
 
-### Mirror
-
-    docker run --name=nab-mirror -p 3333:3333 nab --peer https://notabug.io/gun --lmdb --pistol --render
-
-You must rebuild docker image for this to pick up any src changes
-
-nab will then be available on localhost:3333
+You must rebuild docker image for this to pick up any src changes for serverside rendering
 
 ### UI Development
 
-    docker run --name=nab-uidev -v `pwd`/src:/notabug/src -p 3333:3333 nab --peer https://notabug.io/gun --lmdb --pistol --dev
+    docker run --name=nab-uidev -v `pwd`/src:/notabug/src -p 3333:3333 nab --evict --lmdb --pistol --peer https://notabug.io/gun --dev
 
 This will not do SSR, it will rebuild the UI whenever src changes, useful for UI development
 
