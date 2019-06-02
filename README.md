@@ -20,7 +20,16 @@
 
 notabug will then be available on localhost:3333 and will store its database at ./lmdbdata on your host
 
-## Development
+### UI Development
+
+    git clone https://github.com/notabugio/notabug.git && cd notabug
+    docker run --name=nab-uidev -v `pwd`/lmdbdata:/notabug/lmdbdata -v `pwd`/src:/notabug/src -p 3333:3333 -p 3334:3334 nab --evict --lmdb --peer https://notabug.io/gun --dev
+
+notabug will then be available on localhost:3333  and will store its database at ./lmdbdata on your host
+
+This will not do SSR, it will rebuild and refresh the UI whenever src changes.
+
+## General Development
 
 ### Build
 
@@ -28,14 +37,6 @@ notabug will then be available on localhost:3333 and will store its database at 
     docker build ./ -t nab
 
 You must rebuild docker image for this to pick up any src changes for serverside rendering
-
-### UI Development
-
-    docker run --name=nab-uidev -v `pwd`/lmdbdata:/notabug/lmdbdata -v `pwd`/src:/notabug/src -p 3333:3333 nab --evict --lmdb --peer https://notabug.io/gun --dev
-
-notabug will then be available on localhost:3333  and will store its database at ./lmdbdata on your host
-
-This will not do SSR, it will rebuild the UI whenever src changes, useful for UI development
 
 ---
 

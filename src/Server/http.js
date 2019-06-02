@@ -47,7 +47,10 @@ export const initServer = ({ port, host, render, ...options }) => {
   if (options.dev) {
     const Bundler = require("parcel-bundler");
     const bundler = new Bundler(
-      path.join(__dirname, "..", "src", "index.html")
+      path.join(__dirname, "..", "src", "index.html"),
+      {
+        hmrPort: process.env.HMRPORT || 3334
+      }
     );
     app.use(bundler.middleware());
   } else if (render) {
