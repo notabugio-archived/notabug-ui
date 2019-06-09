@@ -11,6 +11,7 @@ export const ThingCommentEntry = React.memo(
     isVotingDown,
     onVoteUp,
     onVoteDown,
+    isCommand,
     ...props
   }) => (
     <SnewThingCommentEntry
@@ -32,6 +33,14 @@ export const ThingCommentEntry = React.memo(
           </span>
         </Fragment>
       }
+      postTagline={isCommand ? (
+        <>
+          {" "}
+          <span className="stamp">
+            {props.body.split("\n")[0].trim()}
+          </span>
+        </>
+      ) : null}
       onVoteUp={onVoteUp}
       onVoteDown={onVoteDown}
     />

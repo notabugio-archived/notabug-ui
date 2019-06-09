@@ -1,6 +1,6 @@
 import React, { useState, useContext, useCallback, useEffect } from "react";
 import * as R from "ramda";
-import { Config, Query, Schema } from "@notabug/peer";
+import { Config, Query, Schema, ThingDataNode } from "@notabug/peer";
 import { Loading, useQuery } from "/utils";
 import { useNotabug } from "/NabContext";
 import { Submission } from "/Submission";
@@ -55,6 +55,7 @@ export const Thing = React.memo(
     if (!body.split) body = JSON.stringify(body);
     const lineCount = body.length / 100 + body.split("\n").length - 1;
     const collapseThreshold = lineCount / 10.0 - 4;
+    const isCommand = ThingDataNode.isCommand(item);
 
     const onToggleExpando = useCallback(
       evt => {
@@ -81,7 +82,7 @@ export const Thing = React.memo(
     const score = parseInt(R.prop("score", scores), 10) || 0;
     const ThingComponent = item ? components[item.kind] : null;
     const collapsed =
-      !isMine && !!(collapseThreshold !== null && score < collapseThreshold);
+      !isMine && (isCommand || !!(collapseThreshold !== null && score < collapseThreshold));
     const tsts = R.path(["_", ">", "timestamp"], item);
     const bodyts = R.path(["_", ">", "body"], item);
     const edited = tsts !== bodyts && bodyts;
@@ -147,6 +148,7 @@ export const Thing = React.memo(
       isShowingReply,
       hideReply,
       isDetail,
+      isCommand,
       asSource,
       isMine,
       isVotingUp,
