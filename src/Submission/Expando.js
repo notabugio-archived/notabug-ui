@@ -116,55 +116,87 @@ export const getExpando = (item, rawDomain, urlInfo) => {
   ) {
     iframe = item.url.replace(".gifv", "/embed");
   } else {
-    iframe =
-      domain === "bitchute.com" && item.url.indexOf("/video/") !== -1
-        ? "https://www.bitchute.com/embed/" +
-          item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
-        : domain === "d.tube"
-          ? item.url.replace("d.tube/#!/v", "emb.d.tube/#!")
-          : domain === "invidio.us"
-            ? "https://invidio.us/embed/" + query.v
-            : domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1
-              ? "https://www.dailymotion.com/embed/video/" +
-          item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
-              : domain === "vevo.com" && item.url.indexOf("/watch/") !== -1
-                ? "https://embed.vevo.com?isrc=" +
-          item.url.substring(item.url.lastIndexOf("/") + 1, item.url.length)
-                : domain === "gfycat.com" && item.url.indexOf("/detail/") !== -1
-                  ? "https://gfycat.com/ifr/" +
-          item.url.substring(item.url.indexOf("/detail/") + 8, item.url.length)
-                  : domain === "gfycat.com" && item.url.indexOf(".com/") !== -1
-                    ? "https://gfycat.com/ifr/" +
-          item.url.substring(item.url.indexOf(".com/") + 5, item.url.length)
-                    : domain === "giphy.com" && item.url.indexOf("/html5") !== -1
-                      ? "https://giphy.com/embed/" +
-          item.url
-            .substring(item.url.lastIndexOf("/gifs/") + 6, item.url.length)
-            .replace("/html5", "")
-                      : domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1
-                        ? "https://giphy.com/embed/" +
-          item.url.substring(item.url.lastIndexOf("-") + 1, item.url.length)
-                        : domain === "pornhub.com" && query.viewkey
-                          ? `https://www.pornhub.com/embed/${query.viewkey}`
-                          : domain === "liveleak.com"
-                            ? item.url.replace("/view", "/ll_embed")
-                            : domain === "rutube.ru" && item.url.indexOf("/video/") !== -1
-                              ? "https://rutube.ru/play/embed/" +
-          item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
-                              : null;
+    iframe = findIframe(item, domain, query);
   }
 
   const image =
     iframe || EmbedComponent
       ? null
       : item.url && matchesExt(imgExts, item.url)
-        ? item.url
-        : null;
+      ? item.url
+      : null;
+
   const expandoType = item.body
     ? "selftext"
     : image || EmbedComponent || iframe
-      ? "video"
-      : null;
+    ? "video"
+    : null;
 
   return { expandoType, image, iframe, reactPlayer, EmbedComponent };
+};
+
+const findIframe = (item, domain, query) => {
+  if (domain === "bitchute.com" && item.url.indexOf("/video/") !== -1) {
+    return (
+      "https://www.bitchute.com/embed/" +
+      item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
+    );
+  }
+  if (domain === "d.tube")
+    return item.url.replace("d.tube/#!/v", "emb.d.tube/#!");
+  if (domain === "invidio.us") return "https://invidio.us/embed/" + query.v;
+  if (domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1) {
+    return (
+      "https://www.dailymotion.com/embed/video/" +
+      item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
+    );
+  }
+  if (domain === "vevo.com" && item.url.indexOf("/watch/") !== -1) {
+    return (
+      "https://embed.vevo.com?isrc=" +
+      item.url.substring(item.url.lastIndexOf("/") + 1, item.url.length)
+    );
+  }
+  if (domain === "gfycat.com" && item.url.indexOf("/detail/") !== -1) {
+    return (
+      "https://gfycat.com/ifr/" +
+      item.url.substring(item.url.indexOf("/detail/") + 8, item.url.length)
+    );
+  }
+  if (domain === "gfycat.com" && item.url.indexOf(".com/") !== -1) {
+    return (
+      "https://gfycat.com/ifr/" +
+      item.url.substring(item.url.indexOf(".com/") + 5, item.url.length)
+    );
+  }
+  if (domain === "giphy.com" && item.url.indexOf("/html5") !== -1) {
+    return (
+      "https://giphy.com/embed/" +
+      item.url
+        .substring(item.url.lastIndexOf("/gifs/") + 6, item.url.length)
+        .replace("/html5", "")
+    );
+  }
+  if (domain === "giphy.com" && item.url.indexOf("/gifs/") !== -1) {
+    return (
+      "https://giphy.com/embed/" +
+      item.url.substring(item.url.lastIndexOf("-") + 1, item.url.length)
+    );
+  }
+  if (domain === "pornhub.com" && query.viewkey) {
+    return `https://www.pornhub.com/embed/${query.viewkey}`;
+  }
+  if (domain === "liveleak.com") {
+    return item.url.replace("/view", "/ll_embed");
+  }
+  if (domain === "youporn.com") {
+    return item.url.replace("/watch", "/embed");
+  }
+  if (domain === "rutube.ru" && item.url.indexOf("/video/") !== -1) {
+    return (
+      "https://rutube.ru/play/embed/" +
+      item.url.substring(item.url.indexOf("/video/") + 7, item.url.length)
+    );
+  }
+  return null;
 };
