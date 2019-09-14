@@ -1304,10 +1304,10 @@
     ramda "^0.26.1"
     route-parser "^0.0.5"
 
-"@notabug/peer@^0.30.2":
-  version "0.30.2"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.30.2.tgz#0b876ab8d1d1b1f87f5120c5cd1e04b1429735e0"
-  integrity sha512-IxcO2y71xjQctk8iBxx+/lqtgQxOxMyYNqS7uTg8Gf5UHRKk8UJXkm9pBUaAvPZaiB5NlCN6LkevDLxgBFy7uQ==
+"@notabug/peer@^0.30.3":
+  version "0.30.3"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.30.3.tgz#a4d15a5378c07fd614027fd4ba31b3ae831b8e8d"
+  integrity sha512-TWfwTK0no/ksdpTGadDGJsXboL4QMj5Uk4bKTJ+J/9uP5rIRGRAjAmzmaE2ulvRjKhCH9G1iEzGyY6g6qEKjng==
   dependencies:
     "@notabug/gun-scope" "^0.10.0"
     "@notabug/gun-suppressor" "^0.2.2"
@@ -3856,10 +3856,10 @@ gud@^1.0.0:
   resolved "https://registry.yarnpkg.com/gud/-/gud-1.0.0.tgz#a489581b17e6a70beca9abe3ae57de7a499852c0"
   integrity sha512-zGEOVKFM5sVPPrYs7J5/hYEw2Pof8KCyOwyhG8sAF26mCAeUFAcYPu1mwB7hhpIP29zOIBaDqwuHdLp0jvZXjw==
 
-gun@^0.2019.726:
-  version "0.2019.726"
-  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.726.tgz#9b3614d3ccc4ce13de2bb7330807c6c61fc06100"
-  integrity sha512-LVSxhGwaemZbrirSk6fp2KXORLUyjs6bnssjSjl/OhwbfLv7fvMhNfaOZuorzYsehxqMKJvxyNdFq/mZNXpjHQ==
+gun@^0.2019.910:
+  version "0.2019.910"
+  resolved "https://registry.yarnpkg.com/gun/-/gun-0.2019.910.tgz#2dffc768852d862277c822d75948e6b587aee820"
+  integrity sha512-rKy8uOn030G56HjiFQUkxn9UZ+dq9GWAJL+Le+XYlEukFTKU0JbyB2pjr49uWZK8u/Nis6VjNn2aM5GzFmgNIQ==
   dependencies:
     ws "~>7.1.0"
   optionalDependencies:

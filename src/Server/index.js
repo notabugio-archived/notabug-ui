@@ -47,7 +47,10 @@ if (options.port) {
     )
   })
 } else {
-  nab = require('@notabug/peer').default(Gun, peerOptions)
+  nab = require('@notabug/peer').default(Gun, {
+    ...peerOptions,
+    multicast: false
+  })
   nab.gun.get('~@').once(() => null)
 }
 
