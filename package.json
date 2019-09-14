@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.66.0",
+  "version": "0.66.1",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -16,6 +16,7 @@
   "scripts": {
     "mirror": "node server.js --lmdb --port 3333 --peer https://notabug.io/gun --render",
     "uidev": "node server.js --dev --lmdb --port 3333 --peer https://notabug.io/gun --render",
+    "log": "node server.js --logging --peer https://notabug.io/gun --pistol",
     "start": "pm2 start cluster.lmdb.pm2.json",
     "restart": "pm2 restart http && pm2 restart index",
     "reload": "pm2 reload http && pm2 reload index",
@@ -42,17 +43,18 @@
     "@notabug/gun-localforage": "^0.2.0",
     "@notabug/gun-openstack-swift": "^0.2.2",
     "@notabug/gun-receiver": "^0.5.1",
+    "@notabug/gun-receiver-log": "^0.0.1",
     "@notabug/gun-redis": "^0.10.0",
-    "@notabug/peer": "^0.30.0",
+    "@notabug/peer": "^0.30.1",
     "@tippy.js/react": "^2.2.0",
-    "argon2-browser": "^1.5.3",
+    "argon2-browser": "1.5.3",
     "command-line-args": "^5.1.1",
     "compression": "^1.7.4",
     "detect-node": "^2.0.4",
     "express": "^4.17.1",
     "express-cache-headers": "^0.1.4",
     "express-history-api-fallback": "^2.2.1",
-    "gun": "^0.2019.515",
+    "gun": "^0.2019.726",
     "jdenticon": "^2.1.1",
     "lodash.debounce": "^4.0.8",
     "parcel-plugin-static-files-copy": "^2.1.2",
@@ -75,7 +77,9 @@
     "serialize-javascript": "2.1.0",
     "snudown-js": "^3.1.5",
     "text-encoding": "^0.7.0",
-    "uri-js": "^4.2.2"
+    "uri-js": "^4.2.2",
+    "winston": "^3.2.1",
+    "winston-daily-rotate-file": "^4.1.0"
   },
   "devDependencies": {
     "@babel/core": "7.6.0",
