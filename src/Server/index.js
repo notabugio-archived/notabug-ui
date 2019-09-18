@@ -1,7 +1,9 @@
 import * as R from 'ramda'
 import { ThingSet, Config, Schema } from '@notabug/peer'
+import WS from 'ws'
 import { options } from './options'
 import { owner, tabulator, indexer } from '/config'
+import { ChainGunSear } from '@notabug/chaingun-sear'
 
 Config.update({ owner, tabulator, indexer })
 const Gun = (global.Gun = require('gun/sea').Gun)
@@ -47,8 +49,9 @@ if (options.port) {
     )
   })
 } else {
-  nab = require('@notabug/peer').default(Gun, {
+  nab = require('@notabug/peer').default(ChainGunSear, {
     ...peerOptions,
+    WS,
     multicast: false
   })
   nab.gun.get('~@').once(() => null)
@@ -62,7 +65,11 @@ if (options.index || options.tabulate || options.backindex) {
   const { username, password } = require('../../server-config.json')
 
   nab.login(username, password).then(() => {
-    let scopeParams
+    console.log('logged in', username)
+    let scopeParams = {
+      unsub: true
+    }
+    /*
     if (options.redis) {
       scopeParams = {
         noGun: true,
@@ -76,6 +83,7 @@ if (options.index || options.tabulate || options.backindex) {
         getter: soul => nab.gun.lmdb.read(soul)
       }
     }
+    */
 
     if (options.backindex) {
       nab.index(scopeParams)

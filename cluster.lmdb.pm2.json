@@ -6,7 +6,7 @@
       "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
-      "args": ["--port", "3333", "--pistol", "--lmdb", "--render"]
+      "args": ["--peer", "https://notabug.io/gun", "--port", "3333", "--pistol", "--logging", "--lmdb"]
     },
     {
       "name": "index",
@@ -17,11 +17,20 @@
       "args": [
         "--peer",
         "http://localhost:3333/gun",
-        "--lmdb",
         "--disableValidation",
-        "--evict",
-        "--tabulate",
         "--index"
+      ]
+    }, {
+      "name": "tabulate",
+      "exec_mode": "cluster",
+      "instances": 1,
+      "script": "./server.js",
+      "env": { "NODE_ENV": "production" },
+      "args": [
+        "--peer",
+        "http://localhost:3333/gun",
+        "--disableValidation",
+        "--tabulate"
       ]
     }
   ]

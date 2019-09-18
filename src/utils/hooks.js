@@ -18,13 +18,20 @@ export const useToggle = (defaultState = false) => {
 
 export const useScope = (deps = [], opts = {}) => {
   const { api } = useNotabug()
-  return useMemo(() => {
+  const scope = useMemo(() => {
     if (isNode) return api.scope
+
     return api.newScope({
       ...opts,
+      unsub: true,
+      gun: api.gun.chaingun,
       graph: api.scope.getGraph()
     })
   }, deps)
+
+  useEffect(() => () => scope.off(), [])
+
+  return scope
 }
 
 export const useQuery = (query, args = [], name = 'unknown') => {

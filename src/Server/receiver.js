@@ -31,9 +31,9 @@ const validateMessage = ({ json, skipValidation, ...msg }) => {
 const lmdbConf = { path: options.lmdbpath, mapSize: options.lmdbmapsize }
 
 const lmdbSupport = R.pipe(
-  lmdb.respondToGets(Gun, { disableRelay: false }, lmdbConf),
+  lmdb.respondToGets(Gun, { disableRelay: true }, lmdbConf),
   chainInterface,
-  lmdb.acceptWrites(Gun, { disableRelay: false }, lmdbConf)
+  lmdb.acceptWrites(Gun, { disableRelay: true }, lmdbConf)
 )
 
 const logging = () => {

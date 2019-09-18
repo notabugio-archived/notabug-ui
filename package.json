@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.66.3",
+  "version": "0.67.0",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -38,14 +38,15 @@
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
+    "@notabug/chaingun-sear": "^0.0.1",
     "@notabug/gun-http": "^0.2.0",
     "@notabug/gun-lmdb": "^0.2.2",
     "@notabug/gun-localforage": "^0.2.0",
     "@notabug/gun-openstack-swift": "^0.2.2",
-    "@notabug/gun-receiver": "^0.5.1",
+    "@notabug/gun-receiver": "^0.5.2",
     "@notabug/gun-receiver-log": "^0.0.1",
     "@notabug/gun-redis": "^0.10.0",
-    "@notabug/peer": "^0.30.3",
+    "@notabug/peer": "^0.32.0",
     "@tippy.js/react": "^2.2.0",
     "argon2-browser": "1.5.3",
     "command-line-args": "^5.1.1",
@@ -74,12 +75,14 @@
     "react-spinkit": "^3.0.0",
     "react-timeago": "^4.4.0",
     "react-visibility-sensor": "^5.0.2",
+    "reconnecting-websocket": "^4.2.0",
     "serialize-javascript": "2.1.0",
     "snudown-js": "^3.1.5",
     "text-encoding": "^0.7.0",
     "uri-js": "^4.2.2",
     "winston": "^3.2.1",
-    "winston-daily-rotate-file": "^4.1.0"
+    "winston-daily-rotate-file": "^4.1.0",
+    "ws": "^7.1.2"
   },
   "devDependencies": {
     "@babel/core": "7.6.0",
