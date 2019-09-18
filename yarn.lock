@@ -1228,12 +1228,13 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/chaingun-sear@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.1.tgz#99afe3611be01a3af7fe98c2363f327e2da8b4c7"
-  integrity sha512-ZW2AOpPsHFrPrnbqVHIe6qYwZjPyKEbg+hLlzMbz1Ac7ciiMyIpPHX0r8sag8rwm6h7qVlDvSpFjPOpv6ariyw==
+"@notabug/chaingun-sear@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.2.tgz#89d3e2231826cdcca2fc0ea1dfb2af5d0924d6c5"
+  integrity sha512-q6MttYdk+cOmuv1SatQCz9TWnosLCmBqByYFPUvYgfwT/RkWiO+lSUnbruT50fay1f2nF/P97qxnohpMyn9Bcg==
   dependencies:
     "@notabug/chaingun" "^0.0.2"
+    "@notabug/gun-sear" "^0.0.10"
 
 "@notabug/chaingun@^0.0.2":
   version "0.0.2"
@@ -1297,6 +1298,16 @@
   dependencies:
     ramda "^0.26.1"
     zalgo-promise "1.0.28"
+
+"@notabug/gun-sear@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-sear/-/gun-sear-0.0.10.tgz#27a8fd37d52c8fe0b13f58bcdc59547d363b4c58"
+  integrity sha512-EMNiBLxMwIAw6CUTKCPnA9oBKGVBoAOyYtiQQX9r5dzVx9cMg8b1ghosdhWqdafBAWjFkYzDQF5GrQslkRqJrg==
+  dependencies:
+    "@peculiar/webcrypto" "^1.0.19"
+    "@types/window-or-global" "^1.0.0"
+    text-encoding "^0.7.0"
+    window-or-global "^1.0.1"
 
 "@notabug/gun-suppressor-sear@^0.3.1":
   version "0.3.1"
@@ -1404,6 +1415,33 @@
     "@parcel/utils" "^1.11.0"
     physical-cpu-count "^2.0.0"
 
+"@peculiar/asn1-schema@^1.0.3":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@peculiar/asn1-schema/-/asn1-schema-1.0.3.tgz#e55ff9e98a1cf31832629aabacf85be3edf13a48"
+  integrity sha512-Tfgj9eNJ6cTKEtEuidKenLHMx/Q5M8KEE9hnohHqvdpqHJXWYr5RlT3GjAHPjGXy5+mr7sSfuXfzE6aAkEGN7A==
+  dependencies:
+    asn1js "^2.0.22"
+    tslib "^1.9.3"
+
+"@peculiar/json-schema@^1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@peculiar/json-schema/-/json-schema-1.1.5.tgz#376e0e978d2bd7132487a5679ab375a34313e73f"
+  integrity sha512-y5XYA3pf9+c+YKVpWnPtQbNmlNCs2ehNHyMLJvq4K5Fjwc1N64YGy7MNecKW3uYLga+sqbGTQSUdOdlnaRRbpA==
+  dependencies:
+    tslib "^1.9.3"
+
+"@peculiar/webcrypto@^1.0.19":
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/@peculiar/webcrypto/-/webcrypto-1.0.19.tgz#45dd199c57ee655f9efd0332aca6fd53801d89f7"
+  integrity sha512-+lF69A18LJBLp0/gJIQatCARLah6cTUmLwY0Cdab0zsk+Z53BcpjKQyyP4LIN8oW601ZXv28mWEQ4Cm7MllF6w==
+  dependencies:
+    "@peculiar/asn1-schema" "^1.0.3"
+    "@peculiar/json-schema" "^1.1.5"
+    asn1js "^2.0.26"
+    pvtsutils "^1.0.6"
+    tslib "^1.10.0"
+    webcrypto-core "^1.0.14"
+
 "@phc/format@^0.5.0":
   version "0.5.0"
   resolved "https://registry.yarnpkg.com/@phc/format/-/format-0.5.0.tgz#a99d27a83d78b3100a191412adda04315e2e3aba"
@@ -1479,6 +1517,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-12.7.4.tgz#64db61e0359eb5a8d99b55e05c729f130a678b04"
   integrity sha512-W0+n1Y+gK/8G2P/piTkBBN38Qc5Q1ZSO6B5H3QmPCUewaiXOo2GCAWZ4ElZCcNhjJuBSUSLGFUJnmlCn5+nxOQ==
 
+"@types/node@^10.14.17":
+  version "10.14.18"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-10.14.18.tgz#b7d45fc950e6ffd7edc685e890d13aa7b8535dce"
+  integrity sha512-ryO3Q3++yZC/+b8j8BdKd/dn9JlzlHBPdm80656xwYUdmPkpTGTjkAdt6BByiNupGPE8w0FhBgvYy/fX9hRNGQ==
+
 "@types/node@^8.0.7":
   version "8.10.46"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-8.10.46.tgz#12161db48a775e8c69c1cfff2be545610381056f"
@@ -1488,6 +1531,11 @@
   version "1.5.2"
   resolved "https://registry.yarnpkg.com/@types/q/-/q-1.5.2.tgz#690a1475b84f2a884fd07cd797c00f5f31356ea8"
   integrity sha512-ce5d3q03Ex0sy4R14722Rmt6MT07Ua+k4FwDfdcToYJcMKNtRVQvJ6JCAPdAmAnbRb6CsX6aYb9m96NGod9uTw==
+
+"@types/window-or-global@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@types/window-or-global/-/window-or-global-1.0.0.tgz#b4bc8480c37fe4bac2355f7a92c9ffcd84822c94"
+  integrity sha1-tLyEgMN/5LrCNV96ksn/zYSCLJQ=
 
 abab@^2.0.0:
   version "2.0.0"
@@ -1718,6 +1766,13 @@ asn1@~0.2.3:
   integrity sha512-jxwzQpLQjSmWXgwaCZE9Nz+glAG01yF1QnWgbhGwHI5A6FRIEY6IVqtHhIepHqI7/kyEyQEagBC5mBEFlIYvdg==
   dependencies:
     safer-buffer "~2.1.0"
+
+asn1js@^2.0.22, asn1js@^2.0.26:
+  version "2.0.26"
+  resolved "https://registry.yarnpkg.com/asn1js/-/asn1js-2.0.26.tgz#0a6d435000f556a96c6012969d9704d981b71251"
+  integrity sha512-yG89F0j9B4B0MKIcFyWWxnpZPLaNTjCj4tkE3fjbAoo0qmpGw0PYYqSbX/4ebnd9Icn8ZgK4K1fvDyEtW1JYtQ==
+  dependencies:
+    pvutils latest
 
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
@@ -6383,6 +6438,19 @@ punycode@^2.1.0, punycode@^2.1.1:
   resolved "https://registry.yarnpkg.com/punycode/-/punycode-2.1.1.tgz#b58b010ac40c22c5657616c8d2c2c02c7bf479ec"
   integrity sha512-XRsRjdf+j5ml+y/6GKHPZbrF/8p2Yga0JPtdqTIY2Xe5ohJPD9saDJJLPvp9+NSBprVvevdXZybnj2cv8OEd0A==
 
+pvtsutils@^1.0.4, pvtsutils@^1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/pvtsutils/-/pvtsutils-1.0.6.tgz#e3883fd77abdd4c124131f6a49f3914cd9f21290"
+  integrity sha512-0yNrOdJyLE7FZzmeEHTKanwBr5XbmDAd020cKa4ZiTYuGMBYBZmq7vHOhcOqhVllh6gghDBbaz1lnVdOqiB7cw==
+  dependencies:
+    "@types/node" "^10.14.17"
+    tslib "^1.10.0"
+
+pvutils@latest:
+  version "1.0.17"
+  resolved "https://registry.yarnpkg.com/pvutils/-/pvutils-1.0.17.tgz#ade3c74dfe7178944fe44806626bd2e249d996bf"
+  integrity sha512-wLHYUQxWaXVQvKnwIDWFVKDJku9XDCvyhhxoq8dc5MFdIlRenyPI9eSfEtcvgHgD7FlvCyGAlWgOzRnZD99GZQ==
+
 q@^1.1.2:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/q/-/q-1.5.1.tgz#7e32f75b41381291d04611f1bf14109ac00651d7"
@@ -7849,7 +7917,7 @@ tslib@1.9.3, tslib@^1.7.1, tslib@^1.9.3:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.9.3.tgz#d7e4dd79245d85428c4d7e4822a79917954ca286"
   integrity sha512-4krF8scpejhaOgqzBEcGM7yDIEfi0/8+8zDRZhNZZ2kjmHJ4hv3zCbQWxoJGz1iw5U0Jl0nma13xzHXcncMavQ==
 
-tslib@^1.9.0:
+tslib@^1.10.0, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
   integrity sha512-qOebF53frne81cf0S9B41ByenJ3/IuH8yJKngAX35CmiZySA0khhkovshKK+jGCaMnVomla7gVlIcc3EvKPbTQ==
@@ -8170,6 +8238,14 @@ webcrypto-core@^0.1.26:
   dependencies:
     tslib "^1.7.1"
 
+webcrypto-core@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/webcrypto-core/-/webcrypto-core-1.0.14.tgz#c015088fbc9c235ebd8b35047a131c5ff58f7152"
+  integrity sha512-iGZQcH/o3Jv6mpvCbzan6uAcUcLTTnUCil6RVYakcNh5/QXIKRRC06EFxHru9lHgVKucZy3gG4OBiup0IsOr0g==
+  dependencies:
+    pvtsutils "^1.0.4"
+    tslib "^1.10.0"
+
 webidl-conversions@^4.0.2:
   version "4.0.2"
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-4.0.2.tgz#a855980b1f0b6b359ba1d5d9fb39ae941faa63ad"
@@ -8233,6 +8309,11 @@ wide-align@^1.1.0:
   integrity sha512-QGkOQc8XL6Bt5PwnsExKBPuMKBxnGxWWW3fU55Xt4feHozMUhdUMaBCk290qpm/wG5u/RSKzwdAC4i51YigihA==
   dependencies:
     string-width "^1.0.2 || 2"
+
+window-or-global@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/window-or-global/-/window-or-global-1.0.1.tgz#dbe45ba2a291aabc56d62cf66c45b7fa322946de"
+  integrity sha1-2+RboqKRqrxW1iz2bEW3+jIpRt4=
 
 winston-daily-rotate-file@^4.1.0:
   version "4.1.0"
