@@ -1228,18 +1228,18 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/chaingun-sear@^0.0.3":
-  version "0.0.3"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.3.tgz#7e65120abca246bd3278d320d534638a9372518f"
-  integrity sha512-QbsUgEzqhERoAT5/Nidy7P1O55YQDrVJyqqwrfL4pqp9iKaPXaFSckYvspFZmQFWUuXrxWeLsN8BZuXvd75G1w==
+"@notabug/chaingun-sear@^0.0.4":
+  version "0.0.4"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.4.tgz#51ed39cbfd96257af464de8fa5dc98c0dcb29c5c"
+  integrity sha512-lswuMlnvmvyRMMFLsXxlcTyY3/A+2AYEaTYtRd4CcQ2S0QShL9xuJ/p0IgJJ+sEcmKZ9f/C5OKrPPn4a517xcQ==
   dependencies:
-    "@notabug/chaingun" "^0.0.7"
-    "@notabug/gun-sear" "^0.0.10"
+    "@notabug/chaingun" "^0.0.8"
+    "@notabug/gun-sear" "^0.0.12"
 
-"@notabug/chaingun@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun/-/chaingun-0.0.7.tgz#c1b2734a96de0178827a805c216a881c3a258366"
-  integrity sha512-X5PjpQGcoQprDcO916Az8I6Vziyjf9i8UdJay0u64DtgDARnOs+mvkgnFskUi/49DCvwMMNGBD+80A/pG+dL+g==
+"@notabug/chaingun@^0.0.8":
+  version "0.0.8"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun/-/chaingun-0.0.8.tgz#58c6d817a14f08608d349acfa0513f8d3f7ad60e"
+  integrity sha512-uHCD7zebcok7DG9Gm5mAvfCSbyMzo1PABA41TblwsfCQrPYvz1sCTobg3eiAaYtBYsTAAgtLeN0tEw1O9qr0MA==
   dependencies:
     reconnecting-websocket "^4.2.0"
 
@@ -1301,10 +1301,10 @@
     ramda "^0.26.1"
     zalgo-promise "1.0.28"
 
-"@notabug/gun-sear@^0.0.10":
-  version "0.0.10"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-sear/-/gun-sear-0.0.10.tgz#27a8fd37d52c8fe0b13f58bcdc59547d363b4c58"
-  integrity sha512-EMNiBLxMwIAw6CUTKCPnA9oBKGVBoAOyYtiQQX9r5dzVx9cMg8b1ghosdhWqdafBAWjFkYzDQF5GrQslkRqJrg==
+"@notabug/gun-sear@^0.0.12":
+  version "0.0.12"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-sear/-/gun-sear-0.0.12.tgz#49b821a305a38a3e93acd4ed50f3e2ade64384ff"
+  integrity sha512-iXWaZkzbfqxRZ3y0G70rm4S7zw5IT2NHLXD3o/nPZA53PSBSNFdx2xt+rVsJEBW0GuD4naPLfXKJ0seja7IVWA==
   dependencies:
     "@peculiar/webcrypto" "^1.0.19"
     "@types/window-or-global" "^1.0.0"
