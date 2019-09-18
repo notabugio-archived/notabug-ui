@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.67.2",
+  "version": "0.67.3",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -55,7 +55,7 @@
     "express": "^4.17.1",
     "express-cache-headers": "^0.1.4",
     "express-history-api-fallback": "^2.2.1",
-    "gun": "^0.2019.910",
+    "gun": "^0.2019.915",
     "jdenticon": "^2.1.1",
     "lodash.debounce": "^4.0.8",
     "parcel-plugin-static-files-copy": "^2.1.2",
