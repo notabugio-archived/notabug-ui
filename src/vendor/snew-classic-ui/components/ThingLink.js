@@ -234,7 +234,7 @@ const ThingLink = ({
               href={permalink}
               rel="nofollow"
             >
-              {num_comments ? <>{num_comments} comments</> : "comment"}
+              {num_comments ? <>{num_comments} comment{num_comments === 1 ? "" : "s"}</> : "comment"}
             </Link>
           </li>
         ) : null}
