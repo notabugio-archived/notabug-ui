@@ -34,8 +34,8 @@ body,
   background-color: #182028 !important;
 }
 
-.chat-input: {
-  background: none !important;
+.content .chat-input {
+  background-color: transparent !important;
 }
 
 blockquote {
@@ -91,7 +91,7 @@ a:visited.title {
 }
 
 .drop-choices {
-  background: #283038 !important;
+  background-color: #283038 !important;
 }
 
 .nub {
