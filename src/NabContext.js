@@ -94,6 +94,8 @@ export const useNabGlobals = ({ notabugApi, history }) => {
           isCacheing: false
         })
 
+        nab.navigate = history.push
+
         /*
       if (!DISABLE_CACHE) {
         const meta = function() {};
