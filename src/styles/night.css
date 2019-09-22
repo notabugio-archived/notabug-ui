@@ -1,41 +1,101 @@
 /*
-By OskarwaR CC-BY
-From: https://userstyles.org/styles/159589/reddit-night
+From https://notabug.io/t/notabug/comments/6e592bb7f543ed0f05191d3bccc549529443c7ab/for-go1dfish-night-mode-css
 */
 
 html {
-  background: #e5e5e5;
-  filter: invert(1) hue-rotate(180deg);
+  background-color: #161d21;
+  color: #ccd;
 }
 
-.chat-message-display {
-  background: #e5e5e5;
+#header,
+.redditname > a {
+  background-color: #262d31 !important;
 }
 
-.link {
-  /* background: #eaeaea; */
+a {
+  background-color: transparent !important;
+  color: #8be !important;
 }
 
-.with-listing-chooser div[role=banner], .default-header {
-  filter: none !important;
+body,
+.side,
+.bottommenu,
+.content,
+.footer-parent,
+#header-bottom-right,
+.sitetable,
+.md,
+#sr-header-area,
+#sr-header-area a,
+.submit .morelink a {
+  background-color: #161d21 !important;
+  color: #dde !important;
 }
 
-img, iframe, video, .footer-parent, .debuginfo, .listingsignupbar,.redesignbetabar, .flair {
-  filter: invert(1) hue-rotate(180deg);
+.chat-input: {
+  background: none !important;
 }
 
-#header-img-a, .footer.rounded {
-  filter: invert(1) hue-rotate(180deg);
+blockquote {
+  color: #aaa !important;
 }
 
-.footer-parent, .debuginfo {
-  background-color: transparent;
+input,
+textarea,
+pre,
+.roundfield,
+.infobar,
+.nextprev a {
+  background-color: #262d31 !important;
+  color: #dde !important;
+  border: #678 solid 1px !important;
 }
 
-.side .md a, .titlebox .redditname {
-  filter: invert(1) hue-rotate(180deg);
+code {
+  background-color: #262d31 !important;
+  color: #aaa !important;
+  border: none !important;
 }
 
-body::before {
-  filter: invert(1) hue-rotate(180deg);
+button {
+  background-color: #161d21 !important;
+  color: #8be !important;
+  border: solid 1px #678;
+  padding: .5em 1em;
+}
+
+.selected a {
+  background-color: #161d21 !important;
+  color: #fff !important;
+  border: 1px solid #9ab !important;
+  border-bottom: 1px solid #161d21 !important;
+}
+
+a:visited {
+  color: #678 !important;
+}
+
+.thing.stickied .title > a {
+  color: #eef !important;
+}
+
+#header-img {
+  background-color: #d9d2ce !important;
+  filter: invert(1);
+}
+
+.footer-parent a img {
+  filter: invert(1);
+}
+
+.nub {
+  display: none;
+}
+
+.identicon {
+  filter: invert(1) hue-rotate(180deg) brightness(1.5);
+}
+
+.expando-button {
+  filter: invert(1) hue-rotate(180deg) brightness(.75);
 }

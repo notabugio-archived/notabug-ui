@@ -63,6 +63,7 @@ export const useNabGlobals = ({ notabugApi, history }) => {
     () => {
       if (notabugApi) return notabugApi
       const peers = useHttp || isNode ? [] : [`${window.location.origin}/gun`]
+      // const peers = ['https://notabug.io/gun']
       const nab = notabugPeer(ChainGunSear, {
         noGun: !!isNode,
         faith: true,

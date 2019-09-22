@@ -1228,18 +1228,18 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/chaingun-sear@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.4.tgz#51ed39cbfd96257af464de8fa5dc98c0dcb29c5c"
-  integrity sha512-lswuMlnvmvyRMMFLsXxlcTyY3/A+2AYEaTYtRd4CcQ2S0QShL9xuJ/p0IgJJ+sEcmKZ9f/C5OKrPPn4a517xcQ==
+"@notabug/chaingun-sear@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.5.tgz#bc61b05c9d1b01c21b75807f95067eb2110def2f"
+  integrity sha512-9PAX7d9GbYGde0S2Vz9UgyEM9AEVQCb+7Piqu3kaltN2aHp2qyg5JAK6yj+lfA7ykYcoucDJ6c95BETQGlEwNA==
   dependencies:
-    "@notabug/chaingun" "^0.0.8"
+    "@notabug/chaingun" "^0.0.10"
     "@notabug/gun-sear" "^0.0.12"
 
-"@notabug/chaingun@^0.0.8":
-  version "0.0.8"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun/-/chaingun-0.0.8.tgz#58c6d817a14f08608d349acfa0513f8d3f7ad60e"
-  integrity sha512-uHCD7zebcok7DG9Gm5mAvfCSbyMzo1PABA41TblwsfCQrPYvz1sCTobg3eiAaYtBYsTAAgtLeN0tEw1O9qr0MA==
+"@notabug/chaingun@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun/-/chaingun-0.0.10.tgz#d5bbcc42fc579b930ee3be9006238752610150a1"
+  integrity sha512-W8kBbEjc7OAXrshINvchwMFPWFxKAeV5KSh/kJC918nBnv8dfEeqCEk1XLh+dyNpmpgx3AhPEoBs5jq3kN4Z2A==
   dependencies:
     reconnecting-websocket "^4.2.0"
 
@@ -1251,10 +1251,10 @@
     isomorphic-fetch "^2.2.1"
     reconnecting-websocket "^4.1.10"
 
-"@notabug/gun-lmdb@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.2.2.tgz#1f27167258cf10442604b05a6fe6c792c45c2c45"
-  integrity sha512-VWgpIJMcBNiOu/O9I1m6ymBxmkwjap2845Hfl0yQ6xLxYt5SqEJojlYnhxRa6uwV3SF8Wb+Z/Lmizg3un3Bfew==
+"@notabug/gun-lmdb@^0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-lmdb/-/gun-lmdb-0.2.3.tgz#46cc5e550d351a1e4a272e4aa3cc96341d0cc8c3"
+  integrity sha512-AcD+6fSoH2C88GsUIedaNhm5fOTizVzXTkmLTfujrp0pM3Do7ClPF0jasBzUJAOmG6l7F50PmE1qzXZbJlYLBQ==
   dependencies:
     node-lmdb "^0.6.2"
 
@@ -1329,10 +1329,10 @@
     ramda "^0.26.1"
     route-parser "^0.0.5"
 
-"@notabug/peer@^0.32.0":
-  version "0.32.0"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.32.0.tgz#8c46571f1b8d8c6cb1ed7a6559aec5f45f67ea62"
-  integrity sha512-6MiC/OXmXfprN6RKaors0JNhDooVfuFMyuPN/XmJG2pCWmCKUJicf3kq3UplsT+zzF4SbI8yEhKs9XEUMH6Q6Q==
+"@notabug/peer@^0.32.1":
+  version "0.32.1"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.32.1.tgz#67af3a0fc75404fae489fec2d17e4049cab3f36b"
+  integrity sha512-2iY0rqc/uapCOU6X86BAzS2xBg0swCDGWUv5OGNGT5SQr2AXkyS9Ho41ufMH+UYgbbld7MNFyg7GTiBxzAmTAQ==
   dependencies:
     "@notabug/gun-scope" "^0.10.0"
     "@notabug/gun-suppressor" "^0.2.2"
