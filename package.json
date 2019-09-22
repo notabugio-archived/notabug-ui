@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.67.5",
+  "version": "0.67.6",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -46,7 +46,7 @@
     "@notabug/gun-receiver": "^0.5.2",
     "@notabug/gun-receiver-log": "^0.0.1",
     "@notabug/gun-redis": "^0.10.0",
-    "@notabug/peer": "^0.32.1",
+    "@notabug/peer": "^0.32.2",
     "@tippy.js/react": "^2.2.0",
     "argon2-browser": "1.5.3",
     "command-line-args": "^5.1.1",
