@@ -66,15 +66,15 @@ button {
   padding: .5em 1em;
 }
 
-.selected a {
-  color: #eef !important;
-  border: 1px solid #9ab !important;
-  border-bottom: 1px solid #182028 !important;
+.tabmenu li:not(.selected) a {
+  background-color: #485058 !important;
+  border: none !important;
 }
 
-.tabmenu li a {
-  border: solid 1px #678;
-  border-bottom: none;
+.selected a {
+  color: #f86 !important;
+  border: 1px solid #9ab !important;
+  border-bottom: 1px solid #182028 !important;
 }
 
 a:visited.title {
