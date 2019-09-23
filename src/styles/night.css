@@ -1,15 +1,10 @@
-/*
-From https://notabug.io/t/notabug/comments/6e592bb7f543ed0f05191d3bccc549529443c7ab/for-go1dfish-night-mode-css
-*/
-
 html {
-  background-color: #161d21;
+  background-color: #182028;
   color: #ccd;
 }
 
-#header,
-.redditname > a {
-  background-color: #262d31 !important;
+#header {
+  background-color: #283038 !important;
 }
 
 a {
@@ -26,14 +21,21 @@ body,
 .sitetable,
 .md,
 #sr-header-area,
-#sr-header-area a,
-.submit .morelink a {
-  background-color: #161d21 !important;
+#sr-header-area a {
+  background-color: #182028 !important;
   color: #dde !important;
 }
 
-.chat-input: {
-  background: none !important;
+.submit .morelink {
+  border: #678 solid 1px !important;
+}
+
+.submit .morelink a {
+  background-color: #182028 !important;
+}
+
+.content .chat-input {
+  background-color: transparent !important;
 }
 
 blockquote {
@@ -46,32 +48,36 @@ pre,
 .roundfield,
 .infobar,
 .nextprev a {
-  background-color: #262d31 !important;
+  background-color: #283038 !important;
   color: #dde !important;
   border: #678 solid 1px !important;
 }
 
 code {
-  background-color: #262d31 !important;
+  background-color: #283038 !important;
   color: #aaa !important;
   border: none !important;
 }
 
 button {
-  background-color: #161d21 !important;
+  background-color: #182028 !important;
   color: #8be !important;
   border: solid 1px #678;
   padding: .5em 1em;
 }
 
-.selected a {
-  background-color: #161d21 !important;
-  color: #fff !important;
-  border: 1px solid #9ab !important;
-  border-bottom: 1px solid #161d21 !important;
+.tabmenu li:not(.selected) a {
+  background-color: #485058 !important;
+  border: none !important;
 }
 
-a:visited {
+.selected a {
+  color: #f86 !important;
+  border: 1px solid #9ab !important;
+  border-bottom: 1px solid #182028 !important;
+}
+
+a:visited.title {
   color: #678 !important;
 }
 
@@ -80,12 +86,12 @@ a:visited {
 }
 
 #header-img {
-  background-color: #d9d2ce !important;
-  filter: invert(1);
+  background-color: transparent; !important;
+  filter: invert(.8);
 }
 
-.footer-parent a img {
-  filter: invert(1);
+.drop-choices {
+  background-color: #283038 !important;
 }
 
 .nub {
