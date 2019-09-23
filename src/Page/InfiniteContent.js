@@ -14,6 +14,11 @@ import { Things } from "/Listing/Things";
 import { ErrorBoundary, Loading as LoadingComponent } from "/utils";
 
 const PAGE_SIZE = 25;
+const BOTTOM_HEIGHT = 15; // offset in pixels from bottom that still counts as bottom
+
+class AutoScrollChatView extends ChatView {
+  updateScrollTop() { /* empty */ }
+}
 
 export const InfiniteContent = React.memo(
   ({
@@ -21,25 +26,30 @@ export const InfiniteContent = React.memo(
     Empty = () => <LoadingComponent name="ball-grid-beat" />,
     ListingContext
   }) => {
-    const [lastScrollTime, setLastScrollTime] = useState(0);
     const scrollable = useRef(null);
     const { ids: limitedIds, isChat, limit, setLimit } = useContext(
       ListingContext
     );
     const firstId = R.nth(0, limitedIds) || "";
 
+    let lastScrollHeight = 0, lastScrollTop = 0;
     const scrollToBottom = useCallback(() => {
-      setTimeout(() => {
-        const now = new Date().getTime();
+      if(!scrollable || !scrollable.current)
+        return;
 
-        if (now - lastScrollTime > 5000 && scrollable && scrollable.current)
-          scrollable.current.scrollTop = scrollable.current.scrollHeight;
-      }, 300);
-    }, [scrollable.current, lastScrollTime]);
+      const c = scrollable.current
+      const wasAtBottom = lastScrollTop >= (lastScrollHeight - c.clientHeight) - BOTTOM_HEIGHT
+      lastScrollTop = c.scrollTop
+
+      if(Math.abs(c.scrollHeight - lastScrollHeight) > BOTTOM_HEIGHT) {
+        if(wasAtBottom)
+            c.scrollTop = c.scrollHeight - c.clientHeight
+        lastScrollHeight = c.scrollHeight
+      }
+    }, [scrollable.current, lastScrollHeight]);
 
     const loadMore = useCallback(() => {
       setLimit(R.add(PAGE_SIZE));
-      setLastScrollTime(new Date().getTime());
     }, []);
 
     const onLoadMore = useCallback(
@@ -52,11 +62,12 @@ export const InfiniteContent = React.memo(
     );
 
     useEffect(() => {
-      if (isChat) scrollToBottom();
-    }, [firstId, isChat]);
-
-    useEffect(() => {
-      if (isChat) setTimeout(scrollToBottom, 300);
+      if (isChat) {
+        const interval = setInterval(scrollToBottom, 300);
+        return () => {
+          clearInterval(interval);
+        }
+      }
     }, [isChat]);
 
     return (
@@ -73,7 +84,7 @@ export const InfiniteContent = React.memo(
               disableChildren: true
             }}
             Loading={isChat ? ChatMsg : Loading}
-            Container={ChatView}
+            Container={isChat ? AutoScrollChatView : ChatView}
             collapseLarge={!!isChat}
             containerProps={{
               id: "siteTable",
