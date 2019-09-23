@@ -98,22 +98,26 @@ body > .content .chat-listing .link .midcol,
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  top: 100%;
   margin: 10px;
 }
 
-.chat-input input {
+.chat-input textarea {
   width: 85%;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-  text-indent: 0.5em;
-  margin: 0 0 0 0;
-  border: 1px solid #5f99cf;
+  box-sizing: border-box;
+  min-height: 2.4em;
+  height: 2.4em;
+  padding: 0.5em 0.5em;
+  margin: 0 0 0 -1px;
+  border: 1px solid gray;
+  overflow-y: hidden;
+  resize: none;
 }
+
 .chat-input .send-btn {
   position: absolute;
   bottom: 0;
-  top: 0;
+  /*top: 0;*/
   right: 0;
   width: 13%;
   padding-top: 0.5em;
@@ -124,10 +128,9 @@ body > .content .chat-listing .link .midcol,
 .sidebar-chat .chat-input .send-btn {
   display: none;
 }
-.sidebar-chat .chat-input input {
-  width: 100%;
-  border-width: 0 0 0 0;
-  border-top: 1px solid gray;
+
+.sidebar-chat .chat-input textarea {
+  width: calc(100% + 2px);
 }
 
 .chat-modal .chat-modal-controls {
@@ -184,7 +187,6 @@ body > .content .chat-listing .link .midcol,
   padding: 0 0 0 0;
   position: relative;
   height: 220px;
-  margin-bottom: 26px;
 }
 
 .side .chat-listing {
