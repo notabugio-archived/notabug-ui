@@ -110,7 +110,7 @@ body > .content .chat-listing .link .midcol,
   padding: 0.5em 0.5em;
   margin: 0 0 0 -1px;
   border: 1px solid gray;
-  overflow-y: hidden;
+  overflow-y: scroll;
   resize: none;
 }
 
