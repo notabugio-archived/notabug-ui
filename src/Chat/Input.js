@@ -4,6 +4,8 @@ import isNode from "detect-node";
 import { Constants } from "@notabug/peer";
 import { useNotabug } from "/NabContext";
 
+const MAX_TEXTAREA_HEIGHT = 120
+
 export const ChatInput = ({ ListingContext }) => {
   const { me, api, onMarkMine } = useNotabug();
   const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext);
@@ -17,7 +19,7 @@ export const ChatInput = ({ ListingContext }) => {
     }
     else {
       target.style.height = 0 // to make the box shrink if required
-      target.style.height = Math.min(240, target.scrollHeight) + "px"
+      target.style.height = Math.min(MAX_TEXTAREA_HEIGHT, target.scrollHeight) + "px"
     }
   }
 
