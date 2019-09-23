@@ -17,7 +17,7 @@ export const ChatInput = ({ ListingContext }) => {
     }
     else {
       target.style.height = 0 // to make the box shrink if required
-      target.style.height = target.scrollHeight + "px"
+      target.style.height = Math.min(240, target.scrollHeight) + "px"
     }
   }
 
@@ -27,7 +27,7 @@ export const ChatInput = ({ ListingContext }) => {
       if (!body || !body.trim())
         return;
 
-      const multiline = body.replace(/^\n*(.+)\n*$/, "$1").replace(/\n/g, "\n\n")
+      const multiline = body.replace(/\n/g, "\n\n")
       if(multiline.length > Constants.MAX_THING_BODY_SIZE)
         return;
 
