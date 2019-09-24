@@ -4,7 +4,7 @@ import isNode from "detect-node";
 import { Constants } from "@notabug/peer";
 import { useNotabug } from "/NabContext";
 
-export const ChatInput = ({ ListingContext }) => {
+export const ChatInput = ({ ListingContext, scrollToBottom }) => {
   const { me, api, onMarkMine } = useNotabug();
   const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext);
   const [body, setBody] = useState("");
@@ -24,8 +24,9 @@ export const ChatInput = ({ ListingContext }) => {
         addSpeculativeId && addSpeculativeId(id);
       });
       setBody("");
+      setTimeout(() => scrollToBottom("force"), 300)
     },
-    [api, body, topic]
+    [api, body, topic, scrollToBottom]
   );
 
   const onChangeBody = useCallback(evt => setBody(evt.target.value), []);
