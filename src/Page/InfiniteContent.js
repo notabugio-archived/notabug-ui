@@ -33,11 +33,17 @@ export const InfiniteContent = React.memo(
     const firstId = R.nth(0, limitedIds) || "";
 
     let lastScrollHeight = 0, lastScrollTop = 0;
-    const scrollToBottom = useCallback(() => {
+    const scrollToBottom = useCallback((force) => {
       if(!scrollable || !scrollable.current)
         return;
-
       const c = scrollable.current
+
+      if(force) {
+        console.log("force", lastScrollTop, lastScrollHeight, c.scrollTop, c.scrollHeight)
+        c.scrollTop = c.scrollHeight - c.clientHeight
+        return
+      }
+
       const wasAtBottom = lastScrollTop >= (lastScrollHeight - c.clientHeight) - BOTTOM_HEIGHT
       lastScrollTop = c.scrollTop
 
@@ -46,7 +52,7 @@ export const InfiniteContent = React.memo(
             c.scrollTop = c.scrollHeight - c.clientHeight
         lastScrollHeight = c.scrollHeight
       }
-    }, [scrollable.current, lastScrollHeight]);
+    }, [scrollable.current]);
 
     const loadMore = useCallback(() => {
       setLimit(R.add(PAGE_SIZE));
@@ -97,7 +103,7 @@ export const InfiniteContent = React.memo(
               returnScrollable: el => (scrollable.current = el)
             }}
           />
-          {isChat ? <ChatInput {...{ ListingContext }} /> : null}
+          {isChat ? <ChatInput {...{ ListingContext, scrollToBottom }} /> : null}
         </div>
       </ErrorBoundary>
     );
