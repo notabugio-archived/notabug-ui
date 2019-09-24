@@ -4,6 +4,8 @@ import isNode from "detect-node";
 import { Constants } from "@notabug/peer";
 import { useNotabug } from "/NabContext";
 
+const MAX_TEXTAREA_HEIGHT = 120
+
 export const ChatInput = ({ ListingContext }) => {
   const { me, api, onMarkMine } = useNotabug();
   const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext);
@@ -11,12 +13,27 @@ export const ChatInput = ({ ListingContext }) => {
   const alias = propOr("anon", "alias", me);
   const chatName = `t/${topic} public`;
 
+  function resizeInput(target, reset) {
+    if(reset) {
+      target.style.height = target.style.minHeight
+    }
+    else {
+      target.style.height = 0 // to make the box shrink if required
+      target.style.height = Math.min(MAX_TEXTAREA_HEIGHT, target.scrollHeight) + "px"
+    }
+  }
+
   const onSend = useCallback(
     evt => {
       evt && evt.preventDefault();
-      if (!body || !body.trim() || body.length > Constants.MAX_THING_BODY_SIZE)
+      if (!body || !body.trim())
         return;
-      api.chat({ topic, body }).then(res => {
+
+      const multiline = body.replace(/\n/g, "\n\n")
+      if(multiline.length > Constants.MAX_THING_BODY_SIZE)
+        return;
+
+      api.chat({ topic, body: multiline }).then(res => {
         const id = res && res.id;
 
         if (!id) return;
@@ -24,18 +41,27 @@ export const ChatInput = ({ ListingContext }) => {
         addSpeculativeId && addSpeculativeId(id);
       });
       setBody("");
+      resizeInput(evt.target, true);
     },
     [api, body, topic]
   );
 
   const onChangeBody = useCallback(evt => setBody(evt.target.value), []);
 
+  const onInput = useCallback(evt => resizeInput(evt.target), []);
+
+  const onKeyDown = useCallback(evt => {
+    if(evt.keyCode == 13 && !evt.shiftKey) {
+      onSend(evt);
+    }
+  }, [api, body, topic]);
+
   return (
     <form className="chat-input" onSubmit={onSend}>
       {isNode ? (
         <noscript>
-          <input
-            type="text"
+          <texarea
+            rows="1"
             placeholder="chatting requires javascript"
             disabled
             readOnly
@@ -46,11 +72,13 @@ export const ChatInput = ({ ListingContext }) => {
         </noscript>
       ) : (
         <Fragment>
-          <input
-            type="text"
+          <textarea
             placeholder={`speaking as ${alias ? alias : "anon"} in ${chatName}`}
+            rows="1"
             value={body}
             onChange={onChangeBody}
+            onInput={onInput}
+            onKeyDown={onKeyDown}
           />
           <button className="send-btn" type="submit">
             send
