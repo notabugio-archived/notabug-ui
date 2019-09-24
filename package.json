@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.67.6",
+  "version": "0.68.0",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -15,7 +15,7 @@
   },
   "scripts": {
     "mirror": "node server.js --lmdb --port 3333 --peer https://notabug.io/gun --render",
-    "uidev": "node server.js --dev --lmdb --port 3333 --peer https://notabug.io/gun --render",
+    "uidev": "node server.js --pistol --dev --port 3333 --peer https://notabug.io/gun",
     "log": "node server.js --logging --peer https://notabug.io/gun --pistol",
     "start": "pm2 start cluster.lmdb.pm2.json",
     "restart": "pm2 restart http && pm2 restart index",
@@ -38,7 +38,7 @@
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
-    "@notabug/chaingun-sear": "^0.0.5",
+    "@notabug/chaingun-sear": "^0.0.6",
     "@notabug/gun-http": "^0.2.0",
     "@notabug/gun-lmdb": "^0.2.3",
     "@notabug/gun-localforage": "^0.2.0",

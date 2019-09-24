@@ -1228,13 +1228,13 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/chaingun-sear@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.5.tgz#bc61b05c9d1b01c21b75807f95067eb2110def2f"
-  integrity sha512-9PAX7d9GbYGde0S2Vz9UgyEM9AEVQCb+7Piqu3kaltN2aHp2qyg5JAK6yj+lfA7ykYcoucDJ6c95BETQGlEwNA==
+"@notabug/chaingun-sear@^0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.6.tgz#7f287d274a38580f7e49d19f9784d51d0c0f239a"
+  integrity sha512-jrzhzkfo9hItYs+7vU3WkDVbEFLi6Naxb47b4id1dxfDwqiyz5wf2VoEkUUQSaPMMdAv/AY+x/tXqhwq0oMOUw==
   dependencies:
     "@notabug/chaingun" "^0.0.10"
-    "@notabug/gun-sear" "^0.0.12"
+    "@notabug/gun-sear" "^0.0.13"
 
 "@notabug/chaingun@^0.0.10":
   version "0.0.10"
@@ -1301,10 +1301,10 @@
     ramda "^0.26.1"
     zalgo-promise "1.0.28"
 
-"@notabug/gun-sear@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-sear/-/gun-sear-0.0.12.tgz#49b821a305a38a3e93acd4ed50f3e2ade64384ff"
-  integrity sha512-iXWaZkzbfqxRZ3y0G70rm4S7zw5IT2NHLXD3o/nPZA53PSBSNFdx2xt+rVsJEBW0GuD4naPLfXKJ0seja7IVWA==
+"@notabug/gun-sear@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-sear/-/gun-sear-0.0.13.tgz#8423969206de2ff5d09313f9e5c3be1273ce98a6"
+  integrity sha512-o0abyYw2h+m3+O7v8pEWhlc70u4NMGthF1XjuAv3D21vlPSHoozr4fLRJr+A9juVlaB/Tcz8ueNXdvkUmxL8zA==
   dependencies:
     "@peculiar/webcrypto" "^1.0.19"
     "@types/window-or-global" "^1.0.0"

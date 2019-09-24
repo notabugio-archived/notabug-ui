@@ -10,6 +10,7 @@ server-config.json
 /node_modules
 
 # production
+/dist
 /build
 /server-build
 /htdocs
