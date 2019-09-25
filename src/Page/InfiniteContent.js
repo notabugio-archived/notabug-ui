@@ -32,25 +32,28 @@ export const InfiniteContent = React.memo(
     );
     const firstId = R.nth(0, limitedIds) || "";
 
-    let lastScrollHeight = 0, lastScrollTop = 0;
+    let lastScrollHeight = 0, lastScrollTop = 0, lastScrollBottom = 0
     const scrollToBottom = useCallback((force) => {
       if(!scrollable || !scrollable.current)
         return;
       const c = scrollable.current
 
       if(force) {
-        c.scrollTop = c.scrollHeight - c.clientHeight
+        lastScrollTop = c.scrollTop = c.scrollHeight - c.clientHeight
+        lastScrollHeight = lastScrollBottom = c.scrollHeight
         return
       }
 
-      const wasAtBottom = lastScrollTop >= (lastScrollHeight - c.clientHeight) - BOTTOM_HEIGHT
-      lastScrollTop = c.scrollTop
+      const lastBottom = lastScrollHeight - BOTTOM_HEIGHT
+      const sizeChanged = (c.scrollHeight - BOTTOM_HEIGHT) != lastBottom
+      const wasAtBottom = lastScrollBottom >= lastBottom || lastScrollHeight <= c.clientHeight
 
-      if(Math.abs(c.scrollHeight - lastScrollHeight) > BOTTOM_HEIGHT) {
-        if(wasAtBottom)
-            c.scrollTop = c.scrollHeight - c.clientHeight
-        lastScrollHeight = c.scrollHeight
-      }
+      if(sizeChanged && wasAtBottom)
+        c.scrollTop = c.scrollHeight - c.clientHeight
+
+      lastScrollBottom = lastScrollTop + c.clientHeight
+      lastScrollTop = c.scrollTop
+      lastScrollHeight = c.scrollHeight
     }, [scrollable.current]);
 
     const loadMore = useCallback(() => {

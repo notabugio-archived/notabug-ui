@@ -41,7 +41,7 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
         addSpeculativeId && addSpeculativeId(id);
       });
       setBody("");
-      setTimeout(() => scrollToBottom("force"), 300)
+      scrollToBottom("force");
       resizeInput(evt.target, true);
     },
     [api, body, topic, scrollToBottom]
