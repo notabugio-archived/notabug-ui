@@ -46,7 +46,6 @@ export const InfiniteContent = React.memo(
 
       const lastBottom = lastScrollHeight - BOTTOM_HEIGHT
       const sizeChanged = (c.scrollHeight - BOTTOM_HEIGHT) != lastBottom
-      const anchorTop = c.scrollTop + c.clientHeight
       const wasAtBottom = lastScrollBottom >= lastBottom || lastScrollHeight <= c.clientHeight
 
       if(sizeChanged && wasAtBottom)
