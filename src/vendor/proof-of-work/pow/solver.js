@@ -9,6 +9,10 @@ const NONCE_SIZE = MIN_NONCE_SIZE + 8;
 function Solver() {}
 module.exports = Solver;
 
+// 64 bits of entropy should be enough for each millisecond to avoid
+// collisions
+const nonce = utils.allocBuffer(NONCE_SIZE);
+
 Solver.prototype._genNonce = function _genNonce(buf) {
   const now = Date.now();
 
@@ -24,17 +28,10 @@ Solver.prototype._genNonce = function _genNonce(buf) {
 };
 
 Solver.prototype.solve = async function solve(complexity, prefix) {
-  // 64 bits of entropy should be enough for each millisecond to avoid
-  // collisions
-  const nonce = utils.allocBuffer(NONCE_SIZE);
+  this._genNonce(nonce);
 
-  for (;;) {
-    this._genNonce(nonce);
+  const hash = await utils.hash(nonce, prefix);
 
-    const hash = await utils.hash(nonce, prefix);
-
-    if (utils.checkComplexity(hash, complexity)) {
-      return nonce;
-    }
-  }
+  if (utils.checkComplexity(hash, complexity))
+    return nonce;
 };

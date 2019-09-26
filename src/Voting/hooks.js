@@ -17,15 +17,37 @@ export const useVotingQueue = () => {
   const { api } = useNotabug();
   const [voteQueue, setVotingQueue] = useState({});
   const [currentVote, setCurrentVote] = useState(null);
+  const [numCores, setNumCores] = useState(1);
+  const [isPaused, setIsPaused] = useState(false);
 
   const onPauseQueue = useCallback(
     evt => {
       evt && evt.preventDefault();
+      setIsPaused(true)
       currentVote && currentVote.terminate();
       setCurrentVote(null);
     },
-    [currentVote]
+    [currentVote, isPaused]
   );
+
+  const onUnpauseQueue = useCallback(
+    evt => {
+      evt && evt.preventDefault()
+      setIsPaused(false)
+    },
+    [currentVote, isPaused]
+  )
+
+  const onChangeNumCores = useCallback(
+    cores => {
+      if(cores == numCores)
+        return
+      currentVote && currentVote.terminate();
+      setCurrentVote(null);
+      setNumCores(cores)
+    },
+    [currentVote, numCores]
+  )
 
   const onResetQueue = useCallback(
     evt => {
@@ -53,12 +75,14 @@ export const useVotingQueue = () => {
       evt && evt.preventDefault();
       const nextId = Object.keys(voteQueue).pop();
 
-      if (currentVote || !nextId) return Promise.resolve();
+      if (isPaused || currentVote || !nextId) return Promise.resolve();
       const type = voteQueue[nextId];
 
       if (!type) return Promise.resolve();
+
       const workPromise = doWork(
-        `${Constants.PREFIX}/things/${nextId}/votes${type}`
+        `${Constants.PREFIX}/things/${nextId}/votes${type}`,
+        numCores
       );
 
       setCurrentVote(workPromise);
@@ -70,21 +94,24 @@ export const useVotingQueue = () => {
         })
         .catch(error => error && console.error(error.stack || error));
     },
-    [currentVote, voteQueue]
+    [currentVote, voteQueue, numCores, isPaused]
   );
 
   useEffect(() => {
     onResumeQueue();
-  }, [voteQueue]);
+  }, [voteQueue, numCores, isPaused]);
 
   const val = {
     currentVote,
     voteQueue,
+    numCores,
     onResumeQueue,
     onPauseQueue,
+    onUnpauseQueue,
     onResetQueue,
     onQueueVote,
-    onDequeueVote
+    onDequeueVote,
+    onChangeNumCores
   };
 
   return useMemo(() => val, Object.values(val));

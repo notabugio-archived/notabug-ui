@@ -229,6 +229,10 @@ body > .content .chat-listing .link .midcol,
   max-height: 720px;
 }
 
+.vote-status:hover {
+  -nab-hover-status: 1
+}
+
 .vote-status-fixed {
   box-shadow: 0px 0px 3px 5px #FF8B60;
   background-color: white;
@@ -243,4 +247,25 @@ body > .content .chat-listing .link .midcol,
 .side h1.wikititle,
 .side .wikiaction-current {
   display: none;
+}
+
+.vote-cores-slidertrack {
+  height: .5em;
+  background-color: #ccc;
+  border: solid 1px #aaa;
+  border-radius: .25em;
+  margin: 2em 1em;
+}
+
+.vote-cores-sliderthumb {
+  height: 2em;
+  width: 2em;
+  background-color: #fa8;
+  border: solid 1px #d86;
+  border-radius: 1em;
+}
+
+.vote-cores-slider {
+  font-size: small;
+  text-align: left;
 }
