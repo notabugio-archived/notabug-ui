@@ -20,12 +20,19 @@ export const useVotingQueue = () => {
   const [numCores, setNumCores] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
 
+  const terminateVote = useCallback(
+    () => {
+      currentVote && currentVote.terminate();
+      setCurrentVote(null);
+    },
+    [currentVote]
+  );
+
   const onPauseQueue = useCallback(
     evt => {
       evt && evt.preventDefault();
       setIsPaused(true)
-      currentVote && currentVote.terminate();
-      setCurrentVote(null);
+      terminateVote()
     },
     [currentVote, isPaused]
   );
@@ -42,8 +49,7 @@ export const useVotingQueue = () => {
     cores => {
       if(cores == numCores)
         return
-      currentVote && currentVote.terminate();
-      setCurrentVote(null);
+      terminateVote()
       setNumCores(cores)
     },
     [currentVote, numCores]
@@ -53,9 +59,10 @@ export const useVotingQueue = () => {
     evt => {
       evt && evt.preventDefault();
       setVotingQueue({});
-      onPauseQueue();
+      terminateVote()
+      onUnpauseQueue()
     },
-    [onPauseQueue]
+    [onUnpauseQueue]
   );
 
   const onDequeueVote = useCallback(id => {
