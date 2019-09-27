@@ -3,7 +3,7 @@ import { complexity as DEFAULT_POW_COMPLEXITY } from "/work-config.json"
 
 const workers = []
 
-function pow(numCores, prefix, complexity, resolve, reject) {
+const pow = (numCores, prefix, complexity, resolve, reject) => {
   for(let i = workers.length; i < numCores; ++i)
     workers.push(new Worker("./pow.worker.js"))
 
