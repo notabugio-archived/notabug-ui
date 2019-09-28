@@ -249,3 +249,24 @@ body > .content .chat-listing .link .midcol,
 .side .wikiaction-current {
   display: none;
 }
+
+.vote-cores-slidertrack {
+  height: .5em;
+  background-color: #ccc;
+  border: solid 1px #aaa;
+  border-radius: .25em;
+  margin: 2em 1em;
+}
+
+.vote-cores-sliderthumb {
+  height: 2em;
+  width: 2em;
+  background-color: #fa8;
+  border: solid 1px #d86;
+  border-radius: 1em;
+}
+
+.vote-cores-slider {
+  font-size: small;
+  text-align: left;
+}

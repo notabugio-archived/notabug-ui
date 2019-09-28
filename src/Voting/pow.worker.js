@@ -10,9 +10,11 @@ function toHexString(byteArray) {
 
 onmessage = async function (e) {
   try {
-    const nonce = toHexString(await solver.solve(e.data[1], e.data[0]));
-
-    postMessage(nonce);
+    const nonce = await solver.solve(e.data[1], e.data[0])
+    if(nonce)
+      postMessage([true, toHexString(nonce)]);
+    else
+      postMessage([false])
   } catch (e) {
     console.error(e.stack || e);
     throw e;
