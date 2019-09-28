@@ -95,7 +95,7 @@ body > .content .chat-listing .link .midcol,
 
 .sidebar-chat .chat-input,
 .chat-modal .chat-input {
-  position: absolute;
+  position: relative;
   left: 0;
   right: 0;
   top: 100%;
@@ -110,8 +110,13 @@ body > .content .chat-listing .link .midcol,
   padding: 0.5em 0.5em;
   margin: 0 0 0 -1px;
   border: 1px solid gray;
-  overflow-y: scroll;
+  overflow-y: hidden;
   resize: none;
+}
+
+.sidebar-chat .chat-input textarea,
+.chat-modal .chat-input textarea {
+  border-bottom: hidden;
 }
 
 .chat-input .send-btn {

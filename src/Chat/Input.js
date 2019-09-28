@@ -13,7 +13,7 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
   const alias = propOr("anon", "alias", me);
   const chatName = `t/${topic} public`;
 
-  function resizeInput(target, reset) {
+  const resizeInput = (target, reset) => {
     if(reset) {
       target.style.height = target.style.minHeight
     }
@@ -21,6 +21,7 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
       target.style.height = 0 // to make the box shrink if required
       target.style.height = Math.min(MAX_TEXTAREA_HEIGHT, target.scrollHeight) + "px"
     }
+    target.style.overflowY = target.scrollHeight > MAX_TEXTAREA_HEIGHT ? "scroll" : "hidden"
   }
 
   const onSend = useCallback(
@@ -47,15 +48,16 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
     [api, body, topic, scrollToBottom]
   );
 
-  const onChangeBody = useCallback(evt => setBody(evt.target.value), []);
-
-  const onInput = useCallback(evt => resizeInput(evt.target), []);
+  const onChangeBody = useCallback(evt => {
+      setBody(evt.target.value);
+      resizeInput(evt.target)
+  }, [])
 
   const onKeyDown = useCallback(evt => {
-    if(evt.keyCode == 13 && !evt.shiftKey) {
+    if(evt && evt.keyCode == 13 && !evt.shiftKey) {
       onSend(evt);
     }
-  }, [api, body, topic]);
+  }, [api, body, topic])
 
   return (
     <form className="chat-input" onSubmit={onSend}>
@@ -78,7 +80,6 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
             rows="1"
             value={body}
             onChange={onChangeBody}
-            onInput={onInput}
             onKeyDown={onKeyDown}
           />
           <button className="send-btn" type="submit">
