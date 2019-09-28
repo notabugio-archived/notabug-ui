@@ -66,6 +66,11 @@ button {
   padding: .5em 1em;
 }
 
+button:disabled {
+  background-color: #283038 !important;
+  color: #69c !important;
+}
+
 .tabmenu li:not(.selected) a {
   background-color: #485058 !important;
   border: none !important;
