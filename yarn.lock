@@ -1228,12 +1228,12 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/chaingun-sear@^0.0.9":
-  version "0.0.9"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.9.tgz#efe10bf5a27048aca08885c08ac74dc7d9ca968a"
-  integrity sha512-fqyACw0E5tTu3fjdmN82QyYuiy5Svfu8QOo20cPYof+tx7Qz1wgZwrl4SDjj06Dp2YGAI7f5lBpaVWcqdBz0yw==
+"@notabug/chaingun-sear@^0.0.10":
+  version "0.0.10"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun-sear/-/chaingun-sear-0.0.10.tgz#20d002ac9b3cb405ee6e9008a48120f3c25c0f78"
+  integrity sha512-LgXyGXVCTsWJqvU/slnZKFXwWXUv8iPB4DQVvijL1y8qpdOeiUOCMBxdXDX5tqwzlk8gvOLZrHZJsbIrDGcCEQ==
   dependencies:
-    "@notabug/chaingun" "^0.0.12"
+    "@notabug/chaingun" "^0.0.13"
     "@notabug/gun-sear" "^0.0.15"
 
 "@notabug/chaingun-socket-cluster-connector@^0.0.2":
@@ -1253,10 +1253,10 @@
   dependencies:
     reconnecting-websocket "^4.2.0"
 
-"@notabug/chaingun@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@notabug/chaingun/-/chaingun-0.0.12.tgz#fcc1ddcd70af0201d0129f4eafbbdc0dc79f0d37"
-  integrity sha512-StpfRcBO3n8Sn4fXPxPE0WkLDI6zKZMhhybEvozTlQ1iT2WZsdb0mazBaF80OJXLv2tGxwROxZKTMDNuQlvD8w==
+"@notabug/chaingun@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@notabug/chaingun/-/chaingun-0.0.13.tgz#9d93d8486f0ca22ece8a9cd26d8d03b74b5b8233"
+  integrity sha512-kkZdq+5LTbiEzj8E+OsWADz7hNCuIvv7/ka7jlvZTu9PLb8aIbH5+SV9eC1abZK4PjjNAiJ1NfcjjjccMeWHhg==
   dependencies:
     reconnecting-websocket "^4.2.0"
 
@@ -1338,32 +1338,12 @@
     text-encoding "^0.7.0"
     window-or-global "^1.0.1"
 
-"@notabug/gun-suppressor-sear@^0.3.1":
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-suppressor-sear/-/gun-suppressor-sear-0.3.1.tgz#bc1efcd9a2f67638dd80d96901e2a3bc42b96c54"
-  integrity sha512-MEko/WE12BYqPjEhzDc0QGyZPCyUPhCl6ZnFw38tFwGzXZDTVQ0rVYWcAGyakycZlz8/v/ewks4rdfMgmMcTBg==
-  dependencies:
-    "@notabug/gun-suppressor" "^0.2.2"
-    ramda "^0.26.1"
-    route-parser "^0.0.5"
-
-"@notabug/gun-suppressor@^0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-suppressor/-/gun-suppressor-0.2.2.tgz#43e0f02ebcb484c3102cf21b32c493293eb68c3d"
-  integrity sha512-HbL34YuRNnvpN8hcOvMXX7VfHvEcsm6X5cGml9rs63Z4xaWFfGIEKY321wIDOXIcMLOhUWRFfpRrG3QY1NSGGA==
-  dependencies:
-    ajv "^6.10.0"
-    ramda "^0.26.1"
-    route-parser "^0.0.5"
-
-"@notabug/peer@^0.32.2":
-  version "0.32.2"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.32.2.tgz#cabd9deec563f862de3514eb8c936cc54c9a5114"
-  integrity sha512-gEK0E7tTPyqkkJjgG659CO2wq/k+bWPJHBIHm2WJmXB5+Zr/lYxnE0+I4Zv4mDpJMvlMS9VytcZO7J54vHxVOQ==
+"@notabug/peer@^0.36.0":
+  version "0.36.0"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.36.0.tgz#d50473cac34d3bd1c167f7aa97a5af20cbf22911"
+  integrity sha512-To57s0Fm0KFCpDxePkQ3Kh4Q0YWcdXxyylIUYr2Dfy5Mz6zFgTgL4gJZKGTcy/rz04N1gmYIuf5CeJay7j7X3w==
   dependencies:
     "@notabug/gun-scope" "^0.10.0"
-    "@notabug/gun-suppressor" "^0.2.2"
-    "@notabug/gun-suppressor-sear" "^0.3.1"
     argon2 "^0.21.0"
     fast-memoize "^2.5.1"
     object-hash "^1.3.1"
@@ -1735,16 +1715,6 @@ agent-base@4, agent-base@^4.1.0, agent-base@^4.2.0, agent-base@~4.2.1:
   integrity sha512-JVwXMr9nHYTUXsBFKUqhJwvlcYU/blreOEUkhNR2eXZIvwd+c+o5V4MgDPKWnMS/56awN3TRzIP+KoPn+roQtg==
   dependencies:
     es6-promisify "^5.0.0"
-
-ajv@^6.10.0:
-  version "6.10.0"
-  resolved "https://registry.yarnpkg.com/ajv/-/ajv-6.10.0.tgz#90d0d54439da587cd7e843bfb7045f50bd22bdf1"
-  integrity sha512-nffhOpkymDECQyR0mnsUtoCE8RlX38G0rYP+wgLWFyZuUyuuojSSvi/+euOiQBIn63whYwYVIIH1TvE3tu4OEg==
-  dependencies:
-    fast-deep-equal "^2.0.1"
-    fast-json-stable-stringify "^2.0.0"
-    json-schema-traverse "^0.4.1"
-    uri-js "^4.2.2"
 
 ajv@^6.5.5:
   version "6.10.2"
@@ -7233,7 +7203,7 @@ ripemd160@^2.0.0, ripemd160@^2.0.1:
     hash-base "^3.0.0"
     inherits "^2.0.1"
 
-route-parser@0.0.5, route-parser@^0.0.5:
+route-parser@0.0.5:
   version "0.0.5"
   resolved "https://registry.yarnpkg.com/route-parser/-/route-parser-0.0.5.tgz#7d1d09d335e49094031ea16991a4a79b01bbe1f4"
   integrity sha1-fR0J0zXkkJQDHqFpkaSnmwG74fQ=

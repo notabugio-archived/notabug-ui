@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.69.1",
+  "version": "0.69.2",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -38,7 +38,7 @@
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
-    "@notabug/chaingun-sear": "^0.0.9",
+    "@notabug/chaingun-sear": "^0.0.10",
     "@notabug/chaingun-socket-cluster-connector": "^0.0.2",
     "@notabug/gun-http": "^0.2.0",
     "@notabug/gun-lmdb": "^0.2.3",
@@ -47,7 +47,7 @@
     "@notabug/gun-receiver": "^0.5.2",
     "@notabug/gun-receiver-log": "^0.0.1",
     "@notabug/gun-redis": "^0.10.0",
-    "@notabug/peer": "^0.32.2",
+    "@notabug/peer": "^0.36.0",
     "@tippy.js/react": "^2.2.0",
     "argon2-browser": "1.5.3",
     "command-line-args": "^5.1.1",
