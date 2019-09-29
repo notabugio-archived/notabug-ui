@@ -3,6 +3,7 @@ import express from 'express'
 import compression from 'compression'
 import expires from 'express-cache-headers'
 import fallback from 'express-history-api-fallback'
+import { ChainGunSear } from '@notabug/chaingun-sear'
 
 import init from '@notabug/peer'
 
@@ -61,7 +62,7 @@ export const initServer = ({ port, host, render, ...options }) => {
 
   const web = app.listen(port, host)
 
-  nab = init(Gun, {
+  nab = init(ChainGunSear, {
     ...options,
     disableValidation: options.pistol ? true : options.disableValidation,
     web: options.pistol ? undefined : web,

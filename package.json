@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.68.1",
+  "version": "0.69.0",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -99,10 +99,5 @@
     "parcel-bundler": "^1.12.3",
     "rimraf": "3.0.0"
   },
-  "browserslist": [
-    ">0.05%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+  "browserslist": [">0.05%", "not dead", "not ie <= 11", "not op_mini all"]
 }

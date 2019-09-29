@@ -57,13 +57,7 @@ export default opts =>
     deduplicateMessages,
     db => {
       db.onIn(msg => {
-        if (
-          msg &&
-          msg.json &&
-          (msg.json.leech || msg.json.ping || msg.json.ok)
-        ) {
-          return
-        }
+        if (msg && msg.json && msg.json.ok) console.log(msg.json)
         return msg
       })
       return db

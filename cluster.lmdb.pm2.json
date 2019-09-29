@@ -6,7 +6,7 @@
       "instances": 1,
       "script": "./server.js",
       "env": { "NODE_ENV": "production" },
-      "args": ["--peer", "https://notabug.io/gun", "--port", "3333", "--pistol", "--logging", "--lmdb"]
+      "args": ["--lmdb", "--port", "3333", "--pistol"]
     },
     {
       "name": "index",

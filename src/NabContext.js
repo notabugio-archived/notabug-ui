@@ -14,6 +14,7 @@ import isNode from 'detect-node'
 import notabugPeer from '@notabug/peer'
 import { useHttp } from '/config'
 import { ChainGunSear } from '@notabug/chaingun-sear'
+import SocketClusterGraphConnector from '@notabug/chaingun-socket-cluster-connector'
 
 /*
 const Gun = require('gun/gun')
@@ -28,6 +29,7 @@ let DISABLE_CACHE = false
 
 if (!isNode) {
   // INDEXEDDB = !!window.indexedDB && !/noindexeddb/.test(window.location.search);
+  /*
   INDEXEDDB = !!window.indexedDB && !!/indexeddb/.test(window.location.search)
   LOCAL_STORAGE = !INDEXEDDB && !!/localStorage/.test(window.location.search)
   DISABLE_CACHE = !!/disablecache/.test(window.location.search)
@@ -50,6 +52,7 @@ if (!isNode) {
       peers: [window.location.origin.replace(/^http/, 'ws') + '/gun']
     })
   }
+  */
 }
 
 export const NabContext = createContext({})
@@ -62,8 +65,6 @@ export const useNabGlobals = ({ notabugApi, history }) => {
   const api = useMemo(
     () => {
       if (notabugApi) return notabugApi
-      const peers = useHttp || isNode ? [] : [`${window.location.origin}/gun`]
-      // const peers = ['https://notabug.io/gun']
       const nab = notabugPeer(ChainGunSear, {
         noGun: !!isNode,
         faith: true,
@@ -72,21 +73,24 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         disableValidation: true,
         storeFn: INDEXEDDB ? RindexedDB : null,
         leech: false,
-        super: false,
-        peers
+        super: false
+        // peers
       })
 
-      /*
-      const chaingun = new ChainGunSear({ peers })
-      // chaingun.graph.connect(new GunJsGraphConnector(nab.gun))
-      nab.gun.chaingun = chaingun
-      */
+      nab.gun.graph.connect(
+        new SocketClusterGraphConnector({
+          hostname: process.env.GUN_SC_HOSTNAME || window.location.hostname,
+          port: process.env.GUN_SC_PORT || window.location.port,
+          path: process.env.GUN_SC_PATH || '/socketcluster'
+        })
+      )
+
       nab.gun.chaingun = nab.gun
 
       if (!isNode && !nab.scope) {
         if (DISABLE_CACHE) console.log('CACHE DISABLED')
         nab.scope = nab.newScope({
-          gun: nab.gun.chaingun,
+          gun: nab.gun,
           graph: DISABLE_CACHE ? {} : window.initNabState,
           unsub: true,
           onlyCache: false,

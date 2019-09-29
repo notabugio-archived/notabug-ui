@@ -1,3 +1,5 @@
+console.log('---START---')
+
 import * as R from 'ramda'
 import { ThingSet, Config, Schema } from '@notabug/peer'
 import WS from 'ws'
@@ -61,7 +63,7 @@ if (options.redis) nab.gun.redis = Gun.redis
 if (options.lmdb) nab.gun.lmdb = Gun.lmdb
 
 if (options.sync) nab.synchronize()
-if (options.index || options.tabulate || options.backindex) {
+if (options.index || options.tabulate) {
   const { username, password } = require('../../server-config.json')
 
   nab.login(username, password).then(() => {
@@ -69,51 +71,8 @@ if (options.index || options.tabulate || options.backindex) {
     let scopeParams = {
       unsub: true
     }
-    /*
-    if (options.redis) {
-      scopeParams = {
-        noGun: true,
-        getter: soul => nab.gun.redis.read(soul)
-      }
-    }
 
-    if (options.lmdb) {
-      scopeParams = {
-        noGun: true,
-        getter: soul => nab.gun.lmdb.read(soul)
-      }
-    }
-    */
-
-    if (options.backindex) {
-      nab.index(scopeParams)
-      nab.tabulate(scopeParams)
-
-      const dayStr = '' // "/days/" + ThingSet.dayStr();
-      const souls = [
-        'nab/topics/all',
-        'nab/topics/comments:all',
-        'nab/topics/chat:all'
-      ].map(soul => soul + dayStr)
-      const features = nab.oracle().features
-
-      souls.forEach(soul =>
-        nab.gun.get(soul).once(node => {
-          const souls = R.keys(node)
-          souls.forEach(soul => {
-            const thingId = R.propOr(
-              '',
-              'thingId',
-              Schema.Thing.route.match(soul)
-            )
-            if (!thingId) return
-            features.forEach(feature => feature.enqueue(thingId))
-          })
-        })
-      )
-    } else {
-      if (options.index) nab.index(scopeParams)
-      if (options.tabulate) nab.tabulate(scopeParams)
-    }
+    if (options.index) nab.index(scopeParams)
+    if (options.tabulate) nab.tabulate(scopeParams)
   })
 }
