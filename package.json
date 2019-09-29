@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.69.0",
+  "version": "0.69.1",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -38,7 +38,8 @@
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
-    "@notabug/chaingun-sear": "^0.0.6",
+    "@notabug/chaingun-sear": "^0.0.9",
+    "@notabug/chaingun-socket-cluster-connector": "^0.0.2",
     "@notabug/gun-http": "^0.2.0",
     "@notabug/gun-lmdb": "^0.2.3",
     "@notabug/gun-localforage": "^0.2.0",
@@ -99,5 +100,10 @@
     "parcel-bundler": "^1.12.3",
     "rimraf": "3.0.0"
   },
-  "browserslist": [">0.05%", "not dead", "not ie <= 11", "not op_mini all"]
+  "browserslist": [
+    ">0.05%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ]
 }
