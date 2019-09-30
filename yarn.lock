@@ -1338,10 +1338,10 @@
     text-encoding "^0.7.0"
     window-or-global "^1.0.1"
 
-"@notabug/peer@^0.36.0":
-  version "0.36.0"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.36.0.tgz#d50473cac34d3bd1c167f7aa97a5af20cbf22911"
-  integrity sha512-To57s0Fm0KFCpDxePkQ3Kh4Q0YWcdXxyylIUYr2Dfy5Mz6zFgTgL4gJZKGTcy/rz04N1gmYIuf5CeJay7j7X3w==
+"@notabug/peer@^0.36.1":
+  version "0.36.1"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.36.1.tgz#55fb7c7d9b048e11c64e6a01eab91ef922c03b0b"
+  integrity sha512-W9WuXv5KHZ3Oc2h0qSkjQUfkQMAoxGZQg3QxTNaSy3L7neX3aQn5t8KfMVVLN7WFu6uYz5UzaFUExmWBYawq3g==
   dependencies:
     "@notabug/gun-scope" "^0.10.0"
     argon2 "^0.21.0"

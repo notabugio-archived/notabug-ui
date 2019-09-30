@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.69.2",
+  "version": "0.69.3",
   "description": "",
   "main": "index.js",
   "keywords": [],
@@ -29,7 +29,7 @@
     "updatepm2": "pm2 update",
     "dev": "node server.js --lmdb --port 3333 --peer https://notabug.io/gun --render --index --tabulate",
     "build": "yarn buildui && yarn buildserver",
-    "buildui": "cross-env-shell BABEL_ENV=client \"rimraf build && parcel build --no-minify -d build src/index.html\" && yarn tohtdocs",
+    "buildui": "cross-env-shell BABEL_ENV=client \"rimraf build && parcel build -d build src/index.html\" && yarn tohtdocs",
     "buildserver": "cross-env-shell BABEL_ENV=server \"rimraf server-build && parcel build -d server-build -o index.js -t node --no-minify src/server-peer.js\"",
     "clean": "rimraf build && rimraf server-build",
     "tohtdocs": "copyfiles --up 1 build/* build/**/* htdocs"
@@ -47,7 +47,7 @@
     "@notabug/gun-receiver": "^0.5.2",
     "@notabug/gun-receiver-log": "^0.0.1",
     "@notabug/gun-redis": "^0.10.0",
-    "@notabug/peer": "^0.36.0",
+    "@notabug/peer": "^0.36.1",
     "@tippy.js/react": "^2.2.0",
     "argon2-browser": "1.5.3",
     "command-line-args": "^5.1.1",
