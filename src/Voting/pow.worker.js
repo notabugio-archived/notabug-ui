@@ -12,9 +12,9 @@ onmessage = async function (e) {
   try {
     const nonce = await solver.solve(e.data[1], e.data[0])
     if(nonce)
-      postMessage([true, toHexString(nonce)]);
+      postMessage([e.data[0], toHexString(nonce)]);
     else
-      postMessage([false])
+      postMessage(null)
   } catch (e) {
     console.error(e.stack || e);
     throw e;
