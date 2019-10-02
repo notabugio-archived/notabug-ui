@@ -186,6 +186,10 @@ body > .content .chat-listing .link .midcol,
   bottom: 46px;
 }
 
+.chat-listing .thing .usertext-body * {
+  font-size: 1em !important;
+}
+
 .side .infinite-listing {
   top: 0;
   bottom: 0;
