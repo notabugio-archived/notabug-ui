@@ -188,6 +188,11 @@ body > .content .chat-listing .link .midcol,
 
 .chat-listing .thing .usertext-body * {
   font-size: 1em !important;
+  line-height: 1em !important;
+}
+
+.chat-listing .thing .usertext-body sup {
+  font-size: .86em !important;
 }
 
 .side .infinite-listing {
