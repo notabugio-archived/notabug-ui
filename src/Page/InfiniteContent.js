@@ -31,6 +31,7 @@ export const InfiniteContent = React.memo(
       ListingContext
     );
     const firstId = R.nth(0, limitedIds) || "";
+    const [chatQuote, setChatQuote] = useState("")
 
     let lastScrollHeight = 0, lastScrollTop = 0, lastScrollBottom = 0
     const scrollToBottom = useCallback((force) => {
@@ -78,6 +79,8 @@ export const InfiniteContent = React.memo(
       }
     }, [isChat]);
 
+    const onQuoteChat = useCallback((text) => setChatQuote(text), [chatQuote])
+
     return (
       <ErrorBoundary>
         <a name="content" key="anchor" />
@@ -89,7 +92,8 @@ export const InfiniteContent = React.memo(
               limit,
               ids: limitedIds,
               fetchParent: true,
-              disableChildren: true
+              disableChildren: true,
+              onQuoteChat: isChat ? onQuoteChat : null
             }}
             Loading={isChat ? ChatMsg : Loading}
             Container={isChat ? AutoScrollChatView : ChatView}
@@ -105,7 +109,13 @@ export const InfiniteContent = React.memo(
               returnScrollable: el => (scrollable.current = el)
             }}
           />
-          {isChat ? <ChatInput {...{ ListingContext, scrollToBottom }} /> : null}
+          {isChat ? <ChatInput {...{
+              ListingContext,
+              scrollToBottom,
+              quote: chatQuote,
+              setQuote: setChatQuote
+            }} /> : null
+          }
         </div>
       </ErrorBoundary>
     );

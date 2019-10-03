@@ -45,7 +45,8 @@ export const Comment = ({
   onVoteUp,
   onVoteDown,
   onShowReply,
-  onHideReply
+  onHideReply,
+  onQuoteChat
 }) => {
   const [collapsed, setCollapsed] = useState(collapsedProp);
   const item = propItem || { body: "..." };
@@ -107,7 +108,8 @@ export const Comment = ({
         onVoteUp,
         onVoteDown,
         onShowReply,
-        onHideReply
+        onHideReply,
+        onQuoteChat
       }}
       Markdown={propItem ? Markdown : MarkdownLoading}
       NestedListing={disableChildren ? () => null : NestedListing}

@@ -274,3 +274,9 @@ body > .content .chat-listing .link .midcol,
   font-size: small;
   text-align: left;
 }
+
+.tagline-action {
+  padding-left: .25em;
+  border-left: solid 1px #888;
+  cursor: pointer;
+}

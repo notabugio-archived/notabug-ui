@@ -29,7 +29,8 @@ export const Thing = React.memo(
     expanded: expandedProp = false,
     isDetail,
     asSource,
-    onDidUpdate
+    onDidUpdate,
+    onQuoteChat
   }) => {
     const { api, me, myContent, isNode } = useNotabug();
     const {
@@ -157,7 +158,8 @@ export const Thing = React.memo(
       onVoteDown,
       onShowReply: disableChildren ? null : onShowReply,
       onHideReply,
-      onToggleExpando
+      onToggleExpando,
+      onQuoteChat
     };
 
     const renderComponent = ({ isVisible }) =>

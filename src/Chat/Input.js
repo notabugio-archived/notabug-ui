@@ -1,4 +1,4 @@
-import React, { Fragment, useContext, useState, useCallback } from "react";
+import React, { Fragment, createRef, useContext, useState, useCallback, useEffect } from "react";
 import { propOr } from "ramda";
 import isNode from "detect-node";
 import { Constants } from "@notabug/peer";
@@ -6,12 +6,13 @@ import { useNotabug } from "/NabContext";
 
 const MAX_TEXTAREA_HEIGHT = 120
 
-export const ChatInput = ({ ListingContext, scrollToBottom }) => {
+export const ChatInput = ({ ListingContext, scrollToBottom, quote, setQuote }) => {
   const { me, api, onMarkMine } = useNotabug();
   const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext);
   const [body, setBody] = useState("");
   const alias = propOr("anon", "alias", me);
   const chatName = `t/${topic} public`;
+  const textarea = createRef()
 
   const resizeInput = (target, reset) => {
     if(reset) {
@@ -59,6 +60,21 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
     }
   }, [api, body, topic])
 
+  useEffect(() => {
+    if(quote.length == 0)
+      return
+    const newBody = body + (body.length > 0 && body.slice(-1) != "\n" ? "\n>" : ">") + quote + "\n"
+    setBody(newBody)
+    setQuote("")
+    const c = textarea.current
+    if(c) {
+      c.value = newBody
+      c.setSelectionRange(newBody.length, newBody.length)
+      resizeInput(c)
+      c.focus()
+    }
+  }, [quote])
+
   return (
     <form className="chat-input" onSubmit={onSend}>
       {isNode ? (
@@ -81,6 +97,7 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
             value={body}
             onChange={onChangeBody}
             onKeyDown={onKeyDown}
+            ref={textarea}
           />
           <button className="send-btn" type="submit">
             send
