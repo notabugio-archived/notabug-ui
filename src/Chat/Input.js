@@ -1,17 +1,30 @@
-import React, { Fragment, useContext, useState, useCallback } from "react";
-import { propOr } from "ramda";
-import isNode from "detect-node";
-import { Constants } from "@notabug/peer";
-import { useNotabug } from "/NabContext";
+import React, {
+  Fragment,
+  useContext,
+  useState,
+  useCallback,
+  createRef,
+  useRef,
+  useEffect,
+} from "react"
+import { propOr } from "ramda"
+import isNode from "detect-node"
+import { Constants } from "@notabug/peer"
+import { useUi } from "/UI"
+import { useNotabug } from "/NabContext"
+import quoteText from "/utils/quote"
 
 const MAX_TEXTAREA_HEIGHT = 120
 
 export const ChatInput = ({ ListingContext, scrollToBottom }) => {
-  const { me, api, onMarkMine } = useNotabug();
-  const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext);
-  const [body, setBody] = useState("");
-  const alias = propOr("anon", "alias", me);
-  const chatName = `t/${topic} public`;
+  const { me, api, onMarkMine } = useNotabug()
+  const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext)
+  const { quote } = useUi()
+  const [body, setBody] = useState("")
+  const alias = propOr("anon", "alias", me)
+  const chatName = `t/${topic} public`
+  const textarea = createRef()
+  const inputText = useRef(null)
 
   const resizeInput = (target, reset) => {
     if(reset) {
@@ -26,38 +39,56 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
 
   const onSend = useCallback(
     evt => {
-      evt && evt.preventDefault();
+      evt && evt.preventDefault()
       if (!body || !body.trim())
-        return;
+        return
 
-      const multiline = body.replace(/\n/g, "\n\n")
+      // ensure 2 newlines at the end of each line
+      const multiline = body.replace(/\n\s*\n/g, "\n").replace(/\n/g, "\n\n")
+
       if(multiline.length > Constants.MAX_THING_BODY_SIZE)
-        return;
+        return
 
       api.chat({ topic, body: multiline }).then(res => {
-        const id = res && res.id;
+        const id = res && res.id
 
-        if (!id) return;
-        onMarkMine(id);
-        addSpeculativeId && addSpeculativeId(id);
-      });
-      setBody("");
-      scrollToBottom("force");
-      resizeInput(evt.target, true);
+        if (!id) return
+        onMarkMine(id)
+        addSpeculativeId && addSpeculativeId(id)
+      })
+      setBody("")
+      scrollToBottom("force")
+      resizeInput(evt.target, true)
     },
     [api, body, topic, scrollToBottom]
-  );
+  )
 
   const onChangeBody = useCallback(evt => {
-      setBody(evt.target.value);
+      inputText.current = evt.target.value
+      setBody(evt.target.value)
       resizeInput(evt.target)
   }, [])
 
   const onKeyDown = useCallback(evt => {
     if(evt && evt.keyCode == 13 && !evt.shiftKey) {
-      onSend(evt);
+      onSend(evt)
     }
   }, [api, body, topic])
+
+  useEffect(() => {
+    if(quote.length == 0)
+      return
+
+    const bodyText = inputText.current || ""
+    const newBody = bodyText + (bodyText.length > 0 && bodyText.slice(-1) != "\n" ? "\n" : "") + quoteText(quote) + "\n"
+    setBody(newBody)
+
+    const c = textarea.current
+    c.value = newBody
+    c.setSelectionRange(newBody.length, newBody.length)
+    resizeInput(c)
+    c.focus()
+  }, [quote, inputText.current])
 
   return (
     <form className="chat-input" onSubmit={onSend}>
@@ -81,6 +112,7 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
             value={body}
             onChange={onChangeBody}
             onKeyDown={onKeyDown}
+            ref={textarea}
           />
           <button className="send-btn" type="submit">
             send
@@ -88,5 +120,5 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
         </Fragment>
       )}
     </form>
-  );
-};
+  )
+}
