@@ -81,7 +81,9 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         new SocketClusterGraphConnector({
           hostname: process.env.GUN_SC_HOSTNAME || window.location.hostname,
           port: process.env.GUN_SC_PORT || window.location.port,
-          path: process.env.GUN_SC_PATH || '/socketcluster'
+          path: process.env.GUN_SC_PATH || '/socketcluster',
+          secure: process.env.GUN_SC_CONNECTION ? process.env.GUN_SC_CONNECTION == "secure" :
+                    process.env.GUN_SC_PORT == 443 || window.location.port == 443
         })
       )
 

@@ -17,10 +17,10 @@ import { gunReceiverLog } from '@notabug/gun-receiver-log'
 
 const Gun = require('gun/gun')
 const { combine, timestamp, prettyPrint } = format
-const suppressor = Validation.createSuppressor(Gun)
+const suppressor = Validation ? Validation.createSuppressor(Gun) : undefined
 
 const validateMessage = ({ json, skipValidation, ...msg }) => {
-  if (skipValidation) return { ...msg, json }
+  if (skipValidation || !suppressor) return { ...msg, json }
 
   return suppressor.validate(json).then(validated => {
     if (!validated) return console.error(suppressor.validate.errors, json)
