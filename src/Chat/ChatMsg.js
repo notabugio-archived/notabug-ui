@@ -5,7 +5,6 @@ import { Link } from "/utils"
 import { AuthorLink } from "/Auth"
 import { Comment } from "/Comment"
 import { useUi } from "/UI"
-import quoteText from "/utils/quote"
 
 const ChatMsgEntry = ({ isVotingUp, isVotingDown, ...props }) => {
   const { quote, setQuote } = useUi()

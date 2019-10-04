@@ -12,7 +12,6 @@ import isNode from "detect-node"
 import { Constants } from "@notabug/peer"
 import { useUi } from "/UI"
 import { useNotabug } from "/NabContext"
-import quoteText from "/utils/quote"
 
 const MAX_TEXTAREA_HEIGHT = 120
 
@@ -24,7 +23,6 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
   const alias = propOr("anon", "alias", me)
   const chatName = `t/${topic} public`
   const textarea = createRef()
-  const inputText = useRef(null)
 
   const resizeInput = (target, reset) => {
     if(reset) {
@@ -64,7 +62,6 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
   )
 
   const onChangeBody = useCallback(evt => {
-      inputText.current = evt.target.value
       setBody(evt.target.value)
       resizeInput(evt.target)
   }, [])
@@ -79,8 +76,7 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
     if(quote.length == 0)
       return
 
-    const bodyText = inputText.current || ""
-    const newBody = bodyText + (bodyText.length > 0 && bodyText.slice(-1) != "\n" ? "\n" : "") + quoteText(quote) + "\n"
+    const newBody = body + (body.length > 0 && body.slice(-1) != "\n" ? "\n" : "") + quote + "\n"
     setBody(newBody)
 
     const c = textarea.current
@@ -88,7 +84,7 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
     c.setSelectionRange(newBody.length, newBody.length)
     resizeInput(c)
     c.focus()
-  }, [quote, inputText.current])
+  }, [quote, body])
 
   return (
     <form className="chat-input" onSubmit={onSend}>
