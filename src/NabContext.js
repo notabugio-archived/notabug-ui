@@ -6,24 +6,24 @@ import {
   useCallback,
   useEffect,
   useMemo
-} from 'react'
-import { assoc } from 'ramda'
-import { isLocalStorageNameSupported } from '/utils'
-import isNode from 'detect-node'
+} from "react";
+import { assoc } from "ramda";
+import { isLocalStorageNameSupported } from "/utils";
+import isNode from "detect-node";
 // import fetch from "isomorphic-fetch";
-import notabugPeer from '@notabug/peer'
-import { useHttp } from '/config'
-import { ChainGunSear } from '@notabug/chaingun-sear'
-import SocketClusterGraphConnector from '@notabug/chaingun-socket-cluster-connector'
+import notabugPeer from "@notabug/peer";
+// import { useHttp } from '/config'
+import { ChainGunSear } from "@notabug/chaingun-sear";
+import SocketClusterGraphConnector from "@notabug/chaingun-socket-cluster-connector";
 
 /*
 const Gun = require('gun/gun')
 
 require('gun/lib/not')
 */
-let INDEXEDDB = false
-let LOCAL_STORAGE = false
-let DISABLE_CACHE = false
+let INDEXEDDB = false;
+let LOCAL_STORAGE = false;
+let DISABLE_CACHE = false;
 
 // global.Gun = global.Gun || Gun
 
@@ -55,54 +55,54 @@ if (!isNode) {
   */
 }
 
-export const NabContext = createContext({})
-export const useNotabug = () => useContext(NabContext)
-export const PageContext = createContext({})
-export const usePageContext = () => useContext(PageContext)
+export const NabContext = createContext({});
+export const useNotabug = () => useContext(NabContext);
+export const PageContext = createContext({});
+export const usePageContext = () => useContext(PageContext);
 
 export const useNabGlobals = ({ notabugApi, history }) => {
-  let hasLocalStorage = useMemo(isLocalStorageNameSupported, [])
-  const api = useMemo(
-    () => {
-      if (notabugApi) return notabugApi
-      const nab = notabugPeer(ChainGunSear, {
-        noGun: !!isNode,
-        faith: true,
-        localStorage: LOCAL_STORAGE && hasLocalStorage,
-        persist: INDEXEDDB,
-        disableValidation: true,
-        storeFn: INDEXEDDB ? RindexedDB : null,
-        leech: false,
-        super: false
-        // peers
+  let hasLocalStorage = useMemo(isLocalStorageNameSupported, []);
+  const api = useMemo(() => {
+    if (notabugApi) return notabugApi;
+    const nab = notabugPeer(ChainGunSear, {
+      noGun: !!isNode,
+      faith: true,
+      localStorage: LOCAL_STORAGE && hasLocalStorage,
+      persist: INDEXEDDB,
+      disableValidation: true,
+      storeFn: INDEXEDDB ? RindexedDB : null,
+      leech: false,
+      super: false
+      // peers
+    });
+
+    nab.gun.graph.connect(
+      new SocketClusterGraphConnector({
+        hostname: process.env.GUN_SC_HOSTNAME || window.location.hostname,
+        port: process.env.GUN_SC_PORT || window.location.port,
+        path: process.env.GUN_SC_PATH || "/socketcluster",
+        secure: process.env.GUN_SC_CONNECTION
+          ? process.env.GUN_SC_CONNECTION == "secure"
+          : process.env.GUN_SC_PORT == 443 || window.location.port == 443
       })
+    );
 
-      nab.gun.graph.connect(
-        new SocketClusterGraphConnector({
-          hostname: process.env.GUN_SC_HOSTNAME || window.location.hostname,
-          port: process.env.GUN_SC_PORT || window.location.port,
-          path: process.env.GUN_SC_PATH || '/socketcluster',
-          secure: process.env.GUN_SC_CONNECTION ? process.env.GUN_SC_CONNECTION == "secure" :
-                    process.env.GUN_SC_PORT == 443 || window.location.port == 443
-        })
-      )
+    nab.gun.chaingun = nab.gun;
 
-      nab.gun.chaingun = nab.gun
+    if (!isNode && !nab.scope) {
+      if (DISABLE_CACHE) console.log("CACHE DISABLED");
+      nab.scope = nab.newScope({
+        gun: nab.gun,
+        graph: DISABLE_CACHE ? {} : window.initNabState,
+        unsub: true,
+        onlyCache: false,
+        isCached: false,
+        isCacheing: false
+      });
 
-      if (!isNode && !nab.scope) {
-        if (DISABLE_CACHE) console.log('CACHE DISABLED')
-        nab.scope = nab.newScope({
-          gun: nab.gun,
-          graph: DISABLE_CACHE ? {} : window.initNabState,
-          unsub: true,
-          onlyCache: false,
-          isCached: false,
-          isCacheing: false
-        })
+      nab.navigate = history.push;
 
-        nab.navigate = history.push
-
-        /*
+      /*
       if (!DISABLE_CACHE) {
         const meta = function() {};
         meta.faith = true;
@@ -115,37 +115,34 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         });
       }
       */
-      }
-      return nab
-    },
-    [notabugApi]
-  )
+    }
+    return nab;
+  }, [notabugApi]);
 
-  const [me, setUser] = useState(null)
-  const [myContent, setMyContent] = useState({})
-  const [hasAttributedReddit, setHasAttributedReddit] = useState(false)
-  const didLogin = useCallback(meData => setUser(meData), [])
+  const [me, setUser] = useState(null);
+  const [myContent, setMyContent] = useState({});
+  const [hasAttributedReddit, setHasAttributedReddit] = useState(false);
+  const didLogin = useCallback(meData => setUser(meData), []);
 
   const onLogout = useCallback(
     evt => {
-      evt && evt.preventDefault()
-      api.gun.user().leave()
-      setUser(null)
-      sessionStorage && sessionStorage.clear()
+      evt && evt.preventDefault();
+      api.gun.user().leave();
+      setUser(null);
+      sessionStorage && sessionStorage.clear();
       if (hasLocalStorage) {
-        localStorage.setItem('nabAlias', '')
-        localStorage.setItem('nabPassword', '')
+        localStorage.setItem("nabAlias", "");
+        localStorage.setItem("nabPassword", "");
       }
     },
     [api]
-  )
+  );
 
-  const onFetchCache = useCallback(
-    (/* pathname, search */) => {
-      try {
-        // if (FORCE_REALTIME) return Promise.resolve();
-        return Promise.resolve()
-        /*
+  const onFetchCache = useCallback((/* pathname, search */) => {
+    try {
+      // if (FORCE_REALTIME) return Promise.resolve();
+      return Promise.resolve();
+      /*
       return fetch(`/api${pathname}.json${search}`, []) // eslint-disable-line no-unreachable
         .then(response => {
           if (response.status !== 200)
@@ -154,50 +151,45 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         })
         .then(api.scope.loadCachedResults);
       */
-      } catch (e) {
-        return Promise.reject(e)
-      }
-    },
-    []
-  )
+    } catch (e) {
+      return Promise.reject(e);
+    }
+  }, []);
 
-  const onMarkMine = useCallback(id => setMyContent(assoc(id, true)), [])
+  const onMarkMine = useCallback(id => setMyContent(assoc(id, true)), []);
 
   const [alias, password] = useMemo(
     () => [
-      (hasLocalStorage && localStorage.getItem('nabAlias')) || '',
-      (hasLocalStorage && localStorage.getItem('nabPassword')) || ''
+      (hasLocalStorage && localStorage.getItem("nabAlias")) || "",
+      (hasLocalStorage && localStorage.getItem("nabPassword")) || ""
     ],
     []
-  )
+  );
 
-  const [isLoggingIn, setIsLoggingIn] = useState(!!(alias && password))
+  const [isLoggingIn, setIsLoggingIn] = useState(!!(alias && password));
 
-  useEffect(
-    () => {
-      if (!isNode && api.gun) window.notabug = api
-      api.onLogin(didLogin)
+  useEffect(() => {
+    if (!isNode && api.gun) window.notabug = api;
+    api.onLogin(didLogin);
 
-      if (alias && password) {
-        api
-          .login(alias, password)
-          .catch(err => {
-            console.error('autologin failed', err)
-          })
-          .then(() => {
-            setIsLoggingIn(false)
-          })
-        setTimeout(() => {
-          if (!api.isLoggedIn()) {
-            setIsLoggingIn(false)
-            localStorage.setItem('nabAlias', '')
-            localStorage.setItem('nabPassword', '')
-          }
-        }, 5000)
-      }
-    },
-    [api]
-  )
+    if (alias && password) {
+      api
+        .login(alias, password)
+        .catch(err => {
+          console.error("autologin failed", err);
+        })
+        .then(() => {
+          setIsLoggingIn(false);
+        });
+      setTimeout(() => {
+        if (!api.isLoggedIn()) {
+          setIsLoggingIn(false);
+          localStorage.setItem("nabAlias", "");
+          localStorage.setItem("nabPassword", "");
+        }
+      }, 5000);
+    }
+  }, [api]);
 
   return useMemo(
     () => ({
@@ -228,5 +220,5 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       hasAttributedReddit,
       setHasAttributedReddit
     ]
-  )
-}
+  );
+};

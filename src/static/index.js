@@ -1,8 +1,8 @@
 import React from "react";
 import Helmet from "react-helmet";
-import { tabulator } from "../config.json";
 import { WikiPageContent } from "/Wiki";
 import { PageTemplate, PageFooter } from "/Page";
+import { Config } from "@notabug/peer";
 
 export { Reddit } from "./Reddit";
 export { Banned } from "./Banned";
@@ -17,7 +17,7 @@ export const StaticPage = ({
       <body className="wiki-page" />
     </Helmet>
     <div className="content" role="main">
-      <WikiPageContent {...{ name, identifier: tabulator }} />
+      <WikiPageContent {...{ name, identifier: Config.tabulator }} />
     </div>
     <PageFooter />
   </PageTemplate>

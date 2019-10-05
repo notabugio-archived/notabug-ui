@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "/utils";
-import { tabulator, owner } from "/config.json";
+import { Config } from "@notabug/peer";
 
 const HEADER_TOPICS = [
   "art",
@@ -45,7 +45,7 @@ export const TopBar = () => (
             <span className="separator">-</span>
             <Link
               className="choice"
-              href={`/user/${owner || tabulator}/spaces/spaces`}
+              href={`/user/${Config.owner}/spaces/spaces`}
             >
               spaces
             </Link>

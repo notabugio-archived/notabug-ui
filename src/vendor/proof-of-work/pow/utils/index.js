@@ -2,12 +2,11 @@
 import { argon2 } from "argon2-browser";
 if (!require("detect-node")) {
   // const argon2 = require("/vendor/argon2-browser");
-  const {
-    hashLength,
-    timeCost,
-    memoryCost,
-    parallelism
-  } = require("/work-config.json");
+  const hashLength = parseInt(process.env.NAB_POW_HASH_LENGTH) || 32;
+  const timeCost = parseInt(process.env.NAB_POW_TIME_COST) || 1;
+  const memoryCost = parseInt(process.env.NAB_POW_MEMORY_COST) || 10240;
+  const parallelism = parseInt(process.env.NAB_POW_PARALLELISM) || 1;
+
   const distPath = "/static/js";
 
   argon2.load &&
