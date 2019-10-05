@@ -15,7 +15,7 @@ import { useNotabug } from "/NabContext"
 
 const MAX_TEXTAREA_HEIGHT = 120
 
-export const ChatInput = ({ ListingContext, scrollToBottom }) => {
+export const ChatInput = ({ ListingContext, scrollToBottom, scrollable }) => {
   const { me, api, onMarkMine } = useNotabug()
   const { submitTopic: topic, addSpeculativeId } = useContext(ListingContext)
   const { quote } = useUi()
@@ -67,10 +67,23 @@ export const ChatInput = ({ ListingContext, scrollToBottom }) => {
   }, [])
 
   const onKeyDown = useCallback(evt => {
-    if(evt && evt.keyCode == 13 && !evt.shiftKey) {
-      onSend(evt)
+    if(evt.key == "Enter" && !evt.shiftKey) {
+      evt.preventDefault()
+      return onSend(evt)
+    }
+
+    if(!scrollable || !scrollable.current)
+      return
+
+    if(evt.key == "PageDown" || evt.key == "PageUp") {
+      evt.preventDefault()
+      const dir = evt.key == "PageDown" ? 1 : -1
+      const amount = dir * (evt.shiftKey ? scrollable.current.clientHeight * .9 : 20)
+      scrollable.current.scrollTop = Math.max(1, scrollable.current.scrollTop + amount)
     }
   }, [api, body, topic])
+
+  useEffect(() => textarea.current ? textarea.current.focus() : null, [])
 
   useEffect(() => {
     if(quote.length == 0)

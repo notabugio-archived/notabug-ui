@@ -105,7 +105,7 @@ export const InfiniteContent = React.memo(
               returnScrollable: el => (scrollable.current = el)
             }}
           />
-          {isChat ? <ChatInput {...{ ListingContext, scrollToBottom }} /> : null}
+          {isChat ? <ChatInput {...{ ListingContext, scrollToBottom, scrollable }} /> : null}
         </div>
       </ErrorBoundary>
     );
