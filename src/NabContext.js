@@ -76,16 +76,20 @@ export const useNabGlobals = ({ notabugApi, history }) => {
       // peers
     });
 
+    const connector = new SocketClusterGraphConnector({
+      hostname: process.env.GUN_SC_HOSTNAME || window.location.hostname,
+      port: process.env.GUN_SC_PORT || window.location.port,
+      path: process.env.GUN_SC_PATH || "/socketcluster",
+      secure: process.env.GUN_SC_CONNECTION
+        ? process.env.GUN_SC_CONNECTION == "secure"
+        : parseInt(process.env.GUN_SC_PORT) === 443 ||
+          /https/.test(window.location.protocol)
+    })
+    connector.sendPutsFromGraph(nab.gun.graph)
+    connector.sendRequestsFromGraph(nab.gun.graph)
+    
     nab.gun.graph.connect(
-      new SocketClusterGraphConnector({
-        hostname: process.env.GUN_SC_HOSTNAME || window.location.hostname,
-        port: process.env.GUN_SC_PORT || window.location.port,
-        path: process.env.GUN_SC_PATH || "/socketcluster",
-        secure: process.env.GUN_SC_CONNECTION
-          ? process.env.GUN_SC_CONNECTION == "secure"
-          : parseInt(process.env.GUN_SC_PORT) === 443 ||
-            /https/.test(window.location.protocol)
-      })
+      connector
     );
 
     nab.gun.chaingun = nab.gun;
