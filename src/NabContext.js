@@ -83,7 +83,8 @@ export const useNabGlobals = ({ notabugApi, history }) => {
         path: process.env.GUN_SC_PATH || "/socketcluster",
         secure: process.env.GUN_SC_CONNECTION
           ? process.env.GUN_SC_CONNECTION == "secure"
-          : process.env.GUN_SC_PORT == 443 || window.location.port == 443
+          : parseInt(process.env.GUN_SC_PORT) === 443 ||
+            /https/.test(window.location.protocol)
       })
     );
 
