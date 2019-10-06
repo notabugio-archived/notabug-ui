@@ -32,30 +32,6 @@ export const InfiniteContent = React.memo(
     );
     const firstId = R.nth(0, limitedIds) || "";
 
-    let lastScrollHeight = 0, lastScrollTop = 0, lastScrollBottom = 0
-    const scrollToBottom = useCallback((force) => {
-      if(!scrollable || !scrollable.current)
-        return;
-      const c = scrollable.current
-
-      if(force) {
-        lastScrollTop = c.scrollTop = c.scrollHeight - c.clientHeight
-        lastScrollHeight = lastScrollBottom = c.scrollHeight
-        return
-      }
-
-      const lastBottom = lastScrollHeight - BOTTOM_HEIGHT
-      const sizeChanged = (c.scrollHeight - BOTTOM_HEIGHT) != lastBottom
-      const wasAtBottom = lastScrollBottom >= lastBottom || lastScrollHeight <= c.clientHeight
-
-      if(sizeChanged && wasAtBottom)
-        c.scrollTop = c.scrollHeight - c.clientHeight
-
-      lastScrollBottom = lastScrollTop + c.clientHeight
-      lastScrollTop = c.scrollTop
-      lastScrollHeight = c.scrollHeight
-    }, [scrollable.current]);
-
     const loadMore = useCallback(() => {
       setLimit(R.add(PAGE_SIZE));
     }, []);
@@ -69,13 +45,40 @@ export const InfiniteContent = React.memo(
       [loadMore]
     );
 
+    const hasNewItems = useRef(false)
     useEffect(() => {
-      if (isChat) {
-        const interval = setInterval(scrollToBottom, 300);
-        return () => {
-          clearInterval(interval);
-        }
-      }
+      hasNewItems.current = true
+    }, [limitedIds])
+
+    const forceToBottom = useRef(true)
+    const scrollToBottom = () => {
+      forceToBottom.current = true
+    }
+
+    let lastScrollHeight = 0, lastScrollTop = 0, lastScrollBottom = 0
+    let animFrame = null
+    const keepAtBottom = () => {
+      animFrame = requestAnimationFrame(keepAtBottom)
+      if(!scrollable || !scrollable.current)
+        return
+      const c = scrollable.current
+      const lastBottom = lastScrollHeight - BOTTOM_HEIGHT
+      const wasAtBottom = lastScrollBottom >= lastBottom || lastScrollHeight <= c.clientHeight
+
+      if(forceToBottom.current || (hasNewItems.current && wasAtBottom))
+        c.scrollTop = c.scrollHeight - c.clientHeight
+
+      lastScrollTop = c.scrollTop
+      lastScrollBottom = lastScrollTop + c.clientHeight
+      lastScrollHeight = c.scrollHeight
+      forceToBottom.current = false
+      hasNewItems.current = false
+    }
+
+    useEffect(() => {
+      if (!isChat) return
+      animFrame = requestAnimationFrame(keepAtBottom)
+      return () => cancelAnimationFrame(animFrame)
     }, [isChat]);
 
     return (
