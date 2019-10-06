@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.70.5",
+  "version": "0.70.6",
   "description": "Classic Open-Source Reddit UI for notabug",
   "main": "index.js",
   "keywords": [],
@@ -65,6 +65,9 @@
     "less": "^3.9.0",
     "parcel-bundler": "^1.12.3",
     "rimraf": "3.0.0"
+  },
+  "prettier": {
+    "semi": false
   },
   "browserslist": [
     ">0.05%",
