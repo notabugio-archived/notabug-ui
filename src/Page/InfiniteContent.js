@@ -5,7 +5,8 @@ import React, {
   useState,
   useCallback,
   useRef,
-  useEffect
+  useEffect,
+  createRef,
 } from "react";
 import * as R from "ramda";
 import ChatView from "react-chatview";
@@ -55,28 +56,40 @@ export const InfiniteContent = React.memo(
       forceToBottom.current = true
     }
 
-    let lastScrollHeight = 0, lastScrollTop = 0, lastScrollBottom = 0
+    const clipper = useRef(createRef())
+
     let animFrame = null
-    const keepAtBottom = () => {
-      animFrame = requestAnimationFrame(keepAtBottom)
-      if(!scrollable || !scrollable.current)
-        return
-      const c = scrollable.current
-      const lastBottom = lastScrollHeight - BOTTOM_HEIGHT
-      const wasAtBottom = lastScrollBottom >= lastBottom || lastScrollHeight <= c.clientHeight
-
-      if(forceToBottom.current || (hasNewItems.current && wasAtBottom))
-        c.scrollTop = c.scrollHeight - c.clientHeight
-
-      lastScrollTop = c.scrollTop
-      lastScrollBottom = lastScrollTop + c.clientHeight
-      lastScrollHeight = c.scrollHeight
-      forceToBottom.current = false
-      hasNewItems.current = false
-    }
-
     useEffect(() => {
       if (!isChat) return
+
+      let scrollHeight = 0, scrollTop = 0, scrollBottom = 0
+      const keepAtBottom = () => {
+        animFrame = requestAnimationFrame(keepAtBottom)
+        if(!scrollable.current || !clipper.current)
+          return
+
+        const c = scrollable.current
+        const lastBottom = scrollHeight - BOTTOM_HEIGHT
+        const wasAtBottom = scrollBottom >= lastBottom || scrollHeight <= c.clientHeight
+
+        if(forceToBottom.current || (hasNewItems.current && wasAtBottom))
+          c.scrollTop = c.scrollHeight - c.clientHeight
+
+        if(forceToBottom.current)
+          setTimeout(() => {
+            forceToBottom.current = !wasAtBottom
+          }, 1000)
+
+        scrollTop = c.scrollTop
+        scrollBottom = scrollTop + c.clientHeight
+        scrollHeight = c.scrollHeight
+        hasNewItems.current = false
+
+        const clipSize = Math.min(BOTTOM_HEIGHT * 2, (scrollHeight - (scrollTop + c.clientHeight)) * .1)
+        if(clipSize != clipper.current.clientHeight)
+          clipper.current.style.height = clipSize + "px"
+      }
+
       animFrame = requestAnimationFrame(keepAtBottom)
       return () => cancelAnimationFrame(animFrame)
     }, [isChat]);
@@ -108,7 +121,17 @@ export const InfiniteContent = React.memo(
               returnScrollable: el => (scrollable.current = el)
             }}
           />
-          {isChat ? <ChatInput {...{ ListingContext, scrollToBottom, scrollable }} /> : null}
+          {isChat ?<>
+            <div className="chat-scrollbtn-clipper" ref={clipper}>
+              <button
+                className="chat-scrollbtn"
+                onClick={scrollToBottom}
+              >
+                ↓↓↓
+              </button>
+            </div>
+            <ChatInput {...{ ListingContext, scrollToBottom, scrollable }} />
+          </>: null}
         </div>
       </ErrorBoundary>
     );

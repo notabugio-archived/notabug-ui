@@ -83,7 +83,8 @@ export const ChatInput = ({ ListingContext, scrollToBottom, scrollable }) => {
     }
   }, [api, body, topic])
 
-  useEffect(() => textarea.current ? textarea.current.focus() : null, [])
+  // TODO: only in fullscreen chat
+  //useEffect(() => textarea.current ? textarea.current.focus() : null, [])
 
   useEffect(() => {
     if(quote.length == 0)
