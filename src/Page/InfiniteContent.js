@@ -49,23 +49,27 @@ export const InfiniteContent = React.memo(
     const hasNewItems = useRef(false)
     useEffect(() => {
       hasNewItems.current = true
+      // TODO: grab last item
     }, [limitedIds])
 
     const forceToBottom = useRef(true)
     const scrollToBottom = () => {
       forceToBottom.current = true
+      if(!scrollable.current)
+        return
+      const c = scrollable.current
+      c.scrollTop = c.scrollHeight - c.clientHeight
     }
 
-    const clipper = useRef(createRef())
-
+    const scrollButton = useRef(createRef())
     let animFrame = null
     useEffect(() => {
       if (!isChat) return
 
-      let scrollHeight = 0, scrollTop = 0, scrollBottom = 0
+      let scrollTop = 0, scrollBottom = 0, scrollHeight = 0
       const keepAtBottom = () => {
         animFrame = requestAnimationFrame(keepAtBottom)
-        if(!scrollable.current || !clipper.current)
+        if(!scrollable.current || !scrollButton.current)
           return
 
         const c = scrollable.current
@@ -75,19 +79,15 @@ export const InfiniteContent = React.memo(
         if(forceToBottom.current || (hasNewItems.current && wasAtBottom))
           c.scrollTop = c.scrollHeight - c.clientHeight
 
-        if(forceToBottom.current)
-          setTimeout(() => {
-            forceToBottom.current = !wasAtBottom
-          }, 1000)
+        const isAtBottom = c.scrollTop >= c.scrollHeight - (c.clientHeight + BOTTOM_HEIGHT)
+        if(isAtBottom != wasAtBottom)
+          scrollButton.current.style.display = isAtBottom ? "none" : "block"
 
         scrollTop = c.scrollTop
-        scrollBottom = scrollTop + c.clientHeight
         scrollHeight = c.scrollHeight
+        scrollBottom = scrollTop + c.clientHeight
         hasNewItems.current = false
-
-        const clipSize = Math.min(BOTTOM_HEIGHT * 2, (scrollHeight - (scrollTop + c.clientHeight)) * .1)
-        if(clipSize != clipper.current.clientHeight)
-          clipper.current.style.height = clipSize + "px"
+        forceToBottom.current = false // TODO: reset only if last listing item is fully populated
       }
 
       animFrame = requestAnimationFrame(keepAtBottom)
@@ -98,40 +98,39 @@ export const InfiniteContent = React.memo(
       <ErrorBoundary>
         <a name="content" key="anchor" />
         <div className="content" role="main">
-          <Things
-            {...{
-              Empty,
-              ListingContext,
-              limit,
-              ids: limitedIds,
-              fetchParent: true,
-              disableChildren: true
-            }}
-            Loading={isChat ? ChatMsg : Loading}
-            Container={isChat ? AutoScrollChatView : ChatView}
-            collapseLarge={!!isChat}
-            containerProps={{
-              id: "siteTable",
-              className: `sitetable infinite-listing ${
-                isChat ? "chat-listing" : ""
-              }`,
-              scrollLoadThreshold: 1000,
-              onInfiniteLoad: onLoadMore,
-              flipped: isChat,
-              returnScrollable: el => (scrollable.current = el)
-            }}
-          />
-          {isChat ?<>
-            <div className="chat-scrollbtn-clipper" ref={clipper}>
-              <button
-                className="chat-scrollbtn"
-                onClick={scrollToBottom}
-              >
-                ↓↓↓
-              </button>
-            </div>
+          <div className="things-container">
+            <Things
+              {...{
+                Empty,
+                ListingContext,
+                limit,
+                ids: limitedIds,
+                fetchParent: true,
+                disableChildren: true
+              }}
+              Loading={isChat ? ChatMsg : Loading}
+              Container={isChat ? AutoScrollChatView : ChatView}
+              collapseLarge={!!isChat}
+              containerProps={{
+                id: "siteTable",
+                className: `sitetable infinite-listing ${
+                  isChat ? "chat-listing" : ""
+                }`,
+                scrollLoadThreshold: 1000,
+                onInfiniteLoad: onLoadMore,
+                flipped: isChat,
+                returnScrollable: el => (scrollable.current = el)
+              }}
+            />
+            {isChat ?
+              <div className="chat-scrollbtn" onClick={scrollToBottom} ref={scrollButton}>
+                ↧
+              </div>
+            : null}
+          </div>
+          {isChat ?
             <ChatInput {...{ ListingContext, scrollToBottom, scrollable }} />
-          </>: null}
+          : null}
         </div>
       </ErrorBoundary>
     );
