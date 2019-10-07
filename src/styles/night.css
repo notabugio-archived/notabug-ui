@@ -38,6 +38,12 @@ body,
   background-color: transparent !important;
 }
 
+.chat-scrollbtn {
+  background-color: rgba(24, 32, 40, .85) !important;
+  border-color: gray !important;
+  color: gray !important;
+}
+
 blockquote {
   color: #aaa !important;
 }
