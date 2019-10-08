@@ -66,7 +66,7 @@ export const InfiniteContent = React.memo(
     useEffect(() => {
       if (!isChat) return
 
-      let scrollTop = 0, scrollBottom = 0, scrollHeight = 0
+      let scrollTop = 0, scrollBottom = 0, scrollHeight = 0, buttonHeight = -20
       const keepAtBottom = () => {
         animFrame = requestAnimationFrame(keepAtBottom)
         if(!scrollable.current || !scrollButton.current)
@@ -80,14 +80,18 @@ export const InfiniteContent = React.memo(
           c.scrollTop = c.scrollHeight - c.clientHeight
 
         const isAtBottom = c.scrollTop >= c.scrollHeight - (c.clientHeight + BOTTOM_HEIGHT)
-        if(isAtBottom != wasAtBottom)
+        if(!isAtBottom && buttonHeight < 20)
+          scrollButton.current.style.height = Math.max(0, buttonHeight++) + "px"
+        if(isAtBottom != wasAtBottom) {
+          buttonHeight = -20
           scrollButton.current.style.display = isAtBottom ? "none" : "block"
+        }
 
         scrollTop = c.scrollTop
         scrollHeight = c.scrollHeight
         scrollBottom = scrollTop + c.clientHeight
         hasNewItems.current = false
-        forceToBottom.current = false // TODO: reset only if last listing item is fully populated
+        forceToBottom.current = false // TODO: reset only after item at bottom is fully populated
       }
 
       animFrame = requestAnimationFrame(keepAtBottom)
