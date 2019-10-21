@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.70.10",
+  "version": "0.70.11",
   "description": "Classic Open-Source Reddit UI for notabug",
   "main": "index.js",
   "keywords": [],
@@ -23,8 +23,9 @@
     "argon2": "./src/vendor/argon2.stub.js"
   },
   "dependencies": {
-    "@notabug/chaingun-sear": "^0.0.18",
-    "@notabug/chaingun-socket-cluster-connector": "^0.0.3",
+    "@babel/runtime-corejs2": "^7.6.3",
+    "@chaingun/sea-client": "^0.0.20",
+    "@chaingun/socketcluster-connector": "^0.0.4",
     "@notabug/peer": "^0.36.1",
     "@tippy.js/react": "^2.2.0",
     "argon2-browser": "1.5.3",
