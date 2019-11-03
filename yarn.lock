@@ -1258,17 +1258,6 @@
     "@chaingun/client" "^0.0.23"
     "@chaingun/sear" "^0.0.24"
 
-"@chaingun/sear@^0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@chaingun/sear/-/sear-0.0.23.tgz#a0b7bb8557ba0c6ecb7b650a09e4a741b22582f5"
-  integrity sha512-TdSfK6ESDRhNNGt1Iez9tN/yvmUZVseltcu7B8+Lk1Pkt/4UwDAAEC4dKHowNQK3fHNRvsq28PQ8++8jFYicSA==
-  dependencies:
-    "@types/window-or-global" "^1.0.0"
-    isomorphic-webcrypto "^2.3.2"
-    sha.js "^2.4.11"
-    text-encoding "^0.7.0"
-    window-or-global "^1.0.1"
-
 "@chaingun/sear@^0.0.24":
   version "0.0.24"
   resolved "https://registry.yarnpkg.com/@chaingun/sear/-/sear-0.0.24.tgz#a9a1d09cf5990468fd216b0ae2b8f5e1242657b0"
@@ -1280,13 +1269,13 @@
     text-encoding "^0.7.0"
     window-or-global "^1.0.1"
 
-"@chaingun/socketcluster-connector@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@chaingun/socketcluster-connector/-/socketcluster-connector-0.0.4.tgz#087c539178b4f596a96bcaa385385a96df094aac"
-  integrity sha512-lGTSgeglPr9n5Iy6Ze56hDUyqDZJ0/+Sayb/U20urnlI7V7CVclcPZ7EFhB8FdVpnaPv8M2tO8YvX3VwQgtJEw==
+"@chaingun/socketcluster-connector@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@chaingun/socketcluster-connector/-/socketcluster-connector-0.0.5.tgz#f58b63453cd5966557cb15dd2ace8050e86d2e9f"
+  integrity sha512-X3oQ49wFlB9TZeQVM/3nyAA2bXRp0w58+lTIJaMqUu2HD3nJ4woc++ItDvz0oQrFDTTExPzgRoA4WTDDOrNC7Q==
   dependencies:
     "@chaingun/client" "^0.0.19"
-    "@chaingun/sear" "^0.0.23"
+    "@chaingun/sear" "^0.0.24"
     "@types/socketcluster-client" "^13.0.3"
     socketcluster-client "^14.3.1"
 
