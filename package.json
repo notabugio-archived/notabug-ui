@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.70.11",
+  "version": "0.70.13",
   "description": "Classic Open-Source Reddit UI for notabug",
   "main": "index.js",
   "keywords": [],
@@ -14,7 +14,7 @@
     "node": ">=10.0.0"
   },
   "scripts": {
-    "start": "GUN_SC_HOSTNAME=notabug.io GUN_SC_PORT=443 parcel --host 0.0.0.0 --port 3333 src/index.html",
+    "start": "GUN_SC_HOSTNAME=notabug.io GUN_SC_PORT=443 parcel --host 0.0.0.0 --port 4444 src/index.html",
     "build": "cross-env-shell BABEL_ENV=client \"rimraf build && parcel build -d build src/index.html\" && yarn tohtdocs",
     "clean": "rimraf build && rimraf server-build",
     "tohtdocs": "copyfiles --up 1 build/* build/**/* htdocs"
@@ -29,6 +29,7 @@
     "@notabug/peer": "^0.36.1",
     "@tippy.js/react": "^2.2.0",
     "argon2-browser": "1.5.3",
+    "core-js": "^3.3.6",
     "detect-node": "^2.0.4",
     "jdenticon": "^2.1.1",
     "lodash.debounce": "^4.0.8",
