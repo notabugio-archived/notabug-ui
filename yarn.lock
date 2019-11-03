@@ -1227,6 +1227,15 @@
     "@chaingun/types" "^0.0.1"
     reconnecting-websocket "^4.2.0"
 
+"@chaingun/client@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@chaingun/client/-/client-0.0.23.tgz#abada8a8fbc9b86aeb54aa46a7bae697ab337b51"
+  integrity sha512-T49NRHHayeu8PoZEMr0tTiCYDqUDfrUbptMTc7wYehaUScDj4Ipn+/Yn654GxjAjzwN5mv6eHHtk5qtGVLzfQA==
+  dependencies:
+    "@chaingun/crdt" "^0.0.2"
+    "@chaingun/types" "^0.0.3"
+    reconnecting-websocket "^4.2.0"
+
 "@chaingun/crdt@^0.0.1":
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@chaingun/crdt/-/crdt-0.0.1.tgz#a94ebed24c93d50fe66526fc36c2c9764dc55691"
@@ -1234,18 +1243,36 @@
   dependencies:
     "@chaingun/types" "^0.0.1"
 
-"@chaingun/sea-client@^0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@chaingun/sea-client/-/sea-client-0.0.20.tgz#15f0a0a9de1d0931d2ba8a28a362abca1ac6c6a0"
-  integrity sha512-OCbJcK8rE0atTgKNaUrHCm8Vp3MArPL2e1nPup+js4wWxNNd6UzVQDKjPenQoZZRTrWlldGxG6d2/LiB0TXv2g==
+"@chaingun/crdt@^0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@chaingun/crdt/-/crdt-0.0.2.tgz#9d62c703e81c95e3e347c078352284707c0ff1bd"
+  integrity sha512-JggscTfwsubnYamCTFI+rgCLKBrlv3NVBeymPdw0fpjVgCsDf9FFJDzYrsEl7lLUXIAZ+GG0pDki0DW2DsOx6Q==
   dependencies:
-    "@chaingun/client" "^0.0.19"
-    "@chaingun/sear" "^0.0.23"
+    "@chaingun/types" "^0.0.3"
+
+"@chaingun/sea-client@^0.0.23":
+  version "0.0.23"
+  resolved "https://registry.yarnpkg.com/@chaingun/sea-client/-/sea-client-0.0.23.tgz#0944099d9584c8ee52564569dd6cbf437fb40317"
+  integrity sha512-8z2fFL5WylUWMZGLHb0HfHSYSQwAih+dE8FOZT/eAqNiaeRWlu+3K5oozB3DsQYRl4tlCZZ6uawHa7TWTZ4FIw==
+  dependencies:
+    "@chaingun/client" "^0.0.23"
+    "@chaingun/sear" "^0.0.24"
 
 "@chaingun/sear@^0.0.23":
   version "0.0.23"
   resolved "https://registry.yarnpkg.com/@chaingun/sear/-/sear-0.0.23.tgz#a0b7bb8557ba0c6ecb7b650a09e4a741b22582f5"
   integrity sha512-TdSfK6ESDRhNNGt1Iez9tN/yvmUZVseltcu7B8+Lk1Pkt/4UwDAAEC4dKHowNQK3fHNRvsq28PQ8++8jFYicSA==
+  dependencies:
+    "@types/window-or-global" "^1.0.0"
+    isomorphic-webcrypto "^2.3.2"
+    sha.js "^2.4.11"
+    text-encoding "^0.7.0"
+    window-or-global "^1.0.1"
+
+"@chaingun/sear@^0.0.24":
+  version "0.0.24"
+  resolved "https://registry.yarnpkg.com/@chaingun/sear/-/sear-0.0.24.tgz#a9a1d09cf5990468fd216b0ae2b8f5e1242657b0"
+  integrity sha512-SV+kb9VkX7wxvmiOusU6bJcxx8lWb+OdHDOTuib3ILD+Mwm/Ks5sospSxLodu5uiXZszDCdMDgqCoGPkfxHObQ==
   dependencies:
     "@types/window-or-global" "^1.0.0"
     isomorphic-webcrypto "^2.3.2"
@@ -1267,6 +1294,11 @@
   version "0.0.1"
   resolved "https://registry.yarnpkg.com/@chaingun/types/-/types-0.0.1.tgz#f5ebbdd49a66736ad5db58abac43b5a73ca37540"
   integrity sha512-oEAyKmtXlDCo1dJoeeSc8JIWpVQ4ZeARumPUqy22Yo7sG0o0y0RRiJ8pi2lrm5sRoRwlM6iTeKS1uRGjrDslJA==
+
+"@chaingun/types@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@chaingun/types/-/types-0.0.3.tgz#2f0968932c827528b8815ce4b2886661f7d94e06"
+  integrity sha512-0rIMrcK0BGiiIzMhlhNxSiqGwyxWhgbGyUdycp6cmqwQrhFd6cxBVUtGkdWsGULrHUye26TLeKfbGXRvP8TXCQ==
 
 "@iarna/toml@^2.2.0":
   version "2.2.3"
