@@ -17,6 +17,6 @@ This is a UI client for notabug built in React based on Reddit's open-source cla
 
 ### UI Development
 
-    yarn start
+    yarn && yarn start
 
 notabug ui client will then be available on localhost:3333 talking to notabug.io directly
