@@ -1,34 +1,7 @@
-import React from "react";
-import { Link } from "/utils";
-import { Config } from "@notabug/peer";
-
-const HEADER_TOPICS = [
-  "art",
-  "ask",
-  "books",
-  "domains",
-  "food",
-  "funny",
-  "gaming",
-  "gifs",
-  "history",
-  "memes",
-  "movies",
-  "music",
-  "news",
-  "pics",
-  "politics",
-  "programming",
-  "religion",
-  "quotes",
-  "science",
-  "space",
-  "technology",
-  "travel",
-  "tv",
-  "videos",
-  "whatever"
-];
+import React from "react"
+import { Link } from "/utils"
+import { Config } from "@notabug/peer"
+import { HEADER_TOPICS } from "/Page/Topics"
 
 export const TopBar = () => (
   <div id="sr-header-area">
