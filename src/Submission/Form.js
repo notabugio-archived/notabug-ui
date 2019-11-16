@@ -8,6 +8,7 @@ import { parse as parseURI } from "uri-js";
 import { Constants } from "@notabug/peer";
 import { SubmitPage } from "/vendor/snew-classic-ui";
 import { PageTemplate, PageFooter } from "/Page";
+import { HEADER_TOPICS } from "/Page/Topics"
 import { Link, JavaScriptRequired } from "/utils";
 
 const preventDefault = fn => evt => {
@@ -93,6 +94,7 @@ export const SubmissionForm = withRouter(
             text={body}
             title={title}
             subreddit={topic.toLowerCase()}
+            subscribedSubreddits={HEADER_TOPICS}
             is_self={isSelf}
             contentPolicyUrl="/rules"
             textError={

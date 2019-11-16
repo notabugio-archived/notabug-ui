@@ -241,11 +241,18 @@ const SubmitPage = ({
               ) : null}
               {subscribedSubreddits ? (
                 <div id="suggested-reddits">
-                  <h3>your subscribed subs</h3>
+                  <h3>common topics</h3>
                   <ul>
                     {subscribedSubreddits.map((name, idx) => (
                       <li key={name}>
-                        <a tabIndex={100 + idx} >{sitename}</a>
+                        <button
+                          type="button"
+                          tabIndex={100 + idx}
+                          value={name}
+                          onClick={onChangeSubreddit}
+                        >
+                          {name}
+                        </button>
                       </li>
                     ))}
                   </ul>
