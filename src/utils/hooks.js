@@ -23,7 +23,7 @@ export const useScope = (deps = [], opts = {}) => {
 
     return api.newScope({
       ...opts,
-      unsub: true,
+      unsub: false,
       gun: api.gun.chaingun,
       graph: api.scope.getGraph()
     })
