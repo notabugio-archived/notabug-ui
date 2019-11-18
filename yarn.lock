@@ -1307,20 +1307,20 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@notabug/gun-scope@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@notabug/gun-scope/-/gun-scope-0.10.0.tgz#f578d054e157eaefd1f84032f5e20680259250fe"
-  integrity sha512-Yg5EwCBS5KVEDNFwRxbiX1tDs5XboM5ZSAUcfJU+pNaW6Hg2Z5SWA+yCS40POlCE1OjO2u5Qk13TzaCmkr5OCA==
+"@notabug/gun-scope@^0.10.2":
+  version "0.10.2"
+  resolved "https://registry.yarnpkg.com/@notabug/gun-scope/-/gun-scope-0.10.2.tgz#cb00d2df4379c161c1b7efc78923f5dce1e59bc0"
+  integrity sha512-d2eZekyyGOUymc08t+13sbKUsBQARArDcrGK7jUVelTWCpoP8bHXf3jRsaSzd3ef22jx7tPYppjy05rNcKaFwA==
   dependencies:
     ramda "^0.26.1"
     zalgo-promise "1.0.28"
 
-"@notabug/peer@^0.36.1":
-  version "0.36.1"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.36.1.tgz#55fb7c7d9b048e11c64e6a01eab91ef922c03b0b"
-  integrity sha512-W9WuXv5KHZ3Oc2h0qSkjQUfkQMAoxGZQg3QxTNaSy3L7neX3aQn5t8KfMVVLN7WFu6uYz5UzaFUExmWBYawq3g==
+"@notabug/peer@^0.38.0":
+  version "0.38.0"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.38.0.tgz#72324d9abacd3be640885838cd7a28d4c4ae8960"
+  integrity sha512-3uxirnbU+GKTlb3QtLwSuGG842uh80ZYbfb3GdCpKWD+eZmd8GvEbltTbGAVkRD/ERzc6fPwtg+H7wB4GsCQuw==
   dependencies:
-    "@notabug/gun-scope" "^0.10.0"
+    "@notabug/gun-scope" "^0.10.2"
     argon2 "^0.21.0"
     fast-memoize "^2.5.1"
     object-hash "^1.3.1"
