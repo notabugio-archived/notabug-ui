@@ -117,6 +117,12 @@
   filter: invert(1) hue-rotate(180deg) brightness(.75);
 }
 
-.darkmode #darkmode-switch {
-  filter: invert(1);
+.darkmode #sr-header-area #darkmode-switch {
+  color: #bbb !important;
+  background-color: #444 !important;
+}
+
+.darkmode #darkmode-switch:after {
+  padding-left: 0;
+  padding-right: 1em;
 }

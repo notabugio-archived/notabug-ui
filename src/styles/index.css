@@ -322,7 +322,7 @@ body > .content .chat-scrollbtn {
 
 #darkmode-switch {
   color: #ddd;
-  background-color: #222;
+  background-color: #666;
   font-size: 8px;
   margin-left: 2px;
   padding: 2px;
@@ -332,5 +332,5 @@ body > .content .chat-scrollbtn {
 
 #darkmode-switch:after {
   content: "█";
-  padding-left: 3px;
+  padding-left: 1em;
 }

@@ -15,12 +15,7 @@ export const TopBar = () => (
       <div className="sr-list">
         <ul className="flat-list sr-bar hover">
           <li>
-            <a
-              id="darkmode-switch"
-              onClick={onClickDarkmode}
-            >
-              &nbsp;
-            </a>
+            <a id="darkmode-switch" onClick={onClickDarkmode}></a>
           </li>
           <li>
             <span className="separator">-</span>
