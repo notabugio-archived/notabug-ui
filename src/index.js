@@ -6,9 +6,13 @@ import { BrowserRouter } from "react-router-dom";
 import "/vendor/snew-classic-ui/static/css/minimal.css";
 import "/vendor/snew-classic-ui/static/css/wiki.css";
 import "/styles/index.css";
+import "/styles/night.css";
 import { App } from "/App";
 import { ErrorBoundary } from "/utils";
+import { setDarkMode } from "/UI"
 // import { unregister } from "/utils/registerServiceWorker";
+
+setDarkMode("restore", window.location.hostname == "nab.cx")
 
 try {
   localStorage.removeItem("gun/");

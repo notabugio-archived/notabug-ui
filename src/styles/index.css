@@ -319,3 +319,18 @@ body > .content .chat-scrollbtn {
   border-left: solid 1px #888;
   cursor: pointer;
 }
+
+#darkmode-switch {
+  color: #ddd;
+  background-color: #222;
+  font-size: 8px;
+  margin-left: 2px;
+  padding: 2px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+#darkmode-switch:after {
+  content: "█";
+  padding-left: 3px;
+}

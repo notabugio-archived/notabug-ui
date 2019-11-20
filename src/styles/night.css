@@ -1,118 +1,122 @@
-html {
+.darkmode html {
   background-color: #182028;
   color: #ccd;
 }
 
-#header {
+.darkmode #header {
   background-color: #283038 !important;
 }
 
-a {
+.darkmode a {
   background-color: transparent !important;
   color: #8be !important;
 }
 
-body,
-.side,
-.bottommenu,
-.content,
-.footer-parent,
-#header-bottom-right,
-.sitetable,
-.md,
-#sr-header-area,
-#sr-header-area a {
+.darkmode body,
+.darkmode .side,
+.darkmode .bottommenu,
+.darkmode .content,
+.darkmode .footer-parent,
+.darkmode #header-bottom-right,
+.darkmode .sitetable,
+.darkmode .md,
+.darkmode #sr-header-area,
+.darkmode #sr-header-area a {
   background-color: #182028 !important;
   color: #dde !important;
 }
 
-.submit .morelink {
+.darkmode .submit .morelink {
   border: #678 solid 1px !important;
 }
 
-.submit .morelink a {
+.darkmode .submit .morelink a {
   background-color: #182028 !important;
 }
 
-.content .chat-input {
+.darkmode .content .chat-input {
   background-color: transparent !important;
 }
 
-.chat-scrollbtn {
+.darkmode .chat-scrollbtn {
   background-color: rgba(24, 32, 40, .85) !important;
   border-color: gray !important;
   color: gray !important;
 }
 
-blockquote {
+.darkmode blockquote {
   color: #aaa !important;
 }
 
-input,
-textarea,
-pre,
-.roundfield,
-.infobar,
-.nextprev a {
+.darkmode input,
+.darkmode textarea,
+.darkmode pre,
+.darkmode .roundfield,
+.darkmode .infobar,
+.darkmode .nextprev a {
   background-color: #283038 !important;
   color: #dde !important;
   border: #678 solid 1px !important;
 }
 
-code {
+.darkmode code {
   background-color: #283038 !important;
   color: #aaa !important;
   border: none !important;
 }
 
-button {
+.darkmode button {
   background-color: #182028 !important;
   color: #8be !important;
   border: solid 1px #678;
   padding: .5em 1em;
 }
 
-button:disabled {
+.darkmode button:disabled {
   background-color: #283038 !important;
   color: #69c !important;
 }
 
-.tabmenu li:not(.selected) a {
+.darkmode .tabmenu li:not(.selected) a {
   background-color: #485058 !important;
   border: none !important;
 }
 
-.selected a {
+.darkmode .selected a {
   color: #f86 !important;
   border: 1px solid #9ab !important;
   border-bottom: 1px solid #182028 !important;
 }
 
-a:visited.title {
+.darkmode a:visited.title {
   color: #678 !important;
 }
 
-.thing.stickied .title > a {
+.darkmode .thing.stickied .title > a {
   color: #eef !important;
 }
 
-#header-img {
+.darkmode #header-img {
   background-color: transparent; !important;
   filter: invert(.8);
 }
 
-.drop-choices {
+.darkmode .drop-choices {
   background-color: #283038 !important;
 }
 
-.nub {
+.darkmode .nub {
   display: none;
 }
 
-.identicon {
+.darkmode .identicon {
   filter: invert(1) hue-rotate(180deg) brightness(1.5);
 }
 
-.expando-button {
+.darkmode .expando-button {
   filter: invert(1) hue-rotate(180deg) brightness(.75);
+}
+
+.darkmode #darkmode-switch {
+  filter: invert(1);
 }
