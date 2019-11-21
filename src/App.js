@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom"
 import { Routing } from "/Routing"
 import { PageTemplate } from "/Page/Template"
 import { VotingQueue } from "/Voting"
-import { UiStateProvider } from "/UI"
+import { UiStateProvider, useUi } from "/UserState"
 import { ErrorBoundary } from "/utils"
 export { routes } from "/Routing"
 
@@ -44,18 +44,34 @@ export const NabProvider = withRouter(
   }
 )
 
+export const AppBody = () => {
+  const { isConfigLoaded, darkMode } = useUi()
+
+  if (!isConfigLoaded) {
+    return <h1>Loading settings...</h1>
+  }
+
+  return (
+    <>
+      <Helmet>
+        <title>notabug: the back page of the internet</title>
+        <html className={darkMode ? "darkmode" : ""} />
+        <body className={`loggedin subscriber`} />
+      </Helmet>
+
+      <VotingQueue>
+        <Routing />
+      </VotingQueue>
+    </>
+  )
+}
+
 export const App = withRouter(
   React.memo(({ notabugApi, history }) => (
     <NabProvider {...{ notabugApi, history }}>
-      <Helmet>
-        <title>notabug: the back page of the internet</title>
-        <body className="loggedin subscriber" />
-      </Helmet>
       <ErrorBoundary>
         <UiStateProvider>
-          <VotingQueue>
-            <Routing />
-          </VotingQueue>
+          <AppBody />
         </UiStateProvider>
       </ErrorBoundary>
     </NabProvider>
