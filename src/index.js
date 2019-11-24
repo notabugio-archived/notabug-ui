@@ -1,24 +1,21 @@
-import 'core-js/stable';
-import 'regenerator-runtime/runtime';
-import React from "react";
-import ReactDOM from "react-dom";
-import { BrowserRouter } from "react-router-dom";
-import "/vendor/snew-classic-ui/static/css/minimal.css";
-import "/vendor/snew-classic-ui/static/css/wiki.css";
-import "/styles/index.css";
-import "/styles/night.css";
-import { App } from "/App";
-import { ErrorBoundary } from "/utils";
-import { setDarkMode } from "/UI"
+import "core-js/stable"
+import "regenerator-runtime/runtime"
+import React from "react"
+import ReactDOM from "react-dom"
+import { BrowserRouter } from "react-router-dom"
+import "/vendor/snew-classic-ui/static/css/minimal.css"
+import "/vendor/snew-classic-ui/static/css/wiki.css"
+import "/styles/index.css"
+import "/styles/night.css"
+import { App } from "/App"
+import { ErrorBoundary } from "/utils"
 // import { unregister } from "/utils/registerServiceWorker";
 
-setDarkMode("restore", window.location.hostname == "nab.cx")
-
 try {
-  localStorage.removeItem("gun/");
-  localStorage.removeItem("gap/gun/");
+  localStorage.removeItem("gun/")
+  localStorage.removeItem("gap/gun/")
 } catch (e) {
-  console.error("error clearing localStorage", e.stack || e);
+  console.error("error clearing localStorage", e.stack || e)
 }
 
 const jsx = (
@@ -27,20 +24,20 @@ const jsx = (
       <App />
     </BrowserRouter>
   </ErrorBoundary>
-);
+)
 
 try {
-  ReactDOM.render(jsx, document.body);
+  ReactDOM.render(jsx, document.body)
 } catch (e) {
-  console.error(e.stack || e);
+  console.error(e.stack || e)
   try {
-    localStorage.removeItem("gun/");
-    localStorage.removeItem("gap/gun/");
+    localStorage.removeItem("gun/")
+    localStorage.removeItem("gap/gun/")
   } catch (e) {
-    console.error(e.stack || e);
+    console.error(e.stack || e)
   }
 
-  ReactDOM.render(jsx, document.body);
+  ReactDOM.render(jsx, document.body)
 }
 
 // unregister();

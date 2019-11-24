@@ -10,7 +10,7 @@ import React, {
 import { propOr } from "ramda"
 import isNode from "detect-node"
 import { Constants } from "@notabug/peer"
-import { useUi } from "/UI"
+import { useUi } from "/UserState"
 import { useNotabug } from "/NabContext"
 
 const MAX_TEXTAREA_HEIGHT = 120
