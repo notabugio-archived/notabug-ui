@@ -97,7 +97,7 @@
 }
 
 .darkmode #header-img {
-  background-color: transparent; !important;
+  background-color: transparent !important;
   filter: invert(.8);
 }
 
