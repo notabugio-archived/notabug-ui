@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.70.18",
+  "version": "0.71.0",
   "description": "Classic Open-Source Reddit UI for notabug",
   "main": "index.js",
   "keywords": [],
@@ -32,6 +32,8 @@
     "core-js": "^3.3.6",
     "detect-node": "^2.0.4",
     "jdenticon": "^2.1.1",
+    "js-yaml": "^3.13.1",
+    "localforage": "^1.7.3",
     "lodash.debounce": "^4.0.8",
     "parcel-plugin-static-files-copy": "^2.1.2",
     "query-string": "^6.7.0",

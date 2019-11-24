@@ -7,18 +7,31 @@ import React, {
   useEffect
 } from "react"
 import quoteText from "/utils/quote"
+import localforage from "localforage"
+import yaml from "js-yaml"
 
 export const UiStateContext = createContext()
 
+const LOCALFORAGE_CONFIG_KEY = "nabuiconfig"
+
 export function openConfig() {
+  const readConfig = () =>
+    localforage
+      .getItem(LOCALFORAGE_CONFIG_KEY)
+      .then(data => yaml.safeLoad(data || "") || {})
+
   return {
     async get(key) {
-      return JSON.parse(localStorage.getItem(key))
+      return readConfig().then(res => res[key])
     },
 
     async put(key, value) {
-      localStorage.setItem(key, JSON.stringify(value))
-      return value
+      return readConfig()
+        .then(conf => ({ ...conf, [key]: value }))
+        .then(conf =>
+          localforage.setItem(LOCALFORAGE_CONFIG_KEY, yaml.safeDump(conf))
+        )
+        .then(() => value)
     }
   }
 }
