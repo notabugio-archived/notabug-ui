@@ -19,6 +19,13 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>notabug: the back page of the internet</title>
+    <script>
+      try {
+        if(localStorage.getItem("darkMode") === "true")
+          document.documentElement.classList.add("darkmode")
+      }
+      catch(e) {}
+    </script>
   </head>
   <body class="loggedin subscriber">
     !!!CONTENT!!!
