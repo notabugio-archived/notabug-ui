@@ -71,17 +71,32 @@ export const useUiState = () => {
   const [darkMode, setDarkMode, isDarkModeLoaded] = useConfig(
     config,
     "darkmode",
-    !!process.env.NAB_DARK_MODE
+    useMemo(() => {
+      try {
+        // Attempt to use localStorage as synchronous cache
+        const defaultDarkMode = localStorage.getItem("darkMode")
+        if (typeof defaultDarkMode === "undefined") {
+          return !!process.env.NAB_DARK_MODE
+        }
+
+        return !!JSON.parse(defaultDarkMode)
+      } catch (e) {
+        console.warn("Can't read localStorage", e.stack)
+      }
+
+      return !!process.env.NAB_DARK_MODE
+    })
   )
 
   useEffect(() => {
     try {
-      if(darkMode)
-        localStorage.setItem("darkMode", true)
-      else
+      if (darkMode !== !!process.env.NAB_DARK_MODE) {
+        localStorage.setItem("darkMode", darkMode)
+      } else {
         localStorage.removeItem("darkMode")
-    }
-    catch(e) {
+      }
+    } catch (e) {
+      console.warn("Can't write localStorage", e.stack)
     }
   }, [darkMode])
 

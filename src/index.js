@@ -18,6 +18,14 @@ try {
   console.error("error clearing localStorage", e.stack || e)
 }
 
+try {
+  if(localStorage.getItem("darkMode") === "true") {
+    document.documentElement.classList.add("darkmode")
+  }
+} catch(e) {
+  console.warn("Can't access localStorage", e.stack)
+}
+
 const jsx = (
   <ErrorBoundary>
     <BrowserRouter>
