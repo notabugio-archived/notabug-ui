@@ -18,6 +18,8 @@ export const PageFooter = () => {
   return (
     <div className="footer-parent">
       <p className="bottommenu">
+        <Link href="/help/faq">FAQ</Link>
+        {" | "}
         <Link href="https://github.com/notabugio">open-source code</Link>
         {" | "}
         <Link href="https://github.com/notabugio/notabug">
