@@ -74,6 +74,17 @@ export const useUiState = () => {
     !!process.env.NAB_DARK_MODE
   )
 
+  useEffect(() => {
+    try {
+      if(darkMode)
+        localStorage.setItem("darkMode", true)
+      else
+        localStorage.removeItem("darkMode")
+    }
+    catch(e) {
+    }
+  }, [darkMode])
+
   const quoteSelected = () => quoteText(window.getSelection().toString())
   const setQuotedText = text => setQuote(quoteText(text))
 
