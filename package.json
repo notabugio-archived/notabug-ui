@@ -1,6 +1,6 @@
 {
   "name": "notabug",
-  "version": "0.72.1",
+  "version": "0.72.2",
   "description": "Classic Open-Source Reddit UI for notabug",
   "main": "index.js",
   "keywords": [],
@@ -24,7 +24,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs2": "^7.6.3",
-    "@chaingun/sea-client": "^0.0.23",
+    "@chaingun/sea-client": "^0.0.29",
     "@chaingun/socketcluster-connector": "^0.0.5",
     "@notabug/peer": "^0.40.1",
     "@tippy.js/react": "^2.2.0",

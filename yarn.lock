@@ -1227,10 +1227,10 @@
     "@chaingun/types" "^0.0.1"
     reconnecting-websocket "^4.2.0"
 
-"@chaingun/client@^0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@chaingun/client/-/client-0.0.23.tgz#abada8a8fbc9b86aeb54aa46a7bae697ab337b51"
-  integrity sha512-T49NRHHayeu8PoZEMr0tTiCYDqUDfrUbptMTc7wYehaUScDj4Ipn+/Yn654GxjAjzwN5mv6eHHtk5qtGVLzfQA==
+"@chaingun/client@^0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@chaingun/client/-/client-0.0.26.tgz#5bdee3b419fa6c7f144cea76db24cfaae38d49cc"
+  integrity sha512-CmPC3czBHZ0ZV7U5D4vFTzuW5Jq38PMeM8Pq9S4GW7goI6nlhwaUtz56rQ+r8MLgzzjIqxz4bBVUkChIsCS5rw==
   dependencies:
     "@chaingun/crdt" "^0.0.2"
     "@chaingun/types" "^0.0.3"
@@ -1250,18 +1250,29 @@
   dependencies:
     "@chaingun/types" "^0.0.3"
 
-"@chaingun/sea-client@^0.0.23":
-  version "0.0.23"
-  resolved "https://registry.yarnpkg.com/@chaingun/sea-client/-/sea-client-0.0.23.tgz#0944099d9584c8ee52564569dd6cbf437fb40317"
-  integrity sha512-8z2fFL5WylUWMZGLHb0HfHSYSQwAih+dE8FOZT/eAqNiaeRWlu+3K5oozB3DsQYRl4tlCZZ6uawHa7TWTZ4FIw==
+"@chaingun/sea-client@^0.0.29":
+  version "0.0.29"
+  resolved "https://registry.yarnpkg.com/@chaingun/sea-client/-/sea-client-0.0.29.tgz#76b80b1fec1d1de5f789ba3b39cdb2cbca407733"
+  integrity sha512-4ESFabTPQHzr2FT5zNiUXLbX9sJexxsDs3SzyUj01exJSOleiu+bau74kP+bX21ZdulkwvCCu44WUFQUkUWqCA==
   dependencies:
-    "@chaingun/client" "^0.0.23"
-    "@chaingun/sear" "^0.0.24"
+    "@chaingun/client" "^0.0.26"
+    "@chaingun/sear" "^0.0.26"
 
 "@chaingun/sear@^0.0.24":
   version "0.0.24"
   resolved "https://registry.yarnpkg.com/@chaingun/sear/-/sear-0.0.24.tgz#a9a1d09cf5990468fd216b0ae2b8f5e1242657b0"
   integrity sha512-SV+kb9VkX7wxvmiOusU6bJcxx8lWb+OdHDOTuib3ILD+Mwm/Ks5sospSxLodu5uiXZszDCdMDgqCoGPkfxHObQ==
+  dependencies:
+    "@types/window-or-global" "^1.0.0"
+    isomorphic-webcrypto "^2.3.2"
+    sha.js "^2.4.11"
+    text-encoding "^0.7.0"
+    window-or-global "^1.0.1"
+
+"@chaingun/sear@^0.0.26":
+  version "0.0.26"
+  resolved "https://registry.yarnpkg.com/@chaingun/sear/-/sear-0.0.26.tgz#421ddb8eb7a63f41b9abc09db2b7ee2785eaa8b9"
+  integrity sha512-RgClFQW8AMGfybm95PSSKJpYJExxGyiuhOX/GHuZr+Uyg1K9kzWB55J2eEuoSUCPkULEZgcBJ8WEW4pzx2MUMQ==
   dependencies:
     "@types/window-or-global" "^1.0.0"
     isomorphic-webcrypto "^2.3.2"
