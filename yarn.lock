@@ -1326,10 +1326,10 @@
     ramda "^0.26.1"
     zalgo-promise "1.0.28"
 
-"@notabug/peer@^0.41.2":
-  version "0.41.2"
-  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.41.2.tgz#81c2f6201ad357c82438134482c7cd473800f931"
-  integrity sha512-0eFw/fG1LT0R5qvq4J49S9lwfXyjkSquDRgUkzBdhZp/6y6+aav2nT85dyJar8krmncgHAeljwoXRHNJfPM6hg==
+"@notabug/peer@^0.41.3":
+  version "0.41.3"
+  resolved "https://registry.yarnpkg.com/@notabug/peer/-/peer-0.41.3.tgz#ed24f9de5f4171cfa6fda247f5fc31f46e703914"
+  integrity sha512-o8e60TpC7DCaBsNUPZSM0wxrd5meQEgJ+GGc8i6Gc5qPsJvvr4PoBliXpH1/tLztE35ZX+55a44erLD1SY5LQA==
   dependencies:
     "@notabug/gun-scope" "^0.10.2"
     argon2 "^0.21.0"
