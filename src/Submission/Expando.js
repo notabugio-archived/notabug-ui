@@ -145,6 +145,7 @@ const findIframe = (item, domain, query) => {
   if (domain === "d.tube")
     return item.url.replace("d.tube/#!/v", "emb.d.tube/#!");
   if (domain === "invidio.us") return "https://invidio.us/embed/" + query.v;
+  if (domain === "gvid.tv") return item.url.replace("gvid.tv/v/","gvid.tv/embed/");
   if (domain === "dailymotion.com" && item.url.indexOf("/video/") !== -1) {
     return (
       "https://www.dailymotion.com/embed/video/" +
